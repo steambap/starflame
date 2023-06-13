@@ -3,6 +3,7 @@ import { ObjectId } from "./object_id";
 import { Location } from "./location";
 import { Player } from "./player";
 import { Star } from "./star";
+import { Rand } from "../rand";
 
 export type GameType =
   | "tutorial"
@@ -119,13 +120,13 @@ export type GameTimeMaxTurnWait =
 
 export interface GameSettings {
   general: {
-    createdByUserId?: ObjectId | null;
+    seed: number;
     name: string;
     description: string | null;
     type: GameType;
     mode: GameMode;
     featured: boolean;
-    password?: string | null;
+    password?: string;
     passwordRequired: boolean;
     playerLimit: number;
     playerType: GamePlayerType;
@@ -353,7 +354,6 @@ export interface Game {
       monthlyBanAmount: number;
     };
   };
-  quitters: ObjectId[];
-  afkers: ObjectId[];
   userNotifications?: GameUserNotification;
+  rand: Rand;
 }

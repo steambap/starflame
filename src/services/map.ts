@@ -4,7 +4,6 @@ import { Location } from "../types/location";
 import NameService from "./name";
 import StarService from "./star";
 import GameTypeService from "./game_type";
-import RandomService from "./random";
 import circularMapGen from "../map_shape/circular";
 import CustomMapService from "../map_shape/custom";
 
@@ -20,7 +19,7 @@ const MapService = {
     let linkedStars: any[] = [];
 
     // Get an array of random star names for however many stars we want.
-    const starNames = NameService.getRandomStarNames(starCount);
+    const starNames = NameService.getRandomStarNames(game, starCount);
 
     // Generate all of the locations for stars.
     let starLocations: any[] = [];
@@ -123,6 +122,7 @@ const MapService = {
     // If warp gates are enabled, assign random stars to start as warp gates.
     if (game.settings.specialGalaxy.randomWarpGates) {
       this.generateGates(
+        game,
         game.galaxy.stars,
         playerCount,
         game.settings.specialGalaxy.randomWarpGates
@@ -190,7 +190,7 @@ const MapService = {
     }
   },
 
-  generateGates(stars: Star[], playerCount: number, percentage: number) {
+  generateGates(game: Game, stars: Star[], playerCount: number, percentage: number) {
     let gateCount = Math.floor(
       ((stars.length - playerCount) / 100) * percentage
     );
@@ -198,7 +198,7 @@ const MapService = {
     // Pick stars at random and set them to be warp gates.
     do {
       let star =
-        stars[RandomService.getRandomNumberBetween(0, stars.length - 1)];
+        stars[game.rand.getRandomNumberBetween(0, stars.length - 1)];
 
       if (star.homeStar || star.warpGate) {
         gateCount++; // Increment because the while loop will decrement.
@@ -224,11 +224,11 @@ const MapService = {
 
       let starA =
         remaining[
-          RandomService.getRandomNumberBetween(0, remaining.length - 1)
+          game.rand.getRandomNumberBetween(0, remaining.length - 1)
         ];
       let starB =
         remaining[
-          RandomService.getRandomNumberBetween(0, remaining.length - 1)
+          game.rand.getRandomNumberBetween(0, remaining.length - 1)
         ];
 
       // Check validity of the random selection.
@@ -251,11 +251,11 @@ const MapService = {
           let maxResources =
             game.constants.star.resources.maxNaturalResources * 3;
 
-          starA.naturalResources.economy = RandomService.getRandomNumberBetween(
+          starA.naturalResources.economy = game.rand.getRandomNumberBetween(
             minResources,
             maxResources
           );
-          starB.naturalResources.economy = RandomService.getRandomNumberBetween(
+          starB.naturalResources.economy = game.rand.getRandomNumberBetween(
             minResources,
             maxResources
           );
@@ -275,7 +275,7 @@ const MapService = {
     // Pick stars at random and set them to be nebulas
     do {
       let star =
-        stars[RandomService.getRandomNumberBetween(0, stars.length - 1)];
+        stars[game.rand.getRandomNumberBetween(0, stars.length - 1)];
 
       if (star.homeStar || star.isNebula) {
         count++; // Increment because the while loop will decrement.
@@ -289,7 +289,7 @@ const MapService = {
           let maxResources =
             game.constants.star.resources.maxNaturalResources * 3;
 
-          star.naturalResources.science = RandomService.getRandomNumberBetween(
+          star.naturalResources.science = game.rand.getRandomNumberBetween(
             minResources,
             maxResources
           );
@@ -309,7 +309,7 @@ const MapService = {
     // Pick stars at random and set them to be asteroid fields
     do {
       let star =
-        stars[RandomService.getRandomNumberBetween(0, stars.length - 1)];
+        stars[game.rand.getRandomNumberBetween(0, stars.length - 1)];
 
       if (star.homeStar || star.isAsteroidField) {
         count++; // Increment because the while loop will decrement.
@@ -330,7 +330,7 @@ const MapService = {
     // Pick stars at random and set them to be binary stars
     do {
       let star =
-        stars[RandomService.getRandomNumberBetween(0, stars.length - 1)];
+        stars[game.rand.getRandomNumberBetween(0, stars.length - 1)];
 
       if (star.homeStar || star.isBinaryStar) {
         count++; // Increment because the while loop will decrement.
@@ -345,12 +345,12 @@ const MapService = {
 
         // Overwrite natural resources
         if (GameTypeService.isSplitResources(game)) {
-          star.naturalResources.industry = RandomService.getRandomNumberBetween(
+          star.naturalResources.industry = game.rand.getRandomNumberBetween(
             minResources,
             maxResources
           );
         } else {
-          let resources = RandomService.getRandomNumberBetween(
+          let resources = game.rand.getRandomNumberBetween(
             minResources,
             maxResources
           );
@@ -376,7 +376,7 @@ const MapService = {
     // Pick stars at random and set them to be asteroid fields
     do {
       let star =
-        stars[RandomService.getRandomNumberBetween(0, stars.length - 1)];
+        stars[game.rand.getRandomNumberBetween(0, stars.length - 1)];
 
       if (star.homeStar || star.isBlackHole) {
         count++; // Increment because the while loop will decrement.
@@ -408,7 +408,7 @@ const MapService = {
     // Pick stars at random and set them to be pulsars
     do {
       let star =
-        stars[RandomService.getRandomNumberBetween(0, stars.length - 1)];
+        stars[game.rand.getRandomNumberBetween(0, stars.length - 1)];
 
       if (star.homeStar || star.isPulsar) {
         count++; // Increment because the while loop will decrement.

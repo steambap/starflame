@@ -1,17 +1,23 @@
+import { useState } from "react";
 import { Stage, Layer, Group, Star, Path } from "react-konva";
 import tutorial from "./data/tutorial.json";
 import GameCreateService from "./services/game_create";
-import { GameSettings } from "./types/game";
+import { Game, GameSettings } from "./types/game";
 
 function App() {
-  const game = GameCreateService.create(tutorial as GameSettings);
+  const [seed, setSeed] = useState("0");
+  const [game, setGame] = useState<Game>(
+    GameCreateService.create(tutorial as GameSettings)
+  );
 
   return (
     <>
       <Stage draggable width={window.innerWidth} height={window.innerHeight}>
         <Layer>
           {game.galaxy.stars.map((star) => {
-            const player = game.galaxy.players.find(p => p.id === star.ownedByPlayerId);
+            const player = game.galaxy.players.find(
+              (p) => p.id === star.ownedByPlayerId
+            );
             const playerColor = player ? player.colour.value : "#c0c0c0";
             return (
               <Group x={star.location.x} y={star.location.y} key={star.id}>
@@ -34,7 +40,22 @@ function App() {
           })}
         </Layer>
       </Stage>
-      <div className="fixed top-0 right-0">Tutorial - Learn to Play</div>
+      <div className="fixed top-0 right-0">
+        <div>Tutorial - Learn to Play</div>
+        <div>
+          <input value={seed} onChange={(v) => setSeed(v.target.value)} />
+        </div>
+        <div>
+          <button
+            onClick={() => {
+              tutorial.general.seed = parseInt(seed);
+              setGame(GameCreateService.create(tutorial as GameSettings));
+            }}
+          >
+            Regen
+          </button>
+        </div>
+      </div>
     </>
   );
 }

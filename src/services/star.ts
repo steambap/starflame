@@ -4,7 +4,7 @@ import { Player } from "../types/player";
 import { Star, NaturalResources, InfrastructureType } from "../types/star";
 import { ObjectId } from "../types/object_id";
 import StarDistanceService from "./star_distance";
-import RandomService from "./random";
+import { Rand } from "../rand";
 
 const StarService = {
   setupHomeStar(
@@ -94,7 +94,7 @@ const StarService = {
     ];
 
     for (let star of game.galaxy.stars) {
-      const i = RandomService.getRandomNumberBetween(0, types.length - 1);
+      const i = game.rand.getRandomNumberBetween(0, types.length - 1);
       const type = types[i];
 
       if (type == null) {

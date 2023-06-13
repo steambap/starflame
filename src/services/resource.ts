@@ -3,7 +3,6 @@ import { Location } from "../types/location";
 import { NaturalResources } from "../types/star";
 import DistanceService from "./distance";
 import GameTypeService from "./game_type";
-import RandomService from "./random";
 import StarDistanceService from "./star_distance";
 
 const ResourceService = {
@@ -52,7 +51,12 @@ const ResourceService = {
     const splitRes = GameTypeService.isSplitResources(game);
 
     for (let i = 0; i < locations.length / playerCount; i++) {
-      let resources = this._setResources(minResources, maxResources, splitRes);
+      let resources = this._setResources(
+        game,
+        minResources,
+        maxResources,
+        splitRes
+      );
 
       for (let j = 0; j < playerCount; j++) {
         (locations[i * playerCount + j] as any).resources = resources;
@@ -70,6 +74,7 @@ const ResourceService = {
 
     for (let location of locations) {
       (location as any).resources = this._setResources(
+        game,
         minResources,
         maxResources,
         splitRes
@@ -126,6 +131,7 @@ const ResourceService = {
       // If you want the differences to be more extreme you can increase the 0.6 and decrease the 0.2 notice how: 1 - 0.6 = 2 * 0.2, keep that relation intact.
       // So for example a good tweak to make the center even stronger and the edges weaker would be to pick * 0.8 + 0.1, and notice again how 1 - 0.8 = 2 * 0.1
       let resources = this._setResources(
+        game,
         minResources,
         maxResources,
         splitRes,
@@ -158,6 +164,7 @@ const ResourceService = {
       // If you want the differences to be more extreme you can increase the 0.6 and decrease the 0.2 notice how: 1 - 0.6 = 2 * 0.2, keep that relation intact.
       // So for example a good tweak to make the center even stronger and the edges weaker would be to pick * 0.8 + 0.1, and notice again how 1 - 0.8 = 2 * 0.1
       (location as any).resources = this._setResources(
+        game,
         minResources,
         maxResources,
         splitRes,
@@ -167,6 +174,7 @@ const ResourceService = {
   },
 
   _setResources(
+    game: Game,
     minResources: number,
     maxResources: number,
     isSplitResources: boolean,
@@ -174,17 +182,17 @@ const ResourceService = {
   ): NaturalResources {
     if (isSplitResources) {
       return {
-        economy: RandomService.getRandomNumberBetweenEXP(
+        economy: game.rand.getRandomNumberBetweenEXP(
           minResources,
           maxResources,
           EXP
         ),
-        industry: RandomService.getRandomNumberBetweenEXP(
+        industry: game.rand.getRandomNumberBetweenEXP(
           minResources,
           maxResources,
           EXP
         ),
-        science: RandomService.getRandomNumberBetweenEXP(
+        science: game.rand.getRandomNumberBetweenEXP(
           minResources,
           maxResources,
           EXP
@@ -192,7 +200,7 @@ const ResourceService = {
       };
     }
 
-    let resources = RandomService.getRandomNumberBetweenEXP(
+    const resources = game.rand.getRandomNumberBetweenEXP(
       minResources,
       maxResources,
       EXP

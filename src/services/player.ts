@@ -14,7 +14,6 @@ import colours from "../data/colours.json";
 import MapService from "./map";
 import TechnologyService from "./technology";
 import StarDistanceService from "./star_distance";
-import RandomService from "./random";
 
 const PlayerService = {
   getById(game: Game, playerId: ObjectId) {
@@ -99,6 +98,7 @@ const PlayerService = {
     let players: Player[] = [];
 
     let shapeColours = this._generatePlayerColourShapeList(
+      game,
       game.settings.general.playerLimit
     );
 
@@ -124,7 +124,7 @@ const PlayerService = {
 
     return players;
   },
-  _generatePlayerColourShapeList(playerCount: number) {
+  _generatePlayerColourShapeList(game: Game, playerCount: number) {
     const shapes: PlayerShape[] = ["circle", "square", "diamond", "hexagon"];
 
     const combinations: PlayerColourShapeCombination[] = [];
@@ -138,7 +138,7 @@ const PlayerService = {
       }
     }
 
-    combinations.sort(() => 0.5 - Math.random());
+    combinations.sort(() => 0.5 - game.rand.next());
 
     return combinations.slice(0, playerCount);
   },
@@ -276,6 +276,7 @@ const PlayerService = {
   ) {
     // Get the player's starting location.
     let startingLocation = this._getPlayerStartingLocation(
+      game,
       radians,
       galaxyCenter,
       distanceFromCenter
@@ -296,7 +297,7 @@ const PlayerService = {
       (s) => s.ownedByPlayerId == null
     );
 
-    let rnd = RandomService.getRandomNumber(unownedStars.length);
+    let rnd = game.rand.getRandomNumber(unownedStars.length);
 
     return unownedStars[rnd];
   },
@@ -314,12 +315,13 @@ const PlayerService = {
     return radians;
   },
   _getPlayerStartingLocation(
+    game: Game,
     radians: number[],
     galaxyCenter: Location,
     distanceFromCenter: number
   ) {
     // Pick a random radian for the player's starting position.
-    let radianIndex = RandomService.getRandomNumber(radians.length);
+    let radianIndex = game.rand.getRandomNumber(radians.length);
     let currentRadians = radians.splice(radianIndex, 1)[0];
 
     // Get the desired player starting location.

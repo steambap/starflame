@@ -2,7 +2,6 @@ import { Game, GameResourceDistribution } from "../types/game";
 import { Location } from "../types/location";
 import StarDistanceService from "../services/star_distance";
 import GameTypeService from "../services/game_type";
-import RandomService from "../services/random";
 import ResourceService from "../services/resource";
 
 function isLocationTooCloseToOthers(
@@ -40,7 +39,7 @@ export default function generateLocations(
   do {
     // Try to find the star location X
     while (true) {
-      let location = RandomService.getRandomPositionInCircle(maxRadius, offset);
+      let location = game.rand.getRandomPositionInCircle(maxRadius, offset);
 
       // Stars must not be too close to eachother.
       if (!isLocationTooCloseToOthers(game, location, locations)) {

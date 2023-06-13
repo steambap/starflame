@@ -3,7 +3,6 @@ import { ObjectId } from "../types/object_id";
 import { Player } from "../types/player";
 import AvatarService from "./avatar";
 import GameTypeService from "./game_type";
-import RandomService from "./random";
 
 const GameJoinService = {
   assignPlayerToUser(
@@ -61,11 +60,11 @@ const GameJoinService = {
     const avatars = AvatarService.listAllAvatars();
 
     for (const player of players) {
-      const aliasIndex = RandomService.getRandomNumberBetween(
+      const aliasIndex = game.rand.getRandomNumberBetween(
         0,
         aliases.length - 1
       );
-      const avatarIndex = RandomService.getRandomNumberBetween(
+      const avatarIndex = game.rand.getRandomNumberBetween(
         0,
         avatars.length - 1
       );

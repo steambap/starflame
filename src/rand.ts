@@ -1,13 +1,35 @@
-import { Location } from "../types/location";
+interface props {
+  seed: number;
+}
 
-const RandomService = {
+export class Rand {
+  seed: number;
+
+  constructor(rand: Rand | props | undefined) {
+    if (rand == undefined) {
+      this.seed = Date.now();
+    } else {
+      this.seed = rand.seed | 0;
+    }
+  }
+
+  /** Returns a pseudorandom number between 0 and 1. */
+  next() {
+    this.seed = (this.seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(this.seed ^ (this.seed >>> 15), 1 | this.seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+
   getRandomNumber(max: number) {
-    return Math.floor(Math.random() * max);
-  },
+    return Math.floor(this.next() * max);
+  }
+
   // Note that the max is INCLUSIVE
   getRandomNumberBetween(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  },
+    return Math.floor(this.next() * (max - min + 1) + min);
+  }
+
   getRandomNumberBetweenEXP(
     min: number,
     max: number,
@@ -21,18 +43,21 @@ const RandomService = {
     } else if (P1 >= 1) {
       return min;
     }
-    let t = Math.random();
+    let t = this.next();
     let exp = Math.log(P2) / Math.log(0.5);
     // t**exp is still a value between 0 and 1, however the odds on each range is not the same, for example, if exp = 2, the odds on t**exp > 0.5 are 75%,
     return Math.floor(t ** exp * (max - min + 1) + min);
-  },
+  }
+
   getRandomAngle(): number {
-    return Math.random() * Math.PI * 2;
-  },
+    return this.next() * Math.PI * 2;
+  }
+
   getRandomRadius(maxRadius: number, offset: number): number {
-    return maxRadius * Math.random() ** offset;
-  },
-  getRandomPositionInCircle(maxRadius: number, offset: number = 0.5): Location {
+    return maxRadius * this.next() ** offset;
+  }
+
+  getRandomPositionInCircle(maxRadius: number, offset: number = 0.5) {
     let angle = this.getRandomAngle();
     let radius = this.getRandomRadius(maxRadius, offset);
 
@@ -40,7 +65,5 @@ const RandomService = {
       x: Math.cos(angle) * radius,
       y: Math.sin(angle) * radius,
     };
-  },
-};
-
-export default RandomService;
+  }
+}

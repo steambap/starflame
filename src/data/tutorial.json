@@ -1,11 +1,11 @@
 {
   "general": {
+    "seed": 0,
     "name": "Tutorial - Learn to Play",
     "description": "Learn how to build carriers and capture stars to win the game.",
     "type": "tutorial",
     "mode": "conquest",
     "featured": false,
-    "password": null,
     "passwordRequired": false,
     "playerLimit": 2,
     "playerType": "all",

@@ -11,10 +11,6 @@ const GameTypeService = {
     return game.settings.general.type === "tutorial";
   },
 
-  isOfficialGame(game: Game) {
-    return game.settings.general.createdByUserId == null;
-  },
-
   isCustomGame(game: Game) {
     return game.settings.general.type === "custom";
   },
@@ -104,10 +100,6 @@ const GameTypeService = {
 
   is1v1Game(game: Game) {
     return ["1v1_rt", "1v1_tb"].includes(game.settings.general.type);
-  },
-
-  isFluxGame(game: Game) {
-    return game.settings.general.fluxEnabled === "enabled";
   },
 
   isRankedGame(game: Game) {
