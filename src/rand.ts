@@ -2,6 +2,8 @@ interface props {
   seed: number;
 }
 
+// Original c code
+// https://gist.github.com/tommyettinger/46a874533244883189143505d203312c
 export class Rand {
   seed: number;
 
