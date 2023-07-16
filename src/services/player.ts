@@ -5,7 +5,7 @@ export const PlayerService = {
   createPlayers(game: Game) {
     const player: Player = {
       id: crypto.randomUUID(),
-      energy: 100,
+      energy: game.settings.player.startingEnergy,
       defeated: false,
       isCPU: false,
       empireType: "regular",

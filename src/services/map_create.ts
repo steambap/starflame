@@ -1,6 +1,8 @@
 import { Game } from "../types/game";
 import { hexMap, hexOrigin, HexService } from "./hex";
 import { MapLoc, Tile } from "../types/map_loc";
+import { StarSystem } from "../types/star_system";
+import { StarSystemService } from "./star_system";
 
 const numOfAsteroid = 4;
 const numOfNebula = 4;
@@ -47,6 +49,33 @@ export const MapCreateService = {
       voidList[i].tile = "nebula";
     }
 
+    // system gen
+    const systems: StarSystem[] = [];
+    mapData.forEach((loc) => {
+      if (loc.tile !== "system") {
+        return;
+      }
+
+      const weight = StarSystemService.getTotalWeight();
+      const num = game.rand.getRandomNumberBetween(1, weight);
+      const type = StarSystemService.getRandPlanet(num);
+      const system: StarSystem = {
+        id: crypto.randomUUID(),
+        name: "test",
+        type,
+        metal: game.rand.getRandomNumberBetween(1, 9),
+        energy: game.rand.getRandomNumberBetween(1, 9),
+        loc: {
+          q: loc.q,
+          r: loc.r,
+          s: loc.s,
+        },
+      };
+
+      systems.push(system);
+    });
+
     game.galaxy.mapData = mapData;
+    game.galaxy.systems = systems;
   },
 };

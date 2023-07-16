@@ -1,5 +1,5 @@
 import { Hex, Loc } from "../types/hex";
-import { qMax, hexSize } from "../data/constants"
+import { qMax, hexSize } from "../data/constants";
 
 function from(q: number, r: number, s: number): Hex {
   if (q + r + s !== 0) {
@@ -83,12 +83,16 @@ for (let q = -qMax; q <= qMax; q++) {
 
 function isMapCorner(h: Hex) {
   if (h.q === 0 || h.r === 0 || h.s === 0) {
-    if (Math.abs(h.q) === qMax || Math.abs(h.r) === qMax || Math.abs(h.s) === qMax) {
+    if (
+      Math.abs(h.q) === qMax ||
+      Math.abs(h.r) === qMax ||
+      Math.abs(h.s) === qMax
+    ) {
       return true;
     }
   }
 
-  return false
+  return false;
 }
 
 export const HexService = {
