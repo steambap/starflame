@@ -19,7 +19,11 @@ const Galaxy = ({ game }: { game: Game }) => {
         }
 
         return (
-          <Group position={loc} key={HexService.toStr(hex)}>
+          <Group
+            position={loc}
+            key={HexService.toStr(hex)}
+            onClick={() => console.log(hex)}
+          >
             <Hexagon />
             <TileBG tile={hex.tile} />
             {system && <PlanetImg planet={system.type} />}

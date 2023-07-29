@@ -66,6 +66,10 @@ export const hexDirections = [
   from(0, 1, -1), // SE
 ];
 
+function getNeighbours(h: Hex): Hex[] {
+  return hexDirections.map(hex => add(hex, h));
+}
+
 export const hexOrigin = from(0, 0, 0);
 
 function toStr(h: Hex): string {
@@ -103,6 +107,7 @@ export const HexService = {
   distance,
   toPixel,
   polygonCorners,
+  getNeighbours,
   toStr,
   isMapCorner,
 };

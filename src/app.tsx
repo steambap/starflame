@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Stage, Layer } from "react-konva";
 import tutorial from "./data/tutorial.json";
 import { create } from "./services/game_create";
 import { Game, GameSettings } from "./types/game";
+import Camera from "./components/camera";
 import Galaxy from "./components/galaxy";
 
 function App() {
@@ -13,11 +13,9 @@ function App() {
 
   return (
     <>
-      <Stage width={window.innerWidth} height={window.innerHeight} draggable>
-        <Layer>
-          <Galaxy game={game} />
-        </Layer>
-      </Stage>
+      <Camera>
+        <Galaxy game={game} />
+      </Camera>
       <div className="fixed top-0 right-0">
         <div>Tutorial - Learn to Play</div>
         <div>

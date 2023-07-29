@@ -35,6 +35,7 @@ export const MapCreateService = {
 
       return {
         ...hex,
+        id: HexService.toStr(hex),
         tile,
       };
     });

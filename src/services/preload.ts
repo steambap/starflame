@@ -1,6 +1,15 @@
 const assets: Record<string, HTMLImageElement> = {};
 
-const keys = ["asteroid", "nebula", "system"];
+const keys = [
+  "asteroid",
+  "nebula",
+  "system",
+  "ice",
+  "arid",
+  "lava",
+  "terran",
+  "swamp",
+];
 
 keys.forEach((key) => {
   const img = document.createElement("img");

@@ -1,31 +1,18 @@
-import { Circle } from "react-konva";
+import { Image } from "react-konva";
 import { PlanetType } from "../types/star_system";
+import assets from "../services/preload";
 
 const PlanetImg = ({ planet }: { planet: PlanetType }) => {
-  if (planet === "barren") {
-    return (
-      <Circle radius={32} fill="#6b6c6e" shadowBlur={4} shadowColor="white" />
-    );
-  } else if (planet === "snow") {
-    return (
-      <Circle radius={32} fill="#669ebc" shadowBlur={4} shadowColor="white" />
-    );
+  if (planet === "ice") {
+    return <Image image={assets.ice} x={-72} y={-72} />;
   } else if (planet === "lava") {
-    return (
-      <Circle radius={32} fill="#e67938" shadowBlur={4} shadowColor="#edcc91" />
-    );
+    return <Image image={assets.lava} x={-72} y={-72} />;
   } else if (planet === "arid") {
-    return (
-      <Circle radius={32} fill="#bf9f74" shadowBlur={4} shadowColor="#edcc91" />
-    );
+    return <Image image={assets.arid} x={-72} y={-72} />;
   } else if (planet === "swamp") {
-    return (
-      <Circle radius={32} fill="#98a889" shadowBlur={4} shadowColor="#91c1b4" />
-    );
+    return <Image image={assets.swamp} x={-72} y={-72} />;
   } else if (planet === "terran") {
-    return (
-      <Circle radius={32} fill="#6aaa9d" shadowBlur={4} shadowColor="#91c1b4" />
-    );
+    return <Image image={assets.terran} x={-72} y={-72} />;
   }
 
   return null;

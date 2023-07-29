@@ -1,10 +1,9 @@
 import { PlanetType } from "../types/star_system";
 
 const weightTable: Record<PlanetType, number> = {
-  barren: 1,
+  ice: 4,
   swamp: 6,
   lava: 3,
-  snow: 3,
   arid: 8,
   terran: 10,
 };
@@ -30,7 +29,22 @@ function getRandPlanet(num: number): PlanetType {
   throw new Error("invalid input");
 }
 
+function isHot(p: PlanetType): boolean {
+  return p === 'arid' || p === 'lava';
+}
+
+function isCode(p: PlanetType): boolean {
+  return p === 'ice';
+}
+
+function isTemperate(p: PlanetType): boolean {
+  return p === 'swamp' || p === 'terran';
+}
+
 export const StarSystemService = {
   getTotalWeight,
   getRandPlanet,
+  isHot,
+  isCode,
+  isTemperate,
 };

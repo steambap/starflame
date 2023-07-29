@@ -1,12 +1,6 @@
 import { Hex } from "./hex";
 
-export type PlanetType =
-  | "barren"
-  | "swamp"
-  | "lava"
-  | "snow"
-  | "arid"
-  | "terran";
+export type PlanetType = "ice" | "swamp" | "lava" | "arid" | "terran";
 
 export interface StarSystem {
   id: string;

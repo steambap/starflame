@@ -10,5 +10,8 @@ export type Tile =
   | "betaWormHole";
 
 export interface MapLoc extends Hex {
+  id: string;
   tile: Tile;
 }
+
+export type Edge = Record<string, Record<string, number>>;

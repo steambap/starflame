@@ -1,7 +1,7 @@
 import { StarSystem } from "./star_system";
 import { Player } from "./player";
 import { MapLoc } from "./map_loc";
-import { Rand } from "../rand";
+import { Rand } from "../services/rand";
 
 export type GameMode = "aweakening" | "kingOfTheHill";
 export type GameGalaxyType =

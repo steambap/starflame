@@ -1,7 +1,7 @@
 import { GameSettings, Game } from "../types/game";
 import { PlayerService } from "./player";
 import { MapCreateService } from "./map_create";
-import { Rand } from "../rand";
+import { Rand } from "../services/rand";
 
 export function create(settings: GameSettings) {
   const game: Game = {
