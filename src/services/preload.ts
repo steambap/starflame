@@ -9,6 +9,7 @@ const keys = [
   "lava",
   "terran",
   "swamp",
+  "ship",
 ];
 
 keys.forEach((key) => {

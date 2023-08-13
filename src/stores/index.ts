@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cameraReducer from "./camera_slice";
+import galaxyMapReducer from "./galaxy_map_slice";
+import gameStateReducer from "./game_state_slice";
 
 export const store = configureStore({
   reducer: {
     camera: cameraReducer,
+    galaxyMap: galaxyMapReducer,
+    gameState: gameStateReducer,
   },
 });
 

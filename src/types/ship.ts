@@ -1,4 +1,6 @@
 export type ShipClass =
+  | "patrol"
+  | "destroyer"
   | "cruiser"
   | "carrier"
   | "drendnought"
@@ -6,6 +8,7 @@ export type ShipClass =
 
 export interface Ship {
   id: string;
+  owner: string;
   name: string;
   type: ShipClass;
   location: string;

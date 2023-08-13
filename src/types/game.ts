@@ -2,6 +2,7 @@ import { StarSystem } from "./star_system";
 import { Player } from "./player";
 import { MapLoc } from "./map_loc";
 import { Rand } from "../services/rand";
+import { Ship } from "./ship";
 
 export type GameMode = "aweakening" | "kingOfTheHill";
 export type GameGalaxyType =
@@ -37,10 +38,12 @@ export interface Game {
     players: Player[];
     mapData: MapLoc[];
     systems: StarSystem[];
+    ships: Ship[];
   };
-  state: {
+  ctx: {
     turn: number;
   };
   userNotifications?: GameUserNotification;
   rand: Rand;
+  errors: Error[];
 }
