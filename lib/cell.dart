@@ -9,12 +9,15 @@ import 'planet.dart';
 import 'hex_helper.dart' show cornersOfZero;
 import 'tile.dart';
 import "planet_type.dart";
+import "fleet.dart";
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   final Hex hex;
   Planet? _planet;
   late final PolygonComponent _hexagon;
+  late final PolygonComponent _highligher;
   Tile? _tile;
+  List<Fleet> fleets = List.empty(growable: true);
 
   Cell(this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
@@ -23,6 +26,11 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
       ..color = Colors.grey;
     _hexagon =
         PolygonComponent(cornersOfZero, anchor: Anchor.center, paint: hexPaint);
+
+    final highlighterPaint = Paint()
+      ..color = const Color.fromARGB(128, 20, 60, 236);
+    _highligher = PolygonComponent(cornersOfZero,
+        anchor: Anchor.center, paint: highlighterPaint);
   }
 
   @override
@@ -51,4 +59,25 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   }
 
   TileType get tileType => _tile?.tileType ?? TileType.empty;
+
+  unmark() {
+    _highligher.removeFromParent();
+  }
+
+  markAsHighlight() {
+    add(_highligher);
+  }
+
+  @override
+  int get hashCode => hex.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return (other is Cell) && hex == other.hex;
+  }
+
+  @override
+  String toString() {
+    return "Cell$hex,$tileType";
+  }
 }

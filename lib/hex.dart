@@ -4,6 +4,14 @@ import 'package:flame/game.dart';
 class Hex {
   static const double size = 72;
   static Hex zero = Hex(0, 0, 0);
+  static List<Hex> directions = [
+    Hex(1, 0, -1), // E
+    Hex(1, -1, 0), // NE
+    Hex(0, -1, 1), // NW
+    Hex(-1, 0, 1), // W
+    Hex(-1, 1, 0), // SW
+    Hex(0, 1, -1), // SE
+  ];
 
   final int q;
   final int r;
@@ -37,11 +45,20 @@ class Hex {
     return Vector2(x, y);
   }
 
+  List<Hex> getNeighbours() {
+    return directions.map((e) => e + this).toList();
+  }
+
   @override
   int get hashCode => Object.hash(q, r, s);
 
   @override
   bool operator ==(Object other) {
     return (other is Hex) && q == other.q && r == other.r && s == other.s;
+  }
+
+  @override
+  String toString() {
+    return "($q,$r,$s)";
   }
 }
