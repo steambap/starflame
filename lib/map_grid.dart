@@ -13,6 +13,7 @@ import 'edges.dart';
 import "pathfinding.dart";
 import "hex.dart";
 import "select_control.dart";
+import "planet.dart";
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -56,7 +57,8 @@ class MapGrid extends Component
 
   final double moveSpeed = 20;
   Vector2 direction = Vector2.zero();
-  List<Cell> cells = List.empty(growable: true);
+  List<Cell> cells = List.empty();
+  List<Planet> planets = List.empty();
   Pathfinding pathfinding = Pathfinding({});
   List<Fleet> fleetListAll = List.empty(growable: true);
   Map<int, List<Fleet>> fleetMap = {};
@@ -73,6 +75,16 @@ class MapGrid extends Component
   }
 
   SelectControl get selectControl => _selectControl;
+
+  /// Input block
+  void blockSelect() {
+    selectControl = SelectControlBlockInput(this);
+  }
+
+  /// Wait for input
+  void unSelect() {
+    selectControl = SelectControlWaitForInput(this);
+  }
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
@@ -119,6 +131,16 @@ class MapGrid extends Component
     _selectControl.onCellClick(cell);
   }
 
+  Cell? cellAtPosition(Vector2 localPosition) {
+    final hex = _pixelToHex(localPosition);
+
+    final cellIndex = cells.indexWhere((cell) => cell.hex == hex);
+    if (cellIndex < 0) {
+      return null;
+    }
+    return cells[cellIndex];
+  }
+
   @override
   void update(double dt) {
     final Vector2 velocity = direction * moveSpeed;
@@ -127,15 +149,16 @@ class MapGrid extends Component
     super.update(dt);
   }
 
-  @override
-  FutureOr<void> onLoad() {
-    cells = game.gameCreator.createTutorial();
-    pathfinding = Pathfinding(_calcEdges());
+  FutureOr<void> initMap(List<Cell> cellList) {
+    cells = cellList;
+    planets = [];
     for (final cell in cells) {
-      add(cell);
+      if (cell.planet != null) {
+        planets.add(cell.planet!);
+      }
     }
-
-    createFleetAt(cells[0]);
+    pathfinding = Pathfinding(_calcEdges());
+    return addAll(cells);
   }
 
   Edges _calcEdges() {

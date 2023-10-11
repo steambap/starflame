@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
 import 'package:starfury/tile_type.dart';
 
 import 'scifi_game.dart';
@@ -23,7 +23,7 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
     position = hex.toPixel();
     final hexPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..color = Colors.grey;
+      ..color = const Color.fromARGB(255, 128, 128, 128);
     _hexagon =
         PolygonComponent(cornersOfZero, anchor: Anchor.center, paint: hexPaint);
 

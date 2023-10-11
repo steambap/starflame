@@ -1,0 +1,4 @@
+enum Installation {
+  shipyard,
+  defense,
+}
