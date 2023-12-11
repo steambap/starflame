@@ -29,12 +29,12 @@ class SelectControlWaitForInput extends SelectControl {
 
 class SelectControlCellSelected extends SelectControl {
   Cell cell;
-  Fleet? fleet;
+  Ship? ship;
   Map<Cell, List<Cell>> paths = {};
 
   SelectControlCellSelected(super.mapGrid, this.cell) {
-    if (cell.fleets.isNotEmpty) {
-      fleet = cell.fleets[0];
+    if (cell.ship != null) {
+      ship = cell.ship;
       paths = mapGrid.pathfinding.findAllPath(cell, 2);
     }
   }
@@ -49,8 +49,8 @@ class SelectControlCellSelected extends SelectControl {
       return;
     }
 
-    if (fleet != null) {
-      mapGrid.moveFleet(fleet!, cell);
+    if (ship != null) {
+      mapGrid.moveFleet(ship!, cell);
       mapGrid.selectControl = SelectControlWaitForInput(mapGrid);
     }
   }

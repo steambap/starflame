@@ -60,8 +60,8 @@ class MapGrid extends Component
   List<Cell> cells = List.empty();
   List<Planet> planets = List.empty();
   Pathfinding pathfinding = Pathfinding({});
-  List<Fleet> fleetListAll = List.empty(growable: true);
-  Map<int, List<Fleet>> fleetMap = {};
+  List<Ship> shipListAll = List.empty(growable: true);
+  Map<int, List<Ship>> fleetMap = {};
   late SelectControl _selectControl;
 
   MapGrid() {
@@ -183,11 +183,11 @@ class MapGrid extends Component
     return edges;
   }
 
-  moveFleet(Fleet fleet, Cell cell) {
-    final prevCell = fleet.cell;
-    prevCell.fleets.remove(fleet);
+  moveFleet(Ship ship, Cell cell) {
+    final prevCell = ship.cell;
+    prevCell.ship = null;
 
-    fleet.cell = cell;
+    ship.cell = cell;
     List<Cell> fromCells = List.empty();
     if (_selectControl is SelectControlCellSelected) {
       final paths = (_selectControl as SelectControlCellSelected).paths;
@@ -195,16 +195,16 @@ class MapGrid extends Component
         fromCells = paths[cell]!;
       }
     }
-    fleet.moveAnim(cell, fromCells);
-    cell.fleets.add(fleet);
+    ship.moveAnim(cell, fromCells);
+    cell.ship = ship;
   }
 
-  createFleetAt(Cell cell) {
-    final fleet = Fleet(cell);
-    cell.fleets.add(fleet);
+  void createShipAt(Cell cell) {
+    final ship = Ship(cell);
+    cell.ship = ship;
 
-    fleetListAll.add(fleet);
+    shipListAll.add(ship);
 
-    add(fleet);
+    add(ship);
   }
 }

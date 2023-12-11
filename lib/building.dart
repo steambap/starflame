@@ -1,6 +1,7 @@
 enum Building {
-  solarPanel,
-  metalExtractor,
-  farm,
-  lab,
+  shipyard,
+  techCenter,
+  militaryAcademy,
+  parliament,
+  forum,
 }

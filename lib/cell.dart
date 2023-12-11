@@ -17,7 +17,7 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   late final PolygonComponent _hexagon;
   late final PolygonComponent _highligher;
   Tile? _tile;
-  List<Fleet> fleets = List.empty(growable: true);
+  Ship? ship;
 
   Cell(this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();

@@ -1,4 +1,0 @@
-enum Installation {
-  shipyard,
-  defense,
-}

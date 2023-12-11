@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flame/game.dart';
 
 class Hex {
-  static const double size = 72;
+  static const double size = 36;
   static Hex zero = Hex(0, 0, 0);
   static List<Hex> directions = [
     Hex(1, 0, -1), // E

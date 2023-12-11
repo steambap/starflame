@@ -5,12 +5,12 @@ import "package:flame/effects.dart";
 import 'scifi_game.dart';
 import "cell.dart";
 
-class Fleet extends PositionComponent with HasGameRef<ScifiGame> {
+class Ship extends PositionComponent with HasGameRef<ScifiGame> {
   late SpriteComponent _fleetSprite;
   late SpriteComponent _fleetEffect;
   Cell cell;
 
-  Fleet(this.cell) : super(anchor: Anchor.center);
+  Ship(this.cell) : super(anchor: Anchor.center);
 
   @override
   FutureOr<void> onLoad() {
@@ -29,7 +29,7 @@ class Fleet extends PositionComponent with HasGameRef<ScifiGame> {
         sprite: spriteEffect,
         anchor: Anchor.center,
         scale: Vector2.all(0.25),
-        position: Vector2(0, 30));
+        position: Vector2(0, 15));
     _fleetEffect.opacity = 0;
     add(_fleetEffect);
 
