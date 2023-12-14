@@ -3,6 +3,7 @@ enum TileType {
   asteroidField,
   nebula,
   gravityRift,
+  sun,
   alphaWormHole,
   betaWormHole,
 }

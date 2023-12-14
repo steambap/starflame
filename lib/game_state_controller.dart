@@ -13,7 +13,7 @@ class GameStateController {
     this.players = players;
     gameState = GameState();
 
-    
+    game.playerInfo.updateRender();
   }
 
   void endTurn() {
@@ -44,6 +44,7 @@ class GameStateController {
     if (isCPUTurn()) {
       endTurn();
     } else {
+      game.playerInfo.updateRender();
       game.mapGrid.unSelect();
     }
   }
@@ -65,7 +66,11 @@ class GameStateController {
     return players[getHumanPlayerNumber()];
   }
 
+  PlayerState getPlayerState(int playerNumber) {
+    return players[playerNumber];
+  }
+
   PlayerState currentPlayerState() {
-    return players[gameState.playerNumber];
+    return getPlayerState(gameState.playerNumber);
   }
 }

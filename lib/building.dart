@@ -1,4 +1,5 @@
 enum Building {
+  galacticHQ,
   shipyard,
   techCenter,
   militaryAcademy,

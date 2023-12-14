@@ -6,13 +6,14 @@ import 'scifi_game.dart';
 
 class Tile extends SpriteComponent with HasGameRef<ScifiGame> {
   final TileType tileType;
-  Tile(this.tileType): super(anchor: Anchor.center, position: Vector2.zero());
+  Tile(this.tileType) : super(anchor: Anchor.center, position: Vector2.zero());
 
   @override
   FutureOr<void> onLoad() {
     final imgName = switch (tileType) {
       TileType.asteroidField => "asteroid.png",
       TileType.gravityRift => "gravity_rift.png",
+      TileType.sun => "sun.png",
       TileType.nebula => "nebula.png",
       TileType.alphaWormHole || TileType.betaWormHole => "wormhole.png",
       _ => "asteroid.png",

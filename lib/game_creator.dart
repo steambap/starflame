@@ -1,45 +1,56 @@
 import "dart:math";
-
-import "package:starfury/planet_type_helper.dart";
+import "package:flutter/material.dart" show Colors;
 
 import "cell.dart";
 import "game_settings.dart";
 import 'map_creator.dart';
 import "player_state.dart";
 
-typedef GameCreateData = (List<Cell>, List<PlayerState>);
-
 class GameCreator {
   late GameSettings gameSettings;
   late Random rand;
   late final MapCreator mapCreator;
-  final PlanetTypeHelper planetTypeHelper = PlanetTypeHelper();
+  final List<Cell> sunList = [];
+  // include sun
+  final List<Cell> planetList = [];
 
   GameCreator() {
     mapCreator = MapCreator(this);
   }
 
-  GameCreateData create(GameSettings gameSettings) {
+  List<Cell> create(GameSettings gameSettings) {
+    sunList.clear();
+    planetList.clear();
     this.gameSettings = gameSettings;
     rand = Random(gameSettings.seed);
 
     final cells = mapCreator.create();
-    final players = _setupPlayers(gameSettings);
+    _assignHomePlanet(cells);
 
-    return (cells, players);
+    return cells;
   }
 
-  GameCreateData createTutorial() {
-    return create(GameSettings(0));
+  _assignHomePlanet(List<Cell> cells) {
+    final List<Cell> planets = planetList
+        .where((element) => element.planet != null)
+        .toList(growable: false);
+    planets.shuffle(rand);
+
+    for (final player in gameSettings.players) {
+      final idx = player.playerNumber;
+      planets[idx].planet!.setHomePlanet(idx);
+    }
   }
 
-  List<PlayerState> _setupPlayers(GameSettings gameSettings) {
+  List<PlayerState> getTestPlayers(GameSettings gameSettings) {
     final humanPlayer = PlayerState(0, false)
-      ..energy = gameSettings.playerStartingEnergy;
-    final crisis = PlayerState(1, true)
-      ..energy = 999
-      ..race = 1;
+      ..energy = gameSettings.playerStartingEnergy
+      ..color = Colors.blue;
+    final cpu1 = PlayerState(1, true)
+      ..energy = gameSettings.playerStartingEnergy
+      ..race = 1
+      ..color = Colors.red;
 
-    return [humanPlayer, crisis];
+    return [humanPlayer, cpu1];
   }
 }

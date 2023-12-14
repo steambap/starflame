@@ -3,73 +3,124 @@ import "tile_type.dart";
 import "game_creator.dart";
 import "hex_helper.dart" show generateHexMap;
 import "cell.dart";
+import "planet_type_helper.dart";
 
 class MapCreator {
-  static const numOfPlanet = 18;
+  static const numOfSun = 7;
+  static const minDistanceObj = 3;
+  static const minDistanceToSun = 2;
   final GameCreator gameCreator;
+  final PlanetTypeHelper planetTypeHelper = PlanetTypeHelper();
+  List<Cell> emptyCells = [];
 
   MapCreator(this.gameCreator);
 
   List<Cell> create() {
-    final hexMap = generateHexMap(9);
-    final List<Cell> firstRing = List.empty(growable: true);
-    final List<Cell> secondRing = List.empty(growable: true);
-    final List<Cell> thirdRing = List.empty(growable: true);
-    final List<Cell> cells = hexMap.map((Hex h) {
-      final Cell cell = Cell(h);
-      final distance = h.distance(Hex.zero);
-      if (h == Hex.zero) {
-        cell.tileType = TileType.gravityRift;
-      } else if (distance <= 3) {
-        firstRing.add(cell);
-      } else if (distance <= 6) {
-        secondRing.add(cell);
-      } else {
-        thirdRing.add(cell);
-      }
+    final hexMap = generateHexMap(gameCreator.gameSettings.mapSize);
+
+    int idx = 0;
+    final cells = hexMap.map((Hex h) {
+      final cell = Cell(idx, h);
+      idx += 1;
 
       return cell;
     }).toList();
-    firstRing.shuffle(gameCreator.rand);
-    secondRing.shuffle(gameCreator.rand);
-    thirdRing.shuffle(gameCreator.rand);
-    for (int i = 0; i < numOfPlanet; i++) {
-      final rIndex = gameCreator.rand.nextInt(3);
-      final cell = switch (rIndex) {
-        0 => firstRing.removeLast(),
-        1 => secondRing.removeLast(),
-        2 => thirdRing.removeLast(),
-        _ => Cell(Hex.zero),
-      };
+    emptyCells = List.from(cells);
+    emptyCells.shuffle(gameCreator.rand);
 
-      final pType =
-          gameCreator.planetTypeHelper.getRandPlanet(gameCreator.rand);
-      cell.setPlanet(pType);
-    }
-
-    // first ring asteroid
-    _balanceTile(firstRing, 2, TileType.asteroidField);
-    // second ring asteroid
-    _balanceTile(secondRing, 4, TileType.asteroidField);
-    // third ring asteroid
-    _balanceTile(thirdRing, 6, TileType.asteroidField);
-
-    _balanceTile(firstRing, 2, TileType.nebula);
-    _balanceTile(secondRing, 4, TileType.nebula);
-    _balanceTile(thirdRing, 6, TileType.nebula);
-
-    _balanceTile(secondRing, 2, TileType.alphaWormHole);
-    _balanceTile(thirdRing, 2, TileType.betaWormHole);
+    _tryCreateSun();
+    _createPlanetAroundSun();
 
     return cells;
   }
 
-  _balanceTile(List<Cell> cells, int num, TileType t) {
-    int numLeft = num;
-    while(cells.isNotEmpty && numLeft > 0) {
-      final cell = cells.removeLast();
-      cell.tileType = t;
-      numLeft -= 1;
+  _tryCreateSun() {
+    int minDistance = 12;
+    while (minDistance > 6) {
+      final count = numOfSun - gameCreator.sunList.length;
+      if (count <= 0) {
+        break;
+      }
+      _createSun(minDistance, count);
+
+      minDistance -= 2;
+    }
+    // clear empty tiles that contains sun
+    for (final sunCell in gameCreator.sunList) {
+      emptyCells.remove(sunCell);
+    }
+  }
+
+  _createSun(int minDistance, int count) {
+    loop:
+    for (final cell in emptyCells) {
+      // do not place sun at the edge
+      if (cell.hex.distance(Hex.zero) > gameCreator.gameSettings.mapSize - 2) {
+        continue loop;
+      }
+      // check existing sun
+      for (final existing in gameCreator.sunList) {
+        if (cell.hex.distance(existing.hex) < minDistance) {
+          continue loop;
+        }
+      }
+      // the cell is valid
+      cell.tileType = TileType.sun;
+      gameCreator.sunList.add(cell);
+      gameCreator.planetList.add(cell);
+      // check if we have enough
+      count -= 1;
+      if (count <= 0) {
+        break loop;
+      }
+    }
+  }
+
+  _createPlanetAroundSun() {
+    int distanceToSun = 4;
+    while (distanceToSun < 8) {
+      final count = numOfSun * 4 - gameCreator.planetList.length;
+      if (count <= 0) {
+        break;
+      }
+      _createPlanet(distanceToSun, count);
+
+      distanceToSun += 1;
+    }
+  }
+
+  _createPlanet(int distanceToSun, int numOfPlanet) {
+    loop:
+    for (final cell in emptyCells) {
+      // check existing planet
+      for (final existing in gameCreator.planetList) {
+        final minDx = existing.tileType == TileType.sun
+            ? minDistanceToSun
+            : minDistanceObj;
+        if (cell.hex.distance(existing.hex) < minDx) {
+          continue loop;
+        }
+      }
+      // check distance to sun
+      bool valid = false;
+      for (final sun in gameCreator.sunList) {
+        if (cell.hex.distance(sun.hex) <= distanceToSun) {
+          valid = true;
+          break;
+        }
+      }
+      if (!valid) {
+        continue loop;
+      }
+      // the cell is valid
+      final pType = planetTypeHelper.getRandPlanet(gameCreator.rand);
+      cell.setPlanet(pType);
+      gameCreator.planetList.add(cell);
+      // check if we have enough
+      numOfPlanet -= 1;
+      if (numOfPlanet <= 0) {
+        break loop;
+      }
     }
   }
 }

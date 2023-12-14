@@ -12,6 +12,7 @@ import "planet_type.dart";
 import "fleet.dart";
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
+  final int index;
   final Hex hex;
   Planet? _planet;
   late final PolygonComponent _hexagon;
@@ -19,7 +20,7 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   Tile? _tile;
   Ship? ship;
 
-  Cell(this.hex) : super(anchor: Anchor.center) {
+  Cell(this.index, this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
     final hexPaint = Paint()
       ..style = PaintingStyle.stroke
@@ -38,11 +39,13 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
     add(_hexagon);
   }
 
-  setPlanet(PlanetType planetType) {
+  Planet setPlanet(PlanetType planetType) {
     _planet?.removeFromParent();
     final newPlanet = Planet(planetType, position: Vector2.zero());
     _planet = newPlanet;
     add(newPlanet);
+
+    return newPlanet;
   }
 
   Planet? get planet => _planet;
