@@ -7,16 +7,19 @@ import 'game_state_controller.dart';
 import 'game_creator.dart';
 import 'map_grid.dart';
 import "game_settings.dart";
+import "resource_controller.dart";
 
 class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
   final MapGrid mapGrid = MapGrid();
   final GameCreator gameCreator = GameCreator();
   late final GameStateController gameStateController;
+  late final ResourceController resourceController;
   final HudPlayerInfo playerInfo = HudPlayerInfo();
   final HudNextTurnBtn nextTurnBtn = HudNextTurnBtn();
 
   ScifiGame() {
     gameStateController = GameStateController(this);
+    resourceController = ResourceController(this);
   }
 
   @override

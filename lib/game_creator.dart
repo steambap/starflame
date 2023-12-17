@@ -44,10 +44,10 @@ class GameCreator {
 
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {
     final humanPlayer = PlayerState(0, false)
-      ..energy = gameSettings.playerStartingEnergy
+      ..energy = gameSettings.playerStartingEnergy.toDouble()
       ..color = Colors.blue;
     final cpu1 = PlayerState(1, true)
-      ..energy = gameSettings.playerStartingEnergy
+      ..energy = gameSettings.playerStartingEnergy.toDouble()
       ..race = 1
       ..color = Colors.red;
 

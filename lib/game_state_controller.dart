@@ -32,10 +32,9 @@ class GameStateController {
 
     // TODO preparation phase
     if (currentPlayerState().isAlive) {
-      // TODO production phase
+      productionPhaseUpdate();
       _startTurn();
     } else {
-      // TODO auto save
       endTurn();
     }
   }
@@ -44,9 +43,15 @@ class GameStateController {
     if (isCPUTurn()) {
       endTurn();
     } else {
+      // TODO auto save
       game.playerInfo.updateRender();
       game.mapGrid.unSelect();
     }
+  }
+
+  void productionPhaseUpdate() {
+    players[gameState.playerNumber].produceResource(game.resourceController);
+    game.playerInfo.updateRender();
   }
 
   bool isCPUTurn() => currentPlayerState().isCPU;

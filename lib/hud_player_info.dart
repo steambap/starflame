@@ -1,11 +1,11 @@
 import 'dart:async';
-
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
+import "theme.dart" show text16;
 
 class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
-  final TextComponent _energyLabel = TextComponent();
+  final TextComponent _energyLabel = TextComponent(textRenderer: text16);
   HudPlayerInfo();
 
   @override
@@ -15,9 +15,10 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     add(_energyLabel);
   }
 
-  updateRender() {
+  void updateRender() {
     final playerState = game.gameStateController.getHumanPlayerState();
     final t = game.gameStateController.gameState.turn;
-    _energyLabel.text = "\$${playerState.energy}(0) turn $t";
+    final income = game.resourceController.getHumanPlayerIncome();
+    _energyLabel.text = "\$${playerState.energy}(${income.energy}) turn $t";
   }
 }

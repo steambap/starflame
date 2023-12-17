@@ -7,6 +7,7 @@ import 'building.dart';
 import "planet_type.dart";
 import "planet_state.dart";
 import 'scifi_game.dart';
+import "theme.dart" show text16;
 
 class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   static final emptyPaint = Paint()
@@ -15,7 +16,10 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
 
   late final PlanetState planetState;
   final TextComponent populationLabel = TextComponent(
-      text: "", position: Vector2.all(-12), anchor: Anchor.center);
+      text: "",
+      position: Vector2.all(-12),
+      anchor: Anchor.center,
+      textRenderer: text16);
   final CircleComponent ownerCircle =
       CircleComponent(radius: 16, paint: emptyPaint, anchor: Anchor.center);
   late final SpriteComponent planetSprite;

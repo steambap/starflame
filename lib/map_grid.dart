@@ -58,7 +58,7 @@ class MapGrid extends Component
   final double moveSpeed = 20;
   Vector2 direction = Vector2.zero();
   List<Cell> cells = List.empty();
-  List<Planet> planets = List.empty();
+  final List<Planet> planets = [];
   Pathfinding pathfinding = Pathfinding({});
   List<Ship> shipListAll = List.empty(growable: true);
   Map<int, List<Ship>> fleetMap = {};
@@ -151,7 +151,7 @@ class MapGrid extends Component
 
   FutureOr<void> initMap(List<Cell> cellList) {
     cells = cellList;
-    planets = [];
+    planets.clear();
     for (final cell in cells) {
       if (cell.planet != null) {
         planets.add(cell.planet!);
