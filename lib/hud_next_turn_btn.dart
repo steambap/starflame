@@ -3,13 +3,13 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 
 import 'scifi_game.dart';
-import "theme.dart" show text16, buttonBGPaint, buttonBorderPaint;
+import "theme.dart" show text16, buttonPaintLayer;
 
 class HudNextTurnBtn extends PositionComponent
     with HasGameRef<ScifiGame>, TapCallbacks {
   static final buttonSize = Vector2(100, 32);
   final RectangleComponent rect =
-      RectangleComponent(size: buttonSize, paintLayers: [buttonBGPaint, buttonBorderPaint]);
+      RectangleComponent(size: buttonSize, paintLayers: buttonPaintLayer);
   final TextComponent buttonText = TextComponent(
       text: "Next Turn", anchor: Anchor.center, textRenderer: text16);
   HudNextTurnBtn() : super(size: buttonSize);

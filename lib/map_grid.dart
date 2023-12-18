@@ -4,8 +4,9 @@ import "dart:math";
 import 'package:flame/components.dart';
 import "package:flame/events.dart";
 import 'package:flutter/services.dart';
-import 'package:starfury/fleet.dart';
 
+import 'building.dart';
+import 'ship.dart';
 import 'tile_type.dart';
 import 'scifi_game.dart';
 import 'cell.dart';
@@ -206,5 +207,19 @@ class MapGrid extends Component
     shipListAll.add(ship);
 
     add(ship);
+  }
+
+  Cell? getCapitalCell(int playerNumber) {
+    for (final cell in cells) {
+      if (cell.planet != null) {
+        final planetState = cell.planet!.planetState;
+        if (planetState.buildings.contains(Building.galacticHQ) &&
+            planetState.playerNumber == playerNumber) {
+          return cell;
+        }
+      }
+    }
+
+    return null;
   }
 }

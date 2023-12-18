@@ -1,4 +1,5 @@
 import "package:starfury/building.dart";
+import "package:starfury/planet_type.dart";
 
 import "scifi_game.dart";
 import "planet.dart";
@@ -35,6 +36,9 @@ class ResourceController {
     for (final element in planet.planetState.buildings) {
       if (element == Building.techCenter) {
         income.techPoint += 1;
+        if (planet.planetState.planetType == PlanetType.ice) {
+          income.techPoint += 1;
+        }
       }
       if (element == Building.galacticHQ) {
         energyMultiplier += 5;

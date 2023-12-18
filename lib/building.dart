@@ -6,3 +6,9 @@ enum Building {
   parliament,
   forum,
 }
+
+enum BuildingChangeType {
+  add,
+  upgrade,
+  remove,
+}

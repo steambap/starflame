@@ -14,6 +14,14 @@ class GameStateController {
     gameState = GameState();
 
     game.playerInfo.updateRender();
+    lookAtCapital();
+  }
+
+  void lookAtCapital() {
+    final cell = game.mapGrid.getCapitalCell(getHumanPlayerNumber());
+    if (cell != null) {
+      game.camera.moveTo(cell.position);
+    }
   }
 
   void endTurn() {
@@ -46,6 +54,7 @@ class GameStateController {
       // TODO auto save
       game.playerInfo.updateRender();
       game.mapGrid.unSelect();
+      lookAtCapital();
     }
   }
 
@@ -56,7 +65,7 @@ class GameStateController {
 
   bool isCPUTurn() => currentPlayerState().isCPU;
 
-  int getHumanPlayerNumber () {
+  int getHumanPlayerNumber() {
     for (int i = 0; i < players.length; i++) {
       final player = players[i];
       if (!player.isCPU) {

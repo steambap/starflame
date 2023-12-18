@@ -1,19 +1,14 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart' show Colors;
 
 import 'building.dart';
 import "planet_type.dart";
 import "planet_state.dart";
 import 'scifi_game.dart';
-import "theme.dart" show text16;
+import "theme.dart" show text16, emptyPaint;
 
 class Planet extends PositionComponent with HasGameRef<ScifiGame> {
-  static final emptyPaint = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = Colors.transparent;
-
   late final PlanetState planetState;
   final TextComponent populationLabel = TextComponent(
       text: "",
