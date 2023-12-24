@@ -16,15 +16,13 @@ class PlayerState {
 
   produceResource(ResourceController r) {
     final income = r.getPlayerIncome(playerNumber);
-    addResource("energy", income.energy);
+    addEnergy(income.energy);
     techPoint = income.techPoint;
 
     // TODO statistics and inflation
   }
 
-  addResource(String t, double amount) {
-    if (t == "energy") {
-      energy += amount;
-    }
+  addEnergy(double amount) {
+    energy += amount;
   }
 }

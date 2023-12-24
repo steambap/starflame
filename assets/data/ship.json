@@ -1,0 +1,121 @@
+[
+  {
+    "shipType": "construction",
+    "damageType": "kinetic",
+    "techLevel": 0,
+    "cost": 400,
+    "vision": 2,
+    "health": 104,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 1
+  },
+  {
+    "shipType": "scout",
+    "damageType": "kinetic",
+    "techLevel": 0,
+    "cost": 250,
+    "vision": 3,
+    "health": 78,
+    "attack": 12,
+    "movementPoint": 3,
+    "minRange": 0,
+    "maxRange": 3
+  },
+  {
+    "shipType": "frigate",
+    "damageType": "kinetic",
+    "techLevel": 1,
+    "cost": 650,
+    "vision": 2,
+    "health": 215,
+    "attack": 12,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 2
+  },
+  {
+    "shipType": "destroyer",
+    "damageType": "kinetic",
+    "techLevel": 8,
+    "cost": 1540,
+    "vision": 2,
+    "health": 370,
+    "attack": 26,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 2
+  },
+  {
+    "shipType": "raider",
+    "damageType": "kinetic",
+    "techLevel": 6,
+    "cost": 750,
+    "vision": 2,
+    "health": 84,
+    "attack": 8,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 2
+  },
+  {
+    "shipType": "cruiser",
+    "damageType": "energy",
+    "techLevel": 20,
+    "cost": 2200,
+    "vision": 2,
+    "health": 500,
+    "attack": 36,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 2
+  },
+  {
+    "shipType": "missleCruiser",
+    "damageType": "kinetic",
+    "techLevel": 30,
+    "cost": 3000,
+    "vision": 2,
+    "health": 335,
+    "attack": 20,
+    "movementPoint": 2,
+    "minRange": 2,
+    "maxRange": 4
+  },
+  {
+    "shipType": "battleship",
+    "damageType": "kinetic",
+    "techLevel": 60,
+    "cost": 5500,
+    "vision": 2,
+    "health": 890,
+    "attack": 60,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 3
+  },
+  {
+    "shipType": "flagship",
+    "damageType": "energy",
+    "techLevel": 90,
+    "cost": 32800,
+    "vision": 2,
+    "health": 5000,
+    "attack": 161,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 4
+  },
+  {
+    "shipType": "carrier",
+    "damageType": "kinetic",
+    "techLevel": 36,
+    "cost": 2600,
+    "vision": 3,
+    "health": 500,
+    "attack": 75,
+    "movementPoint": 2,
+    "minRange": 0,
+    "maxRange": 3
+  }
+]

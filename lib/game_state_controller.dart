@@ -1,3 +1,6 @@
+import "package:starfury/cell.dart";
+import "package:starfury/ship_type.dart";
+
 import "scifi_game.dart";
 import "game_state.dart";
 import "player_state.dart";
@@ -14,6 +17,7 @@ class GameStateController {
     gameState = GameState();
 
     game.playerInfo.updateRender();
+    game.shipCreatePanel.updateRender();
     lookAtCapital();
   }
 
@@ -53,6 +57,7 @@ class GameStateController {
     } else {
       // TODO auto save
       game.playerInfo.updateRender();
+      game.shipCreatePanel.updateRender();
       game.mapGrid.unSelect();
       lookAtCapital();
     }
@@ -86,5 +91,21 @@ class GameStateController {
 
   PlayerState currentPlayerState() {
     return getPlayerState(gameState.playerNumber);
+  }
+
+  createShip(Cell cell, ShipType shipType, int playerNumber) {
+    if (cell.ship != null) {
+      return;
+    }
+
+    final playerState = getPlayerState(playerNumber);
+    final cost = game.resourceController.getShipCost(playerNumber, shipType);
+    playerState.addEnergy(-cost);
+
+    if (playerNumber == getHumanPlayerNumber()) {
+      game.playerInfo.updateRender();
+    }
+
+    game.mapGrid.createShipAt(cell);
   }
 }

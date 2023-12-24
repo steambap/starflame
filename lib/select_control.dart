@@ -1,6 +1,7 @@
 import "map_grid.dart";
 import "cell.dart";
 import 'ship.dart';
+import "ship_type.dart";
 
 sealed class SelectControl {
   final MapGrid mapGrid;
@@ -65,6 +66,39 @@ class SelectControlCellSelected extends SelectControl {
   @override
   void onStateExit() {
     for (final cell in paths.keys) {
+      cell.unmark();
+    }
+  }
+}
+
+class SelectControlCreateShip extends SelectControl {
+  final ShipType shipType;
+  Map<Cell, bool> cells = {};
+  SelectControlCreateShip(this.shipType, super.mapGrid) {
+    final deployableCells = mapGrid.getShipDeployableCells(mapGrid.game.gameStateController.getHumanPlayerNumber());
+    for (final cell in deployableCells) {
+      cells[cell] = true;
+    }
+  }
+
+  @override
+  void onCellClick(Cell cell) {
+    if (cells.containsKey(cell)) {
+      mapGrid.game.gameStateController.createShip(cell, shipType, mapGrid.game.gameStateController.getHumanPlayerNumber());
+    }
+    mapGrid.selectControl = SelectControlWaitForInput(mapGrid);
+  }
+
+  @override
+  void onStateEnter() {
+    for (final cell in cells.keys) {
+      cell.markAsHighlight();
+    }
+  }
+
+  @override
+  void onStateExit() {
+    for (final cell in cells.keys) {
       cell.unmark();
     }
   }

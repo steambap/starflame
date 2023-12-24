@@ -1,6 +1,7 @@
-import "package:starfury/building.dart";
-import "package:starfury/planet_type.dart";
-
+import "building.dart";
+import "game_attribute.dart";
+import "planet_type.dart";
+import "ship_type.dart";
 import "scifi_game.dart";
 import "planet.dart";
 import "income.dart";
@@ -52,5 +53,12 @@ class ResourceController {
 
   double getMaintaince(int playerNumber) {
     return 0;
+  }
+
+  double getShipCost(int playerNumber, ShipType type) {
+    final attr = game.shipDataController.table[type]!.attr;
+    final baseCost = attr[GameAttribute.cost]?.toDouble() ?? 100;
+
+    return baseCost * 0.1;
   }
 }

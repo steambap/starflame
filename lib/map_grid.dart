@@ -59,6 +59,7 @@ class MapGrid extends Component
   final double moveSpeed = 20;
   Vector2 direction = Vector2.zero();
   List<Cell> cells = List.empty();
+  Map<Hex, int> hexTable = {};
   final List<Planet> planets = [];
   Pathfinding pathfinding = Pathfinding({});
   List<Ship> shipListAll = List.empty(growable: true);
@@ -124,7 +125,7 @@ class MapGrid extends Component
   void onTapUp(TapUpEvent event) {
     final hex = _pixelToHex(event.localPosition);
 
-    final cellIndex = cells.indexWhere((cell) => cell.hex == hex);
+    final cellIndex = hexTable[hex] ?? -1;
     if (cellIndex < 0) {
       return;
     }
@@ -135,7 +136,7 @@ class MapGrid extends Component
   Cell? cellAtPosition(Vector2 localPosition) {
     final hex = _pixelToHex(localPosition);
 
-    final cellIndex = cells.indexWhere((cell) => cell.hex == hex);
+    final cellIndex = hexTable[hex] ?? -1;
     if (cellIndex < 0) {
       return null;
     }
@@ -153,7 +154,9 @@ class MapGrid extends Component
   FutureOr<void> initMap(List<Cell> cellList) {
     cells = cellList;
     planets.clear();
+    hexTable = {};
     for (final cell in cells) {
+      hexTable[cell.hex] = cell.index;
       if (cell.planet != null) {
         planets.add(cell.planet!);
       }
@@ -169,7 +172,7 @@ class MapGrid extends Component
       edges[cell] = {};
       final ns = cell.hex.getNeighbours();
       for (final neighbour in ns) {
-        final nIndex = cells.indexWhere((element) => element.hex == neighbour);
+        final nIndex = hexTable[neighbour] ?? -1;
         if (nIndex < 0) {
           continue;
         }
@@ -221,5 +224,19 @@ class MapGrid extends Component
     }
 
     return null;
+  }
+
+  List<Cell> getShipDeployableCells(int playerNumber) {
+    final List<Cell> deployableCells = [];
+    for (final cell in cells) {
+      if (cell.planet != null) {
+        final planetState = cell.planet!.planetState;
+        if (planetState.playerNumber == playerNumber && cell.ship == null) {
+          deployableCells.add(cell);
+        }
+      }
+    }
+
+    return deployableCells;
   }
 }

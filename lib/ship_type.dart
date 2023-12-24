@@ -1,15 +1,22 @@
 enum ShipType {
-  colony,
+  construction,
   scout,
 
+  frigate,
   destroyer,
   raider,
 
   cruiser,
-  battleCruiser,
+  missleCruiser,
 
   battleship,
-  dreadnought,
+  flagship,
 
   carrier,
+}
+
+enum DamageType {
+  kinetic,
+  energy,
+  boarding,
 }
