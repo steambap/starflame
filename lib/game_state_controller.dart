@@ -42,8 +42,8 @@ class GameStateController {
       gameState.turn += 1;
     }
 
-    // TODO preparation phase
     if (currentPlayerState().isAlive) {
+      preparationPhaseUpdate();
       productionPhaseUpdate();
       _startTurn();
     } else {
@@ -52,7 +52,7 @@ class GameStateController {
   }
 
   void _startTurn() {
-    if (isCPUTurn()) {
+    if (isAITurn()) {
       endTurn();
     } else {
       // TODO auto save
@@ -68,12 +68,21 @@ class GameStateController {
     game.playerInfo.updateRender();
   }
 
-  bool isCPUTurn() => currentPlayerState().isCPU;
+  void preparationPhaseUpdate() {
+    for (final planet in game.mapGrid.planets) {
+      planet.phaseUpdate(gameState.playerNumber);
+    }
+    for (final ship in game.mapGrid.shipMap[gameState.playerNumber] ?? List.empty()) {
+      ship.preparationPhaseUpdate();
+    }
+  }
+
+  bool isAITurn() => currentPlayerState().isAI;
 
   int getHumanPlayerNumber() {
     for (int i = 0; i < players.length; i++) {
       final player = players[i];
-      if (!player.isCPU) {
+      if (!player.isAI) {
         return i;
       }
     }
@@ -106,6 +115,11 @@ class GameStateController {
       game.playerInfo.updateRender();
     }
 
-    game.mapGrid.createShipAt(cell);
+    game.mapGrid.createShipAt(cell, shipType, playerNumber);
+  }
+
+  int getUniqueID() {
+    gameState.uid += 1;
+    return gameState.uid;
   }
 }

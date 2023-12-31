@@ -7,12 +7,12 @@ class PlayerState {
   Color color = const Color(0x00000000);
   int race = 0;
   bool isAlive = true;
-  final bool isCPU;
+  final bool isAI;
   double energy = 0;
   int techPoint = 0;
   int age = 0;
 
-  PlayerState(this.playerNumber, this.isCPU);
+  PlayerState(this.playerNumber, this.isAI);
 
   produceResource(ResourceController r) {
     final income = r.getPlayerIncome(playerNumber);

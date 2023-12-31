@@ -46,11 +46,11 @@ class GameCreator {
     final humanPlayer = PlayerState(0, false)
       ..energy = gameSettings.playerStartingEnergy.toDouble()
       ..color = Colors.blue;
-    final cpu1 = PlayerState(1, true)
+    final testAI = PlayerState(1, true)
       ..energy = gameSettings.playerStartingEnergy.toDouble()
       ..race = 1
       ..color = Colors.red;
 
-    return [humanPlayer, cpu1];
+    return [humanPlayer, testAI];
   }
 }

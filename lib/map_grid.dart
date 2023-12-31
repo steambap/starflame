@@ -10,11 +10,11 @@ import 'ship.dart';
 import 'tile_type.dart';
 import 'scifi_game.dart';
 import 'cell.dart';
-import 'edges.dart';
 import "pathfinding.dart";
 import "hex.dart";
 import "select_control.dart";
 import "planet.dart";
+import "ship_type.dart";
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -47,7 +47,7 @@ Hex _cubeRound(Vector3 frac) {
 }
 
 class MapGrid extends Component
-    with HasGameRef<ScifiGame>, KeyboardHandler, TapCallbacks {
+    with HasGameRef<ScifiGame>, KeyboardHandler, TapCallbacks, DragCallbacks {
   static Map<TileType, int> costMap = {
     TileType.empty: 1,
     TileType.alphaWormHole: 1,
@@ -58,12 +58,14 @@ class MapGrid extends Component
 
   final double moveSpeed = 20;
   Vector2 direction = Vector2.zero();
+
   List<Cell> cells = List.empty();
-  Map<Hex, int> hexTable = {};
+  final Map<Hex, int> _hexTable = {};
+
   final List<Planet> planets = [];
   Pathfinding pathfinding = Pathfinding({});
-  List<Ship> shipListAll = List.empty(growable: true);
-  Map<int, List<Ship>> fleetMap = {};
+  final List<Ship> shipListAll = [];
+  final Map<int, List<Ship>> shipMap = {};
   late SelectControl _selectControl;
 
   MapGrid() {
@@ -114,18 +116,20 @@ class MapGrid extends Component
 
   @override
   bool containsLocalPoint(Vector2 point) {
-    const halfWidth = Hex.size * 20;
-    return point.x >= -halfWidth &&
-        point.x <= halfWidth &&
-        point.y >= -halfWidth &&
-        point.y <= halfWidth;
+    final radius = Hex.size * (game.currentGameSettings.mapSize + 1) * 2;
+    return point.length <= radius;
+  }
+
+  @override
+  void onDragUpdate(DragUpdateEvent event) {
+    game.camera.moveBy(-event.localDelta);
   }
 
   @override
   void onTapUp(TapUpEvent event) {
     final hex = _pixelToHex(event.localPosition);
 
-    final cellIndex = hexTable[hex] ?? -1;
+    final cellIndex = _hexTable[hex] ?? -1;
     if (cellIndex < 0) {
       return;
     }
@@ -136,7 +140,7 @@ class MapGrid extends Component
   Cell? cellAtPosition(Vector2 localPosition) {
     final hex = _pixelToHex(localPosition);
 
-    final cellIndex = hexTable[hex] ?? -1;
+    final cellIndex = _hexTable[hex] ?? -1;
     if (cellIndex < 0) {
       return null;
     }
@@ -154,13 +158,17 @@ class MapGrid extends Component
   FutureOr<void> initMap(List<Cell> cellList) {
     cells = cellList;
     planets.clear();
-    hexTable = {};
+    _hexTable.clear();
     for (final cell in cells) {
-      hexTable[cell.hex] = cell.index;
+      _hexTable[cell.hex] = cell.index;
       if (cell.planet != null) {
         planets.add(cell.planet!);
       }
     }
+
+    shipListAll.clear();
+    shipMap.clear();
+
     pathfinding = Pathfinding(_calcEdges());
     return addAll(cells);
   }
@@ -172,7 +180,7 @@ class MapGrid extends Component
       edges[cell] = {};
       final ns = cell.hex.getNeighbours();
       for (final neighbour in ns) {
-        final nIndex = hexTable[neighbour] ?? -1;
+        final nIndex = _hexTable[neighbour] ?? -1;
         if (nIndex < 0) {
           continue;
         }
@@ -187,7 +195,7 @@ class MapGrid extends Component
     return edges;
   }
 
-  moveFleet(Ship ship, Cell cell) {
+  moveShip(Ship ship, Cell cell) {
     final prevCell = ship.cell;
     prevCell.ship = null;
 
@@ -203,13 +211,19 @@ class MapGrid extends Component
     cell.ship = ship;
   }
 
-  void createShipAt(Cell cell) {
-    final ship = Ship(cell);
+  Future<void> createShipAt(
+      Cell cell, ShipType shipType, int playerNumber) async {
+    final ship = Ship(cell, shipType, playerNumber);
     cell.ship = ship;
 
     shipListAll.add(ship);
+    if (!shipMap.containsKey(playerNumber)) {
+      shipMap[playerNumber] = [];
+    }
+    shipMap[playerNumber]!.add(ship);
 
-    add(ship);
+    await add(ship);
+    ship.setTurnOver();
   }
 
   Cell? getCapitalCell(int playerNumber) {

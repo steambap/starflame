@@ -5,9 +5,10 @@ import "package:flame/game.dart";
 
 final text16 =
     TextPaint(style: const TextStyle(color: Colors.white, fontSize: 16));
-final hexPaint = Paint()
+final hexBorderPaint = Paint()
   ..style = PaintingStyle.stroke
-  ..color = Colors.grey.shade400;
+  ..strokeWidth = 2
+  ..color = Colors.grey.shade700;
 final highlighterPaint = Paint()..color = Colors.blue.withAlpha(128);
 final emptyPaint = Paint()
   ..style = PaintingStyle.stroke
@@ -17,5 +18,14 @@ final buttonBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.amber.shade400
   ..strokeWidth = 1;
+final buttonBGDisabled = Paint()..color = Colors.grey.shade700;
+final buttonBorderDisabled = Paint()
+  ..style = PaintingStyle.stroke
+  ..color = Colors.grey.shade400
+  ..strokeWidth = 1;
 
 final List<Paint> buttonPaintLayer = [buttonBGPaint, buttonBorderPaint];
+final List<Paint> buttonDisabledPaintLayer = [
+  buttonBGDisabled,
+  buttonBorderDisabled
+];

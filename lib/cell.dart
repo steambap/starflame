@@ -9,7 +9,7 @@ import 'hex_helper.dart' show cornersOfZero;
 import 'tile.dart';
 import "planet_type.dart";
 import 'ship.dart';
-import "theme.dart" show hexPaint, highlighterPaint;
+import "theme.dart" show hexBorderPaint, highlighterPaint;
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   final int index;
@@ -23,7 +23,7 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   Cell(this.index, this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
     _hexagon =
-        PolygonComponent(cornersOfZero, anchor: Anchor.center, paint: hexPaint);
+        PolygonComponent(cornersOfZero, anchor: Anchor.center, paint: hexBorderPaint);
     _highligher = PolygonComponent(cornersOfZero,
         anchor: Anchor.center, paint: highlighterPaint);
   }

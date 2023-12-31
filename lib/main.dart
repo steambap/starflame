@@ -8,6 +8,6 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Flame.device.fullScreen();
   Flame.device.setLandscape();
-
+  
   runApp(GameWidget(game: ScifiGame()));
 }

@@ -1,6 +1,7 @@
 import "building.dart";
 import "game_attribute.dart";
 import "planet_type.dart";
+import "planet_type_helper.dart";
 import "ship_type.dart";
 import "scifi_game.dart";
 import "planet.dart";
@@ -33,7 +34,7 @@ class ResourceController {
 
   Income getPlanetIncome(Planet planet) {
     final income = Income();
-    double energyMultiplier = 5;
+    double energyMultiplier = (PlanetTypeHelper.energyMap[planet.planetState.planetType] ?? 0).toDouble();
     for (final element in planet.planetState.buildings) {
       if (element == Building.techCenter) {
         income.techPoint += 1;

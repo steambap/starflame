@@ -12,7 +12,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   late final PlanetState planetState;
   final TextComponent populationLabel = TextComponent(
       text: "",
-      position: Vector2.all(-12),
+      position: Vector2(12, -12),
       anchor: Anchor.center,
       textRenderer: text16);
   final CircleComponent ownerCircle =
@@ -72,5 +72,15 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
         ..color = pState.color;
       ownerCircle.paint = playerPaint;
     }
+  }
+
+  phaseUpdate(int playerNumber) {
+    if (planetState.playerNumber != playerNumber) {
+      return;
+    }
+    if (planetState.population < 6) {
+      planetState.population += 1;
+    }
+    updateRender();
   }
 }

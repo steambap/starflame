@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame/rendering.dart';
 import 'package:starfury/select_control.dart';
 
 import 'scifi_game.dart';
@@ -22,15 +21,15 @@ class ShipBox extends PositionComponent
       textRenderer: text16,
       position: Vector2(HudShipCreatePanel.shipBoxSize.x / 2,
           HudShipCreatePanel.shipBoxSize.y - 12));
-  final grayDeco = PaintDecorator.grayscale();
 
-  ShipBox(this.onTap, this.shipType, {required super.position}): super(size: HudShipCreatePanel.shipBoxSize);
+  ShipBox(this.onTap, this.shipType, {required super.position})
+      : super(size: HudShipCreatePanel.shipBoxSize);
 
   @override
   FutureOr<void> onLoad() {
-    final img = game.images.fromCache("ship_L.png");
+    final img = game.images.fromCache("${shipType.name}.png");
     final sprite = Sprite(img);
-    shipImage = SpriteComponent(sprite: sprite, anchor: Anchor.center);
+    shipImage = SpriteComponent(sprite: sprite, anchor: Anchor.center, scale: Vector2.all(0.75));
     shipImage.position = HudShipCreatePanel.shipBoxSize / 2;
 
     addAll([rect, shipImage, shipName, shipPrice]);
@@ -43,9 +42,8 @@ class ShipBox extends PositionComponent
     final isUnlocked =
         game.shipDataController.isShipUnlocked(shipType, playerNumber);
 
-    decorator.removeLast();
     if (!isUnlocked) {
-      decorator.addLast(grayDeco);
+      rect.paintLayers = buttonDisabledPaintLayer;
     }
 
     shipName.text = shipType.name.toLowerCase();
@@ -70,14 +68,15 @@ class ShipBox extends PositionComponent
 
 class HudShipCreatePanel extends PositionComponent with HasGameRef<ScifiGame> {
   static final shipBoxSize = Vector2(114, 54);
-  static const shipBoxPadding = 4;
+  static const shipBoxPadding = 4.0;
   final List<ShipBox> shipBoxes = [];
 
   HudShipCreatePanel();
 
   @override
   FutureOr<void> onLoad() {
-    position = Vector2(game.size.x - (shipBoxSize.x + shipBoxPadding) * 2, 0);
+    position = Vector2(
+        game.size.x - (shipBoxSize.x + shipBoxPadding) * 2, shipBoxPadding);
 
     for (int i = 0; i < ShipType.values.length; i++) {
       final shipType = ShipType.values[i];

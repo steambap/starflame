@@ -1,14 +1,11 @@
 enum ShipType {
   construction,
-  scout,
 
+  scout,
   frigate,
   destroyer,
-  raider,
-
   cruiser,
-  missleCruiser,
-
+  missileCruiser,
   battleship,
   flagship,
 

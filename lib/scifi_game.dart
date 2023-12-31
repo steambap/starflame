@@ -14,6 +14,7 @@ import 'hud_unit_panel.dart';
 class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
   final MapGrid mapGrid = MapGrid();
   final GameCreator gameCreator = GameCreator();
+  late GameSettings currentGameSettings;
   late final GameStateController gameStateController;
   late final ResourceController resourceController;
   late final ShipDataController shipDataController;
@@ -39,6 +40,7 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
     camera.viewport.addAll([playerInfo, nextTurnBtn, shipCreatePanel]);
 
     final s = GameSettings(0);
+    currentGameSettings = s;
     s.players = gameCreator.getTestPlayers(s);
     final cells = gameCreator.create(s);
     mapGrid.initMap(cells);

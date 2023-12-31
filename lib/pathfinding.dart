@@ -1,5 +1,6 @@
-import "edges.dart";
 import "cell.dart";
+
+typedef Edges = Map<Cell, Map<Cell, int>>;
 
 class _PriorityQueue<T> {
   final T item;
@@ -69,8 +70,12 @@ class Pathfinding {
 
     final Map<Cell, List<Cell>> paths = {};
     for (final destination in cameFrom.keys) {
-      final List<Cell> path = List.empty(growable: true);
+      final List<Cell> path = [];
       Cell current = destination;
+      // Cell is occupied by other ship
+      if (current.ship != null) {
+        continue;
+      }
       while (current != originalNode) {
         path.add(current);
         current = cameFrom[current]!;

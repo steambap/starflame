@@ -47,18 +47,6 @@
     "maxRange": 2
   },
   {
-    "shipType": "raider",
-    "damageType": "kinetic",
-    "techLevel": 6,
-    "cost": 750,
-    "vision": 2,
-    "health": 84,
-    "attack": 8,
-    "movementPoint": 2,
-    "minRange": 0,
-    "maxRange": 2
-  },
-  {
     "shipType": "cruiser",
     "damageType": "energy",
     "techLevel": 20,
@@ -71,7 +59,7 @@
     "maxRange": 2
   },
   {
-    "shipType": "missleCruiser",
+    "shipType": "missileCruiser",
     "damageType": "kinetic",
     "techLevel": 30,
     "cost": 3000,

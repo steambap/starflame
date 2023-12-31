@@ -10,19 +10,12 @@ class PlanetTypeHelper {
     PlanetType.arid: 8,
     PlanetType.terran: 10,
   };
-  static const Map<PlanetType, int> foodMap = {
-    PlanetType.ice: 0,
-    PlanetType.swamp: 2,
-    PlanetType.lava: 0,
-    PlanetType.arid: 1,
-    PlanetType.terran: 3,
-  };
   static const Map<PlanetType, int> energyMap = {
-    PlanetType.ice: 0,
-    PlanetType.swamp: 1,
-    PlanetType.lava: 3,
-    PlanetType.arid: 2,
-    PlanetType.terran: 1,
+    PlanetType.ice: 3,
+    PlanetType.swamp: 4,
+    PlanetType.lava: 7,
+    PlanetType.arid: 6,
+    PlanetType.terran: 5,
   };
 
   late final int _weight = getTotalWeight();

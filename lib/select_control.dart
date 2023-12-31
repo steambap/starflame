@@ -36,7 +36,7 @@ class SelectControlCellSelected extends SelectControl {
   SelectControlCellSelected(super.mapGrid, this.cell) {
     if (cell.ship != null) {
       ship = cell.ship;
-      paths = mapGrid.pathfinding.findAllPath(cell, 2);
+      paths = mapGrid.pathfinding.findAllPath(cell, cell.ship!.getMovePoint());
     }
   }
 
@@ -51,7 +51,7 @@ class SelectControlCellSelected extends SelectControl {
     }
 
     if (ship != null) {
-      mapGrid.moveFleet(ship!, cell);
+      mapGrid.moveShip(ship!, cell);
       mapGrid.selectControl = SelectControlWaitForInput(mapGrid);
     }
   }
@@ -75,7 +75,8 @@ class SelectControlCreateShip extends SelectControl {
   final ShipType shipType;
   Map<Cell, bool> cells = {};
   SelectControlCreateShip(this.shipType, super.mapGrid) {
-    final deployableCells = mapGrid.getShipDeployableCells(mapGrid.game.gameStateController.getHumanPlayerNumber());
+    final deployableCells = mapGrid.getShipDeployableCells(
+        mapGrid.game.gameStateController.getHumanPlayerNumber());
     for (final cell in deployableCells) {
       cells[cell] = true;
     }
@@ -84,7 +85,8 @@ class SelectControlCreateShip extends SelectControl {
   @override
   void onCellClick(Cell cell) {
     if (cells.containsKey(cell)) {
-      mapGrid.game.gameStateController.createShip(cell, shipType, mapGrid.game.gameStateController.getHumanPlayerNumber());
+      mapGrid.game.gameStateController.createShip(cell, shipType,
+          mapGrid.game.gameStateController.getHumanPlayerNumber());
     }
     mapGrid.selectControl = SelectControlWaitForInput(mapGrid);
   }
