@@ -11,9 +11,3 @@ enum ShipType {
 
   carrier,
 }
-
-enum DamageType {
-  kinetic,
-  energy,
-  boarding,
-}

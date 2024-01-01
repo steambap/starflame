@@ -17,6 +17,13 @@ class PlanetTypeHelper {
     PlanetType.arid: 6,
     PlanetType.terran: 5,
   };
+  static const Map<PlanetType, int> growthRateMap = {
+    PlanetType.ice: 0,
+    PlanetType.swamp: 5,
+    PlanetType.lava: 1,
+    PlanetType.arid: 3,
+    PlanetType.terran: 8,
+  };
 
   late final int _weight = getTotalWeight();
 

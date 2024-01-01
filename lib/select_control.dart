@@ -1,12 +1,12 @@
-import "map_grid.dart";
+import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
 import "ship_type.dart";
 
 sealed class SelectControl {
-  final MapGrid mapGrid;
+  final ScifiGame game;
 
-  SelectControl(this.mapGrid);
+  SelectControl(this.game);
 
   void onCellClick(Cell cell) {}
 
@@ -16,15 +16,15 @@ sealed class SelectControl {
 }
 
 class SelectControlBlockInput extends SelectControl {
-  SelectControlBlockInput(super.mapGrid);
+  SelectControlBlockInput(super.game);
 }
 
 class SelectControlWaitForInput extends SelectControl {
-  SelectControlWaitForInput(super.mapGrid);
+  SelectControlWaitForInput(super.game);
 
   @override
   void onCellClick(Cell cell) {
-    mapGrid.selectControl = SelectControlCellSelected(mapGrid, cell);
+    game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
   }
 }
 
@@ -32,11 +32,21 @@ class SelectControlCellSelected extends SelectControl {
   Cell cell;
   Ship? ship;
   Map<Cell, List<Cell>> paths = {};
+  List<Cell> attackableCells = [];
 
-  SelectControlCellSelected(super.mapGrid, this.cell) {
+  SelectControlCellSelected(super.game, this.cell) {
     if (cell.ship != null) {
       ship = cell.ship;
-      paths = mapGrid.pathfinding.findAllPath(cell, cell.ship!.getMovePoint());
+      final shipOwner = ship?.state.playerNumber ?? -1;
+      if (game.controller.getHumanPlayerNumber() == shipOwner) {
+        paths =
+            game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
+        if (ship!.canAttack()) {
+          final range = game.shipDataController.attackRange(ship!.state.type);
+          attackableCells =
+              game.mapGrid.findAttackableCells(cell, range.$1, range.$2);
+        }
+      }
     }
   }
 
@@ -46,20 +56,24 @@ class SelectControlCellSelected extends SelectControl {
       return;
     }
     if (!paths.containsKey(cell)) {
-      mapGrid.selectControl = SelectControlCellSelected(mapGrid, cell);
+      game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
       return;
     }
 
     if (ship != null) {
-      mapGrid.moveShip(ship!, cell);
-      mapGrid.selectControl = SelectControlWaitForInput(mapGrid);
+      game.mapGrid.moveShip(ship!, cell);
+      game.mapGrid.selectControl = SelectControlWaitForInput(game);
     }
   }
 
   @override
   void onStateEnter() {
     for (final cell in paths.keys) {
-      cell.markAsHighlight();
+      final movePoint = ship!.movePoint() - paths[cell]!.length;
+      cell.markAsHighlight(movePoint);
+    }
+    for (final cell in attackableCells) {
+      cell.markAsTarget();
     }
   }
 
@@ -68,15 +82,18 @@ class SelectControlCellSelected extends SelectControl {
     for (final cell in paths.keys) {
       cell.unmark();
     }
+    for (final cell in attackableCells) {
+      cell.unmark();
+    }
   }
 }
 
 class SelectControlCreateShip extends SelectControl {
   final ShipType shipType;
   Map<Cell, bool> cells = {};
-  SelectControlCreateShip(this.shipType, super.mapGrid) {
-    final deployableCells = mapGrid.getShipDeployableCells(
-        mapGrid.game.gameStateController.getHumanPlayerNumber());
+  SelectControlCreateShip(this.shipType, super.game) {
+    final deployableCells = game.mapGrid
+        .getShipDeployableCells(game.controller.getHumanPlayerNumber());
     for (final cell in deployableCells) {
       cells[cell] = true;
     }
@@ -85,10 +102,10 @@ class SelectControlCreateShip extends SelectControl {
   @override
   void onCellClick(Cell cell) {
     if (cells.containsKey(cell)) {
-      mapGrid.game.gameStateController.createShip(cell, shipType,
-          mapGrid.game.gameStateController.getHumanPlayerNumber());
+      game.controller
+          .createShip(cell, shipType, game.controller.getHumanPlayerNumber());
     }
-    mapGrid.selectControl = SelectControlWaitForInput(mapGrid);
+    game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }
 
   @override

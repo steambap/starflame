@@ -10,6 +10,8 @@ final hexBorderPaint = Paint()
   ..strokeWidth = 2
   ..color = Colors.grey.shade700;
 final highlighterPaint = Paint()..color = Colors.blue.withAlpha(128);
+final moveendPaint = Paint()..color = Colors.purple.withAlpha(128);
+final targetPaint = Paint()..color = Colors.red.withAlpha(128);
 final emptyPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.transparent;

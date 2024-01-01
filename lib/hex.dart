@@ -29,6 +29,10 @@ class Hex {
     return Hex(q - that.q, r - that.r, s - that.s);
   }
 
+  Hex scale(int k) {
+    return Hex(q * k, r * k, s * k);
+  }
+
   double distance(Hex that) {
     final Hex hex = this - that;
 
@@ -47,6 +51,22 @@ class Hex {
 
   List<Hex> getNeighbours() {
     return directions.map((e) => e + this).toList();
+  }
+
+  List<Hex> cubeRing(int radius) {
+    assert(radius > 0, "radius must be greater than 0");
+    final List<Hex> results = [];
+    // start at SW since it lines up with the directions
+    Hex hex = this + (Hex.directions[4].scale(radius));
+
+    for (int i = 0; i < 6; i++) {
+      for (int j = 0; j < radius; j++) {
+        results.add(hex);
+        hex = hex.getNeighbours()[i];
+      }
+    }
+
+    return results;
   }
 
   @override

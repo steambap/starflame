@@ -68,8 +68,9 @@ class MapGrid extends Component
   final Map<int, List<Ship>> shipMap = {};
   late SelectControl _selectControl;
 
-  MapGrid() {
-    _selectControl = SelectControlWaitForInput(this);
+  @override
+  FutureOr<void> onLoad() {
+    _selectControl = SelectControlWaitForInput(game);
   }
 
   set selectControl(SelectControl s) {
@@ -82,12 +83,12 @@ class MapGrid extends Component
 
   /// Input block
   void blockSelect() {
-    selectControl = SelectControlBlockInput(this);
+    selectControl = SelectControlBlockInput(game);
   }
 
   /// Wait for input
   void unSelect() {
-    selectControl = SelectControlWaitForInput(this);
+    selectControl = SelectControlWaitForInput(game);
   }
 
   @override
@@ -155,7 +156,7 @@ class MapGrid extends Component
     super.update(dt);
   }
 
-  FutureOr<void> initMap(List<Cell> cellList) {
+  FutureOr<void> initMap(List<Cell> cellList) async {
     cells = cellList;
     planets.clear();
     _hexTable.clear();
@@ -166,11 +167,27 @@ class MapGrid extends Component
       }
     }
 
+    pathfinding = Pathfinding(_calcEdges());
+
+    await addAll(cells);
+
     shipListAll.clear();
     shipMap.clear();
-
-    pathfinding = Pathfinding(_calcEdges());
-    return addAll(cells);
+    for (final p in game.controller.players) {
+      shipMap[p.playerNumber] = [];
+      final capitalCell = getCapitalCell(p.playerNumber);
+      if (capitalCell == null) {
+        continue;
+      }
+      spawnShipAt(capitalCell, ShipType.construction, p.playerNumber);
+      // spawn scout at south east
+      final scoutHex = capitalCell.hex + Hex.directions[5];
+      final sIndex = _hexTable[scoutHex] ?? -1;
+      if (sIndex >= 0) {
+        final sCell = cells[sIndex];
+        spawnShipAt(sCell, ShipType.scout, p.playerNumber);
+      }
+    }
   }
 
   Edges _calcEdges() {
@@ -211,15 +228,23 @@ class MapGrid extends Component
     cell.ship = ship;
   }
 
+  Future<void> spawnShipAt(
+      Cell cell, ShipType shipType, int playerNumber) async {
+    final ship = Ship(cell, shipType, playerNumber);
+    cell.ship = ship;
+
+    shipListAll.add(ship);
+    shipMap[playerNumber]!.add(ship);
+
+    await add(ship);
+  }
+
   Future<void> createShipAt(
       Cell cell, ShipType shipType, int playerNumber) async {
     final ship = Ship(cell, shipType, playerNumber);
     cell.ship = ship;
 
     shipListAll.add(ship);
-    if (!shipMap.containsKey(playerNumber)) {
-      shipMap[playerNumber] = [];
-    }
     shipMap[playerNumber]!.add(ship);
 
     await add(ship);
@@ -229,7 +254,7 @@ class MapGrid extends Component
   Cell? getCapitalCell(int playerNumber) {
     for (final cell in cells) {
       if (cell.planet != null) {
-        final planetState = cell.planet!.planetState;
+        final planetState = cell.planet!.state;
         if (planetState.buildings.contains(Building.galacticHQ) &&
             planetState.playerNumber == playerNumber) {
           return cell;
@@ -244,7 +269,7 @@ class MapGrid extends Component
     final List<Cell> deployableCells = [];
     for (final cell in cells) {
       if (cell.planet != null) {
-        final planetState = cell.planet!.planetState;
+        final planetState = cell.planet!.state;
         if (planetState.playerNumber == playerNumber && cell.ship == null) {
           deployableCells.add(cell);
         }
@@ -252,5 +277,32 @@ class MapGrid extends Component
     }
 
     return deployableCells;
+  }
+
+  List<Cell> findAttackableCells(
+      Cell originalCell, int minRange, int maxRange) {
+    assert(maxRange > 0, "attackRange must be greater than 0");
+    final attackingPlayerNumber = originalCell.ship?.state.playerNumber ?? -1;
+    final List<Cell> attackableCells = [];
+    final originalHex = originalCell.hex;
+    for (int i = 1; i <= maxRange; i++) {
+      final ring = originalHex.cubeRing(i);
+      for (final hex in ring) {
+        final index = _hexTable[hex] ?? -1;
+        if (index < 0) {
+          continue;
+        }
+        final cell = cells[index];
+        if (cell.ship != null &&
+            cell.ship!.state.playerNumber != attackingPlayerNumber) {
+          attackableCells.add(cell);
+        } else if (cell.planet != null &&
+            cell.planet!.attackable(attackingPlayerNumber)) {
+          attackableCells.add(cell);
+        }
+      }
+    }
+
+    return attackableCells;
   }
 }

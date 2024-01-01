@@ -12,10 +12,12 @@ class GameStateController {
 
   GameStateController(this.game);
 
-  void startGame(List<PlayerState> players) {
+  void initGame(List<PlayerState> players) {
     this.players = players;
     gameState = GameState();
+  }
 
+  void startGame() {
     game.playerInfo.updateRender();
     game.shipCreatePanel.updateRender();
     lookAtCapital();
@@ -59,7 +61,6 @@ class GameStateController {
       game.playerInfo.updateRender();
       game.shipCreatePanel.updateRender();
       game.mapGrid.unSelect();
-      lookAtCapital();
     }
   }
 

@@ -29,14 +29,15 @@ class ShipBox extends PositionComponent
   FutureOr<void> onLoad() {
     final img = game.images.fromCache("${shipType.name}.png");
     final sprite = Sprite(img);
-    shipImage = SpriteComponent(sprite: sprite, anchor: Anchor.center, scale: Vector2.all(0.75));
+    shipImage = SpriteComponent(
+        sprite: sprite, anchor: Anchor.center, scale: Vector2.all(0.75));
     shipImage.position = HudShipCreatePanel.shipBoxSize / 2;
 
     addAll([rect, shipImage, shipName, shipPrice]);
   }
 
   void updateRender() {
-    final playerNumber = game.gameStateController.getHumanPlayerNumber();
+    final playerNumber = game.controller.getHumanPlayerNumber();
     final shipCost =
         game.resourceController.getShipCost(playerNumber, shipType);
     final isUnlocked =
@@ -52,13 +53,13 @@ class ShipBox extends PositionComponent
 
   @override
   void onTapUp(TapUpEvent event) {
-    final playerNumber = game.gameStateController.getHumanPlayerNumber();
+    final playerNumber = game.controller.getHumanPlayerNumber();
     final shipCost =
         game.resourceController.getShipCost(playerNumber, shipType);
     final isUnlocked =
         game.shipDataController.isShipUnlocked(shipType, playerNumber);
     if (!isUnlocked ||
-        shipCost > game.gameStateController.getHumanPlayerState().energy) {
+        shipCost > game.controller.getHumanPlayerState().energy) {
       return;
     }
 
@@ -91,8 +92,7 @@ class HudShipCreatePanel extends PositionComponent with HasGameRef<ScifiGame> {
   }
 
   void onTap(ShipType shipType) {
-    game.mapGrid.selectControl =
-        SelectControlCreateShip(shipType, game.mapGrid);
+    game.mapGrid.selectControl = SelectControlCreateShip(shipType, game);
   }
 
   void updateRender() {

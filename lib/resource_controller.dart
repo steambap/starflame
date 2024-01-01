@@ -17,7 +17,7 @@ class ResourceController {
     int tech = 0;
 
     for (final planet in game.mapGrid.planets) {
-      if (planet.planetState.playerNumber == playerNumber) {
+      if (planet.state.playerNumber == playerNumber) {
         final income = getPlanetIncome(planet);
         energy += income.energy;
         tech += income.techPoint;
@@ -28,17 +28,17 @@ class ResourceController {
   }
 
   Income getHumanPlayerIncome() {
-    final i = game.gameStateController.getHumanPlayerNumber();
+    final i = game.controller.getHumanPlayerNumber();
     return getPlayerIncome(i);
   }
 
   Income getPlanetIncome(Planet planet) {
     final income = Income();
-    double energyMultiplier = (PlanetTypeHelper.energyMap[planet.planetState.planetType] ?? 0).toDouble();
-    for (final element in planet.planetState.buildings) {
+    double energyMultiplier = (PlanetTypeHelper.energyMap[planet.state.planetType] ?? 0).toDouble();
+    for (final element in planet.state.buildings) {
       if (element == Building.techCenter) {
         income.techPoint += 1;
-        if (planet.planetState.planetType == PlanetType.ice) {
+        if (planet.state.planetType == PlanetType.ice) {
           income.techPoint += 1;
         }
       }
@@ -46,8 +46,7 @@ class ResourceController {
         energyMultiplier += 5;
       }
     }
-
-    income.energy = planet.planetState.population * energyMultiplier;
+    income.energy = planet.state.popLv() * energyMultiplier;
 
     return income;
   }

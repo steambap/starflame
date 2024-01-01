@@ -46,7 +46,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
 
     position = cell.position;
 
-    final uid = game.gameStateController.getUniqueID();
+    final uid = game.controller.getUniqueID();
     state.id = uid;
   }
 
@@ -66,6 +66,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
 
   setTurnOver() {
     state.isTurnOver = true;
+    state.attacked = true;
     state.movementUsed = game.shipDataController.table[state.type]!
             .attr[GameAttribute.movementPoint] ??
         9;
@@ -74,7 +75,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
     );
   }
 
-  int getMovePoint() {
+  int movePoint() {
     if (state.isTurnOver) {
       return 0;
     }
@@ -85,8 +86,25 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
     return max(maxMove - state.movementUsed, 0);
   }
 
+  bool canAttack() {
+    if (!game.shipDataController.table[state.type]!.hasDefaultWeapon) {
+      return false;
+    }
+
+    if (state.isTurnOver) {
+      return false;
+    }
+
+    if (state.attacked) {
+      return false;
+    }
+
+    return movePoint() > 0;
+  }
+
   void preparationPhaseUpdate() {
     state.isTurnOver = false;
+    state.attacked = false;
     state.movementUsed = 0;
     _shipSprite.decorator.removeLast();
   }

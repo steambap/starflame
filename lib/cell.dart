@@ -9,7 +9,8 @@ import 'hex_helper.dart' show cornersOfZero;
 import 'tile.dart';
 import "planet_type.dart";
 import 'ship.dart';
-import "theme.dart" show hexBorderPaint, highlighterPaint;
+import "theme.dart"
+    show hexBorderPaint, highlighterPaint, moveendPaint, targetPaint;
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   final int index;
@@ -22,8 +23,8 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
 
   Cell(this.index, this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
-    _hexagon =
-        PolygonComponent(cornersOfZero, anchor: Anchor.center, paint: hexBorderPaint);
+    _hexagon = PolygonComponent(cornersOfZero,
+        anchor: Anchor.center, paint: hexBorderPaint);
     _highligher = PolygonComponent(cornersOfZero,
         anchor: Anchor.center, paint: highlighterPaint);
   }
@@ -57,12 +58,23 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
 
   TileType get tileType => _tile?.tileType ?? TileType.empty;
 
-  unmark() {
+  void unmark() {
     _highligher.removeFromParent();
   }
 
-  markAsHighlight() {
-    add(_highligher);
+  FutureOr<void> markAsHighlight([int movePoint = -1]) {
+    if (movePoint == 0) {
+      _highligher.paint = moveendPaint;
+    } else {
+      _highligher.paint = highlighterPaint;
+    }
+
+    return add(_highligher);
+  }
+
+  FutureOr<void> markAsTarget() {
+    _highligher.paint = targetPaint;
+    return add(_highligher);
   }
 
   @override

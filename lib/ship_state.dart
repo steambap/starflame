@@ -10,6 +10,7 @@ class ShipState {
   String name = "";
   int movementUsed = 0;
   bool isTurnOver = false;
+  bool attacked = false;
 
   ShipState(this.type, this.playerNumber);
 }

@@ -42,6 +42,7 @@ class Pathfinding {
   Pathfinding(this.edges);
 
   Map<Cell, List<Cell>> findAllPath(Cell originalNode, int movementPoint) {
+    final playerNumber = originalNode.ship?.state.playerNumber ?? -1;
     final frontier = _HeapPriorityQueue<Cell>();
     frontier.enqueue(originalNode, 0);
 
@@ -57,6 +58,9 @@ class Pathfinding {
       final neighbours = _getNeighbours(current.item);
       for (final neighbour in neighbours) {
         final newCost = costSoFar[current.item]! + edges[current.item]![neighbour]!;
+        if (neighbour.ship != null && neighbour.ship!.state.playerNumber != playerNumber) {
+          continue;
+        }
         if (newCost > movementPoint) {
           continue;
         }

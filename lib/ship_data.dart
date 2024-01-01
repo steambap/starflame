@@ -7,11 +7,12 @@ import "ship_type.dart";
 
 class ShipData {
   final ShipType shipType;
-  final DamageType damageType;
   final int techLevel;
   final Map<GameAttribute, int> attr = {};
 
-  ShipData(this.shipType, this.damageType, this.techLevel);
+  late final bool hasDefaultWeapon;
+
+  ShipData(this.shipType, this.techLevel);
 }
 
 class ShipDataController {
@@ -34,14 +35,13 @@ class ShipDataController {
   void addData(Map<String, dynamic> input) {
     final shipType = ShipType.values
         .firstWhere((element) => input["shipType"] == element.name);
-    final damageType = DamageType.values
-        .firstWhere((element) => input["damageType"] == element.name);
     final techLevel = input["techLevel"] as int;
-    final shipData = ShipData(shipType, damageType, techLevel);
+    final shipData = ShipData(shipType, techLevel);
     shipData.attr[GameAttribute.cost] = input["cost"] as int;
     shipData.attr[GameAttribute.vision] = input["vision"] as int;
     shipData.attr[GameAttribute.health] = input["health"] as int;
     shipData.attr[GameAttribute.attack] = (input["attack"] as int?) ?? 0;
+    shipData.hasDefaultWeapon = shipData.attr[GameAttribute.attack]! > 0;
     shipData.attr[GameAttribute.movementPoint] = input["movementPoint"] as int;
     shipData.attr[GameAttribute.minRange] = input["minRange"] as int;
     shipData.attr[GameAttribute.maxRange] = input["maxRange"] as int;
@@ -54,8 +54,20 @@ class ShipDataController {
     if (shipData == null) {
       return false;
     }
-    final techReq = game.gameStateController.getPlayerState(playerNumber).techPoint;
+    final techReq = game.controller.getPlayerState(playerNumber).techPoint;
 
     return shipData.techLevel <= techReq;
+  }
+
+  (int, int) attackRange(ShipType shipType) {
+    final shipData = table[shipType];
+    if (shipData == null || !shipData.hasDefaultWeapon) {
+      return (0, 0);
+    }
+
+    return (
+      shipData.attr[GameAttribute.minRange]!,
+      shipData.attr[GameAttribute.maxRange]!
+    );
   }
 }

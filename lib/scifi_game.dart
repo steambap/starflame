@@ -15,7 +15,7 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
   final MapGrid mapGrid = MapGrid();
   final GameCreator gameCreator = GameCreator();
   late GameSettings currentGameSettings;
-  late final GameStateController gameStateController;
+  late final GameStateController controller;
   late final ResourceController resourceController;
   late final ShipDataController shipDataController;
   final HudPlayerInfo playerInfo = HudPlayerInfo();
@@ -23,7 +23,7 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
   final HudShipCreatePanel shipCreatePanel = HudShipCreatePanel();
 
   ScifiGame() {
-    gameStateController = GameStateController(this);
+    controller = GameStateController(this);
     resourceController = ResourceController(this);
     shipDataController = ShipDataController(this);
   }
@@ -43,8 +43,9 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
     currentGameSettings = s;
     s.players = gameCreator.getTestPlayers(s);
     final cells = gameCreator.create(s);
-    mapGrid.initMap(cells);
 
-    gameStateController.startGame(s.players);
+    controller.initGame(s.players);
+    mapGrid.initMap(cells);
+    controller.startGame();
   }
 }

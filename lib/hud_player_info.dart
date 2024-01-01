@@ -16,8 +16,8 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
   }
 
   void updateRender() {
-    final playerState = game.gameStateController.getHumanPlayerState();
-    final t = game.gameStateController.gameState.turn;
+    final playerState = game.controller.getHumanPlayerState();
+    final t = game.controller.gameState.turn;
     final income = game.resourceController.getHumanPlayerIncome();
     _energyLabel.text = "\$${playerState.energy}(${income.energy}) turn $t";
   }
