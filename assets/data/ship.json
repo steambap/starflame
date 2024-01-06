@@ -1,22 +1,23 @@
 [
   {
-    "shipType": "construction",
+    "shipType": "colony",
     "techLevel": 0,
     "cost": 400,
-    "vision": 2,
+    "vision": 3,
     "health": 104,
-    "movementPoint": 2,
+    "movementPoint": 3,
     "minRange": 0,
-    "maxRange": 1
+    "maxRange": 1,
+    "actions": ["buildColony"]
   },
   {
     "shipType": "scout",
     "techLevel": 0,
     "cost": 250,
-    "vision": 3,
+    "vision": 4,
     "health": 78,
     "attack": 12,
-    "movementPoint": 3,
+    "movementPoint": 4,
     "minRange": 0,
     "maxRange": 3
   },
@@ -24,10 +25,10 @@
     "shipType": "frigate",
     "techLevel": 1,
     "cost": 650,
-    "vision": 2,
+    "vision": 3,
     "health": 215,
     "attack": 12,
-    "movementPoint": 2,
+    "movementPoint": 3,
     "minRange": 0,
     "maxRange": 2
   },
@@ -35,10 +36,10 @@
     "shipType": "destroyer",
     "techLevel": 8,
     "cost": 1540,
-    "vision": 2,
+    "vision": 3,
     "health": 370,
     "attack": 26,
-    "movementPoint": 2,
+    "movementPoint": 3,
     "minRange": 0,
     "maxRange": 2
   },
@@ -46,23 +47,23 @@
     "shipType": "cruiser",
     "techLevel": 20,
     "cost": 2200,
-    "vision": 2,
+    "vision": 3,
     "health": 500,
     "attack": 36,
-    "movementPoint": 2,
+    "movementPoint": 3,
     "minRange": 0,
-    "maxRange": 2
+    "maxRange": 3
   },
   {
     "shipType": "missileCruiser",
     "techLevel": 30,
     "cost": 3000,
-    "vision": 2,
+    "vision": 3,
     "health": 335,
     "attack": 20,
-    "movementPoint": 2,
+    "movementPoint": 3,
     "minRange": 2,
-    "maxRange": 4
+    "maxRange": 5
   },
   {
     "shipType": "battleship",
@@ -93,7 +94,7 @@
     "vision": 3,
     "health": 500,
     "attack": 75,
-    "movementPoint": 2,
+    "movementPoint": 3,
     "minRange": 0,
     "maxRange": 3
   }

@@ -4,6 +4,6 @@ enum ActionType {
 }
 
 enum ActionTarget {
-  planet,
-  enemy,
+  neutralPlanet,
+  enemyPlanet,
 }

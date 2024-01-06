@@ -5,7 +5,6 @@ import 'package:starfury/tile_type.dart';
 import 'scifi_game.dart';
 import 'hex.dart';
 import 'planet.dart';
-import 'hex_helper.dart' show cornersOfZero;
 import 'tile.dart';
 import "planet_type.dart";
 import 'ship.dart';
@@ -23,9 +22,9 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
 
   Cell(this.index, this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
-    _hexagon = PolygonComponent(cornersOfZero,
+    _hexagon = PolygonComponent(Hex.zero.polygonCorners(),
         anchor: Anchor.center, paint: hexBorderPaint);
-    _highligher = PolygonComponent(cornersOfZero,
+    _highligher = PolygonComponent(Hex.zero.polygonCorners(),
         anchor: Anchor.center, paint: highlighterPaint);
   }
 
@@ -87,6 +86,6 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
 
   @override
   String toString() {
-    return "Cell$hex,$tileType";
+    return "Cell$hex,${tileType.name}";
   }
 }

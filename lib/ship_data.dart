@@ -1,14 +1,26 @@
 import "dart:async";
 import "dart:convert";
 
-import "game_attribute.dart";
+import "package:flame/components.dart";
+
+import "action_type.dart";
 import "scifi_game.dart";
 import "ship_type.dart";
 
-class ShipData {
+mixin ShipDataUpgradeable {
+  int cost = 0;
+  int vision = 0;
+  int health = 0;
+  int attack = 0;
+  int movementPoint = 0;
+  int minRange = 0;
+  int maxRange = 0;
+  List<ActionType> actions = [];
+}
+
+class ShipData with ShipDataUpgradeable {
   final ShipType shipType;
   final int techLevel;
-  final Map<GameAttribute, int> attr = {};
 
   late final bool hasDefaultWeapon;
 
@@ -37,14 +49,28 @@ class ShipDataController {
         .firstWhere((element) => input["shipType"] == element.name);
     final techLevel = input["techLevel"] as int;
     final shipData = ShipData(shipType, techLevel);
-    shipData.attr[GameAttribute.cost] = input["cost"] as int;
-    shipData.attr[GameAttribute.vision] = input["vision"] as int;
-    shipData.attr[GameAttribute.health] = input["health"] as int;
-    shipData.attr[GameAttribute.attack] = (input["attack"] as int?) ?? 0;
-    shipData.hasDefaultWeapon = shipData.attr[GameAttribute.attack]! > 0;
-    shipData.attr[GameAttribute.movementPoint] = input["movementPoint"] as int;
-    shipData.attr[GameAttribute.minRange] = input["minRange"] as int;
-    shipData.attr[GameAttribute.maxRange] = input["maxRange"] as int;
+    shipData.cost = input["cost"] as int;
+    shipData.vision = input["vision"] as int;
+    shipData.health = input["health"] as int;
+    final attack = input["attack"] as int?;
+    if (attack != null) {
+      shipData.attack = attack;
+    }
+    shipData.hasDefaultWeapon = shipData.attack > 0;
+    shipData.movementPoint = input["movementPoint"] as int;
+    shipData.minRange = input["minRange"] as int;
+    shipData.maxRange = input["maxRange"] as int;
+    if (input["actions"] != null) {
+      final shipActions = input["actions"] as List<dynamic>;
+      for (final action in shipActions) {
+        shipData.actions.add(
+            ActionType.values.firstWhere((element) => action == element.name));
+      }
+    }
+
+    if (shipData.hasDefaultWeapon) {
+      shipData.actions.add(ActionType.capture);
+    }
 
     table[shipType] = shipData;
   }
@@ -59,15 +85,12 @@ class ShipDataController {
     return shipData.techLevel <= techReq;
   }
 
-  (int, int) attackRange(ShipType shipType) {
+  Block attackRange(ShipType shipType) {
     final shipData = table[shipType];
     if (shipData == null || !shipData.hasDefaultWeapon) {
-      return (0, 0);
+      return const Block(0, 0);
     }
 
-    return (
-      shipData.attr[GameAttribute.minRange]!,
-      shipData.attr[GameAttribute.maxRange]!
-    );
+    return Block(shipData.minRange, shipData.maxRange);
   }
 }

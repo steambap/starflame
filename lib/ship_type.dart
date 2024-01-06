@@ -1,5 +1,5 @@
 enum ShipType {
-  construction,
+  colony,
 
   scout,
   frigate,

@@ -1,7 +1,5 @@
 import "building.dart";
-import "game_attribute.dart";
 import "planet_type.dart";
-import "planet_type_helper.dart";
 import "ship_type.dart";
 import "scifi_game.dart";
 import "planet.dart";
@@ -34,7 +32,7 @@ class ResourceController {
 
   Income getPlanetIncome(Planet planet) {
     final income = Income();
-    double energyMultiplier = (PlanetTypeHelper.energyMap[planet.state.planetType] ?? 0).toDouble();
+    double energyMultiplier = planet.state.planetType.energy.toDouble();
     for (final element in planet.state.buildings) {
       if (element == Building.techCenter) {
         income.techPoint += 1;
@@ -56,8 +54,8 @@ class ResourceController {
   }
 
   double getShipCost(int playerNumber, ShipType type) {
-    final attr = game.shipDataController.table[type]!.attr;
-    final baseCost = attr[GameAttribute.cost]?.toDouble() ?? 100;
+    final data = game.shipData.table[type]!;
+    final baseCost = data.cost.toDouble();
 
     return baseCost * 0.1;
   }

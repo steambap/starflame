@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 
 import 'building.dart';
 import 'ship.dart';
-import 'tile_type.dart';
 import 'scifi_game.dart';
 import 'cell.dart';
 import "pathfinding.dart";
@@ -48,14 +47,6 @@ Hex _cubeRound(Vector3 frac) {
 
 class MapGrid extends Component
     with HasGameRef<ScifiGame>, KeyboardHandler, TapCallbacks, DragCallbacks {
-  static Map<TileType, int> costMap = {
-    TileType.empty: 1,
-    TileType.alphaWormHole: 1,
-    TileType.betaWormHole: 1,
-    TileType.asteroidField: 2,
-    TileType.nebula: 2,
-  };
-
   final double moveSpeed = 20;
   Vector2 direction = Vector2.zero();
 
@@ -179,7 +170,7 @@ class MapGrid extends Component
       if (capitalCell == null) {
         continue;
       }
-      spawnShipAt(capitalCell, ShipType.construction, p.playerNumber);
+      spawnShipAt(capitalCell, ShipType.colony, p.playerNumber);
       // spawn scout at south east
       final scoutHex = capitalCell.hex + Hex.directions[5];
       final sIndex = _hexTable[scoutHex] ?? -1;
@@ -188,6 +179,8 @@ class MapGrid extends Component
         spawnShipAt(sCell, ShipType.scout, p.playerNumber);
       }
     }
+
+    selectControl = SelectControlWaitForInput(game);
   }
 
   Edges _calcEdges() {
@@ -202,8 +195,8 @@ class MapGrid extends Component
           continue;
         }
         final nCell = cells[nIndex];
-        final cost = costMap[nCell.tileType];
-        if (cost != null) {
+        final cost = nCell.tileType.cost;
+        if (cost != -1) {
           edges[cell]![nCell] = cost;
         }
       }
@@ -285,7 +278,8 @@ class MapGrid extends Component
     final attackingPlayerNumber = originalCell.ship?.state.playerNumber ?? -1;
     final List<Cell> attackableCells = [];
     final originalHex = originalCell.hex;
-    for (int i = 1; i <= maxRange; i++) {
+    int i = max(1, minRange);
+    for (; i <= maxRange; i++) {
       final ring = originalHex.cubeRing(i);
       for (final hex in ring) {
         final index = _hexTable[hex] ?? -1;

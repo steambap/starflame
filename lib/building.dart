@@ -2,8 +2,9 @@ enum Building {
   galacticHQ,
   shipyard,
   techCenter,
+  spaceport,
   militaryAcademy,
-  parliament,
+  university,
   forum,
 }
 

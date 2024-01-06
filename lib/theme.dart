@@ -5,6 +5,8 @@ import "package:flame/game.dart";
 
 final text16 =
     TextPaint(style: const TextStyle(color: Colors.white, fontSize: 16));
+final text12 =
+    TextPaint(style: const TextStyle(color: Colors.white, fontSize: 12));
 final hexBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 2
@@ -26,8 +28,15 @@ final buttonBorderDisabled = Paint()
   ..color = Colors.grey.shade400
   ..strokeWidth = 1;
 
+final panelBGPaint = Paint()..color = Colors.blueGrey.shade600;
+final panelBorderPaint = Paint()
+  ..style = PaintingStyle.stroke
+  ..color = Colors.grey.shade400
+  ..strokeWidth = 1;
+
 final List<Paint> buttonPaintLayer = [buttonBGPaint, buttonBorderPaint];
 final List<Paint> buttonDisabledPaintLayer = [
   buttonBGDisabled,
   buttonBorderDisabled
 ];
+final List<Paint> panelPaintLayer = [panelBGPaint, panelBorderPaint];

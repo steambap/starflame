@@ -5,7 +5,6 @@ import 'package:flame/components.dart';
 
 import 'building.dart';
 import "planet_type.dart";
-import "planet_type_helper.dart";
 import "planet_state.dart";
 import 'scifi_game.dart';
 import "theme.dart" show text16, emptyPaint;
@@ -79,7 +78,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
       return;
     }
     if (state.population < PlanetState.twoB) {
-      final growthRate = PlanetTypeHelper.growthRateMap[state.planetType] ?? 0;
+      final growthRate = state.planetType.growthRate;
       state.population +=
           (state.population.toDouble() * (10 + growthRate) / 100).floor();
     }

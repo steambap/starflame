@@ -69,6 +69,20 @@ class Hex {
     return results;
   }
 
+  List<Vector2> polygonCorners([double size = Hex.size]) {
+    final List<Vector2> corners = List.empty(growable: true);
+    final center = toPixel();
+    for (int i = 0; i < 6; i++) {
+      final angle = (2.0 * pi * (i + 0.5)) / 6.0;
+      final x = cos(angle) * size + center.x;
+      final y = sin(angle) * size + center.y;
+
+      corners.add(Vector2(x, y));
+    }
+
+    return corners;
+  }
+
   @override
   int get hashCode => Object.hash(q, r, s);
 

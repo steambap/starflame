@@ -41,7 +41,7 @@ class ShipBox extends PositionComponent
     final shipCost =
         game.resourceController.getShipCost(playerNumber, shipType);
     final isUnlocked =
-        game.shipDataController.isShipUnlocked(shipType, playerNumber);
+        game.shipData.isShipUnlocked(shipType, playerNumber);
 
     if (!isUnlocked) {
       rect.paintLayers = buttonDisabledPaintLayer;
@@ -57,7 +57,7 @@ class ShipBox extends PositionComponent
     final shipCost =
         game.resourceController.getShipCost(playerNumber, shipType);
     final isUnlocked =
-        game.shipDataController.isShipUnlocked(shipType, playerNumber);
+        game.shipData.isShipUnlocked(shipType, playerNumber);
     if (!isUnlocked ||
         shipCost > game.controller.getHumanPlayerState().energy) {
       return;

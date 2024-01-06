@@ -1,16 +1,31 @@
+import "dart:math";
+
 import "hex.dart";
 import "tile_type.dart";
 import "game_creator.dart";
-import "hex_helper.dart" show generateHexMap;
 import "cell.dart";
-import "planet_type_helper.dart";
+import "planet_type.dart";
+
+List<Hex> generateHexMap(int qMax) {
+  final List<Hex> hexMap = List.empty(growable: true);
+  for (int q = -qMax; q <= qMax; q++) {
+    final r1 = max(-qMax, -q - qMax);
+    final r2 = min(qMax, -q + qMax);
+    for (int r = r1; r <= r2; r++) {
+      hexMap.add(Hex(q, r, -q - r));
+    }
+  }
+
+  return hexMap;
+}
 
 class MapCreator {
   static const numOfSun = 7;
   static const minDistanceObj = 3;
   static const minDistanceToSun = 2;
   final GameCreator gameCreator;
-  final PlanetTypeHelper planetTypeHelper = PlanetTypeHelper();
+
+  late final int _weight = _getTotalWeight();
   List<Cell> emptyCells = [];
 
   MapCreator(this.gameCreator);
@@ -113,7 +128,7 @@ class MapCreator {
         continue loop;
       }
       // the cell is valid
-      final pType = planetTypeHelper.getRandPlanet(gameCreator.rand);
+      final pType = _getRandPlanet(gameCreator.rand);
       cell.setPlanet(pType);
       gameCreator.planetList.add(cell);
       // check if we have enough
@@ -122,5 +137,32 @@ class MapCreator {
         break loop;
       }
     }
+  }
+
+  PlanetType _getRandPlanet(Random? random) {
+    final rand = random ?? Random();
+
+    final num = rand.nextInt(_weight);
+    int sum = 0;
+    for (final type in PlanetType.values) {
+      if (type.weight == 0) {
+        continue;
+      }
+      sum += type.weight;
+      if (num <= sum) {
+        return type;
+      }
+    }
+
+    return PlanetType.terran;
+  }
+
+  int _getTotalWeight() {
+    int sum = 0;
+    for (final type in PlanetType.values) {
+      sum += type.weight;
+    }
+
+    return sum;
   }
 }
