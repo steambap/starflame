@@ -1,10 +1,10 @@
-import 'dart:ui';
+import 'package:flutter/material.dart' show Color, Colors;
 
 import "resource_controller.dart";
 
 class PlayerState {
   final int playerNumber;
-  Color color = const Color(0x00000000);
+  Color color = Colors.black;
   int race = 0;
   bool isAlive = true;
   final bool isAI;

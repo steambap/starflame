@@ -45,6 +45,7 @@ class MapCreator {
 
     _tryCreateSun();
     _createPlanetAroundSun();
+    _randomizePlanets();
 
     return cells;
   }
@@ -136,6 +137,13 @@ class MapCreator {
       if (numOfPlanet <= 0) {
         break loop;
       }
+    }
+  }
+
+  _randomizePlanets() {
+    for (final cell in gameCreator.planetList) {
+      cell.planet?.state.size =
+          PlanetSize.values[gameCreator.rand.nextInt(PlanetSize.values.length)];
     }
   }
 

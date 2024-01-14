@@ -1,10 +1,14 @@
-import 'dart:ui';
+import 'dart:ui' show PaintingStyle, Paint, Color;
 import "package:flutter/painting.dart" show TextStyle;
 import "package:flutter/material.dart" show Colors;
 import "package:flame/game.dart";
+import "package:flame/rendering.dart";
 
+final grayTint = PaintDecorator.tint(const Color(0x7f7f7f7f));
 final text16 =
     TextPaint(style: const TextStyle(color: Colors.white, fontSize: 16));
+final textDamage =
+    TextPaint(style: const TextStyle(color: Colors.redAccent, fontSize: 16));
 final text12 =
     TextPaint(style: const TextStyle(color: Colors.white, fontSize: 12));
 final hexBorderPaint = Paint()

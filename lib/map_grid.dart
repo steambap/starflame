@@ -3,6 +3,7 @@ import "dart:math";
 
 import 'package:flame/components.dart';
 import "package:flame/events.dart";
+import 'package:flame/effects.dart';
 import 'package:flutter/services.dart';
 
 import 'building.dart';
@@ -14,6 +15,7 @@ import "hex.dart";
 import "select_control.dart";
 import "planet.dart";
 import "ship_type.dart";
+import "theme.dart" show textDamage;
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -263,8 +265,15 @@ class MapGrid extends Component
     for (final cell in cells) {
       if (cell.planet != null) {
         final planetState = cell.planet!.state;
-        if (planetState.playerNumber == playerNumber && cell.ship == null) {
-          deployableCells.add(cell);
+        if (planetState.playerNumber == playerNumber) {
+          final range = Block(
+              0, planetState.buildings.contains(Building.shipyard) ? 1 : 0);
+          final cellsInRange = inRange(cell, range);
+          for (final cell in cellsInRange) {
+            if (cell.ship == null) {
+              deployableCells.add(cell);
+            }
+          }
         }
       }
     }
@@ -272,31 +281,72 @@ class MapGrid extends Component
     return deployableCells;
   }
 
-  List<Cell> findAttackableCells(
-      Cell originalCell, int minRange, int maxRange) {
-    assert(maxRange > 0, "attackRange must be greater than 0");
-    final attackingPlayerNumber = originalCell.ship?.state.playerNumber ?? -1;
-    final List<Cell> attackableCells = [];
-    final originalHex = originalCell.hex;
-    int i = max(1, minRange);
-    for (; i <= maxRange; i++) {
-      final ring = originalHex.cubeRing(i);
+  List<Cell> inRange(Cell center, Block range) {
+    final List<Cell> cellsInRange = [];
+    if (range.x == 0) {
+      cellsInRange.add(center);
+    }
+    if (range.y == 0) {
+      return cellsInRange;
+    }
+    int i = max(1, range.x);
+    for (; i <= range.y; i++) {
+      final ring = center.hex.cubeRing(i);
       for (final hex in ring) {
         final index = _hexTable[hex] ?? -1;
         if (index < 0) {
           continue;
         }
         final cell = cells[index];
-        if (cell.ship != null &&
-            cell.ship!.state.playerNumber != attackingPlayerNumber) {
-          attackableCells.add(cell);
-        } else if (cell.planet != null &&
-            cell.planet!.attackable(attackingPlayerNumber)) {
-          attackableCells.add(cell);
-        }
+        cellsInRange.add(cell);
+      }
+    }
+
+    return cellsInRange;
+  }
+
+  List<Cell> findAttackableCells(Cell originalCell, Block range) {
+    final attackingPlayerNumber = originalCell.ship?.state.playerNumber ?? -1;
+    final List<Cell> attackableCells = [];
+    final cellsInRange = inRange(originalCell, range);
+    for (final cell in cellsInRange) {
+      if (cell.ship != null &&
+          cell.ship!.state.playerNumber != attackingPlayerNumber) {
+        attackableCells.add(cell);
       }
     }
 
     return attackableCells;
+  }
+
+  void removeShip(Ship ship) {
+    shipListAll.remove(ship);
+    shipMap[ship.state.playerNumber]!.remove(ship);
+  }
+
+  void resolveCombat(Ship ship, Cell cell) {
+    if (cell.ship != null) {
+      final attackingPower = game.shipData.table[ship.state.type]!.attack;
+      int damage = attackingPower *
+          (ship.state.playerNumber == game.controller.getHumanPlayerNumber()
+              ? 3
+              : 1);
+      ship.useAttack();
+      cell.ship?.takeDamage(damage);
+      TextComponent text = TextComponent(
+          text: "-${damage.toString()}",
+          textRenderer: textDamage,
+          anchor: Anchor.center,
+          position: cell.position);
+      add(text);
+      final removeEff = RemoveEffect(delay: 0.5);
+      final moveEff = MoveByEffect(
+        Vector2(0, -18),
+        EffectController(duration: 0.5),
+      );
+      text.addAll([removeEff, moveEff]);
+    } else if (cell.planet != null) {
+      // TODO: planet combat
+    }
   }
 }

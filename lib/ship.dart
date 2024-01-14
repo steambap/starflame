@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:ui';
 import 'dart:math';
 
 import 'package:flame/components.dart';
 import "package:flame/effects.dart";
-import "package:flame/rendering.dart";
 
 import 'scifi_game.dart';
 import "cell.dart";
+import "theme.dart";
 import "ship_state.dart";
 import "ship_type.dart";
 
@@ -51,26 +50,36 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
   }
 
   FutureOr<void> moveAnim(Cell cell, List<Cell> fromCells) {
-    state.movementUsed += fromCells.length;
     final moveEffectList = fromCells.reversed
-        .map((e) => MoveToEffect(e.position, EffectController(duration: 0.25)));
+        .map((e) => MoveToEffect(e.position, EffectController(duration: 0.2)));
     _engineEffect.add(OpacityEffect.fadeIn(EffectController(duration: 0.25)));
     return add(SequenceEffect([
       ...moveEffectList,
     ])
       ..onComplete = () {
+        useMove(fromCells.length);
         _engineEffect
             .add(OpacityEffect.fadeOut(EffectController(duration: 0.25)));
       });
+  }
+
+  useMove(int num) {
+    state.movementUsed += num;
+    if (movePoint() == 0) {
+      setTurnOver();
+    }
+  }
+
+  void useAttack() {
+    state.attacked = true;
+    useMove(1);
   }
 
   setTurnOver() {
     state.isTurnOver = true;
     state.attacked = true;
     state.movementUsed = game.shipData.table[state.type]!.movementPoint;
-    _shipSprite.decorator.addLast(
-      PaintDecorator.tint(const Color(0x7f7f7f7f)),
-    );
+    _shipSprite.decorator.addLast(grayTint);
   }
 
   int movePoint() {
@@ -103,5 +112,22 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
     state.attacked = false;
     state.movementUsed = 0;
     _shipSprite.decorator.removeLast();
+  }
+
+  bool takeDamage(int damage) {
+    state.health -= damage;
+    if (state.health <= 0) {
+      dispose();
+
+      return true;
+    }
+
+    return false;
+  }
+
+  void dispose() {
+    cell.ship = null;
+    game.mapGrid.removeShip(this);
+    removeFromParent();
   }
 }

@@ -10,9 +10,25 @@ enum PlanetType {
     required this.growthRate,
     required this.weight,
   });
+
   /// base energy production & robotic life replicate rate
   final int energy;
   final int growthRate;
+
   /// chance to appear in random generation
   final int weight;
+}
+
+enum PlanetSize {
+  small(maxPopulation: 1000000000, maxBuildings: 2),
+  medium(maxPopulation: 2000000000, maxBuildings: 3),
+  large(maxPopulation: 4000000000, maxBuildings: 4);
+
+  const PlanetSize({
+    required this.maxPopulation,
+    required this.maxBuildings,
+  });
+
+  final int maxPopulation;
+  final int maxBuildings;
 }

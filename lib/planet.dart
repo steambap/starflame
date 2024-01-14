@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
+import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
 
 import 'building.dart';
@@ -42,19 +42,25 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     updateRender();
   }
 
-  colonize(int playerNumber) {
-    state.playerNumber = playerNumber;
-    if (state.population <= 0) {
-      state.population = PlanetState.oneM;
-    }
-
-    updateRender();
-  }
-
   void setHomePlanet(int playerNumber) {
     state.playerNumber = playerNumber;
-    state.population = PlanetState.twoB ~/ 4;
-    state.buildings.add(Building.galacticHQ);
+    state.size = PlanetSize.medium;
+    state.population = state.size.maxPopulation;
+    state.buildings.addAll([Building.galacticHQ, Building.shipyard]);
+  }
+
+  void colonize(int playerNumber, int population) {
+    state.playerNumber = playerNumber;
+    state.population = population;
+    updateRender();
+    game.playerInfo.updateRender();
+  }
+
+  void capture(int playerNumber) {
+    state.playerNumber = playerNumber;
+    state.population ~/= 2;
+    updateRender();
+    game.playerInfo.updateRender();
   }
 
   void updateRender() {
@@ -77,12 +83,12 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     if (state.playerNumber != playerNumber) {
       return;
     }
-    if (state.population < PlanetState.twoB) {
+    if (state.population < state.size.maxPopulation) {
       final growthRate = state.planetType.growthRate;
       state.population +=
           (state.population.toDouble() * (10 + growthRate) / 100).floor();
     }
-    state.population = min(state.population, PlanetState.twoB);
+    state.population = min(state.population, state.size.maxPopulation);
     updateRender();
   }
 
@@ -91,5 +97,9 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
       return false;
     }
     return state.playerNumber != playerNumber;
+  }
+
+  bool neutral() {
+    return state.playerNumber == null;
   }
 }

@@ -6,13 +6,17 @@ import 'hex.dart';
 import 'scifi_game.dart';
 import 'ship.dart';
 import 'theme.dart';
+import 'action.dart';
+import 'action_button.dart';
 
 class HudShipCommand extends PositionComponent
     with HasGameRef<ScifiGame>, HasVisibility {
   static const double hexSize = 48;
 
-  final PolygonComponent _hexagon = PolygonComponent(Hex.zero.polygonCorners(hexSize),
-      anchor: Anchor.center, paintLayers: panelPaintLayer);
+  final PolygonComponent _hexagon = PolygonComponent(
+      Hex.zero.polygonCorners(hexSize),
+      anchor: Anchor.center,
+      paintLayers: panelPaintLayer);
   final RectangleComponent _shipNameBox = RectangleComponent(
       size: Vector2(sqrt(3) * hexSize, 20),
       anchor: Anchor.center,
@@ -64,17 +68,31 @@ class HudShipCommand extends PositionComponent
       _shipInfo.text =
           "HP: ${state.health} / ${shipData.health} | DPS: ${shipData.attack} | move: ${ship.movePoint()} / ${shipData.movementPoint} | range: ${shipData.minRange}-${shipData.maxRange} | vision: ${shipData.vision}";
       _shipImage.sprite = Sprite(game.images.fromCache("${type.name}.png"));
-      for (final element in _shipCommandButtons) {
-        element.removeFromParent();
-      }
-      _shipCommandButtons.clear();
+      _clearActions();
 
-      // final buttons = ship.shipType.commands.map((e) => _createButton(e)).toList();
-      // _shipCommandButtons.addAll(buttons);
-      // addAll(_shipCommandButtons);
+      if (isOwnerHuman) {
+        final buttons = shipData.actions
+            .map((e) => ActionButton(ship.cell, actionTable[e]!))
+            .toList();
+        _shipCommandButtons.addAll(buttons);
+        for (int i = 0; i < buttons.length; i++) {
+          final button = buttons[i];
+          button.position = _shipCommand.position + Vector2(8 + i * 40, 8);
+          add(button);
+        }
+        addAll(_shipCommandButtons);
+      }
       isVisible = true;
     } else {
+      _clearActions();
       isVisible = false;
     }
+  }
+
+  void _clearActions() {
+    for (final element in _shipCommandButtons) {
+      element.removeFromParent();
+    }
+    _shipCommandButtons.clear();
   }
 }
