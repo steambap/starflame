@@ -65,7 +65,7 @@ class GameStateController {
   }
 
   void productionPhaseUpdate() {
-    players[gameState.playerNumber].produceResource(game.resourceController);
+    game.resourceController.runProduction(gameState.playerNumber);
     game.playerInfo.updateRender();
   }
 
@@ -110,7 +110,7 @@ class GameStateController {
 
     final playerState = getPlayerState(playerNumber);
     final cost = game.resourceController.getShipCost(playerNumber, shipType);
-    playerState.addEnergy(-cost);
+    playerState.energy -= cost;
 
     if (playerNumber == getHumanPlayerNumber()) {
       game.playerInfo.updateRender();

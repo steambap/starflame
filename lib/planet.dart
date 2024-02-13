@@ -92,6 +92,29 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     updateRender();
   }
 
+  double energyIncome() {
+    double energyMultiplier = state.planetType.energy.toDouble();
+    for (final element in state.buildings) {
+      if (element == Building.techCenter) {
+        energyMultiplier += 1;
+        if (state.planetType == PlanetType.ice) {
+          energyMultiplier += 1;
+        }
+      }
+      if (element == Building.galacticHQ) {
+        energyMultiplier += 5;
+      }
+    }
+
+    return state.popLv() * energyMultiplier;
+  }
+
+  void produceEnergy(int playerNumber) {
+    final playerState = game.controller.getPlayerState(playerNumber);
+    final energy = energyIncome();
+    playerState.energy += energy;
+  }
+
   bool attackable(int playerNumber) {
     if (state.playerNumber == null) {
       return false;

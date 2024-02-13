@@ -1,5 +1,5 @@
 name: starfury
-description: A new Flutter project.
+description: A space strategy game.
 publish_to: 'none'
 version: 0.1.0
 
@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.1.3 <4.0.0'
 
 dependencies:
-  flame: ^1.14.0
+  flame: ^1.15.0
   flutter:
     sdk: flutter
   test: ^1.24.3
