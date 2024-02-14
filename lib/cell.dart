@@ -9,28 +9,24 @@ import 'tile.dart';
 import "planet_type.dart";
 import 'ship.dart';
 import "theme.dart"
-    show hexBorderPaint, highlighterPaint, moveendPaint, targetPaint;
+    show highlighterPaint, moveendPaint, targetPaint;
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   final int index;
   final Hex hex;
   Planet? _planet;
-  late final PolygonComponent _hexagon;
   late final PolygonComponent _highligher;
   Tile? _tile;
   Ship? ship;
 
   Cell(this.index, this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
-    _hexagon = PolygonComponent(Hex.zero.polygonCorners(),
-        anchor: Anchor.center, paint: hexBorderPaint);
     _highligher = PolygonComponent(Hex.zero.polygonCorners(),
         anchor: Anchor.center, paint: highlighterPaint);
   }
 
   @override
   FutureOr<void> onLoad() {
-    add(_hexagon);
   }
 
   Planet setPlanet(PlanetType planetType) {

@@ -13,11 +13,11 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   late final PlanetState state;
   final TextComponent populationLabel = TextComponent(
       text: "",
-      position: Vector2(12, -12),
+      position: Vector2(-12, 36),
       anchor: Anchor.center,
       textRenderer: text16);
   final CircleComponent ownerCircle =
-      CircleComponent(radius: 16, paint: emptyPaint, anchor: Anchor.center);
+      CircleComponent(radius: 34, paint: emptyPaint, anchor: Anchor.center);
   late final SpriteComponent planetSprite;
   Planet(PlanetType planetType, {required super.position})
       : super(anchor: Anchor.center) {
@@ -26,14 +26,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
 
   @override
   FutureOr<void> onLoad() {
-    final imgName = switch (state.planetType) {
-      PlanetType.arid => "arid.png",
-      PlanetType.ice => "ice.png",
-      PlanetType.lava => "lava.png",
-      PlanetType.swamp => "swamp.png",
-      PlanetType.terran => "terran.png",
-    };
-    final img = game.images.fromCache(imgName);
+    final img = game.images.fromCache(state.planetType.image);
     final sprite = Sprite(img);
     planetSprite = SpriteComponent(sprite: sprite, anchor: Anchor.center);
 
@@ -95,12 +88,6 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   double energyIncome() {
     double energyMultiplier = state.planetType.energy.toDouble();
     for (final element in state.buildings) {
-      if (element == Building.techCenter) {
-        energyMultiplier += 1;
-        if (state.planetType == PlanetType.ice) {
-          energyMultiplier += 1;
-        }
-      }
       if (element == Building.galacticHQ) {
         energyMultiplier += 5;
       }

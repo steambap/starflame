@@ -50,7 +50,7 @@ class Hex {
   }
 
   List<Hex> getNeighbours() {
-    return directions.map((e) => e + this).toList();
+    return directions.map((e) => e + this).toList(growable: false);
   }
 
   List<Hex> cubeRing(int radius) {
@@ -94,5 +94,23 @@ class Hex {
   @override
   String toString() {
     return "($q,$r,$s)";
+  }
+  /// For serialization
+  int toInt() {
+    return (q & 0xffff) | ((r & 0xffff) << 16);
+  }
+  /// For deserialization
+  static Hex fromInt(int i) {
+    int q = i & 0xffff;
+    final qSign = q & (1 << 7);
+    if (qSign != 0) {
+      q = q - 0x10000;
+    }
+    int r = (i >> 16) & 0xffff;
+    final rSign = r & (1 << 7);
+    if (rSign != 0) {
+      r = r - 0x10000;
+    }
+    return Hex(q, r, -q - r);
   }
 }

@@ -1,9 +1,11 @@
 import 'dart:async';
 import "dart:math";
+import 'dart:ui';
 
 import 'package:flame/components.dart';
 import "package:flame/events.dart";
 import 'package:flame/effects.dart';
+import 'package:flame/extensions.dart';
 import 'package:flutter/services.dart';
 
 import 'building.dart';
@@ -15,7 +17,7 @@ import "hex.dart";
 import "select_control.dart";
 import "planet.dart";
 import "ship_type.dart";
-import "theme.dart" show textDamage;
+import "theme.dart" show textDamage, hexBorderPaint;
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -53,7 +55,8 @@ class MapGrid extends Component
   Vector2 direction = Vector2.zero();
 
   List<Cell> cells = List.empty();
-  final Map<Hex, int> _hexTable = {};
+  /// Hex to cell index
+  final Map<int, int> _hexTable = {};
 
   final List<Planet> planets = [];
   Pathfinding pathfinding = Pathfinding({});
@@ -64,6 +67,27 @@ class MapGrid extends Component
   @override
   FutureOr<void> onLoad() {
     _selectControl = SelectControlWaitForInput(game);
+  }
+
+  // Draw all hexagons in one go
+  @override
+  void render(Canvas canvas) {
+    final Path path = Path();
+    path.addPolygon(
+        Hex.zero
+            .polygonCorners()
+            .map((e) => e.toOffset())
+            .toList(growable: false),
+        true);
+
+    for (final cell in cells) {
+      canvas.save();
+      canvas.translate(cell.position.x, cell.position.y);
+      canvas.drawPath(path, hexBorderPaint);
+
+      canvas.restore();
+    }
+    super.render(canvas);
   }
 
   set selectControl(SelectControl s) {
@@ -123,7 +147,7 @@ class MapGrid extends Component
   void onTapUp(TapUpEvent event) {
     final hex = _pixelToHex(event.localPosition);
 
-    final cellIndex = _hexTable[hex] ?? -1;
+    final cellIndex = _hexTable[hex.toInt()] ?? -1;
     if (cellIndex < 0) {
       return;
     }
@@ -134,7 +158,7 @@ class MapGrid extends Component
   Cell? cellAtPosition(Vector2 localPosition) {
     final hex = _pixelToHex(localPosition);
 
-    final cellIndex = _hexTable[hex] ?? -1;
+    final cellIndex = _hexTable[hex.toInt()] ?? -1;
     if (cellIndex < 0) {
       return null;
     }
@@ -154,7 +178,7 @@ class MapGrid extends Component
     planets.clear();
     _hexTable.clear();
     for (final cell in cells) {
-      _hexTable[cell.hex] = cell.index;
+      _hexTable[cell.hex.toInt()] = cell.index;
       if (cell.planet != null) {
         planets.add(cell.planet!);
       }
@@ -175,7 +199,7 @@ class MapGrid extends Component
       spawnShipAt(capitalCell, ShipType.colony, p.playerNumber);
       // spawn scout at south east
       final scoutHex = capitalCell.hex + Hex.directions[5];
-      final sIndex = _hexTable[scoutHex] ?? -1;
+      final sIndex = _hexTable[scoutHex.toInt()] ?? -1;
       if (sIndex >= 0) {
         final sCell = cells[sIndex];
         spawnShipAt(sCell, ShipType.scout, p.playerNumber);
@@ -192,7 +216,7 @@ class MapGrid extends Component
       edges[cell] = {};
       final ns = cell.hex.getNeighbours();
       for (final neighbour in ns) {
-        final nIndex = _hexTable[neighbour] ?? -1;
+        final nIndex = _hexTable[neighbour.toInt()] ?? -1;
         if (nIndex < 0) {
           continue;
         }
@@ -293,7 +317,7 @@ class MapGrid extends Component
     for (; i <= range.y; i++) {
       final ring = center.hex.cubeRing(i);
       for (final hex in ring) {
-        final index = _hexTable[hex] ?? -1;
+        final index = _hexTable[hex.toInt()] ?? -1;
         if (index < 0) {
           continue;
         }
