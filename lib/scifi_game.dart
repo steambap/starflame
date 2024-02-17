@@ -44,10 +44,10 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
     final s = GameSettings(0);
     currentGameSettings = s;
     s.players = gameCreator.getTestPlayers(s);
-    final cells = gameCreator.create(s);
+    gameCreator.create(s);
 
     controller.initGame(s.players);
-    mapGrid.initMap(cells);
+    mapGrid.initMap(gameCreator);
     controller.startGame();
   }
 }

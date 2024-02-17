@@ -13,7 +13,6 @@ class Tile extends SpriteComponent with HasGameRef<ScifiGame> {
     final imgName = switch (tileType) {
       TileType.asteroidField => "asteroid.png",
       TileType.gravityRift => "gravity_rift.png",
-      TileType.sun => "sun.png",
       TileType.nebula => "nebula.png",
       TileType.alphaWormHole || TileType.betaWormHole => "wormhole.png",
       _ => "asteroid.png",

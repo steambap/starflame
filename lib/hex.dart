@@ -95,10 +95,12 @@ class Hex {
   String toString() {
     return "($q,$r,$s)";
   }
+
   /// For serialization
   int toInt() {
     return (q & 0xffff) | ((r & 0xffff) << 16);
   }
+
   /// For deserialization
   static Hex fromInt(int i) {
     int q = i & 0xffff;
@@ -112,5 +114,39 @@ class Hex {
       r = r - 0x10000;
     }
     return Hex(q, r, -q - r);
+  }
+
+  // https://www.redblobgames.com/grids/hexagons/#rounding
+  static Hex cubeRound(Vector3 frac) {
+    int q = frac.x.round();
+    int r = frac.y.round();
+    int s = frac.z.round();
+
+    final qDiff = (q - frac.x).abs();
+    final rDiff = (r - frac.y).abs();
+    final sDiff = (s - frac.z).abs();
+
+    if ((qDiff > rDiff) && (qDiff > sDiff)) {
+      q = -r - s;
+    } else if (rDiff > sDiff) {
+      r = -q - s;
+    } else {
+      s = -q - r;
+    }
+
+    return Hex(q, r, s);
+  }
+
+  static Hex center(List<Hex> hexes) {
+    int q = 0;
+    int r = 0;
+    int s = 0;
+    for (final hex in hexes) {
+      q += hex.q;
+      r += hex.r;
+      s += hex.s;
+    }
+    final n = hexes.length;
+    return Hex.cubeRound(Vector3(q / n, r / n, s / n));
   }
 }

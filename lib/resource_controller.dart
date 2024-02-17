@@ -7,9 +7,9 @@ class ResourceController {
   ResourceController(this.game);
 
   void runProduction(int playerNumber) {
-    for (final planet in game.mapGrid.planets) {
-      if (planet.state.playerNumber == playerNumber) {
-        planet.produceEnergy(playerNumber);
+    for (final s in game.mapGrid.systems) {
+      if (s.playerNumber == playerNumber) {
+        s.produceEnergy(playerNumber);
       }
     }
   }
@@ -18,13 +18,26 @@ class ResourceController {
     final idx = game.controller.getHumanPlayerNumber();
     double energy = 0.0;
 
-    for (final planet in game.mapGrid.planets) {
-      if (planet.state.playerNumber == idx) {
-        energy += planet.energyIncome();
+    for (final s in game.mapGrid.systems) {
+      if (s.playerNumber == idx) {
+        energy += s.energyIncome();
       }
     }
 
     return energy;
+  }
+
+  double humanPlayerMetalIncome() {
+    final idx = game.controller.getHumanPlayerNumber();
+    double metal = 0.0;
+
+    for (final s in game.mapGrid.systems) {
+      if (s.playerNumber == idx) {
+        metal += s.metalIncome();
+      }
+    }
+
+    return metal;
   }
 
   double getMaintaince(int playerNumber) {
@@ -35,6 +48,6 @@ class ResourceController {
     final data = game.shipData.table[type]!;
     final baseCost = data.cost.toDouble();
 
-    return baseCost * 0.1;
+    return baseCost * 1.0;
   }
 }

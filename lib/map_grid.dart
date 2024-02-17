@@ -7,15 +7,15 @@ import "package:flame/events.dart";
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/services.dart';
+import 'package:starfury/game_creator.dart';
 
-import 'building.dart';
 import 'ship.dart';
 import 'scifi_game.dart';
 import 'cell.dart';
 import "pathfinding.dart";
 import "hex.dart";
 import "select_control.dart";
-import "planet.dart";
+import "star_system.dart";
 import "ship_type.dart";
 import "theme.dart" show textDamage, hexBorderPaint;
 
@@ -23,30 +23,9 @@ import "theme.dart" show textDamage, hexBorderPaint;
 Hex _pixelToHex(Vector2 pixel) {
   final double x = (sqrt(3) / 3 * pixel.x - 1 / 3 * pixel.y) / Hex.size;
   final double y = (2 / 3 * pixel.y) / Hex.size;
-  final Hex hex = _cubeRound(Vector3(x, y, -x - y));
+  final Hex hex = Hex.cubeRound(Vector3(x, y, -x - y));
 
   return hex;
-}
-
-// https://www.redblobgames.com/grids/hexagons/#rounding
-Hex _cubeRound(Vector3 frac) {
-  int q = frac.x.round();
-  int r = frac.y.round();
-  int s = frac.z.round();
-
-  final qDiff = (q - frac.x).abs();
-  final rDiff = (r - frac.y).abs();
-  final sDiff = (s - frac.z).abs();
-
-  if ((qDiff > rDiff) && (qDiff > sDiff)) {
-    q = -r - s;
-  } else if (rDiff > sDiff) {
-    r = -q - s;
-  } else {
-    s = -q - r;
-  }
-
-  return Hex(q, r, s);
 }
 
 class MapGrid extends Component
@@ -55,10 +34,11 @@ class MapGrid extends Component
   Vector2 direction = Vector2.zero();
 
   List<Cell> cells = List.empty();
-  /// Hex to cell index
-  final Map<int, int> _hexTable = {};
 
-  final List<Planet> planets = [];
+  /// Hex to cell index
+  Map<int, int> _hexTable = {};
+
+  List<StarSystem> systems = [];
   Pathfinding pathfinding = Pathfinding({});
   final List<Ship> shipListAll = [];
   final Map<int, List<Ship>> shipMap = {};
@@ -173,16 +153,10 @@ class MapGrid extends Component
     super.update(dt);
   }
 
-  FutureOr<void> initMap(List<Cell> cellList) async {
-    cells = cellList;
-    planets.clear();
-    _hexTable.clear();
-    for (final cell in cells) {
-      _hexTable[cell.hex.toInt()] = cell.index;
-      if (cell.planet != null) {
-        planets.add(cell.planet!);
-      }
-    }
+  FutureOr<void> initMap(GameCreator gc) async {
+    cells = gc.cells;
+    _hexTable = gc.hexTable;
+    systems = gc.systems;
 
     pathfinding = Pathfinding(_calcEdges());
 
@@ -271,13 +245,14 @@ class MapGrid extends Component
   }
 
   Cell? getCapitalCell(int playerNumber) {
-    for (final cell in cells) {
-      if (cell.planet != null) {
-        final planetState = cell.planet!.state;
-        if (planetState.buildings.contains(Building.galacticHQ) &&
-            planetState.playerNumber == playerNumber) {
-          return cell;
+    for (final s in systems) {
+      if (s.homePlanet && s.playerNumber == playerNumber) {
+        final hex = s.hex;
+        final index = _hexTable[hex.toInt()] ?? -1;
+        if (index < 0) {
+          continue;
         }
+        return cells[index];
       }
     }
 
@@ -287,11 +262,9 @@ class MapGrid extends Component
   List<Cell> getShipDeployableCells(int playerNumber) {
     final List<Cell> deployableCells = [];
     for (final cell in cells) {
-      if (cell.planet != null) {
-        final planetState = cell.planet!.state;
-        if (planetState.playerNumber == playerNumber) {
-          final range = Block(
-              0, planetState.buildings.contains(Building.shipyard) ? 1 : 0);
+      if (cell.system != null) {
+        if (cell.system?.playerNumber == playerNumber) {
+          const range = Block(0, 1);
           final cellsInRange = inRange(cell, range);
           for (final cell in cellsInRange) {
             if (cell.ship == null) {
@@ -369,8 +342,8 @@ class MapGrid extends Component
         EffectController(duration: 0.5),
       );
       text.addAll([removeEff, moveEff]);
-    } else if (cell.planet != null) {
-      // TODO: planet combat
+    } else if (cell.system != null) {
+      // TODO: system siege
     }
   }
 }

@@ -7,6 +7,7 @@ class PlayerState {
   bool isAlive = true;
   final bool isAI;
   double energy = 0;
+  double metal = 0;
   int techPoint = 0;
   int age = 0;
 

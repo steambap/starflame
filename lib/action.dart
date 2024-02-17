@@ -1,6 +1,5 @@
 import 'package:flame/components.dart';
 
-import 'planet_state.dart';
 import 'cell.dart';
 import 'action_type.dart';
 import 'map_grid.dart';
@@ -31,12 +30,12 @@ sealed class Action {
   }
 
   List<Cell> neutralPlanetCells(List<Cell> cells) {
-    return cells.where((cell) => cell.planet?.neutral() ?? false).toList();
+    return cells.where((cell) => cell.system?.neutral() ?? false).toList();
   }
 
   List<Cell> enemyPlanetCells(List<Cell> cells, int playerNumber) {
     return cells
-        .where((cell) => cell.planet?.attackable(playerNumber) ?? false)
+        .where((cell) => cell.system?.attackable(playerNumber) ?? false)
         .toList();
   }
 
@@ -65,12 +64,12 @@ class Capture extends Action {
   @override
   void execute(Ship ship, Cell cell) {
     ship.useAttack();
-    if (cell.planet == null) {
+    if (cell.system == null) {
       return;
     }
     final playerNumber = ship.state.playerNumber;
-    final planet = cell.planet!;
-    planet.capture(playerNumber);
+    final system = cell.system!;
+    system.capture(playerNumber);
   }
 }
 
@@ -80,12 +79,12 @@ class BuildColony extends Action {
   @override
   void execute(Ship ship, Cell cell) {
     ship.useMove(1);
-    if (cell.planet == null) {
+    if (cell.system == null) {
       return;
     }
     final playerNumber = ship.state.playerNumber;
-    final planet = cell.planet!;
-    planet.colonize(playerNumber, PlanetState.oneM * 100);
+    final sysyem = cell.system!;
+    sysyem.colonize(playerNumber, 1);
     ship.dispose();
   }
 }
