@@ -2,15 +2,15 @@ import "dart:collection";
 import "dart:math";
 import "package:flutter/material.dart" show Colors;
 
-import "star_system.dart";
+import "planet.dart";
 import "hex.dart";
 import "cell.dart";
 import "sector.dart";
 import "game_settings.dart";
 import "player_state.dart";
 import "tile_type.dart";
-import "planet.dart";
 import "planet_type.dart";
+import "data/name.dart";
 
 List<Hex> generateHexMap(int qMax) {
   final List<Hex> hexMap = List.empty(growable: true);
@@ -37,34 +37,6 @@ final asteroidStyles = [
   ...Hex.directions.map((e) => [e]),
 ];
 
-const allNames = [
-  "Proxima Centauri",
-  "Lalande 21185",
-  "Lacaille 9352",
-  "YZ Ceti",
-  "Gliese 1061",
-  "Wolf 1061",
-  "Wolf 1061",
-  "Gliese 876",
-  "82 G. Eridani",
-  "Gliese 581",
-  "HD 219134",
-  "61 Virginis",
-  "TRAPPIST-1",
-  "55 Cancri",
-  "HD 69830",
-  "HD 40307",
-  "Nu2 Lupi",
-  "LHS 1140",
-  "Mu Arae",
-  "GJ 3929",
-  "Pi Mensae",
-  "HD 142",
-  "K2-38",
-  "TOI-1136",
-  "HD 108236",
-];
-
 class GameCreator {
   static const minDistanceSector = 5;
   static const numOfSector = 4;
@@ -78,7 +50,7 @@ class GameCreator {
   final List<Cell> cells = [];
   List<Hex> hexList = [];
   final Map<int, int> hexTable = {};
-  final List<StarSystem> systems = [];
+  final List<Planet> planets = [];
   final Map<Hex, Sector> sectorTable = {};
   Map<Hex, Hex> _lastFillMap = {};
 
@@ -91,7 +63,7 @@ class GameCreator {
     cells.clear();
     hexList.clear();
     hexTable.clear();
-    systems.clear();
+    planets.clear();
     sectorTable.clear();
 
     hexList = generateHexMap(gameSettings.mapSize);
@@ -126,7 +98,7 @@ class GameCreator {
     _assignHomePlanet();
 
     _prepareNames();
-    for (final s in systems) {
+    for (final s in planets) {
       s.displayName = _nextName();
     }
   }
@@ -225,42 +197,34 @@ class GameCreator {
         }
       }
     }
-    // Spawn systems closer to center
+    // Spawn planets closer to center
     objects.sort((a, b) => a.distance(center).compareTo(b.distance(center)));
 
-    int numOfPlanets = rand.nextInt(6) + 9;
+    int numOfPlanetSize = rand.nextInt(5) + 9;
     for (final hex in objects) {
       final idx = hexTable[hex.toInt()]!;
       final cell = cells[idx];
-      if (numOfPlanets > 0) {
-        numOfPlanets -= _createPlanets(cell);
-        sectorTable[center]!.systemPosList.add(hex);
+      if (numOfPlanetSize > 0) {
+        numOfPlanetSize -= _createPlanets(cell);
+        sectorTable[center]!.planetPosList.add(hex);
       } else {
         _createTile(cell);
       }
     }
     // Player should spawn further from galaxy center
     sectorTable[center]!
-        .systemPosList
+        .planetPosList
         .sort((a, b) => b.distance(Hex.zero).compareTo(a.distance(Hex.zero)));
   }
 
   int _createPlanets(Cell cell) {
-    // 2 to 5 planets
-    final int numOfPlanet = rand.nextInt(4) + 2;
-    final List<Planet> planets = [];
-    for (int i = 0; i < numOfPlanet; i++) {
-      final size = rand.nextInt(3);
-      final planet = Planet(_getRandPlanet(rand), size: size);
-      planets.add(planet);
-    }
-    planets.sort((a, b) => b.type.growth.compareTo(a.type.growth));
+    final size = rand.nextInt(3);
 
-    final s = StarSystem(planets, cell.hex);
-    cell.system = s;
-    systems.add(s);
+    final s = Planet(_getRandPlanet(rand), cell.hex, planetSize: size);
+    cell.planet = s;
+    planets.add(s);
 
-    return planets.length;
+    return size + 3;
   }
 
   void _createTile(Cell cell) {
@@ -310,14 +274,10 @@ class GameCreator {
     sectors.shuffle(rand);
     for (int i = 0; i < gameSettings.players.length; i++) {
       final player = gameSettings.players[i];
-      final systemHex = sectorTable[sectors[i]]!.systemPosList[0];
-      final systemCell = cells[hexTable[systemHex.toInt()]!];
-      final system = systemCell.system!;
-      while (system.planets.length < 5) {
-        system.planets.add(Planet(_getRandPlanet(rand), size: 1));
-      }
-      system.planets.sort((a, b) => b.type.growth.compareTo(a.type.growth));
-      systemCell.system!.setHomePlanet(player.playerNumber);
+      final planetHex = sectorTable[sectors[i]]!.planetPosList[0];
+      final planetCell = cells[hexTable[planetHex.toInt()]!];
+      final planet = planetCell.planet!;
+      planet.setHomePlanet(player.playerNumber);
     }
   }
 
@@ -349,7 +309,7 @@ class GameCreator {
   }
 
   void _prepareNames() {
-    _names = List.from(allNames);
+    _names = List.from(planetNames);
     _names.shuffle(rand);
   }
 

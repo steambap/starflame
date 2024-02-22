@@ -3,10 +3,10 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 
 import 'scifi_game.dart';
-import "theme.dart" show text16, buttonPaintLayer;
+import "theme.dart" show text16, buttonPaintLayer, buttonHoverPaintLayer;
 
 class HudNextTurnBtn extends PositionComponent
-    with HasGameRef<ScifiGame>, TapCallbacks {
+    with HasGameRef<ScifiGame>, TapCallbacks, HoverCallbacks {
   static final buttonSize = Vector2(100, 32);
   final RectangleComponent rect =
       RectangleComponent(size: buttonSize, paintLayers: buttonPaintLayer);
@@ -22,6 +22,16 @@ class HudNextTurnBtn extends PositionComponent
     buttonText.position = buttonSize / 2;
 
     addAll([rect, buttonText]);
+  }
+
+  @override
+  void onHoverEnter() {
+    rect.paintLayers = buttonHoverPaintLayer;
+  }
+
+  @override
+  void onHoverExit() {
+    rect.paintLayers = buttonPaintLayer;
   }
 
   @override

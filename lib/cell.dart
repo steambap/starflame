@@ -1,22 +1,20 @@
 import 'dart:async';
 import 'package:flame/components.dart';
-import 'package:flutter/foundation.dart';
 import 'package:starfury/tile_type.dart';
 
 import 'scifi_game.dart';
 import 'hex.dart';
-import 'star_system.dart';
-import 'tile.dart';
+import 'planet.dart';
 import 'ship.dart';
-import "theme.dart" show highlighterPaint, moveendPaint, targetPaint, text12;
+import "theme.dart" show highlighterPaint, moveendPaint, targetPaint;
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   final int index;
   final Hex hex;
   Hex sector = Hex.zero;
-  StarSystem? system;
+  Planet? planet;
   late final PolygonComponent _highligher;
-  Tile? _tile;
+  TileType tileType = TileType.empty;
   Ship? ship;
 
   Cell(this.index, this.hex) : super(anchor: Anchor.center) {
@@ -27,23 +25,10 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
 
   @override
   FutureOr<void> onLoad() {
-    if (system != null) {
-      add(system!);
+    if (planet != null) {
+      add(planet!);
     }
   }
-
-  set tileType(TileType t) {
-    _tile?.removeFromParent();
-    if (t == TileType.empty) {
-      return;
-    }
-
-    final newTile = Tile(t);
-    _tile = newTile;
-    add(newTile);
-  }
-
-  TileType get tileType => _tile?.tileType ?? TileType.empty;
 
   void unmark() {
     _highligher.removeFromParent();

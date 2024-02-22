@@ -5,12 +5,12 @@ class Hex {
   static const double size = 36;
   static Hex zero = Hex(0, 0, 0);
   static List<Hex> directions = [
-    Hex(1, 0, -1), // E
-    Hex(1, -1, 0), // NE
-    Hex(0, -1, 1), // NW
-    Hex(-1, 0, 1), // W
-    Hex(-1, 1, 0), // SW
-    Hex(0, 1, -1), // SE
+    Hex(1, 0, -1), // E 0-5
+    Hex(1, -1, 0), // NE 4-5
+    Hex(0, -1, 1), // NW 3-4
+    Hex(-1, 0, 1), // W 2-3
+    Hex(-1, 1, 0), // SW 1-2
+    Hex(0, 1, -1), // SE 0-1
   ];
 
   final int q;

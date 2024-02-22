@@ -6,6 +6,7 @@ enum FacilityType {
   radioactiveCollider,
   computerComplex,
   medicalLab,
+  climateControlDevice,
 }
 
 class Facility {

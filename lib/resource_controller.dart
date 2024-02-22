@@ -7,7 +7,7 @@ class ResourceController {
   ResourceController(this.game);
 
   void runProduction(int playerNumber) {
-    for (final s in game.mapGrid.systems) {
+    for (final s in game.mapGrid.planets) {
       if (s.playerNumber == playerNumber) {
         s.produceEnergy(playerNumber);
       }
@@ -18,7 +18,7 @@ class ResourceController {
     final idx = game.controller.getHumanPlayerNumber();
     double energy = 0.0;
 
-    for (final s in game.mapGrid.systems) {
+    for (final s in game.mapGrid.planets) {
       if (s.playerNumber == idx) {
         energy += s.energyIncome();
       }
@@ -31,7 +31,7 @@ class ResourceController {
     final idx = game.controller.getHumanPlayerNumber();
     double metal = 0.0;
 
-    for (final s in game.mapGrid.systems) {
+    for (final s in game.mapGrid.planets) {
       if (s.playerNumber == idx) {
         metal += s.metalIncome();
       }

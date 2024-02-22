@@ -5,14 +5,14 @@ import 'package:starfury/select_control.dart';
 
 import 'scifi_game.dart';
 import 'ship_type.dart';
-import 'theme.dart';
+import 'theme.dart' show unitPaintLayer, unitDisabledPaintLayer, text16;
 
 class ShipBox extends PositionComponent
     with HasGameRef<ScifiGame>, TapCallbacks {
   final Function(ShipType) onTap;
   final ShipType shipType;
   final rect = RectangleComponent(
-      size: HudShipCreatePanel.shipBoxSize, paintLayers: buttonPaintLayer);
+      size: HudShipCreatePanel.shipBoxSize, paintLayers: unitPaintLayer);
   final shipPrice =
       TextComponent(position: Vector2.all(2), textRenderer: text16);
   late final SpriteComponent shipImage;
@@ -44,7 +44,7 @@ class ShipBox extends PositionComponent
         game.shipData.isShipUnlocked(shipType, playerNumber);
 
     if (!isUnlocked) {
-      rect.paintLayers = buttonDisabledPaintLayer;
+      rect.paintLayers = unitDisabledPaintLayer;
     }
 
     shipName.text = shipType.name.toLowerCase();

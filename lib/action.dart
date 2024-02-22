@@ -30,12 +30,12 @@ sealed class Action {
   }
 
   List<Cell> neutralPlanetCells(List<Cell> cells) {
-    return cells.where((cell) => cell.system?.neutral() ?? false).toList();
+    return cells.where((cell) => cell.planet?.neutral() ?? false).toList();
   }
 
   List<Cell> enemyPlanetCells(List<Cell> cells, int playerNumber) {
     return cells
-        .where((cell) => cell.system?.attackable(playerNumber) ?? false)
+        .where((cell) => cell.planet?.attackable(playerNumber) ?? false)
         .toList();
   }
 
@@ -64,12 +64,12 @@ class Capture extends Action {
   @override
   void execute(Ship ship, Cell cell) {
     ship.useAttack();
-    if (cell.system == null) {
+    if (cell.planet == null) {
       return;
     }
     final playerNumber = ship.state.playerNumber;
-    final system = cell.system!;
-    system.capture(playerNumber);
+    final planet = cell.planet!;
+    planet.capture(playerNumber);
   }
 }
 
@@ -79,11 +79,11 @@ class BuildColony extends Action {
   @override
   void execute(Ship ship, Cell cell) {
     ship.useMove(1);
-    if (cell.system == null) {
+    if (cell.planet == null) {
       return;
     }
     final playerNumber = ship.state.playerNumber;
-    final sysyem = cell.system!;
+    final sysyem = cell.planet!;
     sysyem.colonize(playerNumber, 1);
     ship.dispose();
   }

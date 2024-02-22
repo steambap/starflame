@@ -1,4 +1,4 @@
-import 'dart:ui' show PaintingStyle, Paint, Color;
+import 'dart:ui' show PaintingStyle, Paint, Color, Gradient, Offset;
 import "package:flutter/painting.dart" show TextStyle;
 import "package:flutter/material.dart" show Colors;
 import "package:flame/game.dart";
@@ -13,6 +13,10 @@ final text12 =
     TextPaint(style: const TextStyle(color: Colors.white, fontSize: 12));
 final hexBorderPaint = Paint()
   ..style = PaintingStyle.stroke
+  ..strokeWidth = 1
+  ..color = Colors.grey.shade800;
+final sectionBorderPaint = Paint()
+  ..style = PaintingStyle.stroke
   ..strokeWidth = 2
   ..color = Colors.grey.shade700;
 final highlighterPaint = Paint()..color = Colors.blue.withAlpha(128);
@@ -21,13 +25,25 @@ final targetPaint = Paint()..color = Colors.red.withAlpha(128);
 final emptyPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.transparent;
-final buttonBGPaint = Paint()..color = Colors.blue.shade700;
+final buttonBGPaint = Paint()..color = Colors.green.shade800.withAlpha(192);
 final buttonBorderPaint = Paint()
   ..style = PaintingStyle.stroke
-  ..color = Colors.amber.shade400
+  ..color = Colors.green.shade400
   ..strokeWidth = 1;
-final buttonBGDisabled = Paint()..color = Colors.grey.shade700;
-final buttonBorderDisabled = Paint()
+final buttonHoverPaint = Paint()
+  ..shader = Gradient.linear(Offset.zero, const Offset(0, 24),
+      [Colors.green.shade800, Colors.green.shade400]);
+final buttonHoverBorderPaint = Paint()
+  ..style = PaintingStyle.stroke
+  ..color = Colors.green.shade300
+  ..strokeWidth = 1;
+final unitBGPaint = Paint()..color = Colors.blueGrey.shade700.withAlpha(192);
+final unitBorderPaint = Paint()
+  ..style = PaintingStyle.stroke
+  ..color = Colors.blue.shade400
+  ..strokeWidth = 1;
+final unitBGDisabled = Paint()..color = Colors.grey.shade800.withAlpha(192);
+final unitBorderDisabled = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.grey.shade400
   ..strokeWidth = 1;
@@ -39,8 +55,10 @@ final panelBorderPaint = Paint()
   ..strokeWidth = 1;
 
 final List<Paint> buttonPaintLayer = [buttonBGPaint, buttonBorderPaint];
-final List<Paint> buttonDisabledPaintLayer = [
-  buttonBGDisabled,
-  buttonBorderDisabled
+final List<Paint> buttonHoverPaintLayer = [
+  buttonHoverPaint,
+  buttonHoverBorderPaint
 ];
+final List<Paint> unitPaintLayer = [unitBGPaint, unitBorderPaint];
+final List<Paint> unitDisabledPaintLayer = [unitBGDisabled, unitBorderDisabled];
 final List<Paint> panelPaintLayer = [panelBGPaint, panelBorderPaint];

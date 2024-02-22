@@ -15,9 +15,10 @@ import 'cell.dart';
 import "pathfinding.dart";
 import "hex.dart";
 import "select_control.dart";
-import "star_system.dart";
+import "planet.dart";
 import "ship_type.dart";
-import "theme.dart" show textDamage, hexBorderPaint;
+import "tile_type.dart";
+import "theme.dart" show textDamage, hexBorderPaint, sectionBorderPaint;
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -30,6 +31,7 @@ Hex _pixelToHex(Vector2 pixel) {
 
 class MapGrid extends Component
     with HasGameRef<ScifiGame>, KeyboardHandler, TapCallbacks, DragCallbacks {
+  final tileSize = Vector2.all(72);
   final double moveSpeed = 20;
   Vector2 direction = Vector2.zero();
 
@@ -37,8 +39,11 @@ class MapGrid extends Component
 
   /// Hex to cell index
   Map<int, int> _hexTable = {};
+  late final Sprite nebula;
+  late final List<Sprite> asteroids;
+  late final Sprite gravityRift;
 
-  List<StarSystem> systems = [];
+  List<Planet> planets = [];
   Pathfinding pathfinding = Pathfinding({});
   final List<Ship> shipListAll = [];
   final Map<int, List<Ship>> shipMap = {};
@@ -47,23 +52,51 @@ class MapGrid extends Component
   @override
   FutureOr<void> onLoad() {
     _selectControl = SelectControlWaitForInput(game);
+    nebula = Sprite(game.images.fromCache("nebula.png"));
+    gravityRift = Sprite(game.images.fromCache("gravity_rift.png"));
+    final asteroidImg = game.images.fromCache("asteroid.png");
+    asteroids = [
+      Sprite(asteroidImg, srcPosition: Vector2(0, 0), srcSize: tileSize),
+      Sprite(asteroidImg, srcPosition: Vector2(72, 0), srcSize: tileSize),
+      Sprite(asteroidImg, srcPosition: Vector2(144, 0), srcSize: tileSize),
+    ];
   }
 
   // Draw all hexagons in one go
   @override
   void render(Canvas canvas) {
-    final Path path = Path();
-    path.addPolygon(
-        Hex.zero
-            .polygonCorners()
-            .map((e) => e.toOffset())
-            .toList(growable: false),
-        true);
+    final corners = Hex.zero
+        .polygonCorners()
+        .map((e) => e.toOffset())
+        .toList(growable: false);
 
     for (final cell in cells) {
       canvas.save();
       canvas.translate(cell.position.x, cell.position.y);
-      canvas.drawPath(path, hexBorderPaint);
+
+      final ns = cell.hex.getNeighbours();
+      for (int i = 0; i < ns.length; i++) {
+        final n = ns[i];
+        Paint paint = sectionBorderPaint;
+        if (_hexTable.containsKey(n.toInt())) {
+          final nCell = cells[_hexTable[n.toInt()]!];
+          if (cell.sector == nCell.sector) {
+            paint = hexBorderPaint;
+          }
+        }
+
+        canvas.drawLine(corners[(11 - i) % 6], corners[(12 - i) % 6], paint);
+      }
+      // draw tile
+      final t = cell.tileType;
+      if (t == TileType.gravityRift) {
+        gravityRift.render(canvas, size: tileSize, anchor: Anchor.center);
+      } else if (t == TileType.nebula) {
+        nebula.render(canvas, size: tileSize, anchor: Anchor.center);
+      } else if (t == TileType.asteroidField) {
+        final index = cell.hex.q % 3;
+        asteroids[index].render(canvas, size: tileSize, anchor: Anchor.center);
+      }
 
       canvas.restore();
     }
@@ -89,7 +122,7 @@ class MapGrid extends Component
   }
 
   @override
-  bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     direction = Vector2.zero();
     direction.x += (keysPressed.contains(LogicalKeyboardKey.keyA) ||
             keysPressed.contains(LogicalKeyboardKey.arrowLeft))
@@ -156,7 +189,7 @@ class MapGrid extends Component
   FutureOr<void> initMap(GameCreator gc) async {
     cells = gc.cells;
     _hexTable = gc.hexTable;
-    systems = gc.systems;
+    planets = gc.planets;
 
     pathfinding = Pathfinding(_calcEdges());
 
@@ -245,7 +278,7 @@ class MapGrid extends Component
   }
 
   Cell? getCapitalCell(int playerNumber) {
-    for (final s in systems) {
+    for (final s in planets) {
       if (s.homePlanet && s.playerNumber == playerNumber) {
         final hex = s.hex;
         final index = _hexTable[hex.toInt()] ?? -1;
@@ -262,8 +295,8 @@ class MapGrid extends Component
   List<Cell> getShipDeployableCells(int playerNumber) {
     final List<Cell> deployableCells = [];
     for (final cell in cells) {
-      if (cell.system != null) {
-        if (cell.system?.playerNumber == playerNumber) {
+      if (cell.planet != null) {
+        if (cell.planet?.playerNumber == playerNumber) {
           const range = Block(0, 1);
           final cellsInRange = inRange(cell, range);
           for (final cell in cellsInRange) {
@@ -342,8 +375,8 @@ class MapGrid extends Component
         EffectController(duration: 0.5),
       );
       text.addAll([removeEff, moveEff]);
-    } else if (cell.system != null) {
-      // TODO: system siege
+    } else if (cell.planet != null) {
+      // TODO: planet siege
     }
   }
 }

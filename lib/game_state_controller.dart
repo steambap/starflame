@@ -71,8 +71,8 @@ class GameStateController {
   }
 
   void preparationPhaseUpdate() {
-    for (final system in game.mapGrid.systems) {
-      system.phaseUpdate(gameState.playerNumber);
+    for (final planet in game.mapGrid.planets) {
+      planet.phaseUpdate(gameState.playerNumber);
     }
     for (final ship
         in game.mapGrid.shipMap[gameState.playerNumber] ?? List<Ship>.empty()) {
