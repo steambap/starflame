@@ -20,7 +20,6 @@ class GameStateController {
 
   void startGame() {
     game.playerInfo.updateRender();
-    game.shipCreatePanel.updateRender();
     lookAtCapital();
   }
 
@@ -60,7 +59,6 @@ class GameStateController {
     } else {
       // TODO auto save
       game.playerInfo.updateRender();
-      game.shipCreatePanel.updateRender();
       game.mapGrid.unSelect();
     }
   }

@@ -36,6 +36,9 @@ class HudNextTurnBtn extends PositionComponent
 
   @override
   void onTapUp(TapUpEvent event) {
+    if (game.controller.isAITurn()) {
+      return;
+    }
     game.controller.endTurn();
   }
 }

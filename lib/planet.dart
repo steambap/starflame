@@ -11,11 +11,12 @@ import "theme.dart" show text12, emptyPaint;
 
 class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   PlanetType type;
+  ColonyType _colonyType = ColonyType.none;
 
   /// 0 = small, 1 = medium, 2 = large
   int planetSize;
+  int colonyTypeEffect = 0;
   int? playerNumber;
-  int terraformLevel = 0;
   int population = 0;
   double currentGrowth = 0;
   double energy = 0;
@@ -55,9 +56,16 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     updateRender();
   }
 
+  ColonyType get colonyType => _colonyType;
+  set colonyType(ColonyType colonyType) {
+    _colonyType = colonyType;
+    colonyTypeEffect = 0;
+  }
+
   void setHomePlanet(int playerNumber) {
     this.playerNumber = playerNumber;
     type = PlanetType.terran;
+    planetSize = 1;
     homePlanet = true;
     population = 5;
     facilities.addAll([
@@ -67,6 +75,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     ]);
     energy = energyMax() / 2;
     metal = metalMax() / 2;
+    defense = defenseMax();
   }
 
   void colonize(int playerNumber, int population) {
@@ -101,7 +110,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   }
 
   int maxPop() {
-    return type.maxPopulation + terraformLevel;
+    return type.maxPopulation + planetSize;
   }
 
   int support() {
@@ -117,7 +126,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     return max(sum, 0);
   }
 
-  int growth() {
+  double growth() {
     int sum = type.growth;
     for (final f in facilities) {
       if (f.type == FacilityType.medicalLab) {
@@ -128,15 +137,17 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
       }
     }
 
-    return sum;
+    return sum * (1.0 + (support() / 100));
   }
 
-  phaseUpdate(int playerNumber) {
+  void phaseUpdate(int playerNumber) {
     if (this.playerNumber != playerNumber) {
       return;
     }
     _popUpdate();
     _popWork();
+    colonyTypeEffect += 1;
+    colonyTypeEffect = colonyTypeEffect.clamp(0, 10);
 
     updateRender();
   }
@@ -145,7 +156,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     if (population >= maxPop()) {
       return;
     }
-    currentGrowth += growth() * (1.0 + (support() / 100));
+    currentGrowth += growth();
     if (currentGrowth >= 100) {
       population++;
       currentGrowth -= 100;
@@ -193,16 +204,32 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     return sum;
   }
 
+  double defenseMax() {
+    return 999;
+  }
+
   double energyIncome() {
-    return energy * 1.0;
+    double mod = 1.0;
+    if (colonyType == ColonyType.powerGrid) {
+      mod += colonyTypeEffect.toDouble() / 100;
+    }
+    return energy * mod;
   }
 
   double metalIncome() {
-    return metal * 1.0;
+    double mod = 1.0;
+    if (colonyType == ColonyType.miningBase) {
+      mod += colonyTypeEffect.toDouble() / 100;
+    }
+    return metal * mod;
   }
 
-  bool canBuild() {
-    return population - facilities.length > 0;
+  int maxFacilities() {
+    return switch (planetSize) {
+      0 => 7,
+      1 => 10,
+      _ => 12,
+    };
   }
 
   void production(int playerNumber) {
@@ -231,5 +258,23 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
 
   bool neutral() {
     return playerNumber == null;
+  }
+
+  String planetSizeStr() {
+    return switch (planetSize) {
+      0 => "Small",
+      1 => "Medium",
+      _ => "Large",
+    };
+  }
+
+  String colonyTypeEffectStr() {
+    return switch (colonyType) {
+      ColonyType.none => "None",
+      ColonyType.militaryInstallation => "Military TODO",
+      ColonyType.miningBase => "Metal + $colonyTypeEffect%",
+      ColonyType.powerGrid => "Energy + $colonyTypeEffect%",
+      ColonyType.researchStation => "Research TODO",
+    };
   }
 }

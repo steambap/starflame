@@ -25,7 +25,7 @@ final targetPaint = Paint()..color = Colors.red.withAlpha(128);
 final emptyPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.transparent;
-final buttonBGPaint = Paint()..color = Colors.green.shade800.withAlpha(192);
+final buttonBGPaint = Paint()..color = Colors.green.shade800.withAlpha(221);
 final buttonBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.green.shade400
@@ -37,12 +37,12 @@ final buttonHoverBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.green.shade300
   ..strokeWidth = 1;
-final unitBGPaint = Paint()..color = Colors.blueGrey.shade700.withAlpha(192);
+final unitBGPaint = Paint()..color = Colors.blueGrey.shade700.withAlpha(221);
 final unitBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.blue.shade400
   ..strokeWidth = 1;
-final unitBGDisabled = Paint()..color = Colors.grey.shade800.withAlpha(192);
+final unitBGDisabled = Paint()..color = Colors.grey.shade800.withAlpha(221);
 final unitBorderDisabled = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.grey.shade400
@@ -53,6 +53,13 @@ final panelBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.grey.shade400
   ..strokeWidth = 1;
+final panelBackground = Paint()..color = Colors.grey.shade900;
+final textBox = Paint()..color = Colors.blueGrey.shade900;
+final textButton = Paint()..color = Colors.cyan.shade700;
+final textBoxBorder = Paint()
+  ..style = PaintingStyle.stroke
+  ..color = Colors.cyan.shade200
+  ..strokeWidth = 1;
 
 final List<Paint> buttonPaintLayer = [buttonBGPaint, buttonBorderPaint];
 final List<Paint> buttonHoverPaintLayer = [
@@ -62,3 +69,5 @@ final List<Paint> buttonHoverPaintLayer = [
 final List<Paint> unitPaintLayer = [unitBGPaint, unitBorderPaint];
 final List<Paint> unitDisabledPaintLayer = [unitBGDisabled, unitBorderDisabled];
 final List<Paint> panelPaintLayer = [panelBGPaint, panelBorderPaint];
+final List<Paint> textBoxPaintLayer = [textBox, textBoxBorder];
+final List<Paint> textButtonPaintLayer = [textButton, textBoxBorder];

@@ -8,6 +8,7 @@ import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:starfury/game_creator.dart';
+import 'package:starfury/menu_planet_cmd.dart';
 
 import 'ship.dart';
 import 'scifi_game.dart';
@@ -48,6 +49,7 @@ class MapGrid extends Component
   final List<Ship> shipListAll = [];
   final Map<int, List<Ship>> shipMap = {};
   late SelectControl _selectControl;
+  MenuPlanetCmd? _menuPlanetCmd;
 
   @override
   FutureOr<void> onLoad() {
@@ -378,5 +380,16 @@ class MapGrid extends Component
     } else if (cell.planet != null) {
       // TODO: planet siege
     }
+  }
+
+  void renderPlanetMenu(Planet? planet) {
+    if (planet == null) {
+      _menuPlanetCmd?.removeFromParent();
+      return;
+    }
+
+    _menuPlanetCmd = MenuPlanetCmd(planet);
+    _menuPlanetCmd!.position = planet.hex.toPixel();
+    add(_menuPlanetCmd!);
   }
 }

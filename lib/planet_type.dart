@@ -31,8 +31,8 @@ enum PlanetType {
 
 enum ColonyType {
   none,
-  outpost,
-  colony,
-  metropolis,
-  capital,
+  militaryInstallation,
+  miningBase,
+  powerGrid,
+  researchStation,
 }

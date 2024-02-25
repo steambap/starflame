@@ -25,7 +25,11 @@ class SelectControlWaitForInput extends SelectControl {
 
   @override
   void onCellClick(Cell cell) {
-    game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+    if (cell.ship != null) {
+      game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+    } else if (cell.planet != null) {
+      game.mapGrid.selectControl = SelectControlPlanet(game, cell);
+    }
   }
 }
 
@@ -40,6 +44,10 @@ class SelectControlCellSelected extends SelectControl {
   @override
   void onCellClick(Cell cell) {
     if (this.cell == cell) {
+      if (cell.planet != null) {
+        game.mapGrid.selectControl = SelectControlPlanet(game, cell);
+      }
+
       return;
     }
 
@@ -89,6 +97,36 @@ class SelectControlCellSelected extends SelectControl {
     for (final cell in attackableCells) {
       cell.unmark();
     }
+  }
+}
+
+class SelectControlPlanet extends SelectControl {
+  final Cell cell;
+  SelectControlPlanet(super.game, this.cell);
+
+  @override
+  void onCellClick(Cell cell) {
+    if (this.cell == cell) {
+      if (cell.ship != null) {
+        game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+      }
+
+      return;
+    }
+
+    game.mapGrid.selectControl = SelectControlWaitForInput(game);
+  }
+
+  @override
+  void onStateEnter() {
+    game.planetInfo.updateRender(cell.planet);
+    game.mapGrid.renderPlanetMenu(cell.planet);
+  }
+
+  @override
+  void onStateExit() {
+    game.planetInfo.updateRender(null);
+    game.mapGrid.renderPlanetMenu(null);
   }
 }
 
