@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
 
-import 'facility.dart';
+import 'building.dart';
 import 'scifi_game.dart';
 import "hex.dart";
 import "planet_type.dart";
@@ -11,19 +10,18 @@ import "theme.dart" show text12, emptyPaint;
 
 class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   PlanetType type;
-  ColonyType _colonyType = ColonyType.none;
 
   /// 0 = small, 1 = medium, 2 = large
   int planetSize;
-  int colonyTypeEffect = 0;
   int? playerNumber;
-  int population = 0;
-  double currentGrowth = 0;
-  double energy = 0;
-  double metal = 0;
+  int developmentLevel = 0;
+  int food = 0;
+  int citizen = 0;
+  int trade = 0;
+  int support = 0;
   double defense = 0;
   bool isUnderSiege = false;
-  final List<Facility> facilities = [];
+  final List<Building> buildings = [];
   bool homePlanet = false;
   String displayName = "";
 
@@ -56,44 +54,36 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     updateRender();
   }
 
-  ColonyType get colonyType => _colonyType;
-  set colonyType(ColonyType colonyType) {
-    _colonyType = colonyType;
-    colonyTypeEffect = 0;
-  }
-
   void setHomePlanet(int playerNumber) {
     this.playerNumber = playerNumber;
     type = PlanetType.terran;
     planetSize = 1;
     homePlanet = true;
-    population = 5;
-    facilities.addAll([
-      Facility(FacilityType.medicalLab),
-      Facility(FacilityType.fusionReactor),
-      Facility(FacilityType.metalExtractor)
+    citizen = 100;
+    support = 100;
+    buildings.addAll([
+      Building.galacticHQ,
+      Building.fusionReactor,
     ]);
-    energy = energyMax() / 2;
-    metal = metalMax() / 2;
+    food = type.food;
     defense = defenseMax();
   }
 
   void colonize(int playerNumber, int population) {
     this.playerNumber = playerNumber;
-    this.population = population;
     updateRender();
     game.playerInfo.updateRender();
   }
 
   void capture(int playerNumber) {
     this.playerNumber = playerNumber;
-    population ~/= 2;
+    citizen ~/= 2;
     updateRender();
     game.playerInfo.updateRender();
   }
 
   void updateRender() {
-    final popLabel = population > 0 ? population.toString() : '';
+    final popLabel = citizen > 0 ? citizen.toString() : '';
 
     if (playerNumber == null) {
       ownerCircle.paint = emptyPaint;
@@ -109,144 +99,114 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     }
   }
 
-  int maxPop() {
-    return type.maxPopulation + planetSize;
-  }
-
-  int support() {
-    int sum = 50 - type.support - population;
-    if (playerNumber != null) {
-      for (var s in game.mapGrid.planets) {
-        if (s.playerNumber == playerNumber) {
-          sum -= 6;
-        }
-      }
-    }
-
-    return max(sum, 0);
-  }
-
-  double growth() {
-    int sum = type.growth;
-    for (final f in facilities) {
-      if (f.type == FacilityType.medicalLab) {
-        sum += 15;
-      }
-      if (f.type == FacilityType.climateControlDevice) {
-        sum += 5;
-      }
-    }
-
-    return sum * (1.0 + (support() / 100));
-  }
-
   void phaseUpdate(int playerNumber) {
     if (this.playerNumber != playerNumber) {
       return;
     }
-    _popUpdate();
-    _popWork();
-    colonyTypeEffect += 1;
-    colonyTypeEffect = colonyTypeEffect.clamp(0, 10);
+    _citizenUpdate();
+    _citizenWork();
+
+    supportUpdate();
 
     updateRender();
   }
 
-  void _popUpdate() {
-    if (population >= maxPop()) {
-      return;
-    }
-    currentGrowth += growth();
-    if (currentGrowth >= 100) {
-      population++;
-      currentGrowth -= 100;
+  void _citizenUpdate() {
+    for (int i = 0; i < 3; i++) {
+      _citizenGrow();
+      _citizenDecay();
     }
   }
 
-  void _popWork() {
-    if (energy >= energyMax() && metal >= metalMax()) {
-      return;
+  int growth() {
+    int buildingGrowth = 0;
+    for (final bd in buildings) {
+      if (bd == Building.galacticHQ) {
+        buildingGrowth += 5;
+      }
     }
-    final double mod = 1.0 + (support() / 100);
-
-    if (energy >= energyMax()) {
-      metal += population * 6 * mod;
-    } else if (metal >= metalMax()) {
-      energy += population * 6 * mod;
-    } else {
-      energy += population * 3 * mod;
-      metal += population * 3 * mod;
-    }
-
-    energy = energy.clamp(0, energyMax());
-    metal = metal.clamp(0, metalMax());
+    return food + buildingGrowth;
   }
 
-  double energyMax() {
-    double sum = type.energy * 100;
-    for (final f in facilities) {
-      if (f.type == FacilityType.fusionReactor) {
-        sum += 100;
+  void _citizenGrow() {
+    citizen += growth();
+  }
+
+  void _citizenDecay() {
+    citizen -= (citizen.toDouble() * 0.4 / 1.0).floor();
+    citizen = citizen.clamp(0, 99999);
+  }
+
+  void _citizenWork() {
+    defense += citizen;
+    defense = defense.clamp(0, defenseMax());
+  }
+
+  int calcSupport() {
+    double tradeEffectMultiplier = 1.0;
+    if (type.climate == PlanetClimate.cold) {
+      tradeEffectMultiplier -= 0.2;
+    }
+    double tradeSupportMultiplier = 1.0 + developmentLevel * 0.1;
+    final tradeSupport =
+        citizen * tradeSupportMultiplier - trade * tradeEffectMultiplier;
+    double buildingSupport = 0;
+    for (final bd in buildings) {
+      if (bd == Building.policeStation) {
+        buildingSupport += 100;
       }
     }
 
-    return sum;
+    return (tradeSupport + buildingSupport).floor();
   }
 
-  double metalMax() {
-    double sum = type.metal * 100;
-    for (final f in facilities) {
-      if (f.type == FacilityType.metalExtractor) {
-        sum += 100;
-      }
-    }
+  void supportUpdate() {
+    support += calcSupport();
+    support = support.clamp(0, 100);
+  }
 
-    return sum;
+  bool isFoodDeveloped() {
+    return food == type.food;
+  }
+
+  void developFood(int playerNumber) {
+    food += 10;
+    food = food.clamp(0, type.food);
+  }
+
+  void investTrade(int playerNumber) {
+    trade += 10;
+  }
+
+  bool canUpgrade() {
+    return developmentLevel < 2;
+  }
+
+  void upgrade() {
+    developmentLevel = (developmentLevel + 1).clamp(0, 2);
+    updateRender();
   }
 
   double defenseMax() {
-    return 999;
+    return 500 + developmentLevel * 300;
   }
 
-  double energyIncome() {
-    double mod = 1.0;
-    if (colonyType == ColonyType.powerGrid) {
-      mod += colonyTypeEffect.toDouble() / 100;
-    }
-    return energy * mod;
+  int maxBuilding() {
+    return planetSize + 2;
   }
 
-  double metalIncome() {
-    double mod = 1.0;
-    if (colonyType == ColonyType.miningBase) {
-      mod += colonyTypeEffect.toDouble() / 100;
-    }
-    return metal * mod;
+  int lifeQuality() {
+    int qol = type.lifeQuality;
+
+    return 90 + planetSize * 10 + qol + developmentLevel * 10;
   }
 
-  int maxFacilities() {
-    return switch (planetSize) {
-      0 => 7,
-      1 => 10,
-      _ => 12,
-    };
+  double tax() {
+    return citizen * (0.25 + developmentLevel * 0.05);
   }
 
-  void production(int playerNumber) {
-    produceEnergy(playerNumber);
-    produceMetal(playerNumber);
-  }
-
-  void produceEnergy(int playerNumber) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-    final energy = energyIncome();
-    playerState.energy += energy;
-  }
-
-  void produceMetal(int playerNumber) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-    final metal = metalIncome();
-    playerState.metal += metal;
+  double tradeIncome() {
+    return trade * (support / 100);
   }
 
   bool attackable(int playerNumber) {
@@ -265,16 +225,6 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
       0 => "Small",
       1 => "Medium",
       _ => "Large",
-    };
-  }
-
-  String colonyTypeEffectStr() {
-    return switch (colonyType) {
-      ColonyType.none => "None",
-      ColonyType.militaryInstallation => "Military TODO",
-      ColonyType.miningBase => "Metal + $colonyTypeEffect%",
-      ColonyType.powerGrid => "Energy + $colonyTypeEffect%",
-      ColonyType.researchStation => "Research TODO",
     };
   }
 }

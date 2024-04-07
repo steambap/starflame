@@ -6,8 +6,8 @@ import 'hex.dart';
 import 'scifi_game.dart';
 import 'ship.dart';
 import 'theme.dart';
-import 'action.dart';
-import 'action_button.dart';
+// import 'action.dart';
+// import 'action_button.dart';
 
 class HudShipCommand extends PositionComponent
     with HasGameRef<ScifiGame>, HasVisibility {
@@ -62,26 +62,24 @@ class HudShipCommand extends PositionComponent
   void updateRender(Ship? ship, [bool isOwnerHuman = false]) {
     if (ship != null) {
       final state = ship.state;
-      final type = state.type;
-      final shipData = game.shipData.table[type]!;
-      _shipName.text = type.name;
+      _shipName.text = "name";
       _shipInfo.text =
-          "HP: ${state.health} / ${shipData.health} | DPS: ${shipData.attack} | move: ${ship.movePoint()} / ${shipData.movementPoint} | range: ${shipData.minRange}-${shipData.maxRange} | vision: ${shipData.vision}";
-      _shipImage.sprite = Sprite(game.images.fromCache("${type.name}.png"));
+          "HP: ${state.health} move: ${ship.movePoint()}";
+      _shipImage.sprite = Sprite(game.images.fromCache("cruiser.png"));
       _clearActions();
 
-      if (isOwnerHuman) {
-        final buttons = shipData.actions
-            .map((e) => ActionButton(ship.cell, actionTable[e]!))
-            .toList();
-        _shipCommandButtons.addAll(buttons);
-        for (int i = 0; i < buttons.length; i++) {
-          final button = buttons[i];
-          button.position = _shipCommand.position + Vector2(8 + i * 40, 8);
-          add(button);
-        }
-        addAll(_shipCommandButtons);
-      }
+      // if (isOwnerHuman) {
+      //   final buttons = shipData.actions
+      //       .map((e) => ActionButton(ship.cell, actionTable[e]!))
+      //       .toList();
+      //   _shipCommandButtons.addAll(buttons);
+      //   for (int i = 0; i < buttons.length; i++) {
+      //     final button = buttons[i];
+      //     button.position = _shipCommand.position + Vector2(8 + i * 40, 8);
+      //     add(button);
+      //   }
+      //   addAll(_shipCommandButtons);
+      // }
       isVisible = true;
     } else {
       _clearActions();

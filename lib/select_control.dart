@@ -2,7 +2,6 @@ import "action.dart";
 import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
-import "ship_type.dart";
 
 sealed class SelectControl {
   final ScifiGame game;
@@ -72,11 +71,11 @@ class SelectControlCellSelected extends SelectControl {
       if (isOwnerHuman) {
         paths =
             game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
-        if (ship!.canAttack()) {
-          final range = game.shipData.attackRange(ship!.state.type);
-          attackableCells =
-              game.mapGrid.findAttackableCells(cell, range).toSet();
-        }
+        // if (ship!.canAttack()) {
+        //   final range = game.shipData.attackRange(ship!.state.type);
+        //   attackableCells =
+        //       game.mapGrid.findAttackableCells(cell, range).toSet();
+        // }
       }
     }
     for (final cell in paths.keys) {
@@ -131,15 +130,14 @@ class SelectControlPlanet extends SelectControl {
 }
 
 class SelectControlCreateShip extends SelectControl {
-  final ShipType shipType;
   final Map<Cell, bool> cells = {};
-  SelectControlCreateShip(this.shipType, super.game);
+  SelectControlCreateShip(super.game);
 
   @override
   void onCellClick(Cell cell) {
     if (cells.containsKey(cell)) {
       game.controller
-          .createShip(cell, shipType, game.controller.getHumanPlayerNumber());
+          .createShip(cell, game.controller.getHumanPlayerNumber());
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }

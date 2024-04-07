@@ -8,7 +8,6 @@ import 'scifi_game.dart';
 import "cell.dart";
 import "theme.dart";
 import "ship_state.dart";
-import "ship_type.dart";
 
 class Ship extends PositionComponent with HasGameRef<ScifiGame> {
   late SpriteComponent _shipSprite;
@@ -16,14 +15,14 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
   Cell cell;
   late ShipState state;
 
-  Ship(this.cell, ShipType shipType, int playerNumber)
+  Ship(this.cell, int playerNumber)
       : super(anchor: Anchor.center) {
-    state = ShipState(shipType, playerNumber);
+    state = ShipState(playerNumber);
   }
 
   @override
   FutureOr<void> onLoad() {
-    final imgShip = game.images.fromCache("${state.type.name}.png");
+    final imgShip = game.images.fromCache("cruiser.png");
     final spriteShip = Sprite(imgShip);
     _shipSprite = SpriteComponent(
         sprite: spriteShip,
@@ -46,7 +45,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
 
     final uid = game.controller.getUniqueID();
     state.id = uid;
-    state.health = game.shipData.table[state.type]!.health;
+    state.health = 999;
   }
 
   FutureOr<void> moveAnim(Cell cell, List<Cell> fromCells) {
@@ -78,7 +77,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
   setTurnOver() {
     state.isTurnOver = true;
     state.attacked = true;
-    state.movementUsed = game.shipData.table[state.type]!.movementPoint;
+    state.movementUsed = 999;
     _shipSprite.decorator.addLast(grayTint);
   }
 
@@ -86,16 +85,12 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
     if (state.isTurnOver) {
       return 0;
     }
-    final maxMove = game.shipData.table[state.type]!.movementPoint;
+    const maxMove = 4;
 
     return max(maxMove - state.movementUsed, 0);
   }
 
   bool canAttack() {
-    if (!game.shipData.table[state.type]!.hasDefaultWeapon) {
-      return false;
-    }
-
     if (state.isTurnOver) {
       return false;
     }

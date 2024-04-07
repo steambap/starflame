@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
-import "theme.dart" show text12;
+import "theme.dart" show text12, panelBackground;
 
 class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
-  late final SpriteComponent _background;
+  late final RectangleComponent _background;
 
   final _empireColor =
       RectangleComponent(size: Vector2(24, 24), position: Vector2(4, 4));
@@ -15,57 +15,62 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
       textRenderer: text12,
       position: Vector2(36, 16),
       anchor: Anchor.centerLeft);
-  late final SpriteComponent _energyIcon;
-  final _energyLabel = TextComponent(
-      text: "0/0",
+  late final SpriteComponent _creditIcon;
+  final _creditLabel = TextComponent(
+      text: "0",
       textRenderer: text12,
-      position: Vector2(36, 44),
+      position: Vector2(196, 16),
       anchor: Anchor.centerLeft);
-  late final SpriteComponent _metalIcon;
-  final _metalLabel = TextComponent(
-      text: "0/0",
+  late final SpriteComponent _productionIcon;
+  final _productionLabel = TextComponent(
+      text: "0",
       textRenderer: text12,
-      position: Vector2(36, 72),
+      position: Vector2(356, 16),
+      anchor: Anchor.centerLeft);
+  late final SpriteComponent _influenceIcon;
+  final _influenceLabel = TextComponent(
+      text: "0",
+      textRenderer: text12,
+      position: Vector2(516, 16),
       anchor: Anchor.centerLeft);
 
   HudPlayerInfo();
 
   @override
   FutureOr<void> onLoad() {
-    position = Vector2(game.size.x - 172, 8);
-    final bgImg = game.images.fromCache("player_info.png");
-    _background = SpriteComponent(sprite: Sprite(bgImg));
-    final energyIcon = game.images.fromCache("energy_icon.png");
-    _energyIcon = SpriteComponent(
-        sprite: Sprite(energyIcon),
-        position: Vector2(4, 44),
-        scale: Vector2.all(0.66),
-        anchor: Anchor.centerLeft);
-    final metalIcon = game.images.fromCache("metal_icon.png");
-    _metalIcon = SpriteComponent(
-        sprite: Sprite(metalIcon),
-        position: Vector2(4, 72),
-        scale: Vector2.all(0.66),
-        anchor: Anchor.centerLeft);
+    _background = RectangleComponent(
+        size: Vector2(game.size.x, 32), paint: panelBackground);
+    final creditIcon = game.images.fromCache("credit_icon.png");
+    _creditIcon =
+        SpriteComponent(sprite: Sprite(creditIcon), position: Vector2(164, 4));
+    final prodIcon = game.images.fromCache("production_icon.png");
+    _productionIcon =
+        SpriteComponent(sprite: Sprite(prodIcon), position: Vector2(324, 4));
+    final influenceIcon = game.images.fromCache("influence_icon.png");
+    _influenceIcon = SpriteComponent(
+        sprite: Sprite(influenceIcon), position: Vector2(484, 4));
 
     addAll([
       _background,
       _empireColor,
       _empireName,
-      _energyIcon,
-      _energyLabel,
-      _metalIcon,
-      _metalLabel,
+      _creditIcon,
+      _creditLabel,
+      _productionIcon,
+      _productionLabel,
+      _influenceIcon,
+      _influenceLabel,
     ]);
   }
 
   void updateRender() {
     final playerState = game.controller.getHumanPlayerState();
-    final energyIncome = game.resourceController.humanPlayerEnergyIncome();
-    _energyLabel.text =
-        "${playerState.energy.toInt()}(${energyIncome.toInt()})";
     _empireColor.paint = Paint()..color = playerState.color;
-    final metalIncome = game.resourceController.humanPlayerMetalIncome();
-    _metalLabel.text = "${playerState.metal.toInt()}(${metalIncome.toInt()})";
+    final income = game.resourceController.humanPlayerIncome();
+    _creditLabel.text =
+        "${playerState.credit.toInt()}(+${income.credit.toInt()})";
+    _productionLabel.text =
+        "${playerState.production.toInt()}(+${income.production.toInt()})";
+    _influenceLabel.text = "${playerState.influence.toInt()}";
   }
 }

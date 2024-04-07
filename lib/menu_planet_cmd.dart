@@ -3,34 +3,119 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 import 'planet.dart';
-import 'theme.dart' show text12, textButtonPaintLayer, panelBackground;
+import 'yes_no_dialog.dart';
+import 'theme.dart'
+    show
+        text12,
+        textButtonPaintLayer,
+        textButtonDisabledPaintLayer,
+        panelBackground;
 
 class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
   final Planet planet;
   final _background = RectangleComponent(
-    size: Vector2(108, 32),
+    size: Vector2(108, 88),
     paint: panelBackground,
   );
-  final _colonyTypeButton = RectangleComponent(
-    paintLayers: textButtonPaintLayer,
+  final _colonyUpgradeButton = AdvancedButtonComponent(
     size: Vector2(100, 24),
     position: Vector2(4, 4),
+    defaultLabel: TextComponent(
+      text: "Colony Upgrade",
+      textRenderer: text12,
+    ),
+    defaultSkin: RectangleComponent(
+      paintLayers: textButtonPaintLayer,
+    ),
+    disabledSkin: RectangleComponent(
+      paintLayers: textButtonDisabledPaintLayer,
+    ),
   );
-  final _colonyTypeButtonText = TextComponent(
-    text: "Colony Type",
-    textRenderer: text12,
-    position: Vector2(8, 16),
-    anchor: Anchor.centerLeft,
+  final _developFoodButton = AdvancedButtonComponent(
+    size: Vector2(100, 24),
+    position: Vector2(4, 32),
+    defaultLabel: TextComponent(
+      text: "Develop Supply",
+      textRenderer: text12,
+    ),
+    defaultSkin: RectangleComponent(
+      paintLayers: textButtonPaintLayer,
+    ),
+    disabledSkin: RectangleComponent(
+      paintLayers: textButtonDisabledPaintLayer,
+    ),
+  );
+  final _investButton = AdvancedButtonComponent(
+    size: Vector2(100, 24),
+    position: Vector2(4, 60),
+    defaultLabel: TextComponent(
+      text: "Invest",
+      textRenderer: text12,
+    ),
+    defaultSkin: RectangleComponent(
+      paintLayers: textButtonPaintLayer,
+    ),
+    disabledSkin: RectangleComponent(
+      paintLayers: textButtonDisabledPaintLayer,
+    ),
   );
 
   MenuPlanetCmd(this.planet);
 
   @override
   FutureOr<void> onLoad() {
+    final playerNumber = game.controller.getHumanPlayerNumber();
+    if (planet.playerNumber != playerNumber) {
+      _addMenuNonPlayer();
+      return null;
+    } else {
+      _updateAllButtons(playerNumber);
+    }
+
+    _developFoodButton.onPressed = () {
+      game.resourceController.developFood(playerNumber, planet);
+
+      _updateAllButtons(playerNumber);
+      game.planetInfo.updateRender(planet);
+      game.playerInfo.updateRender();
+    };
+    _investButton.onPressed = () {
+      game.resourceController.investTrade(playerNumber, planet);
+
+      _updateAllButtons(playerNumber);
+      game.planetInfo.updateRender(planet);
+      game.playerInfo.updateRender();
+    };
+    _colonyUpgradeButton.onPressed = () async {
+      final result =
+          await game.router.pushAndWait(YesNoDialog('Are you sure?'));
+      if (!result) {
+        return;
+      }
+
+      game.resourceController.upgradePlanet(playerNumber, planet);
+
+      _updateAllButtons(playerNumber);
+      game.planetInfo.updateRender(planet);
+      game.playerInfo.updateRender();
+    };
+
     addAll([
       _background,
-      _colonyTypeButton,
-      _colonyTypeButtonText,
+      _colonyUpgradeButton,
+      _developFoodButton,
+      _investButton,
     ]);
+  }
+
+  void _addMenuNonPlayer() {}
+
+  void _updateAllButtons(int playerNumber) {
+    _colonyUpgradeButton.isDisabled =
+        !game.resourceController.canUpgradePlanet(playerNumber, planet);
+    _developFoodButton.isDisabled =
+        !game.resourceController.canDevelopFood(playerNumber, planet);
+    _investButton.isDisabled =
+        !game.resourceController.canInvestTrade(playerNumber, planet);
   }
 }

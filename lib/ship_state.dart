@@ -1,8 +1,5 @@
-import "ship_type.dart";
-
 class ShipState {
   late final int id;
-  final ShipType type;
   final int playerNumber;
   int exp = 0;
   int health = 1;
@@ -12,5 +9,5 @@ class ShipState {
   bool isTurnOver = false;
   bool attacked = false;
 
-  ShipState(this.type, this.playerNumber);
+  ShipState(this.playerNumber);
 }

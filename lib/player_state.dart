@@ -4,12 +4,13 @@ class PlayerState {
   final int playerNumber;
   Color color = Colors.black;
   int race = 0;
+  int team = -1;
   bool isAlive = true;
   final bool isAI;
-  double energy = 0;
-  double metal = 0;
-  int techPoint = 0;
-  int age = 0;
+  // Resources
+  int production = 0;
+  double credit = 0.0;
+  int influence = 0;
 
   PlayerState(this.playerNumber, this.isAI);
 }

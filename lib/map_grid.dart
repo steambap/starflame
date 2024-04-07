@@ -17,7 +17,6 @@ import "pathfinding.dart";
 import "hex.dart";
 import "select_control.dart";
 import "planet.dart";
-import "ship_type.dart";
 import "tile_type.dart";
 import "theme.dart" show textDamage, hexBorderPaint, sectionBorderPaint;
 
@@ -205,13 +204,13 @@ class MapGrid extends Component
       if (capitalCell == null) {
         continue;
       }
-      spawnShipAt(capitalCell, ShipType.colony, p.playerNumber);
+      spawnShipAt(capitalCell, p.playerNumber);
       // spawn scout at south east
       final scoutHex = capitalCell.hex + Hex.directions[5];
       final sIndex = _hexTable[scoutHex.toInt()] ?? -1;
       if (sIndex >= 0) {
         final sCell = cells[sIndex];
-        spawnShipAt(sCell, ShipType.scout, p.playerNumber);
+        spawnShipAt(sCell, p.playerNumber);
       }
     }
 
@@ -257,8 +256,8 @@ class MapGrid extends Component
   }
 
   Future<void> spawnShipAt(
-      Cell cell, ShipType shipType, int playerNumber) async {
-    final ship = Ship(cell, shipType, playerNumber);
+      Cell cell, int playerNumber) async {
+    final ship = Ship(cell, playerNumber);
     cell.ship = ship;
 
     shipListAll.add(ship);
@@ -268,8 +267,8 @@ class MapGrid extends Component
   }
 
   Future<void> createShipAt(
-      Cell cell, ShipType shipType, int playerNumber) async {
-    final ship = Ship(cell, shipType, playerNumber);
+      Cell cell, int playerNumber) async {
+    final ship = Ship(cell, playerNumber);
     cell.ship = ship;
 
     shipListAll.add(ship);
@@ -358,7 +357,7 @@ class MapGrid extends Component
 
   void resolveCombat(Ship ship, Cell cell) {
     if (cell.ship != null) {
-      final attackingPower = game.shipData.table[ship.state.type]!.attack;
+      const attackingPower = 999;
       int damage = attackingPower *
           (ship.state.playerNumber == game.controller.getHumanPlayerNumber()
               ? 3

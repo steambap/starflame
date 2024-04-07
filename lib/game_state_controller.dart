@@ -1,6 +1,4 @@
-import "package:starfury/cell.dart";
-import "package:starfury/ship_type.dart";
-
+import "cell.dart";
 import "scifi_game.dart";
 import "game_state.dart";
 import "player_state.dart";
@@ -103,20 +101,20 @@ class GameStateController {
     return getPlayerState(gameState.playerNumber);
   }
 
-  createShip(Cell cell, ShipType shipType, int playerNumber) {
+  createShip(Cell cell, int playerNumber) {
     if (cell.ship != null) {
       return;
     }
 
     final playerState = getPlayerState(playerNumber);
-    final cost = game.resourceController.getShipCost(playerNumber, shipType);
-    playerState.energy -= cost;
+    // final cost = 999 + 999;
+    playerState.credit -= 999;
 
     if (playerNumber == getHumanPlayerNumber()) {
       game.playerInfo.updateRender();
     }
 
-    game.mapGrid.createShipAt(cell, shipType, playerNumber);
+    game.mapGrid.createShipAt(cell, playerNumber);
   }
 
   int getUniqueID() {
