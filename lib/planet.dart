@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
+import 'package:flutter/foundation.dart' show ChangeNotifier;
 
 import 'building.dart';
 import 'scifi_game.dart';
@@ -8,7 +9,8 @@ import "hex.dart";
 import "planet_type.dart";
 import "theme.dart" show text12, emptyPaint;
 
-class Planet extends PositionComponent with HasGameRef<ScifiGame> {
+class Planet extends PositionComponent
+    with HasGameRef<ScifiGame>, ChangeNotifier {
   PlanetType type;
 
   /// 0 = small, 1 = medium, 2 = large
@@ -72,14 +74,12 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   void colonize(int playerNumber, int population) {
     this.playerNumber = playerNumber;
     updateRender();
-    game.playerInfo.updateRender();
   }
 
   void capture(int playerNumber) {
     this.playerNumber = playerNumber;
     citizen ~/= 2;
     updateRender();
-    game.playerInfo.updateRender();
   }
 
   void updateRender() {
@@ -172,10 +172,12 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   void developFood(int playerNumber) {
     food += 10;
     food = food.clamp(0, type.food);
+    notifyListeners();
   }
 
   void investTrade(int playerNumber) {
     trade += 10;
+    notifyListeners();
   }
 
   bool canUpgrade() {
@@ -185,6 +187,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   void upgrade() {
     developmentLevel = (developmentLevel + 1).clamp(0, 2);
     updateRender();
+    notifyListeners();
   }
 
   bool canBuild(Building bd) {
@@ -201,6 +204,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   void build(Building bd) {
     buildings.add(bd);
     updateRender();
+    notifyListeners();
   }
 
   double defenseMax() {

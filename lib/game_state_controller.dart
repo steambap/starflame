@@ -17,8 +17,8 @@ class GameStateController {
   }
 
   void startGame() {
-    game.playerInfo.updateRender();
     lookAtCapital();
+    game.playerInfo.addListener();
   }
 
   void lookAtCapital() {
@@ -56,14 +56,12 @@ class GameStateController {
       endTurn();
     } else {
       // TODO auto save
-      game.playerInfo.updateRender();
       game.mapGrid.unSelect();
     }
   }
 
   void productionPhaseUpdate() {
     game.resourceController.runProduction(gameState.playerNumber);
-    game.playerInfo.updateRender();
   }
 
   void preparationPhaseUpdate() {
@@ -109,10 +107,6 @@ class GameStateController {
     final playerState = getPlayerState(playerNumber);
     // final cost = 999 + 999;
     playerState.credit -= 999;
-
-    if (playerNumber == getHumanPlayerNumber()) {
-      game.playerInfo.updateRender();
-    }
 
     game.mapGrid.createShipAt(cell, playerNumber);
   }

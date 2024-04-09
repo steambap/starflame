@@ -11,8 +11,7 @@ import 'map_grid.dart';
 import "game_settings.dart";
 import "resource_controller.dart";
 import 'hud_ship_cmd.dart';
-import "hud_planet_info.dart";
-import "hud_planet_building.dart";
+import "hud_planet.dart";
 
 class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents {
   final MapGrid mapGrid = MapGrid();
@@ -22,8 +21,7 @@ class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents 
   late final ResourceController resourceController;
   final HudPlayerInfo playerInfo = HudPlayerInfo();
   final HudNextTurnBtn nextTurnBtn = HudNextTurnBtn();
-  final HudPlanetInfo planetInfo = HudPlanetInfo();
-  final HudPlanetBuilding planetBuilding = HudPlanetBuilding();
+  final HudPlanet hudPlanet = HudPlanet();
   final HudShipCommand shipCommand = HudShipCommand();
   final RouterComponent router = RouterComponent(
     routes: {
@@ -42,7 +40,7 @@ class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents 
     await images.loadAllImages();
 
     await world.add(mapGrid);
-    camera.viewport.addAll([playerInfo, nextTurnBtn, shipCommand, planetInfo, planetBuilding, router]);
+    camera.viewport.addAll([playerInfo, hudPlanet, nextTurnBtn, shipCommand, router]);
 
     final s = GameSettings(0);
     currentGameSettings = s;

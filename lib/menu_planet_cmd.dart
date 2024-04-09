@@ -68,23 +68,15 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
     if (planet.playerNumber != playerNumber) {
       _addMenuNonPlayer();
       return null;
-    } else {
-      _updateAllButtons(playerNumber);
     }
+    _updateAllButtons();
+    planet.addListener(_updateAllButtons);
 
     _developFoodButton.onPressed = () {
       game.resourceController.developFood(playerNumber, planet);
-
-      _updateAllButtons(playerNumber);
-      game.planetInfo.updateRender(planet);
-      game.playerInfo.updateRender();
     };
     _investButton.onPressed = () {
       game.resourceController.investTrade(playerNumber, planet);
-
-      _updateAllButtons(playerNumber);
-      game.planetInfo.updateRender(planet);
-      game.playerInfo.updateRender();
     };
     _colonyUpgradeButton.onPressed = () async {
       final result =
@@ -94,10 +86,6 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
       }
 
       game.resourceController.upgradePlanet(playerNumber, planet);
-
-      _updateAllButtons(playerNumber);
-      game.planetInfo.updateRender(planet);
-      game.playerInfo.updateRender();
     };
 
     addAll([
@@ -110,12 +98,19 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
 
   void _addMenuNonPlayer() {}
 
-  void _updateAllButtons(int playerNumber) {
+  void _updateAllButtons() {
+    final playerNumber = game.controller.getHumanPlayerNumber();
     _colonyUpgradeButton.isDisabled =
         !game.resourceController.canUpgradePlanet(playerNumber, planet);
     _developFoodButton.isDisabled =
         !game.resourceController.canDevelopFood(playerNumber, planet);
     _investButton.isDisabled =
         !game.resourceController.canInvestTrade(playerNumber, planet);
+  }
+
+  @override
+  void onRemove() {
+    planet.removeListener(_updateAllButtons);
+    super.onRemove();
   }
 }

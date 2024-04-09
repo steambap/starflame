@@ -27,13 +27,12 @@ class HudPlanetBuilding extends PositionComponent
     _buildingButtons.clear();
   }
 
-  void updateRender(Planet? planet) {
-    if (planet == null) {
-      isVisible = false;
-      _clearBuildingButtons();
-      return;
-    }
+  void hide() {
+    isVisible = false;
+    _clearBuildingButtons();
+  }
 
+  void show(Planet planet) {
     final playerNumber = game.controller.getHumanPlayerNumber();
     if (planet.playerNumber != playerNumber) {
       return;
@@ -52,5 +51,12 @@ class HudPlanetBuilding extends PositionComponent
     }
 
     addAll(_buildingButtons);
+  }
+
+  void updateRender(Planet planet) {
+    for (final button in _buildingButtons) {
+      button.isDisabled = !game.resourceController.canAddBuilding(
+          game.controller.getHumanPlayerNumber(), planet, button.building);
+    }
   }
 }

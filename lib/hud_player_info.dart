@@ -63,6 +63,15 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     ]);
   }
 
+  void addListener() {
+    game.controller.getHumanPlayerState().addListener(updateRender);
+    updateRender();
+  }
+
+  void removeListener() {
+    game.controller.getHumanPlayerState().removeListener(updateRender);
+  }
+
   void updateRender() {
     final playerState = game.controller.getHumanPlayerState();
     _empireColor.paint = Paint()..color = playerState.color;

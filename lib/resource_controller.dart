@@ -13,10 +13,7 @@ class ResourceController {
     final playerState = game.controller.getPlayerState(playerNumber);
     final income = playerIncome(playerNumber);
 
-    playerState.production += income.production;
-    playerState.production = playerState.production.clamp(0, 200);
-    playerState.credit += income.credit;
-    playerState.influence = income.influence;
+    playerState.addResource(income);
   }
 
   Resources playerIncome(int playerNumber) {
@@ -76,7 +73,7 @@ class ResourceController {
       return false;
     }
 
-    playerState.production -= 8;
+    playerState.addResource(Resources(production: -8));
     planet.developFood(playerNumber);
 
     return true;
@@ -95,7 +92,7 @@ class ResourceController {
       return false;
     }
 
-    playerState.production -= 8;
+    playerState.addResource(Resources(production: -8));
     planet.investTrade(playerNumber);
 
     return true;
@@ -114,7 +111,7 @@ class ResourceController {
       return false;
     }
 
-    playerState.production -= 20;
+    playerState.addResource(Resources(production: -20));
     planet.upgrade();
 
     return true;
@@ -134,8 +131,9 @@ class ResourceController {
       return false;
     }
 
-    playerState.credit -= building.cost;
-    playerState.production -= 10;
+    playerState.addResource(Resources(
+      credit: -building.cost.toDouble(), production: -10
+    ));
     planet.build(building);
 
     return true;

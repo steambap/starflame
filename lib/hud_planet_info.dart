@@ -174,20 +174,23 @@ class HudPlanetInfo extends PositionComponent
     }
   }
 
-  void updateRender(Planet? planet) {
-    if (planet == null) {
-      isVisible = false;
-      for (final element in _buildingTexts) {
-        element.removeFromParent();
-      }
-      _buildingTexts.clear();
-      return;
+  void hide() {
+    isVisible = false;
+    for (final element in _buildingTexts) {
+      element.removeFromParent();
     }
+    _buildingTexts.clear();
+  }
 
+  void show(Planet planet) {
     isVisible = true;
     _setText(planet);
     _calcScrollBounds();
     _clippedContent.y = 0;
+  }
+
+  void updateRender(Planet planet) {
+    _setText(planet);
   }
 
   void _setText(Planet planet) {
