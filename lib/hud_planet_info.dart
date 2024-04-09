@@ -158,6 +158,15 @@ class HudPlanetInfo extends PositionComponent
   }
 
   @override
+  bool containsLocalPoint(Vector2 point) {
+    if (isVisible) {
+      return super.containsLocalPoint(point);
+    }
+
+    return false;
+  }
+
+  @override
   void onDragUpdate(DragUpdateEvent event) {
     if (scrollBoundsY < 0) {
       _clippedContent.y += event.localDelta.y;
@@ -200,7 +209,7 @@ class HudPlanetInfo extends PositionComponent
     for (int i = 0; i < planet.buildings.length; i++) {
       final building = planet.buildings[i];
       final text = TextComponent(
-        text: building.name,
+        text: building.displayName,
         textRenderer: text12,
         anchor: Anchor.centerLeft,
         position: Vector2(8, 324 + i * 28),

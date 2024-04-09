@@ -62,7 +62,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
     citizen = 100;
     support = 100;
     buildings.addAll([
-      Building.galacticHQ,
+      Building.colonyHQ,
       Building.fusionReactor,
     ]);
     food = type.food;
@@ -121,7 +121,7 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
   int growth() {
     int buildingGrowth = 0;
     for (final bd in buildings) {
-      if (bd == Building.galacticHQ) {
+      if (bd == Building.colonyHQ) {
         buildingGrowth += 5;
       }
     }
@@ -184,6 +184,22 @@ class Planet extends PositionComponent with HasGameRef<ScifiGame> {
 
   void upgrade() {
     developmentLevel = (developmentLevel + 1).clamp(0, 2);
+    updateRender();
+  }
+
+  bool canBuild(Building bd) {
+    if (bd.uniqueTag.isNotEmpty) {
+      for (final b in buildings) {
+        if (b.uniqueTag == bd.uniqueTag) {
+          return false;
+        }
+      }
+    }
+    return buildings.length < maxBuilding();
+  }
+
+  void build(Building bd) {
+    buildings.add(bd);
     updateRender();
   }
 

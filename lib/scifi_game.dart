@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 
+import "scifi_world.dart";
 import 'hud_next_turn_btn.dart';
 import 'hud_player_info.dart';
 import 'game_state_controller.dart';
@@ -11,8 +12,9 @@ import "game_settings.dart";
 import "resource_controller.dart";
 import 'hud_ship_cmd.dart';
 import "hud_planet_info.dart";
+import "hud_planet_building.dart";
 
-class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
+class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents {
   final MapGrid mapGrid = MapGrid();
   final GameCreator gameCreator = GameCreator();
   late GameSettings currentGameSettings;
@@ -21,6 +23,7 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
   final HudPlayerInfo playerInfo = HudPlayerInfo();
   final HudNextTurnBtn nextTurnBtn = HudNextTurnBtn();
   final HudPlanetInfo planetInfo = HudPlanetInfo();
+  final HudPlanetBuilding planetBuilding = HudPlanetBuilding();
   final HudShipCommand shipCommand = HudShipCommand();
   final RouterComponent router = RouterComponent(
     routes: {
@@ -29,7 +32,7 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
     initialRoute: "placeholder"
   );
 
-  ScifiGame() {
+  ScifiGame(): super(world: ScifiWorld()) {
     controller = GameStateController(this);
     resourceController = ResourceController(this);
   }
@@ -39,7 +42,7 @@ class ScifiGame extends FlameGame with HasKeyboardHandlerComponents {
     await images.loadAllImages();
 
     await world.add(mapGrid);
-    camera.viewport.addAll([playerInfo, nextTurnBtn, shipCommand, planetInfo, router]);
+    camera.viewport.addAll([playerInfo, nextTurnBtn, shipCommand, planetInfo, planetBuilding, router]);
 
     final s = GameSettings(0);
     currentGameSettings = s;

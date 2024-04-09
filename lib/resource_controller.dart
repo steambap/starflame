@@ -42,9 +42,9 @@ class ResourceController {
     Resources income = Resources();
 
     for (final bd in planet.buildings) {
-      if (bd == Building.galacticHQ) {
+      if (bd == Building.colonyHQ) {
         income += Resources(production: 10, credit: 20, influence: 5);
-      } else if (bd == Building.factory) {
+      } else if (bd == Building.constructionYard) {
         income += Resources(production: 10);
       } else if (bd == Building.fusionReactor) {
         income += Resources(credit: 80);
@@ -116,6 +116,27 @@ class ResourceController {
 
     playerState.production -= 20;
     planet.upgrade();
+
+    return true;
+  }
+
+  bool canAddBuilding(int playerNumber, Planet planet, Building building) {
+    final playerState = game.controller.getPlayerState(playerNumber);
+    final hasResources = playerState.credit >= building.cost && playerState.production >= 10;
+
+    return hasResources && planet.canBuild(building);
+  }
+
+  bool addBuilding(int playerNumber, Planet planet, Building building) {
+    final playerState = game.controller.getPlayerState(playerNumber);
+
+    if (!canAddBuilding(playerNumber, planet, building)) {
+      return false;
+    }
+
+    playerState.credit -= building.cost;
+    playerState.production -= 10;
+    planet.build(building);
 
     return true;
   }

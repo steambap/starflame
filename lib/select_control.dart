@@ -119,12 +119,14 @@ class SelectControlPlanet extends SelectControl {
   @override
   void onStateEnter() {
     game.planetInfo.updateRender(cell.planet);
+    game.planetBuilding.updateRender(cell.planet);
     game.mapGrid.renderPlanetMenu(cell.planet);
   }
 
   @override
   void onStateExit() {
     game.planetInfo.updateRender(null);
+    game.planetBuilding.updateRender(null);
     game.mapGrid.renderPlanetMenu(null);
   }
 }

@@ -6,7 +6,6 @@ import 'package:flame/components.dart';
 import "package:flame/events.dart";
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
-import 'package:flutter/services.dart';
 import 'package:starfury/game_creator.dart';
 import 'package:starfury/menu_planet_cmd.dart';
 
@@ -29,11 +28,8 @@ Hex _pixelToHex(Vector2 pixel) {
   return hex;
 }
 
-class MapGrid extends Component
-    with HasGameRef<ScifiGame>, KeyboardHandler, TapCallbacks, DragCallbacks {
+class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   final tileSize = Vector2.all(72);
-  final double moveSpeed = 20;
-  Vector2 direction = Vector2.zero();
 
   List<Cell> cells = List.empty();
 
@@ -123,38 +119,9 @@ class MapGrid extends Component
   }
 
   @override
-  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    direction = Vector2.zero();
-    direction.x += (keysPressed.contains(LogicalKeyboardKey.keyA) ||
-            keysPressed.contains(LogicalKeyboardKey.arrowLeft))
-        ? -1
-        : 0;
-    direction.x += (keysPressed.contains(LogicalKeyboardKey.keyD) ||
-            keysPressed.contains(LogicalKeyboardKey.arrowRight))
-        ? 1
-        : 0;
-
-    direction.y += (keysPressed.contains(LogicalKeyboardKey.keyW) ||
-            keysPressed.contains(LogicalKeyboardKey.arrowUp))
-        ? -1
-        : 0;
-    direction.y += (keysPressed.contains(LogicalKeyboardKey.keyS) ||
-            keysPressed.contains(LogicalKeyboardKey.arrowDown))
-        ? 1
-        : 0;
-
-    return true;
-  }
-
-  @override
   bool containsLocalPoint(Vector2 point) {
     final radius = Hex.size * (game.currentGameSettings.mapSize + 1) * 2;
     return point.length <= radius;
-  }
-
-  @override
-  void onDragUpdate(DragUpdateEvent event) {
-    game.camera.moveBy(-event.localDelta);
   }
 
   @override
@@ -177,14 +144,6 @@ class MapGrid extends Component
       return null;
     }
     return cells[cellIndex];
-  }
-
-  @override
-  void update(double dt) {
-    final Vector2 velocity = direction * moveSpeed;
-
-    game.camera.moveBy(velocity);
-    super.update(dt);
   }
 
   FutureOr<void> initMap(GameCreator gc) async {
@@ -255,8 +214,7 @@ class MapGrid extends Component
     cell.ship = ship;
   }
 
-  Future<void> spawnShipAt(
-      Cell cell, int playerNumber) async {
+  Future<void> spawnShipAt(Cell cell, int playerNumber) async {
     final ship = Ship(cell, playerNumber);
     cell.ship = ship;
 
@@ -266,8 +224,7 @@ class MapGrid extends Component
     await add(ship);
   }
 
-  Future<void> createShipAt(
-      Cell cell, int playerNumber) async {
+  Future<void> createShipAt(Cell cell, int playerNumber) async {
     final ship = Ship(cell, playerNumber);
     cell.ship = ship;
 

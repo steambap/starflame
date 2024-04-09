@@ -54,6 +54,7 @@ final panelBorderPaint = Paint()
   ..color = Colors.grey.shade400
   ..strokeWidth = 1;
 final panelBackground = Paint()..color = Colors.grey.shade900;
+final panelBackground800 = Paint()..color = Colors.grey.shade800;
 final textBox = Paint()..color = Colors.blueGrey.shade900;
 final textButton = Paint()..color = Colors.cyan.shade700;
 final textBoxBorder = Paint()
