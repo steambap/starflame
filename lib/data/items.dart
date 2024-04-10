@@ -111,17 +111,20 @@ final List<ShipItem> itemList = [
     ShipItemSkillValue(skill: ShipItemSkill.damageAmplification, value: 10),
     ShipItemSkillValue(skill: ShipItemSkill.movement, value: -1),
   ]),
-  ShipUtil(name: "Nano repair", mass: 50, cost: 250, skills: [
+  ShipUtil(name: "Nano Repair", mass: 50, cost: 250, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.repairPerTurn, value: 2),
     ShipItemSkillValue(skill: ShipItemSkill.repairOnActionSelf, value: 40),
   ]),
-  ShipUtil(name: "Engineering Kit", mass: 50, cost: 300, skills: [
-    ShipItemSkillValue(skill: ShipItemSkill.supply, value: 50),
+  ShipUtil(name: "Engineering Kit 1", mass: 60, cost: 300, skills: [
+    ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 50),
   ]),
-  ShipUtil(name: "Engineering package", mass: 150, cost: 900, skills: [
-    ShipItemSkillValue(skill: ShipItemSkill.supply, value: 150),
+  ShipUtil(name: "Engineering Kit 2", mass: 100, cost: 600, skills: [
+    ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 100),
+  ]),
+  ShipUtil(name: "Engineering Kit 3", mass: 250, cost: 900, skills: [
+    ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 300),
   ]),
 ];
 
-final Map<String, ShipItem> itemTable =
+final Map<String, ShipItem> shipItemMap =
     itemList.asMap().map((index, item) => MapEntry(item.name, item));

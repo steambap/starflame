@@ -1,3 +1,5 @@
+import "package:flame/components.dart";
+
 import "action.dart";
 import "scifi_game.dart";
 import "cell.dart";
@@ -71,11 +73,12 @@ class SelectControlCellSelected extends SelectControl {
       if (isOwnerHuman) {
         paths =
             game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
-        // if (ship!.canAttack()) {
-        //   final range = game.shipData.attackRange(ship!.state.type);
-        //   attackableCells =
-        //       game.mapGrid.findAttackableCells(cell, range).toSet();
-        // }
+        if (ship!.canAttack()) {
+          final maxRange = ship!.template.maxRange();
+          attackableCells = game.mapGrid
+              .findAttackableCells(cell, Block(1, maxRange))
+              .toSet();
+        }
       }
     }
     for (final cell in paths.keys) {
@@ -136,8 +139,7 @@ class SelectControlCreateShip extends SelectControl {
   @override
   void onCellClick(Cell cell) {
     if (cells.containsKey(cell)) {
-      game.controller
-          .createShip(cell, game.controller.getHumanPlayerNumber());
+      game.controller.createShip(cell, game.controller.getHumanPlayerNumber());
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }

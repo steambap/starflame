@@ -3,6 +3,7 @@ import "scifi_game.dart";
 import "game_state.dart";
 import "player_state.dart";
 import "ship.dart";
+import "resource.dart";
 
 class GameStateController {
   GameState gameState = GameState();
@@ -13,6 +14,9 @@ class GameStateController {
 
   void initGame(List<PlayerState> players) {
     this.players = players;
+    for (final element in this.players) {
+      element.init();
+    }
     gameState = GameState();
   }
 
@@ -105,10 +109,11 @@ class GameStateController {
     }
 
     final playerState = getPlayerState(playerNumber);
-    // final cost = 999 + 999;
-    playerState.credit -= 999;
+    // TODO ship template
+    final tmpl = playerState.templates[0];
+    playerState.addResource(Resources(credit: -tmpl.cost(), production: -5));
 
-    game.mapGrid.createShipAt(cell, playerNumber);
+    game.mapGrid.createShipAt(cell, playerNumber, tmpl);
   }
 
   int getUniqueID() {

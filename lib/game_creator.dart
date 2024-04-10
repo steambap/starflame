@@ -324,11 +324,11 @@ class GameCreator {
   }
 
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {
-    final humanPlayer = PlayerState(0, false)
+    final humanPlayer = PlayerState(0, false, 0)
       ..credit = gameSettings.playerStartingCredit.toDouble()
       ..production = 40
       ..color = Colors.blue;
-    final testAI = PlayerState(1, true)
+    final testAI = PlayerState(1, true, 1)
       ..credit = gameSettings.playerStartingCredit.toDouble()
       ..production = 40
       ..race = 1

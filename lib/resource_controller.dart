@@ -13,12 +13,12 @@ class ResourceController {
     final playerState = game.controller.getPlayerState(playerNumber);
     final income = playerIncome(playerNumber);
 
-    playerState.addResource(income);
+    playerState.addIncome(income);
   }
 
-  Resources playerIncome(int playerNumber) {
+  Income playerIncome(int playerNumber) {
     final playerState = game.controller.getPlayerState(playerNumber);
-    Resources income = Resources();
+    Income income = Income();
 
     for (final planet in game.mapGrid.planets) {
       if (planet.playerNumber == playerNumber) {
@@ -29,24 +29,24 @@ class ResourceController {
     return income;
   }
 
-  Resources humanPlayerIncome() {
+  Income humanPlayerIncome() {
     final idx = game.controller.getHumanPlayerNumber();
 
     return playerIncome(idx);
   }
 
-  Resources calcPlanetIncome(PlayerState playerState, Planet planet) {
-    Resources income = Resources();
+  Income calcPlanetIncome(PlayerState playerState, Planet planet) {
+    Income income = Income();
 
     for (final bd in planet.buildings) {
       if (bd == Building.colonyHQ) {
-        income += Resources(production: 10, credit: 20, influence: 5);
+        income += Income(production: 10, credit: 20, influence: 5);
       } else if (bd == Building.constructionYard) {
-        income += Resources(production: 10);
+        income += Income(production: 10);
       } else if (bd == Building.fusionReactor) {
-        income += Resources(credit: 80);
+        income += Income(credit: 80);
       } else if (bd == Building.mediaNetwork) {
-        income += Resources(influence: 5);
+        income += Income(influence: 5);
       }
     }
 

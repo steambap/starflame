@@ -7,6 +7,7 @@ class ShipHull {
   final int armor;
   final Block speedRange;
   final int cost;
+  final String image;
 
   ShipHull({
     required this.name,
@@ -15,5 +16,6 @@ class ShipHull {
     required this.armor,
     required this.speedRange,
     required this.cost,
+    required this.image,
   });
 }

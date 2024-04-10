@@ -38,7 +38,7 @@ class HudShipCommand extends PositionComponent
     position = Vector2(4, game.size.y - hexSize * 2 - 24);
 
     _hexagon.position = Vector2(hexSize * sqrt(3) * 0.5, hexSize + 8);
-    final sprite = Sprite(game.images.fromCache("colony.png"));
+    final sprite = Sprite(game.images.fromCache("scout.png"));
     _shipImage = SpriteComponent(
         sprite: sprite, anchor: Anchor.center, position: _hexagon.position);
 
@@ -62,10 +62,10 @@ class HudShipCommand extends PositionComponent
   void updateRender(Ship? ship, [bool isOwnerHuman = false]) {
     if (ship != null) {
       final state = ship.state;
-      _shipName.text = "name";
+      _shipName.text = ship.template.name;
       _shipInfo.text =
           "HP: ${state.health} move: ${ship.movePoint()}";
-      _shipImage.sprite = Sprite(game.images.fromCache("cruiser.png"));
+      _shipImage.sprite = Sprite(game.images.fromCache(ship.template.hull.image));
       _clearActions();
 
       // if (isOwnerHuman) {

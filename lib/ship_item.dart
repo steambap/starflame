@@ -43,7 +43,7 @@ enum ShipItemSkill {
   damageAmplification,
   repairPerTurn,
   repairOnActionSelf,
-  supply,
+  engineering,
   movement,
   moral,
 }

@@ -6,10 +6,11 @@ import 'package:flame/components.dart';
 import "package:flame/events.dart";
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
-import 'package:starfury/game_creator.dart';
-import 'package:starfury/menu_planet_cmd.dart';
 
+import 'game_creator.dart';
+import 'menu_planet_cmd.dart';
 import 'ship.dart';
+import "ship_template.dart";
 import 'scifi_game.dart';
 import 'cell.dart';
 import "pathfinding.dart";
@@ -130,6 +131,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
     final cellIndex = _hexTable[hex.toInt()] ?? -1;
     if (cellIndex < 0) {
+      unSelect();
       return;
     }
     final cell = cells[cellIndex];
@@ -163,13 +165,15 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       if (capitalCell == null) {
         continue;
       }
-      spawnShipAt(capitalCell, p.playerNumber);
+      final basicSupportShip = p.templates[0];
+      spawnShipAt(capitalCell, p.playerNumber, basicSupportShip);
       // spawn scout at south east
+      final basicCombatShip = p.templates[1];
       final scoutHex = capitalCell.hex + Hex.directions[5];
       final sIndex = _hexTable[scoutHex.toInt()] ?? -1;
       if (sIndex >= 0) {
         final sCell = cells[sIndex];
-        spawnShipAt(sCell, p.playerNumber);
+        spawnShipAt(sCell, p.playerNumber, basicCombatShip);
       }
     }
 
@@ -214,8 +218,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     cell.ship = ship;
   }
 
-  Future<void> spawnShipAt(Cell cell, int playerNumber) async {
-    final ship = Ship(cell, playerNumber);
+  Future<void> spawnShipAt(Cell cell, int playerNumber, ShipTemplate tmpl) async {
+    final ship = Ship(cell, playerNumber, tmpl);
     cell.ship = ship;
 
     shipListAll.add(ship);
@@ -224,8 +228,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     await add(ship);
   }
 
-  Future<void> createShipAt(Cell cell, int playerNumber) async {
-    final ship = Ship(cell, playerNumber);
+  Future<void> createShipAt(Cell cell, int playerNumber, ShipTemplate tmpl) async {
+    final ship = Ship(cell, playerNumber, tmpl);
     cell.ship = ship;
 
     shipListAll.add(ship);
