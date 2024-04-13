@@ -3,6 +3,7 @@ import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
 
+import 'player_state.dart';
 import 'building.dart';
 import 'scifi_game.dart';
 import "hex.dart";
@@ -28,6 +29,7 @@ class Planet extends PositionComponent
   String displayName = "";
 
   final Hex hex;
+  final Hex sector;
   final TextComponent populationLabel = TextComponent(
       text: "",
       position: Vector2(0, 36),
@@ -36,7 +38,7 @@ class Planet extends PositionComponent
   final CircleComponent ownerCircle =
       CircleComponent(radius: 36, paint: emptyPaint, anchor: Anchor.center);
   late final SpriteComponent planetSprite;
-  Planet(this.type, this.hex, {this.planetSize = 1})
+  Planet(this.type, this.hex, this.sector, {this.planetSize = 1})
       : super(anchor: Anchor.center);
 
   @override
@@ -175,8 +177,22 @@ class Planet extends PositionComponent
     notifyListeners();
   }
 
+  int investNumber() {
+    int ret = 5;
+    if (playerNumber == null) {
+      return ret;
+    }
+    PlayerState playerState = game.controller.getPlayerState(playerNumber!);
+    if (playerState.sectorDataTable.containsKey(sector)) {
+      final sectorData = playerState.sectorDataTable[sector]!;
+      ret += sectorData.invest;
+    }
+
+    return ret;
+  }
+
   void investTrade(int playerNumber) {
-    trade += 10;
+    trade += investNumber();
     notifyListeners();
   }
 
@@ -208,7 +224,7 @@ class Planet extends PositionComponent
   }
 
   double defenseMax() {
-    return 500 + developmentLevel * 300;
+    return 300 + developmentLevel * 100;
   }
 
   int maxBuilding() {

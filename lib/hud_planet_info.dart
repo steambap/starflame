@@ -197,7 +197,7 @@ class HudPlanetInfo extends PositionComponent
     _planetName.text =
         "${planet.displayName} Lv.${planet.developmentLevel + 1}";
     _foodValue.text = "${planet.food}/${planet.type.food}";
-    _tradeValue.text = "${planet.trade}";
+    _tradeValue.text = "${planet.trade}/+${planet.investNumber()}";
     _citizenValue.text = "${planet.citizen}";
     _defenseValue.text = "${planet.defense} / ${planet.defenseMax()}";
     _growthValue.text = "${planet.growth()}";

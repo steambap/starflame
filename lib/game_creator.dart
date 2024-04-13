@@ -141,9 +141,7 @@ class GameCreator {
 
     for (final key in fillMap.keys) {
       final value = fillMap[key]!;
-      if (!result.containsKey(value)) {
-        result[value] = [];
-      }
+      result.putIfAbsent(value, () => []);
       result[value]!.add(key);
     }
 
@@ -220,7 +218,7 @@ class GameCreator {
   int _createPlanets(Cell cell) {
     final size = rand.nextInt(3);
 
-    final s = Planet(_getRandPlanet(rand), cell.hex, planetSize: size);
+    final s = Planet(_getRandPlanet(rand), cell.hex, cell.sector, planetSize: size);
     cell.planet = s;
     planets.add(s);
 
@@ -326,11 +324,9 @@ class GameCreator {
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {
     final humanPlayer = PlayerState(0, false, 0)
       ..credit = gameSettings.playerStartingCredit.toDouble()
-      ..production = 40
       ..color = Colors.blue;
     final testAI = PlayerState(1, true, 1)
       ..credit = gameSettings.playerStartingCredit.toDouble()
-      ..production = 40
       ..race = 1
       ..color = Colors.red;
 

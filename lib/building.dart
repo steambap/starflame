@@ -16,7 +16,7 @@ enum Building {
   mediaNetwork(
       cost: 200, displayName: "Media Network", image: 'media_network.png'),
   tradeCompany(
-      cost: 300, displayName: "Trade Company", image: 'trade_company.png');
+      cost: 200, displayName: "Trade Company", image: 'trade_company.png');
 
   const Building({
     required this.cost,

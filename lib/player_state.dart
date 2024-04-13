@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' show Color, Colors;
 import "package:flutter/foundation.dart" show ChangeNotifier;
 
 import "resource.dart";
+import "sector.dart";
 import "ship_template.dart";
 import "data/hulls.dart";
 import "data/items.dart";
@@ -17,6 +18,7 @@ class PlayerState with ChangeNotifier {
   int production = 0;
   double credit = 0.0;
   int influence = 0;
+  SectorDataTable sectorDataTable = const {};
   final Set<String> hulls = {};
   final Set<String> shipItems = {};
   final List<ShipTemplate> templates = [];
@@ -54,11 +56,15 @@ class PlayerState with ChangeNotifier {
     notifyListeners();
   }
 
-  void addIncome(Income resource) {
-    production += resource.production;
-    credit += resource.credit;
-    influence = resource.influence;
+  void addCapacity(Capacity capacity) {
+    influence = capacity.influence;
+    sectorDataTable = capacity.sectorDataTable;
 
     notifyListeners();
+  }
+
+  void addCapacityAndResource(Capacity capacity, Resources resource) {
+    addCapacity(capacity);
+    addResource(resource);
   }
 }

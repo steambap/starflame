@@ -23,6 +23,7 @@ class GameStateController {
   void startGame() {
     lookAtCapital();
     game.playerInfo.addListener();
+    endTurn(true);
   }
 
   void lookAtCapital() {
@@ -32,18 +33,20 @@ class GameStateController {
     }
   }
 
-  void endTurn() {
+  void endTurn(bool isStartGame) {
     if (gameState.isGameOver != null && !gameState.isContinue) {
       return;
     }
 
-    game.mapGrid.blockSelect();
-    // TODO end phase
+    if (!isStartGame) {
+      game.mapGrid.blockSelect();
+      // TODO end phase
 
-    gameState.playerNumber += 1;
-    if (gameState.playerNumber >= players.length) {
-      gameState.playerNumber = 0;
-      gameState.turn += 1;
+      gameState.playerNumber += 1;
+      if (gameState.playerNumber >= players.length) {
+        gameState.playerNumber = 0;
+        gameState.turn += 1;
+      }
     }
 
     if (currentPlayerState().isAlive) {
@@ -51,13 +54,13 @@ class GameStateController {
       productionPhaseUpdate();
       _startTurn();
     } else {
-      endTurn();
+      endTurn(false);
     }
   }
 
   void _startTurn() {
     if (isAITurn()) {
-      endTurn();
+      endTurn(false);
     } else {
       // TODO auto save
       game.mapGrid.unSelect();

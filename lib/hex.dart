@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flame/game.dart';
+import 'package:flutter/foundation.dart' show immutable;
 
+@immutable
 class Hex {
   static const double size = 36;
   static Hex zero = Hex(0, 0, 0);

@@ -1,3 +1,6 @@
+import "sector.dart";
+
+// Resources that can be stockpiled
 class Resources {
   int production;
   double credit;
@@ -12,18 +15,22 @@ class Resources {
   }
 }
 
-class Income {
-  int production;
-  double credit;
-  int influence;
+// Resources that more like a status
+class Capacity {
+  int influence = 0;
+  SectorDataTable sectorDataTable = {};
 
-  Income({this.production = 0, this.credit = 0, this.influence = 0});
+  Capacity();
 
-  Income operator +(Income other) {
-    return Income(
-      production: production + other.production,
-      credit: credit + other.credit,
+  Capacity.from({required this.influence, required this.sectorDataTable});
+
+  Capacity operator +(Capacity other) {
+    return Capacity.from(
       influence: influence + other.influence,
+      sectorDataTable: {
+        ...sectorDataTable,
+        ...other.sectorDataTable,
+      },
     );
   }
 }
