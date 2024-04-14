@@ -12,6 +12,7 @@ import "game_settings.dart";
 import "resource_controller.dart";
 import 'hud_ship_cmd.dart';
 import "hud_planet.dart";
+import "ai/ai_controller.dart";
 
 class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents {
   final MapGrid mapGrid = MapGrid();
@@ -19,6 +20,7 @@ class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents 
   late GameSettings currentGameSettings;
   late final GameStateController controller;
   late final ResourceController resourceController;
+  late final AIController aiController;
   final HudPlayerInfo playerInfo = HudPlayerInfo();
   final HudNextTurnBtn nextTurnBtn = HudNextTurnBtn();
   final HudPlanet hudPlanet = HudPlanet();
@@ -33,6 +35,7 @@ class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents 
   ScifiGame(): super(world: ScifiWorld()) {
     controller = GameStateController(this);
     resourceController = ResourceController(this);
+    aiController = AIController(this);
   }
 
   @override

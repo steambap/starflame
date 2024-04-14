@@ -18,6 +18,7 @@ class GameStateController {
       element.init();
     }
     gameState = GameState();
+    game.aiController.init();
   }
 
   void startGame() {
@@ -39,8 +40,8 @@ class GameStateController {
     }
 
     if (!isStartGame) {
+      game.aiController.onEndPhase();
       game.mapGrid.blockSelect();
-      // TODO end phase
 
       gameState.playerNumber += 1;
       if (gameState.playerNumber >= players.length) {
@@ -60,7 +61,7 @@ class GameStateController {
 
   void _startTurn() {
     if (isAITurn()) {
-      endTurn(false);
+      game.aiController.startTurn(gameState.playerNumber);
     } else {
       // TODO auto save
       game.mapGrid.unSelect();

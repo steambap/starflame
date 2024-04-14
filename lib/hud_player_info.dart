@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
-import "theme.dart" show text12, panelBackground;
+import "theme.dart" show text12, panelBackground, textButtonPaintLayer;
+import "./ai/ai_log_overlay.dart";
 
 class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
   late final RectangleComponent _background;
@@ -33,6 +34,7 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
       textRenderer: text12,
       position: Vector2(516, 16),
       anchor: Anchor.centerLeft);
+  late final AdvancedButtonComponent _aiLog;
 
   HudPlayerInfo();
 
@@ -50,6 +52,15 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     _influenceIcon = SpriteComponent(
         sprite: Sprite(influenceIcon), position: Vector2(484, 4));
 
+    _aiLog = AdvancedButtonComponent(
+      size: Vector2(32, 24),
+      position: Vector2(game.size.x - 40, 4),
+      onPressed: () => game.router.pushRoute(AiLogOverlay()),
+      defaultLabel: TextComponent(
+          text: "Log", textRenderer: text12, anchor: Anchor.center),
+      defaultSkin: RectangleComponent(
+          paintLayers: textButtonPaintLayer, size: Vector2(32, 24)));
+
     addAll([
       _background,
       _empireColor,
@@ -60,6 +71,7 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
       _productionLabel,
       _influenceIcon,
       _influenceLabel,
+      _aiLog,
     ]);
   }
 
