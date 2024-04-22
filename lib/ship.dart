@@ -3,14 +3,16 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import "package:flame/effects.dart";
+import "package:flutter/foundation.dart" show ChangeNotifier;
 
 import 'scifi_game.dart';
 import "cell.dart";
 import "theme.dart";
 import "ship_state.dart";
 import "ship_template.dart";
+import "action_type.dart";
 
-class Ship extends PositionComponent with HasGameRef<ScifiGame> {
+class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier {
   late SpriteComponent _shipSprite;
   late SpriteComponent _engineEffect;
   Cell cell;
@@ -48,6 +50,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
     final uid = game.controller.getUniqueID();
     state.id = uid;
     state.health = template.maxHealth();
+    resetAllActions();
   }
 
   FutureOr<void> moveAnim(Cell cell, List<Cell> fromCells) {
@@ -66,6 +69,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
 
   useMove(int num) {
     state.movementUsed += num;
+    notifyListeners();
     if (movePoint() == 0) {
       setTurnOver();
     }
@@ -74,6 +78,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
   void useAttack() {
     state.attacked = true;
     useMove(1);
+    notifyListeners();
   }
 
   setTurnOver() {
@@ -81,6 +86,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
     state.attacked = true;
     state.movementUsed = 999;
     _shipSprite.decorator.addLast(grayTint);
+    notifyListeners();
   }
 
   int movePoint() {
@@ -113,6 +119,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
     state.attacked = false;
     state.movementUsed = 0;
     _shipSprite.decorator.removeLast();
+    updateCooldown();
   }
 
   bool takeDamage(int damage) {
@@ -122,13 +129,54 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame> {
 
       return true;
     }
+    notifyListeners();
 
     return false;
   }
 
+  @override
   void dispose() {
     cell.ship = null;
     game.mapGrid.removeShip(this);
     removeFromParent();
+
+    super.dispose();
+  }
+
+  void repair(int amount) {
+    state.health = min(state.health + amount, template.maxHealth());
+    notifyListeners();
+  }
+
+  void resetAllActions() {
+    final actionTypes = template.actionTypes();
+    state.actions.clear();
+    for (final at in actionTypes) {
+      state.actions.add(ActionState(at));
+    }
+  }
+
+  void addCooldown(ActionType type, int cd) {
+    final action = state.actions.firstWhere((element) => element.type == type, orElse: () => state.actions.first);
+    action.cooldown += cd;
+    notifyListeners();
+  }
+
+  ActionState? getActionState(ActionType type) {
+    for (final action in state.actions) {
+      if (action.type == type) {
+        return action;
+      }
+    }
+
+    return null;
+  }
+
+  void updateCooldown() {
+    for (final action in state.actions) {
+      if (action.cooldown > 0) {
+        action.cooldown--;
+      }
+    }
   }
 }

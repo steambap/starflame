@@ -69,7 +69,7 @@ class SelectControlCellSelected extends SelectControl {
       ship = cell.ship;
       final shipOwner = ship?.state.playerNumber ?? -1;
       final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
-      game.shipCommand.updateRender(ship, isOwnerHuman);
+      game.shipCommand.updateRender(ship);
       if (isOwnerHuman) {
         paths =
             game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());

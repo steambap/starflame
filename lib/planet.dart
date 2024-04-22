@@ -73,9 +73,20 @@ class Planet extends PositionComponent
     defense = defenseMax();
   }
 
-  void colonize(int playerNumber, int population) {
-    this.playerNumber = playerNumber;
+  bool colonize(int progress, int playerNumber) {
+    defense += progress;
+    if (defense >= defenseMax()) {
+      defense = defenseMax();
+      this.playerNumber = playerNumber;
+      support = 60;
+      updateRender();
+
+      return true;
+    }
+
     updateRender();
+
+    return false;
   }
 
   void capture(int playerNumber) {

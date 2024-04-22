@@ -20,13 +20,26 @@ sealed class Action {
     this.range = const Block(0, 0),
   });
 
-  bool isEnabled(MapGrid mapGrid, Cell cell) {
+  int cooldownLeft(Cell cell) {
+    if (cooldown == 0) {
+      return 0;
+    }
+
+    final state = cell.ship?.getActionState(actionType);
+    return state?.cooldown ?? 0;
+  }
+
+  bool isDisabled(MapGrid mapGrid, Cell cell) {
+    if (cooldownLeft(cell) > 0) {
+      return true;
+    }
+
     if (requireAttack) {
       if (!(cell.ship?.canAttack() ?? false)) {
-        return false;
+        return true;
       }
     }
-    return getTargets(mapGrid, cell).isNotEmpty;
+    return getTargets(mapGrid, cell).isEmpty;
   }
 
   List<Cell> neutralPlanetCells(List<Cell> cells) {
@@ -77,15 +90,18 @@ class BuildColony extends Action {
   BuildColony() : super(ActionType.buildColony, ActionTarget.neutralPlanet);
 
   @override
+  bool isDisabled(MapGrid mapGrid, Cell cell) {
+    return (cell.ship?.movePoint() ?? 0) <= 0;
+  }
+
+  @override
   void execute(Ship ship, Cell cell) {
-    ship.useMove(1);
     if (cell.planet == null) {
       return;
     }
     final playerNumber = ship.state.playerNumber;
-    final sysyem = cell.planet!;
-    sysyem.colonize(playerNumber, 1);
-    ship.dispose();
+    cell.planet!.colonize(ship.template.engineering(), playerNumber);
+    ship.setTurnOver();
   }
 }
 
@@ -93,8 +109,8 @@ class Stay extends Action {
   Stay() : super(ActionType.stay, ActionTarget.self);
 
   @override
-  bool isEnabled(MapGrid mapGrid, Cell cell) {
-    return (cell.ship?.movePoint() ?? 0) > 0;
+  bool isDisabled(MapGrid mapGrid, Cell cell) {
+    return (cell.ship?.movePoint() ?? 0) <= 0;
   }
 
   @override
@@ -103,7 +119,21 @@ class Stay extends Action {
   }
 }
 
+class SelfRepair extends Action {
+  SelfRepair()
+      : super(ActionType.selfRepair, ActionTarget.self,
+            requireAttack: true, cooldown: 3);
+
+  @override
+  void execute(Ship ship, Cell cell) {
+    ship.repair(ship.template.repairOnActionSelf());
+    ship.setTurnOver();
+  }
+}
+
 final actionTable = <ActionType, Action>{
   ActionType.capture: Capture(),
   ActionType.buildColony: BuildColony(),
+  ActionType.stay: Stay(),
+  ActionType.selfRepair: SelfRepair(),
 };

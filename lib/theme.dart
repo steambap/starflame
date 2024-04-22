@@ -66,6 +66,7 @@ final textBoxBorderDisabled = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.grey.shade800
   ..strokeWidth = 1;
+final iconButtonSize = Vector2(56, 42);
 
 final List<Paint> buttonPaintLayer = [buttonBGPaint, buttonBorderPaint];
 final List<Paint> buttonHoverPaintLayer = [
@@ -77,4 +78,7 @@ final List<Paint> unitDisabledPaintLayer = [unitBGDisabled, unitBorderDisabled];
 final List<Paint> panelPaintLayer = [panelBGPaint, panelBorderPaint];
 final List<Paint> textBoxPaintLayer = [textBox, textBoxBorder];
 final List<Paint> textButtonPaintLayer = [textButton, textBoxBorder];
-final List<Paint> textButtonDisabledPaintLayer = [textButtonDisabled, textBoxBorderDisabled];
+final List<Paint> textButtonDisabledPaintLayer = [
+  textButtonDisabled,
+  textBoxBorderDisabled
+];

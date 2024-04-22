@@ -2,6 +2,8 @@ import "dart:math";
 
 import "ship_hull.dart";
 import "ship_item.dart";
+import "action.dart";
+import "action_type.dart";
 
 class ShipTemplate {
   String name = "";
@@ -76,5 +78,50 @@ class ShipTemplate {
     }
 
     return ret;
+  }
+
+  int repairOnActionSelf() {
+    int ret = 0;
+    for (final item in items) {
+      if (item is ShipUtil) {
+        for (final skillVal in item.skills) {
+          if (skillVal.skill == ShipItemSkill.repairOnActionSelf) {
+            ret += skillVal.value;
+          }
+        }
+      }
+    }
+
+    return ret;
+  }
+
+  List<ActionType> actionTypes() {
+    final Set<ActionType> ret = {ActionType.stay};
+    for (final item in items) {
+      if (item is ShipWeapon) {
+        ret.add(ActionType.capture);
+      }
+      if (item is ShipUtil) {
+        for (final skillVal in item.skills) {
+          if (skillVal.skill == ShipItemSkill.repairOnActionSelf) {
+            ret.add(ActionType.selfRepair);
+          } else if (skillVal.skill == ShipItemSkill.engineering) {
+            ret.add(ActionType.buildColony);
+          }
+        }
+      }
+    }
+
+    return ret.toList(growable: false);
+  }
+
+  List<Action> actions() {
+    final ret = actionTypes();
+
+    return ret.map((e) {
+      assert(actionTable.containsKey(e), "Action ${e.name} not found in table");
+
+      return actionTable[e]!;
+    }).toList(growable: false);
   }
 }
