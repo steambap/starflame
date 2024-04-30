@@ -1,7 +1,9 @@
 import "scifi_game.dart";
 import "player_state.dart";
 import "planet.dart";
+import "cell.dart";
 import "building.dart";
+import "ship_template.dart";
 import "resource.dart";
 import "sector.dart";
 
@@ -168,6 +170,28 @@ class ResourceController {
     final capacity = scanCapacity(playerState);
     playerState.addCapacityAndResource(capacity,
         Resources(credit: -building.cost.toDouble(), production: -10));
+
+    return true;
+  }
+
+  bool canCreateShip(int playerNumber, ShipTemplate tmpl) {
+    final playerState = game.controller.getPlayerState(playerNumber);
+
+    return playerState.credit >= tmpl.cost() && playerState.production >= 5;
+  }
+
+  bool createShip(Cell cell, int playerNumber, ShipTemplate tmpl) {
+    if (cell.ship != null) {
+      return false;
+    }
+    if (!canCreateShip(playerNumber, tmpl)) {
+      return false;
+    }
+
+    final playerState = game.controller.getPlayerState(playerNumber);
+    playerState.addResource(Resources(credit: -tmpl.cost(), production: -5));
+
+    game.mapGrid.createShipAt(cell, playerNumber, tmpl);
 
     return true;
   }

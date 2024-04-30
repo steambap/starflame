@@ -10,7 +10,8 @@ final List<ShipHull> hulls = [
       life: 200,
       armor: 40,
       cost: 400,
-      image: "scout.png",
+      image: "wolf.png",
+      tier: 0,
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "tiger",
@@ -18,7 +19,8 @@ final List<ShipHull> hulls = [
       life: 255,
       armor: 65,
       cost: 650,
-      image: "scout.png",
+      image: "tiger.png",
+      tier: 1,
       speedRange: const Block(30, 40)),
   ShipHull(
       name: "panther",
@@ -26,23 +28,17 @@ final List<ShipHull> hulls = [
       life: 220,
       armor: 50,
       cost: 700,
-      image: "scout.png",
+      image: "panther.png",
+      tier: 1,
       speedRange: const Block(40, 50)),
-  ShipHull(
-      name: "jaguar",
-      hullSize: 380,
-      life: 270,
-      armor: 65,
-      cost: 800,
-      image: "scout.png",
-      speedRange: const Block(25, 35)),
   ShipHull(
       name: "lion",
       hullSize: 450,
       life: 300,
       armor: 80,
       cost: 1100,
-      image: "scout.png",
+      image: "lion.png",
+      tier: 2,
       speedRange: const Block(25, 35)),
   ShipHull(
       name: "crocodile",
@@ -50,7 +46,8 @@ final List<ShipHull> hulls = [
       life: 280,
       armor: 90,
       cost: 1000,
-      image: "scout.png",
+      image: "crocodile.png",
+      tier: 3,
       speedRange: const Block(20, 30)),
   ShipHull(
       name: "spider",
@@ -58,7 +55,8 @@ final List<ShipHull> hulls = [
       life: 400,
       armor: 105,
       cost: 1800,
-      image: "scout.png",
+      image: "spider.png",
+      tier: 3,
       speedRange: const Block(25, 30)),
   // faction 2
   ShipHull(
@@ -67,7 +65,8 @@ final List<ShipHull> hulls = [
       life: 180,
       armor: 40,
       cost: 350,
-      image: "scout.png",
+      image: "mk55.png",
+      tier: 0,
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "mk-89",
@@ -76,6 +75,7 @@ final List<ShipHull> hulls = [
       armor: 65,
       cost: 500,
       image: "scout.png",
+      tier: 1,
       speedRange: const Block(30, 40)),
   ShipHull(
       name: "ranger",
@@ -84,15 +84,8 @@ final List<ShipHull> hulls = [
       armor: 60,
       cost: 850,
       image: "scout.png",
+      tier: 1,
       speedRange: const Block(30, 50)),
-  ShipHull(
-      name: "rogue",
-      hullSize: 450,
-      life: 270,
-      armor: 70,
-      cost: 1050,
-      image: "scout.png",
-      speedRange: const Block(25, 35)),
   ShipHull(
       name: "mk-144",
       hullSize: 450,
@@ -100,6 +93,7 @@ final List<ShipHull> hulls = [
       armor: 90,
       cost: 1300,
       image: "scout.png",
+      tier: 2,
       speedRange: const Block(30, 35)),
   ShipHull(
       name: "obsidian",
@@ -108,6 +102,7 @@ final List<ShipHull> hulls = [
       armor: 130,
       cost: 1850,
       image: "scout.png",
+      tier: 3,
       speedRange: const Block(20, 30)),
   // faction 3
   ShipHull(
@@ -117,6 +112,7 @@ final List<ShipHull> hulls = [
       armor: 40,
       cost: 350,
       image: "scout.png",
+      tier: 0,
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "mantis",
@@ -125,6 +121,7 @@ final List<ShipHull> hulls = [
       armor: 65,
       cost: 550,
       image: "scout.png",
+      tier: 1,
       speedRange: const Block(30, 40)),
   ShipHull(
       name: "raptor",
@@ -133,14 +130,16 @@ final List<ShipHull> hulls = [
       armor: 60,
       cost: 1050,
       image: "scout.png",
+      tier: 1,
       speedRange: const Block(35, 50)),
   ShipHull(
       name: "griffin",
       hullSize: 280,
       life: 260,
       armor: 55,
-      cost: 650,
+      cost: 1650,
       image: "scout.png",
+      tier: 2,
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "pheonix",
@@ -149,31 +148,17 @@ final List<ShipHull> hulls = [
       armor: 75,
       cost: 2400,
       image: "scout.png",
+      tier: 3,
       speedRange: const Block(30, 40)),
   // neutral / pirates ?
   ShipHull(
-      name: "mk-64b",
-      hullSize: 190,
-      life: 230,
-      armor: 55,
-      cost: 450,
-      image: "scout.png",
-      speedRange: const Block(30, 35)),
-  ShipHull(
-      name: "drake",
-      hullSize: 400,
-      life: 260,
-      armor: 60,
-      cost: 750,
-      image: "scout.png",
-      speedRange: const Block(20, 35)),
-  ShipHull(
-      name: "dragon",
-      hullSize: 420,
-      life: 280,
-      armor: 85,
-      cost: 1100,
-      image: "scout.png",
+      name: "kraken",
+      hullSize: 380,
+      life: 270,
+      armor: 65,
+      cost: 800,
+      image: "heavy_submarine.png",
+      tier: 1,
       speedRange: const Block(25, 35)),
 ];
 

@@ -4,13 +4,14 @@ import "package:flutter/foundation.dart" show ChangeNotifier;
 import "resource.dart";
 import "sector.dart";
 import "ship_template.dart";
-import "data/hulls.dart";
-import "data/items.dart";
+import "ship_hull.dart";
+import "ship_item.dart";
+import "empire.dart";
 
 class PlayerState with ChangeNotifier {
   final int playerNumber;
   Color color = Colors.black;
-  int race = 0;
+  late final Empire empire;
   int team = -1;
   bool isAlive = true;
   final bool isAI;
@@ -19,34 +20,16 @@ class PlayerState with ChangeNotifier {
   double credit = 0.0;
   int influence = 0;
   SectorDataTable sectorDataTable = const {};
-  final Set<String> hulls = {};
-  final Set<String> shipItems = {};
+  final List<ShipHull> hulls = [];
+  final List<ShipItem> shipItems = [];
   final List<ShipTemplate> templates = [];
 
-  PlayerState(this.playerNumber, this.isAI, this.race);
+  PlayerState(this.playerNumber, this.isAI);
 
   void init() {
-    fillShipTemplates();
-  }
-
-  void fillShipTemplates() {
-    hulls.addAll(["wolf"]);
-    shipItems.addAll(["Depleted Uranium Cannon", "Engineering Kit 1"]);
-    final basicSupportShip = ShipTemplate.define(
-        name: "colony ship",
-        hull: hullMap["wolf"]!,
-        items: [
-          shipItemMap["Engineering Kit 1"]!,
-          shipItemMap["Engineering Kit 1"]!
-        ]);
-    final basicCombatShip = ShipTemplate.define(
-        name: "patrol ship",
-        hull: hullMap["wolf"]!,
-        items: [
-          shipItemMap["Depleted Uranium Cannon"]!,
-          shipItemMap["Depleted Uranium Cannon"]!
-        ]);
-    templates.addAll([basicSupportShip, basicCombatShip]);
+    hulls.addAll(empire.starterHull());
+    shipItems.addAll(empire.starterItems());
+    templates.addAll(empire.starterTemplate());
   }
 
   void addResource(Resources resource) {

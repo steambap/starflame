@@ -8,12 +8,14 @@ class ShipItem {
   final ShipItemType type;
   final int mass;
   final int cost;
+  final int tier;
 
   ShipItem({
     required this.name,
     required this.type,
     required this.mass,
     required this.cost,
+    required this.tier,
   });
 }
 
@@ -27,6 +29,7 @@ class ShipWeapon extends ShipItem {
     required super.name,
     required super.mass,
     required super.cost,
+    required super.tier,
     required this.damage,
     this.shots = 1,
     required this.armorPenetration,
@@ -65,6 +68,7 @@ class ShipUtil extends ShipItem {
     required super.name,
     required super.mass,
     required super.cost,
+    required super.tier,
     required this.skills,
   }) : super(type: ShipItemType.util);
 }

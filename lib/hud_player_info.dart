@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 import "theme.dart" show text12, panelBackground, textButtonPaintLayer;
-import "./ai/ai_log_overlay.dart";
+import "ai/ai_log_overlay.dart";
 
 class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
   late final RectangleComponent _background;
@@ -53,13 +53,13 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
         sprite: Sprite(influenceIcon), position: Vector2(484, 4));
 
     _aiLog = AdvancedButtonComponent(
-      size: Vector2(32, 24),
-      position: Vector2(game.size.x - 40, 4),
-      onPressed: () => game.router.pushRoute(AiLogOverlay()),
-      defaultLabel: TextComponent(
-          text: "Log", textRenderer: text12, anchor: Anchor.center),
-      defaultSkin: RectangleComponent(
-          paintLayers: textButtonPaintLayer, size: Vector2(32, 24)));
+        size: Vector2(32, 24),
+        position: Vector2(game.size.x - 40, 4),
+        onPressed: () => game.router.pushRoute(AiLogOverlay()),
+        defaultLabel: TextComponent(
+            text: "Log", textRenderer: text12, anchor: Anchor.center),
+        defaultSkin: RectangleComponent(
+            paintLayers: textButtonPaintLayer, size: Vector2(32, 24)));
 
     addAll([
       _background,
@@ -87,6 +87,7 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
   void updateRender() {
     final playerState = game.controller.getHumanPlayerState();
     _empireColor.paint = Paint()..color = playerState.color;
+    _empireName.text = playerState.empire.displayName;
     final income = game.resourceController.humanPlayerIncome();
     _creditLabel.text =
         "${playerState.credit.toInt()}(+${income.credit.toInt()})";

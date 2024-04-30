@@ -4,6 +4,7 @@ import "action.dart";
 import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
+import 'ship_template.dart';
 
 sealed class SelectControl {
   final ScifiGame game;
@@ -134,12 +135,14 @@ class SelectControlPlanet extends SelectControl {
 
 class SelectControlCreateShip extends SelectControl {
   final Map<Cell, bool> cells = {};
-  SelectControlCreateShip(super.game);
+  final ShipTemplate template;
+  SelectControlCreateShip(super.game, this.template);
 
   @override
   void onCellClick(Cell cell) {
     if (cells.containsKey(cell)) {
-      game.controller.createShip(cell, game.controller.getHumanPlayerNumber());
+      game.resourceController
+          .createShip(cell, game.controller.getHumanPlayerNumber(), template);
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }

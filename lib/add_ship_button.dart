@@ -4,13 +4,13 @@ import 'package:flutter/foundation.dart';
 
 import "scifi_game.dart";
 import "theme.dart" show grayTint, cardSkin, panelBar, text12;
-import "building.dart";
+import "ship_template.dart";
 
-class AddBuildingButton extends PositionComponent
+class AddShipButton extends PositionComponent
     with TapCallbacks, HasGameRef<ScifiGame> {
-  static Vector2 buttonSize = Vector2(72, 84);
+  static Vector2 buttonSize = Vector2(114, 84);
 
-  final Building building;
+  final ShipTemplate template;
   final RectangleComponent _background = RectangleComponent(
     size: buttonSize,
     paintLayers: cardSkin,
@@ -18,15 +18,15 @@ class AddBuildingButton extends PositionComponent
   final RectangleComponent _costBar = RectangleComponent(
     // Do not overlay the background border
     position: Vector2(0.5, 68),
-    size: Vector2(71, 16),
+    size: Vector2(113, 15.5),
     paint: panelBar,
   );
 
-  late final TextComponent _buildingName;
-  late final SpriteComponent _buildingSprite;
-  void Function(Building building)? onPressed;
+  late final TextComponent _tName;
+  late final SpriteComponent _tSprite;
+  void Function(ShipTemplate template)? onPressed;
 
-  AddBuildingButton(this.building, this.onPressed) : super(size: buttonSize);
+  AddShipButton(this.template, this.onPressed) : super(size: buttonSize);
 
   @override
   @mustCallSuper
@@ -35,7 +35,7 @@ class AddBuildingButton extends PositionComponent
       return;
     }
 
-    onPressed?.call(building);
+    onPressed?.call(template);
   }
 
   @mustCallSuper
@@ -43,19 +43,18 @@ class AddBuildingButton extends PositionComponent
   Future<void> onLoad() async {
     super.onLoad();
 
-    final bdName = building.displayName.split(" ").join("\n");
-    _buildingName = TextComponent(
-      text: bdName,
+    _tName = TextComponent(
+      text: template.name,
       position: Vector2(2, 2),
       textRenderer: text12,
     );
-    final buildingImg = Sprite(game.images.fromCache(building.image));
-    _buildingSprite = SpriteComponent(
-        sprite: buildingImg, position: Vector2(36, 48), anchor: Anchor.center);
+    final hullImg = Sprite(game.images.fromCache(template.hull.image));
+    _tSprite = SpriteComponent(
+        sprite: hullImg, position: Vector2(buttonSize.x / 2, 48), anchor: Anchor.center);
     addAll([
       _background,
-      _buildingName,
-      _buildingSprite,
+      _tName,
+      _tSprite,
       _costBar,
     ]);
   }

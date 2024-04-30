@@ -1,9 +1,7 @@
-import "cell.dart";
 import "scifi_game.dart";
 import "game_state.dart";
 import "player_state.dart";
 import "ship.dart";
-import "resource.dart";
 
 class GameStateController {
   GameState gameState = GameState();
@@ -105,19 +103,6 @@ class GameStateController {
 
   PlayerState currentPlayerState() {
     return getPlayerState(gameState.playerNumber);
-  }
-
-  createShip(Cell cell, int playerNumber) {
-    if (cell.ship != null) {
-      return;
-    }
-
-    final playerState = getPlayerState(playerNumber);
-    // TODO ship template
-    final tmpl = playerState.templates[0];
-    playerState.addResource(Resources(credit: -tmpl.cost(), production: -5));
-
-    game.mapGrid.createShipAt(cell, playerNumber, tmpl);
   }
 
   int getUniqueID() {

@@ -25,42 +25,30 @@ final targetPaint = Paint()..color = Colors.red.withAlpha(128);
 final emptyPaint = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.transparent;
-final buttonBGPaint = Paint()..color = Colors.green.shade800.withAlpha(221);
-final buttonBorderPaint = Paint()
+final buttonGreen = Paint()..color = Colors.green.shade800.withAlpha(221);
+final buttonGreenBorder = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.green.shade400
   ..strokeWidth = 1;
-final buttonHoverPaint = Paint()
+final buttonGreenHover = Paint()
   ..shader = Gradient.linear(Offset.zero, const Offset(0, 24),
       [Colors.green.shade800, Colors.green.shade400]);
-final buttonHoverBorderPaint = Paint()
+final buttonGreenHoverBorder = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.green.shade300
   ..strokeWidth = 1;
-final unitBGPaint = Paint()..color = Colors.blueGrey.shade700.withAlpha(221);
-final unitBorderPaint = Paint()
-  ..style = PaintingStyle.stroke
-  ..color = Colors.blue.shade400
-  ..strokeWidth = 1;
-final unitBGDisabled = Paint()..color = Colors.grey.shade800.withAlpha(221);
-final unitBorderDisabled = Paint()
-  ..style = PaintingStyle.stroke
-  ..color = Colors.grey.shade400
-  ..strokeWidth = 1;
 
-final panelBGPaint = Paint()..color = Colors.blueGrey.shade600;
-final panelBorderPaint = Paint()
-  ..style = PaintingStyle.stroke
-  ..color = Colors.grey.shade400
-  ..strokeWidth = 1;
 final panelBackground = Paint()..color = Colors.grey.shade900;
-final panelBackground800 = Paint()..color = Colors.grey.shade800;
+final panelBar = Paint()..color = Colors.grey.shade800;
+
 final textBox = Paint()..color = Colors.blueGrey.shade900;
-final textButton = Paint()..color = Colors.cyan.shade700;
 final textBoxBorder = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.cyan.shade200
   ..strokeWidth = 1;
+
+final textButton = Paint()..color = Colors.cyan.shade700;
+final textButtonSelected = Paint()..color = Colors.cyan.shade500;
 final textButtonDisabled = Paint()..color = Colors.grey.shade700;
 final textBoxBorderDisabled = Paint()
   ..style = PaintingStyle.stroke
@@ -68,16 +56,17 @@ final textBoxBorderDisabled = Paint()
   ..strokeWidth = 1;
 final iconButtonSize = Vector2(56, 42);
 
-final List<Paint> buttonPaintLayer = [buttonBGPaint, buttonBorderPaint];
-final List<Paint> buttonHoverPaintLayer = [
-  buttonHoverPaint,
-  buttonHoverBorderPaint
+final List<Paint> buttonGreenSkin = [buttonGreen, buttonGreenBorder];
+final List<Paint> buttonGreenHoverSkin = [
+  buttonGreenHover,
+  buttonGreenHoverBorder
 ];
-final List<Paint> unitPaintLayer = [unitBGPaint, unitBorderPaint];
-final List<Paint> unitDisabledPaintLayer = [unitBGDisabled, unitBorderDisabled];
-final List<Paint> panelPaintLayer = [panelBGPaint, panelBorderPaint];
-final List<Paint> textBoxPaintLayer = [textBox, textBoxBorder];
+final List<Paint> cardSkin = [textBox, textBoxBorder];
 final List<Paint> textButtonPaintLayer = [textButton, textBoxBorder];
+final List<Paint> textButtonSelectedSkin = [
+  textButtonSelected,
+  textBoxBorder
+];
 final List<Paint> textButtonDisabledPaintLayer = [
   textButtonDisabled,
   textBoxBorderDisabled

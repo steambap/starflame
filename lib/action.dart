@@ -91,7 +91,11 @@ class BuildColony extends Action {
 
   @override
   bool isDisabled(MapGrid mapGrid, Cell cell) {
-    return (cell.ship?.movePoint() ?? 0) <= 0;
+    if ((cell.ship?.movePoint() ?? 0) <= 0) {
+      return true;
+    }
+
+    return super.isDisabled(mapGrid, cell);
   }
 
   @override

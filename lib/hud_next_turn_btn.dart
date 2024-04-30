@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
-import "theme.dart" show text16, buttonPaintLayer, buttonHoverPaintLayer;
+import "theme.dart" show text16, buttonGreenSkin, buttonGreenHoverSkin;
 
 class HudNextTurnBtn extends AdvancedButtonComponent
     with HasGameRef<ScifiGame> {
@@ -13,9 +13,9 @@ class HudNextTurnBtn extends AdvancedButtonComponent
           defaultLabel: TextComponent(
               text: "Next Turn", anchor: Anchor.center, textRenderer: text16),
           defaultSkin: RectangleComponent(
-              size: buttonSize, paintLayers: buttonPaintLayer),
+              size: buttonSize, paintLayers: buttonGreenSkin),
           hoverSkin: RectangleComponent(
-              size: buttonSize, paintLayers: buttonHoverPaintLayer),
+              size: buttonSize, paintLayers: buttonGreenHoverSkin),
         );
 
   @override

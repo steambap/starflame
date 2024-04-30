@@ -10,6 +10,7 @@ import "game_settings.dart";
 import "player_state.dart";
 import "tile_type.dart";
 import "planet_type.dart";
+import "empire.dart";
 import "data/name.dart";
 
 List<Hex> generateHexMap(int qMax) {
@@ -218,7 +219,8 @@ class GameCreator {
   int _createPlanets(Cell cell) {
     final size = rand.nextInt(3);
 
-    final s = Planet(_getRandPlanet(rand), cell.hex, cell.sector, planetSize: size);
+    final s =
+        Planet(_getRandPlanet(rand), cell.hex, cell.sector, planetSize: size);
     cell.planet = s;
     planets.add(s);
 
@@ -322,12 +324,13 @@ class GameCreator {
   }
 
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {
-    final humanPlayer = PlayerState(0, false, 0)
+    final humanPlayer = PlayerState(0, false)
       ..credit = gameSettings.playerStartingCredit.toDouble()
+      ..empire = Empire.getEmpire("manchewark")
       ..color = Colors.blue;
-    final testAI = PlayerState(1, true, 1)
+    final testAI = PlayerState(1, true)
       ..credit = gameSettings.playerStartingCredit.toDouble()
-      ..race = 1
+      ..empire = Empire.getEmpire("uxbrid")
       ..color = Colors.red;
 
     return [humanPlayer, testAI];

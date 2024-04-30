@@ -8,6 +8,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 20,
       mass: 55,
       maxRange: 2,
+      tier: 0,
       cost: 250),
   ShipWeapon(
       name: "Heavy Rail Cannon",
@@ -15,6 +16,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 55,
       mass: 100,
       maxRange: 2,
+      tier: 1,
       cost: 350),
   ShipWeapon(
       name: "Flamer",
@@ -22,6 +24,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 20,
       mass: 105,
       maxRange: 2,
+      tier: 1,
       cost: 450),
   ShipWeapon(
       name: "Missle Launcher",
@@ -30,6 +33,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 40,
       mass: 95,
       maxRange: 2,
+      tier: 1,
       cost: 550),
   ShipWeapon(
       name: "Heavy Missle Launcher",
@@ -38,6 +42,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 40,
       mass: 170,
       maxRange: 3,
+      tier: 1,
       cost: 750),
   ShipWeapon(
       name: "Ripper Beam",
@@ -46,6 +51,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 45,
       mass: 200,
       maxRange: 3,
+      tier: 2,
       cost: 1000),
   ShipWeapon(
       name: "Plasma Gun",
@@ -54,6 +60,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 40,
       mass: 140,
       maxRange: 2,
+      tier: 2,
       cost: 850),
   ShipWeapon(
       name: "Twin-Linked Rail Cannon",
@@ -62,6 +69,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 60,
       mass: 180,
       maxRange: 3,
+      tier: 2,
       cost: 700),
   ShipWeapon(
       name: "Twin-Linked Missle Launcher",
@@ -70,13 +78,15 @@ final List<ShipItem> itemList = [
       armorPenetration: 40,
       mass: 200,
       maxRange: 3,
+      tier: 2,
       cost: 850),
   ShipWeapon(
-      name: "Sync Laser",
+      name: "Pulse Laser",
       damage: 160,
       armorPenetration: 90,
       mass: 300,
       maxRange: 3,
+      tier: 3,
       cost: 1150),
   ShipWeapon(
       name: "Fusion Blaster",
@@ -84,6 +94,7 @@ final List<ShipItem> itemList = [
       armorPenetration: 80,
       mass: 400,
       maxRange: 4,
+      tier: 3,
       cost: 1400),
   ShipWeapon(
       name: "Rail Cannon Array",
@@ -92,36 +103,32 @@ final List<ShipItem> itemList = [
       armorPenetration: 60,
       mass: 350,
       maxRange: 4,
+      tier: 3,
       cost: 1450),
-  ShipUtil(name: "Core Protector", mass: 50, cost: 200, skills: [
+  ShipUtil(name: "Core Protector", mass: 50, cost: 200, tier: 1, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.life, value: 10),
     ShipItemSkillValue(skill: ShipItemSkill.lastStand, value: 1),
   ]),
-  ShipUtil(name: "Armor Plating", mass: 35, cost: 150, skills: [
+  ShipUtil(name: "Armor Plating", mass: 35, cost: 150, tier: 2, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.armorFlat, value: 5),
   ]),
-  ShipUtil(name: "Reactive Armor", mass: 60, cost: 250, skills: [
+  ShipUtil(name: "Reactive Armor", mass: 60, cost: 250, tier: 2, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.damageReduction, value: 5),
-    ShipItemSkillValue(skill: ShipItemSkill.movement, value: -1),
   ]),
-  ShipUtil(name: "Advanced Hull Armor", mass: 150, cost: 500, skills: [
+  ShipUtil(name: "Advanced Hull Armor", mass: 150, cost: 500, tier: 3, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.armorPercentage, value: 20),
   ]),
-  ShipUtil(name: "Reactor Booster", mass: 50, cost: 200, skills: [
-    ShipItemSkillValue(skill: ShipItemSkill.damageAmplification, value: 10),
-    ShipItemSkillValue(skill: ShipItemSkill.movement, value: -1),
-  ]),
-  ShipUtil(name: "Nano Repair", mass: 50, cost: 250, skills: [
+  ShipUtil(name: "Nano Repair", mass: 50, cost: 250, tier: 1, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.repairPerTurn, value: 2),
     ShipItemSkillValue(skill: ShipItemSkill.repairOnActionSelf, value: 40),
   ]),
-  ShipUtil(name: "Engineering Kit 1", mass: 60, cost: 300, skills: [
+  ShipUtil(name: "Engineering Kit 1", mass: 60, cost: 300, tier: 0, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 50),
   ]),
-  ShipUtil(name: "Engineering Kit 2", mass: 100, cost: 600, skills: [
+  ShipUtil(name: "Engineering Kit 2", mass: 100, cost: 600, tier: 2, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 100),
   ]),
-  ShipUtil(name: "Engineering Kit 3", mass: 250, cost: 900, skills: [
+  ShipUtil(name: "Engineering Kit 3", mass: 250, cost: 900, tier: 3, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 300),
   ]),
 ];

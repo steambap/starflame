@@ -8,6 +8,7 @@ class ShipHull {
   final Block speedRange;
   final int cost;
   final String image;
+  final int tier;
 
   ShipHull({
     required this.name,
@@ -17,5 +18,6 @@ class ShipHull {
     required this.speedRange,
     required this.cost,
     required this.image,
+    required this.tier,
   });
 }
