@@ -1,14 +1,19 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame/effects.dart';
 import "package:flutter/foundation.dart";
 import 'package:flutter/services.dart';
 
 import 'scifi_game.dart';
+import 'menu_planet_cmd.dart';
+import "planet.dart";
+import "theme.dart" show textDamage;
 
 class ScifiWorld extends World
     with HasGameRef<ScifiGame>, KeyboardHandler, DragCallbacks {
   final double moveSpeed = 64;
   Vector2 direction = Vector2.zero();
+  MenuPlanetCmd? _menuPlanetCmd;
 
   @mustCallSuper
   @override
@@ -46,5 +51,29 @@ class ScifiWorld extends World
   @override
   void onDragUpdate(DragUpdateEvent event) {
     game.camera.moveBy(-event.localDelta);
+  }
+
+  void renderPlanetMenu(Planet? planet) {
+    if (planet == null) {
+      _menuPlanetCmd?.removeFromParent();
+      return;
+    }
+
+    _menuPlanetCmd = MenuPlanetCmd(planet);
+    _menuPlanetCmd!.position = planet.hex.toPixel();
+    add(_menuPlanetCmd!);
+  }
+
+  void renderDamageText(String text, Vector2 position) {
+    final textComponent =
+        TextComponent(text: text, textRenderer: textDamage, position: position);
+
+    final removeEff = RemoveEffect(delay: 0.5);
+    final moveEff = MoveByEffect(
+      Vector2(0, -18),
+      EffectController(duration: 0.5),
+    );
+    textComponent.addAll([removeEff, moveEff]);
+    add(textComponent);
   }
 }

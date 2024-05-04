@@ -124,4 +124,11 @@ class ShipTemplate {
       return actionTable[e]!;
     }).toList(growable: false);
   }
+
+  List<ShipWeapon> weaponsInRange(int range) {
+    return items
+        .whereType<ShipWeapon>()
+        .where((element) => element.maxRange >= range)
+        .toList(growable: false);
+  }
 }

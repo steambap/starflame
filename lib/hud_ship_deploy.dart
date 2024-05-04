@@ -43,8 +43,12 @@ class HudShipDeploy extends PositionComponent
             ),
           ],
         ),
-        onChangeState: (ButtonState selected) {
-          renderButtons();
+        onSelectedChanged: (selected) {
+          if (selected) {
+            _renderButtons();
+          } else {
+            _clearButtons();
+          }
         });
     _clip = ClipComponent.rectangle(
         position: Vector2(
@@ -71,7 +75,7 @@ class HudShipDeploy extends PositionComponent
     }
   }
 
-  void renderButtons() {
+  void _renderButtons() {
     _clearButtons();
     final playerState = game.controller.getHumanPlayerState();
     final ts = playerState.templates;
@@ -85,7 +89,7 @@ class HudShipDeploy extends PositionComponent
         i * (AddShipButton.buttonSize.x + 4),
         0,
       );
-      button.isDisabled = game.resourceController
+      button.isDisabled = !game.resourceController
           .canCreateShip(playerState.playerNumber, template);
       _shipButtons.add(button);
     }
@@ -100,6 +104,10 @@ class HudShipDeploy extends PositionComponent
       element.removeFromParent();
     }
     _shipButtons.clear();
+  }
+
+  void minimize() {
+    _deployButton.isSelected = false;
   }
 
   void _calcScrollBounds() {

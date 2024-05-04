@@ -3,12 +3,16 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 import 'ship.dart';
-import 'theme.dart' show text16, text12, iconButtonSize;
+import 'theme.dart'
+    show text16, text12, iconButtonSize, panelBackground, cardSkin;
 import 'action_button.dart';
+import 'components/text_component_clipped.dart';
 
 class HudShipCommand extends PositionComponent
     with HasGameRef<ScifiGame>, HasVisibility {
-  late final SpriteComponent _shipInfoBackground;
+  static final panelSize = Vector2(280, 112);
+  static final textSize = Vector2(192, 24);
+  late final RectangleComponent _shipInfoBackground;
   late final SpriteComponent _shipImage;
   final TextComponent _shipAndTemplateName =
       TextComponent(textRenderer: text16, anchor: Anchor.centerLeft);
@@ -16,8 +20,8 @@ class HudShipCommand extends PositionComponent
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
   final TextComponent _shipMoveAndVision =
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
-  final TextComponent _shipItems =
-      TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
+  final TextComponentClipped _shipItems =
+      TextComponentClipped(textRenderer: text12, anchor: Anchor.centerLeft);
 
   final List<ActionButton> _shipCommandButtons = [];
 
@@ -28,20 +32,28 @@ class HudShipCommand extends PositionComponent
   FutureOr<void> onLoad() {
     // start invisible and only shows if a ship is selected
     isVisible = false;
-    final shipInfoImage = game.images.fromCache("ship_info.png");
-    _shipInfoBackground = SpriteComponent(
-        sprite: Sprite(shipInfoImage),
-        position: Vector2(0, game.size.y - shipInfoImage.height.toDouble()));
+    _shipInfoBackground = RectangleComponent(
+        size: panelSize,
+        paint: panelBackground,
+        position: Vector2(0, game.size.y - panelSize.y),
+        children: [
+          RectangleComponent(
+              size: textSize, paintLayers: cardSkin, position: Vector2(84, 28)),
+          RectangleComponent(
+              size: textSize, paintLayers: cardSkin, position: Vector2(84, 56)),
+          RectangleComponent(
+              size: textSize, paintLayers: cardSkin, position: Vector2(84, 84)),
+        ]);
 
     final sprite = Sprite(game.images.fromCache("scout.png"));
-    final shipImagePos = _shipInfoBackground.position + Vector2(47, 56);
+    final shipImagePos = _shipInfoBackground.position + Vector2(42, 70);
     _shipImage = SpriteComponent(
         sprite: sprite, anchor: Anchor.center, position: shipImagePos);
 
-    _shipAndTemplateName.position = Vector2(102, _shipInfoBackground.y + 14);
-    _shipLifeAndArmor.position = Vector2(102, _shipInfoBackground.y + 40);
-    _shipMoveAndVision.position = Vector2(102, _shipInfoBackground.y + 68);
-    _shipItems.position = Vector2(102, _shipInfoBackground.y + 96);
+    _shipAndTemplateName.position = Vector2(4, _shipInfoBackground.y + 14);
+    _shipLifeAndArmor.position = Vector2(86, _shipInfoBackground.y + 40);
+    _shipMoveAndVision.position = Vector2(86, _shipInfoBackground.y + 68);
+    _shipItems.position = Vector2(86, _shipInfoBackground.y + 96);
 
     return addAll([
       _shipInfoBackground,
@@ -98,7 +110,7 @@ class HudShipCommand extends PositionComponent
         "HP: ${state.health}/${ship.template.maxHealth()}; Armor: ${ship.template.hull.armor}";
     _shipMoveAndVision.text =
         "Move: ${ship.movePoint()}/${ship.template.maxMove()}";
-    _shipItems.text = ship.template.items.map((e) => e.name.substring(0,5)).join(", ");
+    _shipItems.text = ship.template.items.map((e) => e.name).join(", ");
     _shipImage.sprite = Sprite(game.images.fromCache(ship.template.hull.image));
     _clearActions();
 

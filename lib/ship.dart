@@ -11,6 +11,7 @@ import "theme.dart";
 import "ship_state.dart";
 import "ship_template.dart";
 import "action_type.dart";
+import "select_control.dart";
 
 class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier {
   late SpriteComponent _shipSprite;
@@ -55,24 +56,33 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier 
 
   FutureOr<void> moveAnim(Cell cell, List<Cell> fromCells) {
     final moveEffectList = fromCells.reversed
-        .map((e) => MoveToEffect(e.position, EffectController(duration: 0.2)));
-    _engineEffect.add(OpacityEffect.fadeIn(EffectController(duration: 0.25)));
+        .map((e) => MoveToEffect(e.position, EffectController(duration: 0.1)));
+    _engineEffect.add(OpacityEffect.fadeIn(EffectController(duration: 0.15)));
     return add(SequenceEffect([
       ...moveEffectList,
     ])
       ..onComplete = () {
-        useMove(fromCells.length);
         _engineEffect
-            .add(OpacityEffect.fadeOut(EffectController(duration: 0.25)));
+            .add(OpacityEffect.fadeOut(EffectController(duration: 0.15)));
+        useMove(fromCells.length);
+        _maybeSelectAgain();
       });
   }
 
-  useMove(int num) {
+   void useMove(int num) {
     state.movementUsed += num;
     notifyListeners();
     if (movePoint() == 0) {
       setTurnOver();
     }
+  }
+
+  void _maybeSelectAgain() {
+    if (state.isTurnOver) {
+      return;
+    }
+
+    game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
   }
 
   void useAttack() {

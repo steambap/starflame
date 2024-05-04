@@ -35,7 +35,23 @@ class SelectControlWaitForInput extends SelectControl {
   }
 }
 
-class SelectControlCellSelected extends SelectControl {
+/// Base class for selecting a cell or planet or ship
+class SelectControlHex extends SelectControl {
+  SelectControlHex(super.game);
+
+  @override
+  void onCellClick(Cell cell) {
+    if (cell.ship != null) {
+      game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+    } else if (cell.planet != null) {
+      game.mapGrid.selectControl = SelectControlPlanet(game, cell);
+    } else {
+      game.mapGrid.selectControl = SelectControlWaitForInput(game);
+    }
+  }
+}
+
+class SelectControlCellSelected extends SelectControlHex {
   final Cell cell;
   late final Ship? ship;
   Map<Cell, List<Cell>> paths = {};
@@ -60,7 +76,7 @@ class SelectControlCellSelected extends SelectControl {
       game.mapGrid.resolveCombat(ship!, cell);
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     } else {
-      game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+      super.onCellClick(cell);
     }
   }
 
@@ -71,6 +87,7 @@ class SelectControlCellSelected extends SelectControl {
       final shipOwner = ship?.state.playerNumber ?? -1;
       final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
       game.shipCommand.updateRender(ship);
+      game.shipDeploy.minimize();
       if (isOwnerHuman) {
         paths =
             game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
@@ -103,7 +120,7 @@ class SelectControlCellSelected extends SelectControl {
   }
 }
 
-class SelectControlPlanet extends SelectControl {
+class SelectControlPlanet extends SelectControlHex {
   final Cell cell;
   SelectControlPlanet(super.game, this.cell);
 
@@ -117,19 +134,20 @@ class SelectControlPlanet extends SelectControl {
       return;
     }
 
-    game.mapGrid.selectControl = SelectControlWaitForInput(game);
+    super.onCellClick(cell);
   }
 
   @override
   void onStateEnter() {
     game.hudPlanet.planet = cell.planet;
-    game.mapGrid.renderPlanetMenu(cell.planet);
+    game.world.renderPlanetMenu(cell.planet);
+    game.shipDeploy.minimize();
   }
 
   @override
   void onStateExit() {
     game.hudPlanet.planet = null;
-    game.mapGrid.renderPlanetMenu(null);
+    game.world.renderPlanetMenu(null);
   }
 }
 

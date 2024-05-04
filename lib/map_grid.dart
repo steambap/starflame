@@ -4,11 +4,9 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import "package:flame/events.dart";
-import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 
 import 'game_creator.dart';
-import 'menu_planet_cmd.dart';
 import 'ship.dart';
 import "ship_template.dart";
 import 'scifi_game.dart';
@@ -18,7 +16,7 @@ import "hex.dart";
 import "select_control.dart";
 import "planet.dart";
 import "tile_type.dart";
-import "theme.dart" show textDamage, hexBorderPaint, sectionBorderPaint;
+import "theme.dart" show hexBorderPaint, sectionBorderPaint;
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -45,7 +43,6 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   final List<Ship> shipListAll = [];
   final Map<int, List<Ship>> shipMap = {};
   late SelectControl _selectControl;
-  MenuPlanetCmd? _menuPlanetCmd;
 
   @override
   FutureOr<void> onLoad() {
@@ -218,7 +215,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     cell.ship = ship;
   }
 
-  Future<void> spawnShipAt(Cell cell, int playerNumber, ShipTemplate tmpl) async {
+  Future<void> spawnShipAt(
+      Cell cell, int playerNumber, ShipTemplate tmpl) async {
     final ship = Ship(cell, playerNumber, tmpl);
     cell.ship = ship;
 
@@ -228,7 +226,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     await add(ship);
   }
 
-  Future<void> createShipAt(Cell cell, int playerNumber, ShipTemplate tmpl) async {
+  Future<void> createShipAt(
+      Cell cell, int playerNumber, ShipTemplate tmpl) async {
     final ship = Ship(cell, playerNumber, tmpl);
     cell.ship = ship;
 
@@ -317,39 +316,26 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   }
 
   void resolveCombat(Ship ship, Cell cell) {
+    final int dx = ship.cell.hex.distance(cell.hex).toInt();
+    final attackerWeapon = ship.template.weaponsInRange(dx);
+    int defenderArmor = 0;
     if (cell.ship != null) {
-      const attackingPower = 999;
-      int damage = attackingPower *
-          (ship.state.playerNumber == game.controller.getHumanPlayerNumber()
-              ? 3
-              : 1);
-      ship.useAttack();
-      cell.ship?.takeDamage(damage);
-      TextComponent text = TextComponent(
-          text: "-${damage.toString()}",
-          textRenderer: textDamage,
-          anchor: Anchor.center,
-          position: cell.position);
-      add(text);
-      final removeEff = RemoveEffect(delay: 0.5);
-      final moveEff = MoveByEffect(
-        Vector2(0, -18),
-        EffectController(duration: 0.5),
-      );
-      text.addAll([removeEff, moveEff]);
+      defenderArmor = cell.ship!.template.hull.armor;
+    }
+    int damage = 0;
+    for (final w in attackerWeapon) {
+      final double mod = w.armorPenetration >= defenderArmor
+          ? 1
+          : w.armorPenetration / defenderArmor;
+      damage += (w.damage * mod).toInt();
+    }
+
+    ship.useAttack();
+    if (cell.ship != null) {
+      cell.ship!.takeDamage(damage);
     } else if (cell.planet != null) {
-      // TODO: planet siege
+      cell.planet!.defense -= damage;
     }
-  }
-
-  void renderPlanetMenu(Planet? planet) {
-    if (planet == null) {
-      _menuPlanetCmd?.removeFromParent();
-      return;
-    }
-
-    _menuPlanetCmd = MenuPlanetCmd(planet);
-    _menuPlanetCmd!.position = planet.hex.toPixel();
-    add(_menuPlanetCmd!);
+    game.world.renderDamageText("-${damage.toString()}", cell.position);
   }
 }

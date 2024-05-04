@@ -74,7 +74,7 @@ final List<ShipHull> hulls = [
       life: 240,
       armor: 65,
       cost: 500,
-      image: "scout.png",
+      image: "mk89.png",
       tier: 1,
       speedRange: const Block(30, 40)),
   ShipHull(
@@ -83,7 +83,7 @@ final List<ShipHull> hulls = [
       life: 240,
       armor: 60,
       cost: 850,
-      image: "scout.png",
+      image: "ranger.png",
       tier: 1,
       speedRange: const Block(30, 50)),
   ShipHull(
@@ -92,7 +92,7 @@ final List<ShipHull> hulls = [
       life: 320,
       armor: 90,
       cost: 1300,
-      image: "scout.png",
+      image: "mk144.png",
       tier: 2,
       speedRange: const Block(30, 35)),
   ShipHull(
@@ -101,7 +101,7 @@ final List<ShipHull> hulls = [
       life: 350,
       armor: 130,
       cost: 1850,
-      image: "scout.png",
+      image: "obsidian.png",
       tier: 3,
       speedRange: const Block(20, 30)),
   // faction 3
