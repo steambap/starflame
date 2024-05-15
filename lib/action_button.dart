@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:starfury/select_control.dart';
 
+import 'select_control.dart';
 import 'action.dart';
 import 'action_type.dart';
 import 'cell.dart';

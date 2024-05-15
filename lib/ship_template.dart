@@ -20,8 +20,8 @@ class ShipTemplate {
     required this.items,
   });
 
-  double cost() {
-    return hull.cost + items.fold(0, (prev, item) => prev + item.cost);
+  int cost() {
+    return hull.cost;
   }
 
   int maxHealth() {
@@ -48,10 +48,10 @@ class ShipTemplate {
     final double percent = mass / hull.hullSize;
 
     if (percent > 0.8) {
-      return hull.speedRange.x ~/ 10;
+      return hull.speedRange.x;
     }
 
-    return hull.speedRange.y ~/ 10;
+    return hull.speedRange.y;
   }
 
   int maxRange() {

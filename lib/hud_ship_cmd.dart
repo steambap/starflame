@@ -12,6 +12,7 @@ class HudShipCommand extends PositionComponent
     with HasGameRef<ScifiGame>, HasVisibility {
   static final panelSize = Vector2(280, 112);
   static final textSize = Vector2(192, 24);
+  static final rectSize = Vector2(188, 24);
   late final RectangleComponent _shipInfoBackground;
   late final SpriteComponent _shipImage;
   final TextComponent _shipAndTemplateName =
@@ -21,7 +22,7 @@ class HudShipCommand extends PositionComponent
   final TextComponent _shipMoveAndVision =
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
   final TextComponentClipped _shipItems =
-      TextComponentClipped(textRenderer: text12, anchor: Anchor.centerLeft);
+      TextComponentClipped(rectSize, textRenderer: text12, anchor: Anchor.centerLeft);
 
   final List<ActionButton> _shipCommandButtons = [];
 

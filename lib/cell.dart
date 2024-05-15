@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flame/components.dart';
-import 'package:starfury/tile_type.dart';
 
 import 'scifi_game.dart';
 import 'hex.dart';
 import 'planet.dart';
 import 'ship.dart';
 import "theme.dart" show highlighterPaint, moveendPaint, targetPaint;
+import 'tile_type.dart';
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   final int index;
@@ -35,7 +35,7 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   }
 
   FutureOr<void> markAsHighlight([int movePoint = -1]) {
-    if (movePoint == 0) {
+    if (movePoint < TileType.empty.cost) {
       _highligher.paint = moveendPaint;
     } else {
       _highligher.paint = highlighterPaint;

@@ -3,8 +3,10 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 
 class TextComponentClipped extends TextComponent {
-  static final rectSize = Vector2(188, 24);
-  TextComponentClipped({
+  late final Path path;
+
+  TextComponentClipped(
+    Vector2 rectSize, {
     super.text,
     super.textRenderer,
     super.position,
@@ -15,11 +17,12 @@ class TextComponentClipped extends TextComponent {
     super.children,
     super.priority,
     super.key,
-  });
+  }) {
+    path = Rectangle.fromRect(rectSize.toRect()).asPath();
+  }
 
   @override
   void render(Canvas canvas) {
-    final path = Rectangle.fromRect(rectSize.toRect()).asPath();
     canvas.save();
     canvas.clipPath(path);
     super.render(canvas);

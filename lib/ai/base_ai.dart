@@ -29,54 +29,21 @@ class BaseAI {
   }
 
   void improveEconomy(PlayerState playerState) {
-    if (playerState.credit > 400) {
+    if (playerState.credit > Building.bank.cost * 2) {
       addBuilding(playerState);
     }
-
-    improveFood(playerState);
-    invest(playerState);
   }
 
   void addBuilding(PlayerState playerState) {
     for (final p in myPlanets) {
-      if (p.canBuild(Building.fusionReactor)) {
+      if (p.canBuild(Building.bank)) {
         final result = game.resourceController
-            .addBuilding(playerState.playerNumber, p, Building.fusionReactor);
+            .addBuilding(playerState.playerNumber, p, Building.bank);
         if (result) {
           game.aiController.log(
-              "Add Building [${Building.fusionReactor.displayName}] to [${p.displayName}]");
+              "Add Building [${Building.bank.displayName}] to [${p.displayName}]");
         }
         return;
-      }
-    }
-  }
-
-  void improveFood(PlayerState playerState) {
-    for (final p in myPlanets) {
-      if (playerState.production < 10) {
-        return;
-      }
-      if (!p.isFoodDeveloped()) {
-        final result =
-            game.resourceController.developFood(playerState.playerNumber, p);
-        if (result) {
-          game.aiController.log("Develop Food on [${p.displayName}]");
-        }
-      }
-    }
-  }
-
-  void invest(PlayerState playerState) {
-    for (final p in myPlanets) {
-      if (playerState.production < 10) {
-        return;
-      }
-      if (p.investNumber() < p.calcSupport()) {
-        final result =
-            game.resourceController.investTrade(playerState.playerNumber, p);
-        if (result) {
-          game.aiController.log("Invest Trade on [${p.displayName}]");
-        }
       }
     }
   }

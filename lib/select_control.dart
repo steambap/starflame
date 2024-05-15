@@ -100,7 +100,11 @@ class SelectControlCellSelected extends SelectControlHex {
       }
     }
     for (final cell in paths.keys) {
-      final movePoint = ship!.movePoint() - paths[cell]!.length;
+      final fromCells = paths[cell]!;
+      final moveCost = fromCells.fold(0, (previousValue, element) {
+        return previousValue + element.tileType.cost;
+      });
+      final movePoint = ship!.movePoint() - moveCost;
       cell.markAsHighlight(movePoint);
     }
     for (final cell in attackableCells) {

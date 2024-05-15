@@ -3,7 +3,7 @@ import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
 
-import 'player_state.dart';
+// import 'player_state.dart';
 import 'building.dart';
 import 'scifi_game.dart';
 import "hex.dart";
@@ -17,11 +17,8 @@ class Planet extends PositionComponent
   /// 0 = small, 1 = medium, 2 = large
   int planetSize;
   int? playerNumber;
-  int developmentLevel = 0;
-  int food = 0;
   int citizen = 0;
-  int trade = 0;
-  int support = 0;
+  int developmentLevel = 0;
   double defense = 0;
   bool isUnderSiege = false;
   final List<Building> buildings = [];
@@ -63,13 +60,11 @@ class Planet extends PositionComponent
     type = PlanetType.terran;
     planetSize = 1;
     homePlanet = true;
-    citizen = 100;
-    support = 100;
     buildings.addAll([
       Building.colonyHQ,
-      Building.fusionReactor,
+      Building.constructionYard,
     ]);
-    food = type.food;
+    citizen = 1;
     defense = defenseMax();
   }
 
@@ -78,7 +73,6 @@ class Planet extends PositionComponent
     if (defense >= defenseMax()) {
       defense = defenseMax();
       this.playerNumber = playerNumber;
-      support = 60;
       updateRender();
 
       return true;
@@ -90,19 +84,21 @@ class Planet extends PositionComponent
   }
 
   void capture(int playerNumber) {
+    // Move all citizens back home before capture
+    final state = game.controller.getPlayerState(this.playerNumber!);
+    state.citizenInTransport = citizen;
+    citizen = 0;
+
     this.playerNumber = playerNumber;
-    citizen ~/= 2;
     updateRender();
   }
 
   void updateRender() {
-    final popLabel = citizen > 0 ? citizen.toString() : '';
-
     if (playerNumber == null) {
       ownerCircle.paint = emptyPaint;
       populationLabel.text = "";
     } else {
-      populationLabel.text = "[$popLabel]$displayName";
+      populationLabel.text = displayName;
       final pState = game.controller.getPlayerState(playerNumber!);
       final playerPaint = Paint()
         ..style = PaintingStyle.stroke
@@ -116,94 +112,29 @@ class Planet extends PositionComponent
     if (this.playerNumber != playerNumber) {
       return;
     }
-    _citizenUpdate();
-    _citizenWork();
 
-    supportUpdate();
+    if (!isUnderSiege) {
+      defense = (defense + 20).clamp(0, defenseMax());
+    }
 
     updateRender();
   }
 
-  void _citizenUpdate() {
-    for (int i = 0; i < 3; i++) {
-      _citizenGrow();
-      _citizenDecay();
-    }
+  bool canRemoveCitizen() {
+    return citizen > 0;
   }
 
-  int growth() {
-    int buildingGrowth = 0;
-    for (final bd in buildings) {
-      if (bd == Building.colonyHQ) {
-        buildingGrowth += 5;
-      }
-    }
-    return food + buildingGrowth;
-  }
-
-  void _citizenGrow() {
-    citizen += growth();
-  }
-
-  void _citizenDecay() {
-    citizen -= (citizen.toDouble() * 0.4 / 1.0).floor();
-    citizen = citizen.clamp(0, 99999);
-  }
-
-  void _citizenWork() {
-    defense += citizen;
-    defense = defense.clamp(0, defenseMax());
-  }
-
-  int calcSupport() {
-    double tradeEffectMultiplier = 1.0;
-    if (type.climate == PlanetClimate.cold) {
-      tradeEffectMultiplier -= 0.2;
-    }
-    double tradeSupportMultiplier = 1.0 + developmentLevel * 0.1;
-    final tradeSupport =
-        citizen * tradeSupportMultiplier - trade * tradeEffectMultiplier;
-    double buildingSupport = 0;
-    for (final bd in buildings) {
-      if (bd == Building.policeStation) {
-        buildingSupport += 100;
-      }
-    }
-
-    return (tradeSupport + buildingSupport).floor();
-  }
-
-  void supportUpdate() {
-    support += calcSupport();
-    support = support.clamp(0, 100);
-  }
-
-  bool isFoodDeveloped() {
-    return food == type.food;
-  }
-
-  void developFood(int playerNumber) {
-    food += 10;
-    food = food.clamp(0, type.food);
+  void removeCitizen() {
+    citizen--;
     notifyListeners();
   }
 
-  int investNumber() {
-    int ret = 5;
-    if (playerNumber == null) {
-      return ret;
-    }
-    PlayerState playerState = game.controller.getPlayerState(playerNumber!);
-    if (playerState.sectorDataTable.containsKey(sector)) {
-      final sectorData = playerState.sectorDataTable[sector]!;
-      ret += sectorData.invest;
-    }
-
-    return ret;
+  bool canAddCitizen() {
+    return citizen < maxCitizen();
   }
 
-  void investTrade(int playerNumber) {
-    trade += investNumber();
+  void addCitizen() {
+    citizen++;
     notifyListeners();
   }
 
@@ -239,21 +170,12 @@ class Planet extends PositionComponent
   }
 
   int maxBuilding() {
-    return planetSize + 2;
+    int num = homePlanet ? 1 : 0;
+    return planetSize + 2 + num;
   }
 
-  int lifeQuality() {
-    int qol = type.lifeQuality;
-
-    return 90 + planetSize * 10 + qol + developmentLevel * 10;
-  }
-
-  double tax() {
-    return citizen * (0.25 + developmentLevel * 0.05);
-  }
-
-  double tradeIncome() {
-    return trade * (support / 100);
+  int maxCitizen() {
+    return type.maxCitizen + planetSize;
   }
 
   bool attackable(int playerNumber) {

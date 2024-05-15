@@ -6,7 +6,7 @@ class Sector {
 }
 
 class SectorData {
-  int invest = 0;
+  bool hasHQ = false;
 }
 
 typedef SectorDataTable = Map<Hex, SectorData>;

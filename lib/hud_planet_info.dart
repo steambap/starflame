@@ -196,13 +196,13 @@ class HudPlanetInfo extends PositionComponent
   void _setText(Planet planet) {
     _planetName.text =
         "${planet.displayName} Lv.${planet.developmentLevel + 1}";
-    _foodValue.text = "${planet.food}/${planet.type.food}";
-    _tradeValue.text = "${planet.trade}/+${planet.investNumber()}";
+    _foodValue.text = "${planet.type.food * planet.citizen}";
+    // _tradeValue.text = "${planet.trade}/+${planet.investNumber()}";
     _citizenValue.text = "${planet.citizen}";
     _defenseValue.text = "${planet.defense} / ${planet.defenseMax()}";
-    _growthValue.text = "${planet.growth()}";
-    _supportValue.text = "${planet.support}(${planet.calcSupport()})";
-    _lifeQualityValue.text = "${planet.lifeQuality()}";
+    // _growthValue.text = "${planet.growth()}";
+    // _supportValue.text = "${planet.support}(${planet.calcSupport()})";
+    // _lifeQualityValue.text = "${planet.lifeQuality()}";
     _buildingValue.text = "${planet.buildings.length}/${planet.maxBuilding()}";
     _planetTypeLabel.text = toBeginningOfSentenceCase(planet.type.name);
     _planetSizeLabel.text = planet.planetSizeStr();

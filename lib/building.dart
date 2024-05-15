@@ -1,22 +1,25 @@
 enum Building {
   colonyHQ(
-      cost: 1500,
+      cost: 150,
       uniqueTag: 'unique',
       displayName: "Colony Base",
       image: 'colony_hq.png'),
 
-  policeStation(
-      cost: 100, displayName: "Police Station", image: 'police_station.png'),
   constructionYard(
-      cost: 250,
+      cost: 25,
       displayName: "Construction Yard",
       image: 'construction_yard.png'),
-  fusionReactor(
-      cost: 100, displayName: "Fusion Reactor", image: 'fusion_reactor.png'),
+  bank(cost: 15, displayName: "Bank", image: 'bank.png'),
+  lab(
+      cost: 20,
+      displayName: "Research Lab",
+      image: 'lab.png',
+      uniqueTag: 'lab'),
   mediaNetwork(
-      cost: 200, displayName: "Media Network", image: 'media_network.png'),
-  tradeCompany(
-      cost: 200, displayName: "Trade Company", image: 'trade_company.png');
+      cost: 20,
+      displayName: "Media Network",
+      image: 'media_network.png',
+      uniqueTag: 'media_network');
 
   const Building({
     required this.cost,

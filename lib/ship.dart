@@ -12,8 +12,10 @@ import "ship_state.dart";
 import "ship_template.dart";
 import "action_type.dart";
 import "select_control.dart";
+import 'tile_type.dart';
 
-class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier {
+class Ship extends PositionComponent
+    with HasGameRef<ScifiGame>, ChangeNotifier {
   late SpriteComponent _shipSprite;
   late SpriteComponent _engineEffect;
   Cell cell;
@@ -64,12 +66,15 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier 
       ..onComplete = () {
         _engineEffect
             .add(OpacityEffect.fadeOut(EffectController(duration: 0.15)));
-        useMove(fromCells.length);
+        final moveCost = fromCells.fold(0, (previousValue, element) {
+          return previousValue + element.tileType.cost;
+        });
+        useMove(moveCost);
         _maybeSelectAgain();
       });
   }
 
-   void useMove(int num) {
+  void useMove(int num) {
     state.movementUsed += num;
     notifyListeners();
     if (movePoint() == 0) {
@@ -78,7 +83,7 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier 
   }
 
   void _maybeSelectAgain() {
-    if (state.isTurnOver) {
+    if (state.isTurnOver || movePoint() < TileType.empty.cost) {
       return;
     }
 
@@ -87,11 +92,11 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier 
 
   void useAttack() {
     state.attacked = true;
-    useMove(1);
+    setTurnOver();
     notifyListeners();
   }
 
-  setTurnOver() {
+  void setTurnOver() {
     state.isTurnOver = true;
     state.attacked = true;
     state.movementUsed = 999;
@@ -167,7 +172,8 @@ class Ship extends PositionComponent with HasGameRef<ScifiGame>, ChangeNotifier 
   }
 
   void addCooldown(ActionType type, int cd) {
-    final action = state.actions.firstWhere((element) => element.type == type, orElse: () => state.actions.first);
+    final action = state.actions.firstWhere((element) => element.type == type,
+        orElse: () => state.actions.first);
     action.cooldown += cd;
     notifyListeners();
   }
