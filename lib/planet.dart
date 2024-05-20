@@ -27,7 +27,7 @@ class Planet extends PositionComponent
 
   final Hex hex;
   final Hex sector;
-  final TextComponent populationLabel = TextComponent(
+  final TextComponent citizenLabel = TextComponent(
       text: "",
       position: Vector2(0, 36),
       anchor: Anchor.center,
@@ -50,7 +50,7 @@ class Planet extends PositionComponent
     final sprite = Sprite(img, srcPosition: srcPos, srcSize: Vector2.all(72));
     planetSprite = SpriteComponent(sprite: sprite, anchor: Anchor.center);
 
-    addAll([planetSprite, ownerCircle, populationLabel]);
+    addAll([planetSprite, ownerCircle, citizenLabel]);
 
     updateRender();
   }
@@ -96,9 +96,9 @@ class Planet extends PositionComponent
   void updateRender() {
     if (playerNumber == null) {
       ownerCircle.paint = emptyPaint;
-      populationLabel.text = "";
+      citizenLabel.text = "";
     } else {
-      populationLabel.text = displayName;
+      citizenLabel.text = "[$citizen]";
       final pState = game.controller.getPlayerState(playerNumber!);
       final playerPaint = Paint()
         ..style = PaintingStyle.stroke

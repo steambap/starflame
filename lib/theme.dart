@@ -5,12 +5,15 @@ import "package:flame/game.dart";
 import "package:flame/rendering.dart";
 
 final grayTint = PaintDecorator.tint(const Color(0x7f7f7f7f));
-final text16 =
-    TextPaint(style: const TextStyle(color: Colors.white, fontSize: 16));
-final textDamage =
-    TextPaint(style: const TextStyle(color: Colors.redAccent, fontSize: 16));
-final text12 =
-    TextPaint(style: const TextStyle(color: Colors.white, fontSize: 12));
+final text16 = TextPaint(
+    style: const TextStyle(
+        color: Colors.white, fontSize: 16, fontFamily: "SpaceMono"));
+final textDamage = TextPaint(
+    style: const TextStyle(
+        color: Colors.redAccent, fontSize: 16, fontFamily: "SpaceMono"));
+final text12 = TextPaint(
+    style: const TextStyle(
+        color: Colors.white, fontSize: 12, fontFamily: "SpaceMono"));
 final hexBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 1
@@ -63,10 +66,7 @@ final List<Paint> buttonGreenHoverSkin = [
 ];
 final List<Paint> cardSkin = [textBox, textBoxBorder];
 final List<Paint> textButtonPaintLayer = [textButton, textBoxBorder];
-final List<Paint> textButtonSelectedSkin = [
-  textButtonSelected,
-  textBoxBorder
-];
+final List<Paint> textButtonSelectedSkin = [textButtonSelected, textBoxBorder];
 final List<Paint> textButtonDisabledPaintLayer = [
   textButtonDisabled,
   textBoxBorderDisabled

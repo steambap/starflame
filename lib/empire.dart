@@ -11,7 +11,6 @@ enum Faction {
   barham,
 }
 
-/// TODO make empires customizable
 class Empire {
   final Faction faction;
   final String displayName;
