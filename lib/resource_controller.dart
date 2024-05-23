@@ -161,9 +161,14 @@ class ResourceController {
     return true;
   }
 
-  bool canAddBuilding(int playerNumber, Planet planet, Building building) {
+  bool canAffordBuilding(int playerNumber, Building building) {
     final playerState = game.controller.getPlayerState(playerNumber);
-    final hasResources = playerState.credit >= building.cost;
+
+    return playerState.credit >= building.cost;
+  }
+
+  bool canAddBuilding(int playerNumber, Planet planet, Building building) {
+    final hasResources = canAffordBuilding(playerNumber, building);
 
     return hasResources && planet.canBuild(building);
   }

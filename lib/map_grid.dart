@@ -28,7 +28,7 @@ Hex _pixelToHex(Vector2 pixel) {
 }
 
 class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
-  final tileSize = Vector2.all(72);
+  static final tileSize = Vector2.all(72);
 
   List<Cell> cells = List.empty();
 
@@ -272,6 +272,21 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     return deployableCells;
   }
 
+  List<Cell> playerPlanetCells(int playerNumber) {
+    final List<Cell> playerCells = [];
+    for (final cell in cells) {
+      if (cell.planet != null && cell.planet!.playerNumber == playerNumber) {
+        playerCells.add(cell);
+      }
+    }
+
+    return playerCells;
+  }
+
+  List<Cell> humanPlayerPlanetCells() {
+    return playerPlanetCells(game.controller.getHumanPlayerNumber());
+  }
+
   List<Cell> inRange(Cell center, Block range) {
     final List<Cell> cellsInRange = [];
     if (range.x == 0) {
@@ -337,5 +352,13 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       cell.planet!.defense -= damage;
     }
     game.world.renderDamageText("-${damage.toString()}", cell.position);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "cells": cells.map((e) => e.toJson()).toList(),
+      "planets": planets.map((e) => e.toJson()).toList(),
+      // ships goes here
+    };
   }
 }

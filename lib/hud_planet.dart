@@ -4,11 +4,9 @@ import 'package:flame/components.dart';
 
 import "planet.dart";
 import "hud_planet_info.dart";
-import "hud_planet_building.dart";
 
 class HudPlanet extends PositionComponent {
   final HudPlanetInfo planetInfo = HudPlanetInfo();
-  final HudPlanetBuilding planetBuilding = HudPlanetBuilding();
   Planet? _planet;
   bool _isScheduled = false;
 
@@ -20,10 +18,8 @@ class HudPlanet extends PositionComponent {
     _planet?.removeListener(_scheduleUpdateRender);
     if (planet == null) {
       planetInfo.hide();
-      planetBuilding.hide();
     } else {
       planetInfo.show(planet);
-      planetBuilding.show(planet);
       planet.addListener(_scheduleUpdateRender);
     }
 
@@ -46,7 +42,6 @@ class HudPlanet extends PositionComponent {
 
   void _updateRender() {
     planetInfo.updateRender(_planet!);
-    planetBuilding.updateRender(_planet!);
   }
 
   @override
@@ -57,6 +52,6 @@ class HudPlanet extends PositionComponent {
 
   @override
   Future<void> onLoad() async {
-    addAll([planetInfo, planetBuilding]);
+    return add(planetInfo);
   }
 }

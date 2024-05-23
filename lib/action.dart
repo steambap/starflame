@@ -104,8 +104,8 @@ class BuildColony extends Action {
       return;
     }
     final playerNumber = ship.state.playerNumber;
-    cell.planet!.colonize(ship.template.engineering(), playerNumber);
-    ship.setTurnOver();
+    cell.planet!.colonize(playerNumber);
+    ship.dispose();
   }
 }
 

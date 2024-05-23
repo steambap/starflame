@@ -61,4 +61,14 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   String toString() {
     return "Cell$hex,${tileType.name}";
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "index": index,
+      "hex": hex.toInt(),
+      "sector": sector.toInt(),
+      "tileType": tileType.name,
+      // planets and ships are saved under map grid
+    };
+  }
 }

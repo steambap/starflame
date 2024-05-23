@@ -7,4 +7,12 @@ class GameSettings {
   List<PlayerState> players = [];
 
   GameSettings(this.seed);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'seed': seed,
+      'playerStartingCredit': playerStartingCredit,
+      'mapSize': mapSize,
+    };
+  }
 }

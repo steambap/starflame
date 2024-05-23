@@ -19,7 +19,7 @@ class Planet extends PositionComponent
   int? playerNumber;
   int citizen = 0;
   int developmentLevel = 0;
-  double defense = 0;
+  int defense = 0;
   bool isUnderSiege = false;
   final List<Building> buildings = [];
   bool homePlanet = false;
@@ -68,16 +68,9 @@ class Planet extends PositionComponent
     defense = defenseMax();
   }
 
-  bool colonize(int progress, int playerNumber) {
-    defense += progress;
-    if (defense >= defenseMax()) {
-      defense = defenseMax();
-      this.playerNumber = playerNumber;
-      updateRender();
-
-      return true;
-    }
-
+  bool colonize(int playerNumber) {
+    defense = defenseMax();
+    this.playerNumber = playerNumber;
     updateRender();
 
     return false;
@@ -98,7 +91,7 @@ class Planet extends PositionComponent
       ownerCircle.paint = emptyPaint;
       citizenLabel.text = "";
     } else {
-      citizenLabel.text = "[$citizen]";
+      citizenLabel.text = "[$citizen]$displayName";
       final pState = game.controller.getPlayerState(playerNumber!);
       final playerPaint = Paint()
         ..style = PaintingStyle.stroke
@@ -165,7 +158,7 @@ class Planet extends PositionComponent
     notifyListeners();
   }
 
-  double defenseMax() {
+  int defenseMax() {
     return 300 + developmentLevel * 100;
   }
 
@@ -194,6 +187,23 @@ class Planet extends PositionComponent
       0 => "Small",
       1 => "Medium",
       _ => "Large",
+    };
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "type": type.name,
+      "planetSize": planetSize,
+      if (playerNumber != null) "playerNumber": playerNumber,
+      "citizen": citizen,
+      "developmentLevel": developmentLevel,
+      "defense": defense,
+      "isUnderSiege": isUnderSiege,
+      "homePlanet": homePlanet,
+      "displayName": displayName,
+      "hex": hex.toInt(),
+      "sector": sector.toInt(),
+      "buildings": buildings.map((b) => b.name).toList(),
     };
   }
 }
