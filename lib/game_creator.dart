@@ -246,7 +246,7 @@ class GameCreator {
     cell.tileType = TileType.asteroidField;
 
     final style = asteroidStyles[rand.nextInt(asteroidStyles.length)];
-    final ns = style.map((e) => e + cell.hex).toList();
+    final ns = style.map((e) => e + cell.hex);
     for (final n in ns) {
       final idx = hexTable[n.toInt()]!;
       cells[idx].tileType = TileType.asteroidField;
@@ -326,11 +326,11 @@ class GameCreator {
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {
     final humanPlayer = PlayerState(0, false)
       ..credit = gameSettings.playerStartingCredit.toDouble()
-      ..empire = Empire.getEmpire("manchewark")
+      ..empire = Empire.getEmpire("terranEmpire")
       ..color = Colors.blue;
     final testAI = PlayerState(1, true)
       ..credit = gameSettings.playerStartingCredit.toDouble()
-      ..empire = Empire.getEmpire("uxbrid")
+      ..empire = Empire.getEmpire("terranKindom")
       ..color = Colors.red;
 
     return [humanPlayer, testAI];

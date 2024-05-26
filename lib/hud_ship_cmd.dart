@@ -21,8 +21,8 @@ class HudShipCommand extends PositionComponent
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
   final TextComponent _shipMoveAndVision =
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
-  final TextComponentClipped _shipItems =
-      TextComponentClipped(rectSize, textRenderer: text12, anchor: Anchor.centerLeft);
+  final TextComponentClipped _shipItems = TextComponentClipped(rectSize,
+      textRenderer: text12, anchor: Anchor.centerLeft);
 
   final List<ActionButton> _shipCommandButtons = [];
 
@@ -46,7 +46,7 @@ class HudShipCommand extends PositionComponent
               size: textSize, paintLayers: cardSkin, position: Vector2(84, 84)),
         ]);
 
-    final sprite = Sprite(game.images.fromCache("scout.png"));
+    final sprite = Sprite(game.images.fromCache("ships/mk55.png"));
     final shipImagePos = _shipInfoBackground.position + Vector2(42, 70);
     _shipImage = SpriteComponent(
         sprite: sprite, anchor: Anchor.center, position: shipImagePos);
@@ -105,8 +105,7 @@ class HudShipCommand extends PositionComponent
 
   void _renderShip(Ship ship) {
     final state = ship.state;
-    _shipAndTemplateName.text =
-        "${ship.template.hull.name}/${ship.template.name}";
+    _shipAndTemplateName.text = ship.template.name;
     _shipLifeAndArmor.text =
         "HP: ${state.health}/${ship.template.maxHealth()}; Armor: ${ship.template.hull.armor}";
     _shipMoveAndVision.text =

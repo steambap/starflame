@@ -338,11 +338,12 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       defenderArmor = cell.ship!.template.hull.armor;
     }
     int damage = 0;
-    for (final w in attackerWeapon) {
+    for (final item in attackerWeapon) {
+      final w = item.weaponData!;
       final double mod = w.armorPenetration >= defenderArmor
           ? 1
           : w.armorPenetration / defenderArmor;
-      damage += (w.damage * mod).toInt();
+      damage += (w.damageAtRange[dx - 1] * mod).toInt() * w.shots;
     }
 
     ship.useAttack();

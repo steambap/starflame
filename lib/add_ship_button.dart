@@ -24,6 +24,8 @@ class AddShipButton extends PositionComponent
 
   late final TextComponent _tName;
   late final SpriteComponent _tSprite;
+  late final SpriteComponent _prodIcon;
+  late final TextComponent _prodText;
   void Function(ShipTemplate template)? onPressed;
 
   AddShipButton(this.template, this.onPressed) : super(size: buttonSize);
@@ -50,12 +52,25 @@ class AddShipButton extends PositionComponent
     );
     final hullImg = Sprite(game.images.fromCache(template.hull.image));
     _tSprite = SpriteComponent(
-        sprite: hullImg, position: Vector2(buttonSize.x / 2, 48), anchor: Anchor.center);
+        sprite: hullImg,
+        position: Vector2(buttonSize.x / 2, 48),
+        anchor: Anchor.center);
+
+    final prodIcon = Sprite(game.images.fromCache('production_icon.png'));
+    _prodIcon = SpriteComponent(sprite: prodIcon, position: Vector2(2, 68));
+    _prodText = TextComponent(
+      text: template.cost().toString(),
+      position: Vector2(22, 76),
+      textRenderer: text12,
+      anchor: Anchor.centerLeft
+    );
     addAll([
       _background,
       _tName,
       _tSprite,
       _costBar,
+      _prodIcon,
+      _prodText,
     ]);
   }
 

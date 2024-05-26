@@ -22,6 +22,7 @@ class GameStateController {
   void startGame() {
     lookAtCapital();
     game.playerInfo.addListener();
+    game.mapDeploy.addListener();
     endTurn(true);
   }
 

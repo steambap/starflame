@@ -23,6 +23,7 @@ class HudMapDeploy extends PositionComponent
 
   @override
   Future<void> onLoad() async {
+    final shipDeploy = Sprite(game.images.fromCache("ship_deploy.png"));
     _shipDeploy = ToggleButtonComponent(
         size: iconButtonSize,
         position: Vector2(4, game.size.y - iconButtonSize.y - 4),
@@ -32,7 +33,7 @@ class HudMapDeploy extends PositionComponent
           children: [
             SpriteComponent(
               anchor: Anchor.center,
-              sprite: Sprite(game.images.fromCache("scout.png")),
+              sprite: shipDeploy,
               position: iconButtonSize / 2,
             ),
           ],
@@ -43,7 +44,7 @@ class HudMapDeploy extends PositionComponent
           children: [
             SpriteComponent(
               anchor: Anchor.center,
-              sprite: Sprite(game.images.fromCache("scout.png")),
+              sprite: shipDeploy,
               position: iconButtonSize / 2,
             ),
           ],
@@ -55,6 +56,7 @@ class HudMapDeploy extends PositionComponent
             _clearShipButtons();
           }
         });
+    final crane = Sprite(game.images.fromCache("crane.png"));
     _buildingDeploy = ToggleButtonComponent(
         size: iconButtonSize,
         position: Vector2(4, game.size.y - iconButtonSize.y * 2 - 8),
@@ -64,7 +66,7 @@ class HudMapDeploy extends PositionComponent
           children: [
             SpriteComponent(
               anchor: Anchor.center,
-              sprite: Sprite(game.images.fromCache("crane.png")),
+              sprite: crane,
               position: iconButtonSize / 2,
             ),
           ],
@@ -75,7 +77,7 @@ class HudMapDeploy extends PositionComponent
           children: [
             SpriteComponent(
               anchor: Anchor.center,
-              sprite: Sprite(game.images.fromCache("crane.png")),
+              sprite: crane,
               position: iconButtonSize / 2,
             ),
           ],
@@ -186,5 +188,27 @@ class HudMapDeploy extends PositionComponent
     double contentWidth =
         _shipButtons.length * (AddShipButton.buttonSize.x + 4);
     scrollBoundsX = _clip.size.x - contentWidth;
+  }
+
+  void updateRender() {
+    final playerNumber = game.controller.getHumanPlayerNumber();
+    for (final button in _buildingButtons) {
+      button.isDisabled = !game.resourceController
+          .canAffordBuilding(playerNumber, button.building);
+    }
+    for (final button in _shipButtons) {
+      button.isDisabled =
+          !game.resourceController.canCreateShip(playerNumber, button.template);
+    }
+  }
+
+  void addListener() {
+    game.controller.getHumanPlayerState().addListener(updateRender);
+    updateRender();
+  }
+
+  @override
+  void onRemove() {
+    game.controller.getHumanPlayerState().removeListener(updateRender);
   }
 }

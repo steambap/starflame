@@ -4,48 +4,84 @@ import "ship_hull.dart";
 import "ship_item.dart";
 import "action.dart";
 import "action_type.dart";
+import "data/items.dart";
 
 class ShipTemplate {
-  String name = "";
   final ShipHull hull;
-  List<ShipItem> items = [];
+  List<ShipSlot> _slotOverrides = [];
+  List<ShipItem> upgrades = [];
+  // Ship Item Cache
+  final List<ShipItem> items = [];
 
   ShipTemplate(
     this.hull,
-  );
+  ) {
+    slot = hull.slots.map((slot) => ShipSlot(index: slot.index));
+  }
 
-  ShipTemplate.define({
-    required this.name,
-    required this.hull,
-    required this.items,
-  });
+  List<ShipSlot> get slot => _slotOverrides;
+  set slot(Iterable<ShipSlot> value) {
+    _slotOverrides = value.toList();
+    items.clear();
+    for (int i = 0; i < hull.slots.length; i++) {
+      final defaultItem = hull.slots[i];
+      final override = _slotOverrides[i];
+      final itemName = override.itemName.isNotEmpty
+          ? override.itemName
+          : defaultItem.itemName;
+      if (itemName.isNotEmpty) {
+        items.add(shipItemMap[itemName]!);
+      }
+    }
+  }
+
+  String get name => hull.name;
 
   int cost() {
-    return hull.cost;
+    int ret = hull.cost;
+    for (final item in items) {
+      ret += item.cost;
+    }
+
+    return ret;
   }
 
   int maxHealth() {
     int itemLife = 0;
     for (final item in items) {
-      if (item is ShipUtil) {
-        for (final skillVal in item.skills) {
-          if (skillVal.skill == ShipItemSkill.life) {
-            itemLife += skillVal.value;
-          }
+      for (final skillVal in item.skills) {
+        if (skillVal.skill == ShipItemSkill.life) {
+          itemLife += skillVal.value;
         }
       }
     }
     return hull.life + itemLife;
   }
 
-  int itemMass() {
-    return items.fold(0, (prev, item) => prev + item.mass);
+  int energyCost() {
+    int ret = 0;
+    for (final item in items) {
+      if (item.energy < 0) {
+        ret += item.energy;
+      }
+    }
+
+    return ret.abs();
+  }
+
+  int energyProd() {
+    int ret = 0;
+    for (final item in items) {
+      if (item.energy > 0) {
+        ret += item.energy;
+      }
+    }
+
+    return ret;
   }
 
   int maxMove() {
-    final mass = itemMass();
-
-    final double percent = mass / hull.hullSize;
+    final double percent = energyCost() / energyProd();
 
     if (percent > 0.8) {
       return hull.speedRange.x;
@@ -57,37 +93,20 @@ class ShipTemplate {
   int maxRange() {
     int range = 0;
     for (final item in items) {
-      if (item is ShipWeapon) {
-        range = max(range, item.maxRange);
+      if (item.isWeapon()) {
+        range = max(range, item.weaponData!.damageAtRange.length);
       }
     }
 
     return range;
   }
 
-  int engineering() {
-    int ret = 0;
-    for (final item in items) {
-      if (item is ShipUtil) {
-        for (final skillVal in item.skills) {
-          if (skillVal.skill == ShipItemSkill.engineering) {
-            ret += skillVal.value;
-          }
-        }
-      }
-    }
-
-    return ret;
-  }
-
   int repairOnActionSelf() {
     int ret = 0;
     for (final item in items) {
-      if (item is ShipUtil) {
-        for (final skillVal in item.skills) {
-          if (skillVal.skill == ShipItemSkill.repairOnActionSelf) {
-            ret += skillVal.value;
-          }
+      for (final skillVal in item.skills) {
+        if (skillVal.skill == ShipItemSkill.repairOnActionSelf) {
+          ret += skillVal.value;
         }
       }
     }
@@ -95,24 +114,17 @@ class ShipTemplate {
     return ret;
   }
 
-  List<ActionType> actionTypes() {
+  Iterable<ActionType> actionTypes() {
     final Set<ActionType> ret = {ActionType.stay};
     for (final item in items) {
-      if (item is ShipWeapon) {
-        ret.add(ActionType.capture);
-      }
-      if (item is ShipUtil) {
-        for (final skillVal in item.skills) {
-          if (skillVal.skill == ShipItemSkill.repairOnActionSelf) {
-            ret.add(ActionType.selfRepair);
-          } else if (skillVal.skill == ShipItemSkill.engineering) {
-            ret.add(ActionType.buildColony);
-          }
+      for (final skillVal in item.skills) {
+        if (skillVal.skill == ShipItemSkill.repairOnActionSelf) {
+          ret.add(ActionType.selfRepair);
         }
       }
     }
 
-    return ret.toList(growable: false);
+    return ret;
   }
 
   List<Action> actions() {
@@ -125,10 +137,9 @@ class ShipTemplate {
     }).toList(growable: false);
   }
 
-  List<ShipWeapon> weaponsInRange(int range) {
+  Iterable<ShipItem> weaponsInRange(int range) {
     return items
-        .whereType<ShipWeapon>()
-        .where((element) => element.maxRange >= range)
-        .toList(growable: false);
+        .where((element) => element.isWeapon())
+        .where((weapon) => weapon.weaponData!.damageAtRange.length >= range);
   }
 }

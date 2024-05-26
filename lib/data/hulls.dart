@@ -6,159 +6,199 @@ final List<ShipHull> hulls = [
   // faction 1 ?
   ShipHull(
       name: "wolf",
-      hullSize: 120,
       life: 200,
       armor: 40,
       cost: 9,
-      image: "wolf.png",
-      tier: 0,
+      image: "ships/wolf.png",
+      unlockedAtStart: true,
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "tiger",
-      hullSize: 240,
       life: 255,
       armor: 65,
       cost: 13,
-      image: "tiger.png",
-      tier: 1,
+      image: "ships/tiger.png",
+      unlockedAtStart: true,
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(30, 40)),
   ShipHull(
       name: "panther",
-      hullSize: 220,
       life: 220,
       armor: 50,
       cost: 15,
-      image: "panther.png",
-      tier: 1,
+      image: "ships/panther.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(40, 50)),
   ShipHull(
       name: "lion",
-      hullSize: 450,
       life: 300,
       armor: 80,
       cost: 1100,
-      image: "lion.png",
-      tier: 25,
+      image: "ships/lion.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(25, 35)),
   ShipHull(
       name: "crocodile",
-      hullSize: 600,
       life: 280,
       armor: 90,
       cost: 34,
-      image: "crocodile.png",
-      tier: 3,
+      image: "ships/crocodile.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(20, 30)),
   ShipHull(
       name: "spider",
-      hullSize: 650,
       life: 400,
       armor: 105,
       cost: 44,
-      image: "spider.png",
-      tier: 3,
+      image: "ships/spider.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(25, 30)),
   // faction 2
   ShipHull(
       name: "mk-55",
-      hullSize: 120,
       life: 180,
       armor: 40,
       cost: 9,
-      image: "mk55.png",
-      tier: 0,
+      image: "ships/mk55.png",
+      unlockedAtStart: true,
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "mk-89",
-      hullSize: 200,
       life: 240,
       armor: 65,
       cost: 13,
-      image: "mk89.png",
-      tier: 1,
+      image: "ships/mk89.png",
+      unlockedAtStart: true,
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(30, 40)),
   ShipHull(
       name: "ranger",
-      hullSize: 360,
       life: 240,
       armor: 60,
       cost: 17,
-      image: "ranger.png",
-      tier: 1,
+      image: "ships/ranger.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(30, 50)),
   ShipHull(
       name: "mk-144",
-      hullSize: 450,
       life: 320,
       armor: 90,
       cost: 25,
-      image: "mk144.png",
-      tier: 2,
+      image: "ships/mk144.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(30, 35)),
   ShipHull(
       name: "obsidian",
-      hullSize: 600,
       life: 350,
       armor: 130,
       cost: 38,
-      image: "obsidian.png",
-      tier: 3,
+      image: "ships/obsidian.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(20, 30)),
   // faction 3
   ShipHull(
       name: "grasshopper",
-      hullSize: 120,
       life: 190,
       armor: 40,
       cost: 9,
-      image: "scout.png",
-      tier: 0,
+      image: "ships/scout.png",
+      unlockedAtStart: true,
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "mantis",
-      hullSize: 200,
       life: 230,
       armor: 65,
       cost: 13,
-      image: "scout.png",
-      tier: 1,
+      image: "ships/scout.png",
+      unlockedAtStart: true,
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(30, 40)),
   ShipHull(
       name: "raptor",
-      hullSize: 350,
       life: 270,
       armor: 60,
       cost: 16,
-      image: "scout.png",
-      tier: 1,
+      image: "ships/scout.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(35, 50)),
   ShipHull(
       name: "griffin",
-      hullSize: 280,
       life: 260,
       armor: 55,
       cost: 30,
-      image: "scout.png",
-      tier: 2,
+      image: "ships/scout.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(40, 40)),
   ShipHull(
       name: "pheonix",
-      hullSize: 350,
       life: 320,
       armor: 75,
       cost: 50,
-      image: "scout.png",
-      tier: 3,
+      image: "ships/scout.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(30, 40)),
   // neutral / pirates ?
   ShipHull(
       name: "kraken",
-      hullSize: 380,
       life: 270,
       armor: 65,
       cost: 20,
-      image: "heavy_submarine.png",
-      tier: 1,
+      image: "ships/heavy_submarine.png",
+      slots: [
+        ShipSlot(index: 0, itemName: "Depleted Uranium Cannon"),
+        ShipSlot(index: 1, itemName: "Nuclear Engine")
+      ],
       speedRange: const Block(25, 35)),
 ];
 

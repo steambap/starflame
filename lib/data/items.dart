@@ -2,136 +2,95 @@ import "../ship_item.dart";
 
 final List<ShipItem> itemList = [
   // Weapons
-  ShipWeapon(
+  ShipItem(
       name: "Depleted Uranium Cannon",
-      damage: 25,
-      armorPenetration: 20,
-      mass: 55,
-      maxRange: 2,
-      tier: 0,
-      cost: 250),
-  ShipWeapon(
+      type: ShipItemGroup.weapon,
+      weaponData:
+          WeaponData(damageAtRange: [25], shots: 3, armorPenetration: 20),
+      energy: -1),
+  ShipItem(
       name: "Heavy Rail Cannon",
-      damage: 35,
-      armorPenetration: 55,
-      mass: 100,
-      maxRange: 2,
-      tier: 1,
-      cost: 350),
-  ShipWeapon(
-      name: "Flamer",
-      damage: 65,
-      armorPenetration: 20,
-      mass: 105,
-      maxRange: 2,
-      tier: 1,
-      cost: 450),
-  ShipWeapon(
-      name: "Missle Launcher",
-      damage: 30,
-      shots: 2,
-      armorPenetration: 40,
-      mass: 95,
-      maxRange: 2,
-      tier: 1,
-      cost: 550),
-  ShipWeapon(
-      name: "Heavy Missle Launcher",
-      damage: 30,
-      shots: 3,
-      armorPenetration: 40,
-      mass: 170,
-      maxRange: 3,
-      tier: 1,
-      cost: 750),
-  ShipWeapon(
+      type: ShipItemGroup.weapon,
+      weaponData: WeaponData(damageAtRange: [55, 50], armorPenetration: 60),
+      energy: -2),
+  ShipItem(
+      name: "Neutron Bomb",
+      type: ShipItemGroup.weapon,
+      weaponData: WeaponData(damageAtRange: [100, 65], armorPenetration: 20),
+      energy: -2),
+  ShipItem(
+      name: "Flux Missle",
+      type: ShipItemGroup.weapon,
+      weaponData:
+          WeaponData(damageAtRange: [30, 30], armorPenetration: 40, shots: 2),
+      energy: -2),
+  ShipItem(
       name: "Ripper Beam",
-      damage: 18,
-      shots: 8,
-      armorPenetration: 45,
-      mass: 200,
-      maxRange: 3,
-      tier: 2,
-      cost: 1000),
-  ShipWeapon(
-      name: "Plasma Gun",
-      damage: 25,
-      shots: 6,
-      armorPenetration: 40,
-      mass: 140,
-      maxRange: 2,
-      tier: 2,
-      cost: 850),
-  ShipWeapon(
+      type: ShipItemGroup.weapon,
+      weaponData: WeaponData(
+          damageAtRange: [20, 16, 12], armorPenetration: 45, shots: 8),
+      energy: -4),
+  ShipItem(
+      name: "Plasma Cannon",
+      type: ShipItemGroup.weapon,
+      weaponData:
+          WeaponData(damageAtRange: [25, 20], armorPenetration: 40, shots: 6),
+      energy: -3),
+  ShipItem(
       name: "Twin-Linked Rail Cannon",
-      damage: 30,
-      shots: 2,
-      armorPenetration: 60,
-      mass: 180,
-      maxRange: 3,
-      tier: 2,
-      cost: 700),
-  ShipWeapon(
-      name: "Twin-Linked Missle Launcher",
-      damage: 30,
-      shots: 4,
-      armorPenetration: 40,
-      mass: 200,
-      maxRange: 3,
-      tier: 2,
-      cost: 850),
-  ShipWeapon(
+      type: ShipItemGroup.weapon,
+      weaponData: WeaponData(
+          damageAtRange: [55, 50, 30], armorPenetration: 60, shots: 2),
+      energy: -4),
+  ShipItem(
+      name: "Twin-Linked Flux Missle",
+      type: ShipItemGroup.weapon,
+      weaponData: WeaponData(
+          damageAtRange: [30, 30, 30], armorPenetration: 40, shots: 4),
+      energy: -4),
+  ShipItem(
       name: "Pulse Laser",
-      damage: 160,
-      armorPenetration: 90,
-      mass: 300,
-      maxRange: 3,
-      tier: 3,
-      cost: 1150),
-  ShipWeapon(
+      type: ShipItemGroup.weapon,
+      weaponData:
+          WeaponData(damageAtRange: [100, 100, 100], armorPenetration: 90),
+      energy: -6),
+  ShipItem(
       name: "Fusion Blaster",
-      damage: 150,
-      armorPenetration: 80,
-      mass: 400,
-      maxRange: 4,
-      tier: 3,
-      cost: 1400),
-  ShipWeapon(
+      type: ShipItemGroup.weapon,
+      weaponData:
+          WeaponData(damageAtRange: [150, 150, 150], armorPenetration: 80),
+      energy: -8),
+  ShipItem(
       name: "Rail Cannon Array",
-      damage: 60,
-      shots: 3,
-      armorPenetration: 60,
-      mass: 350,
-      maxRange: 4,
-      tier: 3,
-      cost: 1450),
-  ShipUtil(name: "Core Protector", mass: 50, cost: 200, tier: 1, skills: [
+      type: ShipItemGroup.weapon,
+      weaponData: WeaponData(
+          damageAtRange: [55, 50, 30], armorPenetration: 60, shots: 4),
+      energy: -7),
+  ShipItem(name: "Core Protector", type: ShipItemGroup.armor, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.life, value: 10),
     ShipItemSkillValue(skill: ShipItemSkill.lastStand, value: 1),
   ]),
-  ShipUtil(name: "Armor Plating", mass: 35, cost: 150, tier: 2, skills: [
-    ShipItemSkillValue(skill: ShipItemSkill.armorFlat, value: 5),
+  ShipItem(name: "Armor Plating", type: ShipItemGroup.armor, skills: [
+    ShipItemSkillValue(skill: ShipItemSkill.armorFlat, value: 10),
   ]),
-  ShipUtil(name: "Reactive Armor", mass: 60, cost: 250, tier: 2, skills: [
+  ShipItem(name: "Emissive Armor", type: ShipItemGroup.armor, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.damageReduction, value: 5),
   ]),
-  ShipUtil(name: "Advanced Hull Armor", mass: 150, cost: 500, tier: 3, skills: [
+  ShipItem(name: "Countermeasure sensor", type: ShipItemGroup.sensor, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.armorPercentage, value: 20),
   ]),
-  ShipUtil(name: "Nano Repair", mass: 50, cost: 250, tier: 1, skills: [
+  ShipItem(name: "Long Range Scanner", type: ShipItemGroup.sensor, skills: [
+    ShipItemSkillValue(skill: ShipItemSkill.armorPercentage, value: 20),
+  ]),
+  ShipItem(name: "Nano Repair", type: ShipItemGroup.support, skills: [
     ShipItemSkillValue(skill: ShipItemSkill.repairPerTurn, value: 2),
     ShipItemSkillValue(skill: ShipItemSkill.repairOnActionSelf, value: 40),
   ]),
-  ShipUtil(name: "Engineering Kit 1", mass: 60, cost: 300, tier: 0, skills: [
-    ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 50),
-  ]),
-  ShipUtil(name: "Engineering Kit 2", mass: 100, cost: 600, tier: 2, skills: [
-    ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 100),
-  ]),
-  ShipUtil(name: "Engineering Kit 3", mass: 250, cost: 900, tier: 3, skills: [
-    ShipItemSkillValue(skill: ShipItemSkill.engineering, value: 300),
-  ]),
+  ShipItem(name: "Nuclear Engine", type: ShipItemGroup.engine, energy: 2),
+  ShipItem(name: "Fusion Engine", type: ShipItemGroup.engine, energy: 3),
+  ShipItem(name: "Ion Engine", type: ShipItemGroup.engine, energy: 5),
+  ShipItem(name: "Tachyon Engine", type: ShipItemGroup.engine, energy: 8),
 ];
 
 final Map<String, ShipItem> shipItemMap =
-    itemList.asMap().map((index, item) => MapEntry(item.name, item));
+    Map.fromEntries(itemList.map((item) => MapEntry(item.name, item)));

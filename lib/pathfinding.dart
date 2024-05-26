@@ -57,14 +57,17 @@ class Pathfinding {
       final current = frontier.dequeue();
       final neighbours = _getNeighbours(current.item);
       for (final neighbour in neighbours) {
-        final newCost = costSoFar[current.item]! + edges[current.item]![neighbour]!;
-        if (neighbour.ship != null && neighbour.ship!.state.playerNumber != playerNumber) {
+        final newCost =
+            costSoFar[current.item]! + edges[current.item]![neighbour]!;
+        if (neighbour.ship != null &&
+            neighbour.ship!.state.playerNumber != playerNumber) {
           continue;
         }
         if (newCost > movementPoint) {
           continue;
         }
-        if (!costSoFar.containsKey(neighbour) || (newCost < costSoFar[neighbour]!)) {
+        if (!costSoFar.containsKey(neighbour) ||
+            (newCost < costSoFar[neighbour]!)) {
           costSoFar[neighbour] = newCost;
           cameFrom[neighbour] = current.item;
           frontier.enqueue(neighbour, newCost);
@@ -91,13 +94,13 @@ class Pathfinding {
     return paths;
   }
 
-  List<Cell> _getNeighbours (Cell node) {
+  Iterable<Cell> _getNeighbours(Cell node) {
     if (!edges.containsKey(node)) {
-      return [];
+      return const [];
     }
 
     final map = edges[node]!;
 
-    return map.keys.toList();
+    return map.keys;
   }
 }

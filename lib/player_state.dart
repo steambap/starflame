@@ -4,7 +4,6 @@ import "package:flutter/foundation.dart" show ChangeNotifier;
 import "resource.dart";
 import "sector.dart";
 import "ship_template.dart";
-import "ship_hull.dart";
 import "ship_item.dart";
 import "empire.dart";
 
@@ -28,7 +27,6 @@ class PlayerState with ChangeNotifier {
   int citizenOnPlanet = 0;
   bool citizenBoost = false;
   SectorDataTable sectorDataTable = const {};
-  final List<ShipHull> hulls = [];
   final List<ShipItem> shipItems = [];
   final List<ShipTemplate> templates = [];
 
@@ -40,9 +38,8 @@ class PlayerState with ChangeNotifier {
 
   void init() {
     citizenIdle = 2;
-    hulls.addAll(empire.starterHull());
-    shipItems.addAll(empire.starterItems());
-    templates.addAll(empire.starterTemplate());
+    shipItems.addAll(empire.startingItems);
+    templates.addAll(empire.startingHulls.map((h) => ShipTemplate(h)));
   }
 
   void addResource(Resources resource) {

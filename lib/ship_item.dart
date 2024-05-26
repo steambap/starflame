@@ -1,40 +1,56 @@
-enum ShipItemType {
+enum ShipItemGroup {
   weapon,
-  util,
+  squadron,
+  sensor,
+  armor,
+  support,
+  engine,
+}
+
+class WeaponData {
+  final List<int> damageAtRange;
+  final int shots;
+  final int armorPenetration;
+
+  WeaponData({
+    required this.damageAtRange,
+    this.shots = 1,
+    required this.armorPenetration,
+  });
+}
+
+class ShipItemSkillValue {
+  final ShipItemSkill skill;
+  final int value;
+
+  ShipItemSkillValue({
+    required this.skill,
+    required this.value,
+  });
 }
 
 class ShipItem {
   final String name;
-  final ShipItemType type;
-  final int mass;
+  final ShipItemGroup type;
   final int cost;
-  final int tier;
+  final int energy;
+  final List<ShipItemSkillValue> skills;
+  final WeaponData? weaponData;
 
   ShipItem({
     required this.name,
     required this.type,
-    required this.mass,
-    required this.cost,
-    required this.tier,
-  });
-}
+    this.cost = 0,
+    this.energy = 0,
+    this.skills = const [],
+    this.weaponData,
+  }) {
+    if (isWeapon()) {
+      assert(weaponData != null);
+    }
+  }
 
-class ShipWeapon extends ShipItem {
-  final int damage;
-  final int shots;
-  final int armorPenetration;
-  final int maxRange;
-
-  ShipWeapon({
-    required super.name,
-    required super.mass,
-    required super.cost,
-    required super.tier,
-    required this.damage,
-    this.shots = 1,
-    required this.armorPenetration,
-    required this.maxRange,
-  }) : super(type: ShipItemType.weapon);
+  bool isWeapon() => type == ShipItemGroup.weapon;
 }
 
 enum ShipItemSkill {
@@ -49,26 +65,4 @@ enum ShipItemSkill {
   engineering,
   movement,
   moral,
-}
-
-class ShipItemSkillValue {
-  final ShipItemSkill skill;
-  final int value;
-
-  ShipItemSkillValue({
-    required this.skill,
-    required this.value,
-  });
-}
-
-class ShipUtil extends ShipItem {
-  final List<ShipItemSkillValue> skills;
-
-  ShipUtil({
-    required super.name,
-    required super.mass,
-    required super.cost,
-    required super.tier,
-    required this.skills,
-  }) : super(type: ShipItemType.util);
 }
