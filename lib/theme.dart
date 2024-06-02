@@ -41,6 +41,8 @@ final buttonGreenHoverBorder = Paint()
   ..color = Colors.green.shade300
   ..strokeWidth = 1;
 
+final dialogBackground = Paint()..color = Colors.black87;
+
 final panelBackground = Paint()..color = Colors.grey.shade900;
 final panelBar = Paint()..color = Colors.grey.shade800;
 

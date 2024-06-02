@@ -16,7 +16,7 @@ class BaseAI {
     improveEconomy(playerState);
     // add unit
     // move unit
-    game.controller.endTurn(false);
+    game.controller.endTurn();
   }
 
   void setupInfo(PlayerState playerState) {

@@ -2,6 +2,7 @@ import "scifi_game.dart";
 import "game_state.dart";
 import "player_state.dart";
 import "ship.dart";
+import "victory_dialog.dart";
 
 class GameStateController {
   GameState gameState = GameState();
@@ -23,7 +24,7 @@ class GameStateController {
     lookAtCapital();
     game.playerInfo.addListener();
     game.mapDeploy.addListener();
-    endTurn(true);
+    _prepareTurnIfAlive();
   }
 
   void lookAtCapital() {
@@ -33,28 +34,31 @@ class GameStateController {
     }
   }
 
-  void endTurn(bool isStartGame) {
+  void endTurn() {
     if (gameState.isGameOver != null && !gameState.isContinue) {
       return;
     }
 
-    if (!isStartGame) {
-      game.aiController.onEndPhase();
-      game.mapGrid.blockSelect();
+    _onEndPhase();
+    game.aiController.onEndPhase();
+    game.mapGrid.blockSelect();
 
-      gameState.playerNumber += 1;
-      if (gameState.playerNumber >= players.length) {
-        gameState.playerNumber = 0;
-        gameState.turn += 1;
-      }
+    gameState.playerNumber += 1;
+    if (gameState.playerNumber >= players.length) {
+      gameState.playerNumber = 0;
+      gameState.turn += 1;
     }
 
+    _prepareTurnIfAlive();
+  }
+
+  void _prepareTurnIfAlive() {
     if (currentPlayerState().isAlive) {
       preparationPhaseUpdate();
       productionPhaseUpdate();
       _startTurn();
     } else {
-      endTurn(false);
+      endTurn();
     }
   }
 
@@ -64,6 +68,7 @@ class GameStateController {
     } else {
       // TODO auto save
       game.mapGrid.unSelect();
+      _checkForVictory();
     }
   }
 
@@ -78,6 +83,69 @@ class GameStateController {
     for (final ship
         in game.mapGrid.shipMap[gameState.playerNumber] ?? List<Ship>.empty()) {
       ship.preparationPhaseUpdate();
+    }
+  }
+
+  void _onEndPhase() {
+    bool currentPlayerAlive = false;
+    final int playerNumber = gameState.playerNumber;
+
+    for (final p in game.mapGrid.planets) {
+      if (p.playerNumber == playerNumber) {
+        currentPlayerAlive = true;
+        break;
+      }
+    }
+
+    // This player has no planet
+    if (!currentPlayerAlive) {
+      getPlayerState(playerNumber).isAlive = false;
+    }
+  }
+
+  // Current, only human player can declare victory
+  void _checkForVictory() {
+    if (gameState.isGameOver != null) {
+      return;
+    }
+    _checkConquest();
+    _checkDomination();
+  }
+  
+  void _checkConquest() {
+    for (final p in players) {
+      if (p.playerNumber != gameState.playerNumber && p.isAlive) {
+        // someone else is still alive
+        return;
+      }
+    }
+
+    _winGame();
+  }
+
+  void _checkDomination() {
+    final Set<int> victoryTeam = {};
+
+    for (final p in game.mapGrid.planets) {
+      if (p.playerNumber!= null && p.homePlanet) {
+        victoryTeam.add(p.playerNumber!);
+      }
+    }
+
+    if (victoryTeam.length == 1) {
+      if (victoryTeam.first == gameState.playerNumber) {
+        _winGame();
+      }
+    }
+  }
+
+  void _winGame() async {
+    gameState.isGameOver = true;
+    final result = await game.router.pushAndWait(VictoryDialog());
+    if (result) {
+      // Go to main menu
+    } else {
+      gameState.isContinue = true;
     }
   }
 

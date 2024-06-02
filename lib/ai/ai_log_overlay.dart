@@ -2,7 +2,8 @@ import "package:flame/components.dart";
 import 'package:flame/game.dart';
 
 import "../scifi_game.dart";
-import "../theme.dart" show text12, panelBackground, textButtonPaintLayer;
+import "../theme.dart" show text12, textButtonPaintLayer;
+import "../dialog_background.dart";
 
 class AiLogOverlay extends Route with HasGameRef<ScifiGame> {
   static final buttonSize = Vector2(100, 32);
@@ -16,10 +17,9 @@ class AiLogOverlay extends Route with HasGameRef<ScifiGame> {
     return PositionComponent(
       position: game.size / 2,
       children: [
-        RectangleComponent(
+        DialogBackground(
           position: -game.size / 2,
           size: game.size,
-          paint: panelBackground,
         ),
         ScrollTextBoxComponent(
           size: textBoxSize,

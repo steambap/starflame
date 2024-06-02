@@ -319,6 +319,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       if (cell.ship != null &&
           cell.ship!.state.playerNumber != attackingPlayerNumber) {
         attackableCells.add(cell);
+      } else if (cell.planet != null && cell.planet!.attackable(attackingPlayerNumber)) {
+        attackableCells.add(cell);
       }
     }
 
@@ -350,7 +352,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     if (cell.ship != null) {
       cell.ship!.takeDamage(damage);
     } else if (cell.planet != null) {
-      cell.planet!.defense -= damage;
+      cell.planet!.takeDamage(damage);
     }
     game.world.renderDamageText("-${damage.toString()}", cell.position);
   }

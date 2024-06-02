@@ -59,8 +59,12 @@ class Pathfinding {
       for (final neighbour in neighbours) {
         final newCost =
             costSoFar[current.item]! + edges[current.item]![neighbour]!;
+        // Hostile ship or planet
         if (neighbour.ship != null &&
             neighbour.ship!.state.playerNumber != playerNumber) {
+          continue;
+        }
+        if (neighbour.planet != null && neighbour.planet!.attackable(playerNumber)) {
           continue;
         }
         if (newCost > movementPoint) {

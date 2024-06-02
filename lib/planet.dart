@@ -190,6 +190,25 @@ class Planet extends PositionComponent
     };
   }
 
+  bool takeDamage(int damage) {
+    defense = (defense - damage).clamp(0, defenseMax());
+    notifyListeners();
+    if (defense > 0) {
+      return false;
+    }
+    // Move all citizens back home before destroy
+    final state = game.controller.getPlayerState(playerNumber!);
+    state.citizenInTransport = citizen;
+    citizen = 0;
+
+    playerNumber = null;
+    buildings.clear();
+    developmentLevel = 0;
+    updateRender();
+
+    return true;
+  }
+
   Map<String, dynamic> toJson() {
     return {
       "type": type.name,

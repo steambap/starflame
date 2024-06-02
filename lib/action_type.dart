@@ -10,6 +10,13 @@ class ActionState {
   int cooldown = 0;
 
   ActionState(this.type);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.toString(),
+      'cooldown': cooldown,
+    };
+  }
 }
 
 enum ActionTarget {
