@@ -4,13 +4,13 @@ import 'package:flutter/foundation.dart';
 
 import "scifi_game.dart";
 import "theme.dart" show grayTint, cardSkin, panelBar, text12;
-import "ship_template.dart";
+import "ship_hull.dart";
 
 class AddShipButton extends PositionComponent
     with TapCallbacks, HasGameRef<ScifiGame> {
   static Vector2 buttonSize = Vector2(114, 84);
 
-  final ShipTemplate template;
+  final ShipHull hull;
   final RectangleComponent _background = RectangleComponent(
     size: buttonSize,
     paintLayers: cardSkin,
@@ -26,9 +26,9 @@ class AddShipButton extends PositionComponent
   late final SpriteComponent _tSprite;
   late final SpriteComponent _prodIcon;
   late final TextComponent _prodText;
-  void Function(ShipTemplate template)? onPressed;
+  void Function(ShipHull hull)? onPressed;
 
-  AddShipButton(this.template, this.onPressed) : super(size: buttonSize);
+  AddShipButton(this.hull, this.onPressed) : super(size: buttonSize);
 
   @override
   @mustCallSuper
@@ -37,7 +37,7 @@ class AddShipButton extends PositionComponent
       return;
     }
 
-    onPressed?.call(template);
+    onPressed?.call(hull);
   }
 
   @mustCallSuper
@@ -46,11 +46,11 @@ class AddShipButton extends PositionComponent
     super.onLoad();
 
     _tName = TextComponent(
-      text: template.name,
+      text: hull.name,
       position: Vector2(2, 2),
       textRenderer: text12,
     );
-    final hullImg = Sprite(game.images.fromCache(template.hull.image));
+    final hullImg = Sprite(game.images.fromCache(hull.image));
     _tSprite = SpriteComponent(
         sprite: hullImg,
         position: Vector2(buttonSize.x / 2, 48),
@@ -59,7 +59,7 @@ class AddShipButton extends PositionComponent
     final prodIcon = Sprite(game.images.fromCache('production_icon.png'));
     _prodIcon = SpriteComponent(sprite: prodIcon, position: Vector2(2, 68));
     _prodText = TextComponent(
-      text: template.cost().toString(),
+      text: hull.cost.toString(),
       position: Vector2(22, 76),
       textRenderer: text12,
       anchor: Anchor.centerLeft

@@ -1,6 +1,4 @@
-import "ship_item.dart";
 import "ship_hull.dart";
-import "data/items.dart";
 import "data/hulls.dart";
 
 enum Faction {
@@ -13,10 +11,9 @@ enum Faction {
 class Empire {
   final Faction faction;
   final String displayName;
-  final List<ShipItem> startingItems;
   final List<ShipHull> startingHulls;
 
-  Empire(this.faction, this.displayName, this.startingItems, this.startingHulls);
+  Empire(this.faction, this.displayName, this.startingHulls);
 
   static Empire getEmpire(String name) {
     assert(buildinEmpire.containsKey(name), "Empire $name not found");
@@ -25,29 +22,17 @@ class Empire {
 }
 
 final Map<String, Empire> buildinEmpire = {
-  "neutral": Empire(Faction.neutral, "Neutral", [], [hullMap["kraken"]!]),
+  "neutral": Empire(Faction.neutral, "Neutral", [hullMap["Scout"]!]),
   "terranEmpire": Empire(Faction.terranEmpire, "Terran Empire", [
-    shipItemMap["Depleted Uranium Cannon"]!,
-    shipItemMap["Heavy Rail Cannon"]!,
-    shipItemMap["Nano Repair"]!,
-  ], [
-    hullMap["wolf"]!,
-    hullMap["tiger"]!,
+    hullMap["Scout"]!,
+    hullMap["Frigate"]!,
   ]),
   "terranKindom": Empire(Faction.terranKindom, "Kindom of Terran", [
-    shipItemMap["Depleted Uranium Cannon"]!,
-    shipItemMap["Flux Missle"]!,
-    shipItemMap["Nano Repair"]!,
-  ], [
-    hullMap["mk-55"]!,
-    hullMap["mk-89"]!,
+    hullMap["Scout"]!,
+    hullMap["Frigate"]!,
   ]),
-  "terranAlliance": Empire(Faction.terranAlliance, "Terran Alliance", [
-    shipItemMap["Depleted Uranium Cannon"]!,
-    shipItemMap["Heavy Rail Cannon"]!,
-    shipItemMap["Nano Repair"]!,
-  ], [
-    hullMap["grasshopper"]!,
-    hullMap["mantis"]!,
+  "terranAlliance": Empire(Faction.terranAlliance, "Terran Alliance",[
+    hullMap["Scout"]!,
+    hullMap["Frigate"]!,
   ]),
 };

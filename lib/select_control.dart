@@ -4,7 +4,7 @@ import "action.dart";
 import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
-import 'ship_template.dart';
+import 'ship_hull.dart';
 import 'building.dart';
 
 sealed class SelectControl {
@@ -74,7 +74,7 @@ class SelectControlCellSelected extends SelectControlHex {
       game.mapGrid.moveShip(ship!, cell);
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     } else if (attackableCells.contains(cell)) {
-      game.mapGrid.resolveCombat(ship!, cell);
+      game.combatResolver.resolve(ship!, cell);
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     } else {
       super.onCellClick(cell);
@@ -93,7 +93,7 @@ class SelectControlCellSelected extends SelectControlHex {
         paths =
             game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
         if (ship!.canAttack()) {
-          final maxRange = ship!.template.maxRange();
+          final maxRange = ship!.hull.attackRange();
           attackableCells = game.mapGrid
               .findAttackableCells(cell, Block(1, maxRange))
               .toSet();
@@ -158,14 +158,14 @@ class SelectControlPlanet extends SelectControlHex {
 
 class SelectControlCreateShip extends SelectControl {
   final Set<Cell> cells = {};
-  final ShipTemplate template;
-  SelectControlCreateShip(super.game, this.template);
+  final ShipHull hull;
+  SelectControlCreateShip(super.game, this.hull);
 
   @override
   void onCellClick(Cell cell) {
     if (cells.contains(cell)) {
       game.resourceController
-          .createShip(cell, game.controller.getHumanPlayerNumber(), template);
+          .createShip(cell, game.controller.getHumanPlayerNumber(), hull);
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }

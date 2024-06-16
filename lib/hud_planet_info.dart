@@ -60,16 +60,16 @@ class HudPlanetInfo extends PositionComponent
       textRenderer: text12,
       anchor: Anchor.centerRight,
       position: Vector2(192, 124));
-  final _citizenLabel = TextComponent(
-      text: "Citizen",
-      textRenderer: text12,
-      anchor: Anchor.centerLeft,
-      position: Vector2(8, 152));
-  final _citizenValue = TextComponent(
-      text: "0",
-      textRenderer: text12,
-      anchor: Anchor.centerRight,
-      position: Vector2(192, 152));
+  // final _citizenLabel = TextComponent(
+  //     text: "Citizen",
+  //     textRenderer: text12,
+  //     anchor: Anchor.centerLeft,
+  //     position: Vector2(8, 152));
+  // final _citizenValue = TextComponent(
+  //     text: "0",
+  //     textRenderer: text12,
+  //     anchor: Anchor.centerRight,
+  //     position: Vector2(192, 152));
   final _lifeQualityLabel = TextComponent(
       text: "Life Quality",
       textRenderer: text12,
@@ -139,8 +139,8 @@ class HudPlanetInfo extends PositionComponent
       _foodValue,
       _tradeLabel,
       _tradeValue,
-      _citizenLabel,
-      _citizenValue,
+      // _citizenLabel,
+      // _citizenValue,
       _defenseLabel,
       _defenseValue,
       _growthLabel,
@@ -198,7 +198,7 @@ class HudPlanetInfo extends PositionComponent
         "${planet.displayName} Lv.${planet.developmentLevel + 1}";
     _foodValue.text = "${planet.type.food * planet.citizen}";
     // _tradeValue.text = "${planet.trade}/+${planet.investNumber()}";
-    _citizenValue.text = "${planet.citizen}/${planet.maxCitizen()}";
+    // _citizenValue.text = "${planet.citizen}/${planet.maxCitizen()}";
     _defenseValue.text = "${planet.defense}/${planet.defenseMax()}";
     // _growthValue.text = "${planet.growth()}";
     // _supportValue.text = "${planet.support}(${planet.calcSupport()})";

@@ -33,12 +33,12 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
       position: Vector2(272, 16),
       anchor: Anchor.centerLeft);
 
-  late final SpriteComponent _influenceIcon;
-  final _influenceLabel = TextComponent(
-      text: "0",
-      textRenderer: text12,
-      position: Vector2(380, 16),
-      anchor: Anchor.centerLeft);
+  // late final SpriteComponent _influenceIcon;
+  // final _influenceLabel = TextComponent(
+  //     text: "0",
+  //     textRenderer: text12,
+  //     position: Vector2(380, 16),
+  //     anchor: Anchor.centerLeft);
   late final AdvancedButtonComponent _aiLog;
 
   HudPlayerInfo();
@@ -57,8 +57,8 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     _scienceIcon =
         SpriteComponent(sprite: Sprite(scienceIcon), position: Vector2(252, 8));
     final influenceIcon = game.images.fromCache("influence_icon.png");
-    _influenceIcon = SpriteComponent(
-        sprite: Sprite(influenceIcon), position: Vector2(360, 8));
+    // _influenceIcon = SpriteComponent(
+    //     sprite: Sprite(influenceIcon), position: Vector2(360, 8));
 
     _aiLog = AdvancedButtonComponent(
         size: Vector2(32, 24),
@@ -78,8 +78,8 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
       _productionLabel,
       _scienceIcon,
       _scienceLabel,
-      _influenceIcon,
-      _influenceLabel,
+      // _influenceIcon,
+      // _influenceLabel,
       _aiLog,
     ]);
   }
@@ -101,6 +101,6 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
         "${playerState.credit.toInt()}(+${income.credit.toInt()})";
     _productionLabel.text = "${playerState.production}(+${income.production})";
     _scienceLabel.text = "${playerState.science}(+${income.science})";
-    _influenceLabel.text = "${playerState.influence}(+${income.influence})";
+    // _influenceLabel.text = "${playerState.influence}(+${income.influence})";
   }
 }

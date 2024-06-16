@@ -29,7 +29,6 @@ class BaseAI {
   }
 
   void improveEconomy(PlayerState playerState) {
-    _assignCitizen(playerState);
     if (playerState.credit > Building.bank.cost * 2) {
       _addBuilding(playerState);
     }
@@ -45,25 +44,6 @@ class BaseAI {
               "Add Building [${Building.bank.displayName}] to [${p.displayName}]");
         }
         return;
-      }
-    }
-  }
-
-  void _assignCitizen(PlayerState playerState) {
-    if (playerState.citizenIdle <= 0) {
-      return;
-    }
-
-    // try to assign to home planet first
-    final cell = game.mapGrid.getCapitalCell(playerState.playerNumber);
-    if (cell != null) {
-      final planet = cell.planet!;
-      while (playerState.citizenIdle > 0 && planet.canAddCitizen()) {
-        final result = game.resourceController
-            .addCitizen(playerState.playerNumber, planet);
-        if (result) {
-          game.aiController.log("Assign Citizen to [${planet.displayName}]");
-        }
       }
     }
   }

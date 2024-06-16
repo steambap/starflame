@@ -120,19 +120,19 @@ class HudMapDeploy extends PositionComponent
     _clearShipButtons();
 
     final playerState = game.controller.getHumanPlayerState();
-    final ts = playerState.templates;
+    final hulls = playerState.hulls;
 
-    for (int i = 0; i < ts.length; i++) {
-      final template = ts[i];
-      final button = AddShipButton(template, (template) {
-        game.mapGrid.selectControl = SelectControlCreateShip(game, template);
+    for (int i = 0; i < hulls.length; i++) {
+      final hull = hulls[i];
+      final button = AddShipButton(hull, (selectedHull) {
+        game.mapGrid.selectControl = SelectControlCreateShip(game, selectedHull);
       });
       button.position = Vector2(
         i * (AddShipButton.buttonSize.x + 4),
         0,
       );
       button.isDisabled = !game.resourceController
-          .canCreateShip(playerState.playerNumber, template);
+          .canCreateShip(playerState.playerNumber, hull);
       _shipButtons.add(button);
     }
 
@@ -198,7 +198,7 @@ class HudMapDeploy extends PositionComponent
     }
     for (final button in _shipButtons) {
       button.isDisabled =
-          !game.resourceController.canCreateShip(playerNumber, button.template);
+          !game.resourceController.canCreateShip(playerNumber, button.hull);
     }
   }
 

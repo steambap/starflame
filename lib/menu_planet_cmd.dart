@@ -18,8 +18,8 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
 
   final Planet planet;
   late final SpriteComponent _background;
-  late final AdvancedButtonComponent _addCitizen;
-  late final AdvancedButtonComponent _removeCitizen;
+  // late final AdvancedButtonComponent _addCitizen;
+  // late final AdvancedButtonComponent _removeCitizen;
   late final AdvancedButtonComponent _buildingRemoveButton;
   late final AdvancedButtonComponent _colonyUpgradeButton;
   late final AdvancedButtonComponent _repairButton;
@@ -37,50 +37,50 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
     final bgImg = game.images.fromCache('planet_menu.png');
     _background = SpriteComponent(sprite: Sprite(bgImg), anchor: Anchor.center);
 
-    final addImg = game.images.fromCache('planet_citizen_add.png');
-    final addIcon = SpriteComponent(sprite: Sprite(addImg), position: iconPos);
-    final addIconDisabled =
-        SpriteComponent(sprite: Sprite(addImg), position: iconPos);
-    addIconDisabled.decorator.addLast(grayTint);
-    _addCitizen = AdvancedButtonComponent(
-      size: iconButtonSize,
-      position: Hex.directions[2].toPixel(),
-      defaultSkin: RectangleComponent(
-        paintLayers: cardSkin,
-        children: [addIcon],
-      ),
-      disabledSkin: RectangleComponent(
-        paintLayers: textButtonDisabledPaintLayer,
-        children: [addIconDisabled],
-      ),
-      onPressed: () {
-        game.resourceController.addCitizen(playerNumber, planet);
-      },
-      anchor: Anchor.center,
-    );
+    // final addImg = game.images.fromCache('planet_citizen_add.png');
+    // final addIcon = SpriteComponent(sprite: Sprite(addImg), position: iconPos);
+    // final addIconDisabled =
+    //     SpriteComponent(sprite: Sprite(addImg), position: iconPos);
+    // addIconDisabled.decorator.addLast(grayTint);
+    // _addCitizen = AdvancedButtonComponent(
+    //   size: iconButtonSize,
+    //   position: Hex.directions[2].toPixel(),
+    //   defaultSkin: RectangleComponent(
+    //     paintLayers: cardSkin,
+    //     children: [addIcon],
+    //   ),
+    //   disabledSkin: RectangleComponent(
+    //     paintLayers: textButtonDisabledPaintLayer,
+    //     children: [addIconDisabled],
+    //   ),
+    //   onPressed: () {
+    //     game.resourceController.addCitizen(playerNumber, planet);
+    //   },
+    //   anchor: Anchor.center,
+    // );
 
-    final removeImg = game.images.fromCache('planet_citizen_remove.png');
-    final removeIcon =
-        SpriteComponent(sprite: Sprite(removeImg), position: iconPos);
-    final removeIconDisabled =
-        SpriteComponent(sprite: Sprite(removeImg), position: iconPos);
-    removeIconDisabled.decorator.addLast(grayTint);
-    _removeCitizen = AdvancedButtonComponent(
-      size: iconButtonSize,
-      position: Hex.directions[3].toPixel(),
-      defaultSkin: RectangleComponent(
-        paintLayers: cardSkin,
-        children: [removeIcon],
-      ),
-      disabledSkin: RectangleComponent(
-        paintLayers: textButtonDisabledPaintLayer,
-        children: [removeIconDisabled],
-      ),
-      onPressed: () {
-        game.resourceController.removeCitizen(playerNumber, planet);
-      },
-      anchor: Anchor.center,
-    );
+    // final removeImg = game.images.fromCache('planet_citizen_remove.png');
+    // final removeIcon =
+    //     SpriteComponent(sprite: Sprite(removeImg), position: iconPos);
+    // final removeIconDisabled =
+    //     SpriteComponent(sprite: Sprite(removeImg), position: iconPos);
+    // removeIconDisabled.decorator.addLast(grayTint);
+    // _removeCitizen = AdvancedButtonComponent(
+    //   size: iconButtonSize,
+    //   position: Hex.directions[3].toPixel(),
+    //   defaultSkin: RectangleComponent(
+    //     paintLayers: cardSkin,
+    //     children: [removeIcon],
+    //   ),
+    //   disabledSkin: RectangleComponent(
+    //     paintLayers: textButtonDisabledPaintLayer,
+    //     children: [removeIconDisabled],
+    //   ),
+    //   onPressed: () {
+    //     game.resourceController.removeCitizen(playerNumber, planet);
+    //   },
+    //   anchor: Anchor.center,
+    // );
 
     final buildImg = game.images.fromCache('planet_remove.png');
     final buildIcon =
@@ -161,8 +161,8 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
 
     addAll([
       _background,
-      _addCitizen,
-      _removeCitizen,
+      // _addCitizen,
+      // _removeCitizen,
       _buildingRemoveButton,
       _colonyUpgradeButton,
       _repairButton,
@@ -177,8 +177,8 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
         !game.resourceController.canUpgradePlanet(playerNumber, planet);
     _repairButton.isDisabled = true;
     _buildingRemoveButton.isDisabled = true;
-    _addCitizen.isDisabled = !game.resourceController.canAddCitizen(playerNumber, planet);
-    _removeCitizen.isDisabled = !game.resourceController.canRemoveCitizen(playerNumber, planet);
+    // _addCitizen.isDisabled = !game.resourceController.canAddCitizen(playerNumber, planet);
+    // _removeCitizen.isDisabled = !game.resourceController.canRemoveCitizen(playerNumber, planet);
   }
 
   @override

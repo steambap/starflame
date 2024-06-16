@@ -1,33 +1,56 @@
-import 'package:flame/components.dart';
+import "dart:math";
 
-class ShipSlot {
-  final int index;
-  final String itemName;
+import "action.dart";
+import "action_type.dart";
 
-  ShipSlot({
-    required this.index,
-    this.itemName = '',
-  });
+enum ShipType {
+  screen,
+  capital,
+  carrier,
+  raider,
 }
 
 class ShipHull {
-  final String name;
-  final int life;
-  final int armor;
-  final Block speedRange;
+  static const maxHealth = 100;
+  final int movement;
+  final int strength;
+  final int rangedStrength;
+  final int range;
+  final int pointDefense;
+  final ShipType type;
   final int cost;
+  final String name;
   final String image;
-  final bool unlockedAtStart;
-  final List<ShipSlot> slots;
 
   ShipHull({
-    required this.name,
-    required this.life,
-    required this.armor,
-    required this.speedRange,
+    required this.movement,
+    required this.strength,
+    required this.rangedStrength,
+    required this.range,
+    required this.pointDefense,
+    required this.type,
     required this.cost,
+    required this.name,
     required this.image,
-    this.unlockedAtStart = false,
-    required this.slots,
   });
+
+  Iterable<ActionType> actionTypes() {
+    final Set<ActionType> ret = {ActionType.stay, ActionType.selfRepair};
+
+    return ret;
+  }
+
+  List<Action> actions() {
+    final ret = actionTypes();
+
+    return ret.map((e) {
+      assert(actionTable.containsKey(e), "Action ${e.name} not found in table");
+
+      return actionTable[e]!;
+    }).toList(growable: false);
+  }
+
+  int attackRange() {
+    return max(1, range);
+  }
 }

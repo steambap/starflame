@@ -9,7 +9,7 @@ import 'scifi_game.dart';
 import "cell.dart";
 import "theme.dart";
 import "ship_state.dart";
-import "ship_template.dart";
+import "ship_hull.dart";
 import "action_type.dart";
 import "select_control.dart";
 import 'tile_type.dart';
@@ -20,16 +20,15 @@ class Ship extends PositionComponent
   late SpriteComponent _engineEffect;
   Cell cell;
   late ShipState state;
-  ShipTemplate template;
+  ShipHull hull;
 
-  Ship(this.cell, int playerNumber, this.template)
-      : super(anchor: Anchor.center) {
+  Ship(this.cell, int playerNumber, this.hull) : super(anchor: Anchor.center) {
     state = ShipState(playerNumber);
   }
 
   @override
   FutureOr<void> onLoad() {
-    final imgShip = game.images.fromCache(template.hull.image);
+    final imgShip = game.images.fromCache(hull.image);
     final spriteShip = Sprite(imgShip);
     _shipSprite = SpriteComponent(
         sprite: spriteShip,
@@ -52,7 +51,7 @@ class Ship extends PositionComponent
 
     final uid = game.controller.getUniqueID();
     state.id = uid;
-    state.health = template.maxHealth();
+    state.health = ShipHull.maxHealth;
     resetAllActions();
   }
 
@@ -108,7 +107,7 @@ class Ship extends PositionComponent
     if (state.isTurnOver) {
       return 0;
     }
-    final maxMove = template.maxMove();
+    final maxMove = hull.movement;
 
     return max(maxMove - state.movementUsed, 0);
   }
@@ -119,10 +118,6 @@ class Ship extends PositionComponent
     }
 
     if (state.attacked) {
-      return false;
-    }
-
-    if (template.maxRange() == 0) {
       return false;
     }
 
@@ -154,17 +149,20 @@ class Ship extends PositionComponent
     cell.ship = null;
     game.mapGrid.removeShip(this);
     removeFromParent();
+    if (game.mapGrid.selectControl is SelectControlCellSelected) {
+      game.mapGrid.selectControl = SelectControlWaitForInput(game);
+    }
 
     super.dispose();
   }
 
   void repair(int amount) {
-    state.health = min(state.health + amount, template.maxHealth());
+    state.health = min(state.health + amount, ShipHull.maxHealth);
     notifyListeners();
   }
 
   void resetAllActions() {
-    final actionTypes = template.actionTypes();
+    final actionTypes = hull.actionTypes();
     state.actions.clear();
     for (final at in actionTypes) {
       state.actions.add(ActionState(at));

@@ -3,7 +3,7 @@ import "player_state.dart";
 import "planet.dart";
 import "cell.dart";
 import "building.dart";
-import "ship_template.dart";
+import "ship_hull.dart";
 import "resource.dart";
 import "sector.dart";
 
@@ -46,26 +46,20 @@ class ResourceController {
 
     for (final bd in planet.buildings) {
       if (bd == Building.colonyHQ) {
-        income +=
-            const Resources(production: 1, credit: 3, science: 1, influence: 1);
+        income += const Resources(production: 3, credit: 3, science: 3);
       } else if (bd == Building.constructionYard) {
-        income += const Resources(production: 3);
+        income += const Resources(production: 6);
       } else if (bd == Building.bank) {
-        income += const Resources(credit: 8);
+        income += const Resources(credit: 6);
       } else if (bd == Building.lab) {
-        income += const Resources(science: 3);
-      } else if (bd == Building.mediaNetwork) {
-        income += const Resources(influence: 3);
+        income += const Resources(science: 6);
       }
     }
-
+    // planet base income
     income += Resources(
-            food: planet.type.food.toDouble(),
-            production: planet.type.production,
-            credit: planet.type.credit.toDouble(),
-            science: planet.type.science,
-            influence: planet.type.influence) *
-        planet.citizen;
+        production: planet.type.production.toDouble(),
+        credit: (planet.type.credit + planet.type.food).toDouble(),
+        science: planet.type.science.toDouble());
 
     return income;
   }
@@ -84,10 +78,16 @@ class ResourceController {
 
   Capacity calcPlanetCapacity(PlayerState playerState, Planet planet) {
     Capacity capacity = Capacity();
-    capacity.citizen = planet.citizen;
     final dataTable = capacity.sectorDataTable;
-    dataTable.putIfAbsent(planet.sector, () => SectorData());
     if (planet.buildings.contains(Building.colonyHQ)) {
+      dataTable.update(
+        planet.sector,
+        (sectorData) {
+          sectorData.hasHQ = true;
+          return sectorData;
+        },
+        ifAbsent: () => SectorData(hasHQ: true),
+      );
       dataTable[planet.sector]?.hasHQ = true;
     }
 
@@ -96,48 +96,6 @@ class ResourceController {
 
   double getMaintaince(int playerNumber) {
     return 0;
-  }
-
-  bool canAddCitizen(int playerNumber, Planet planet) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-
-    return playerState.citizenIdle >= 1 && planet.canAddCitizen();
-  }
-
-  bool addCitizen(int playerNumber, Planet planet) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-
-    if (!canAddCitizen(playerNumber, planet)) {
-      return false;
-    }
-
-    playerState.citizenIdle -= 1;
-    planet.addCitizen();
-    game.playerInfo.updateRender();
-
-    return true;
-  }
-
-  bool canRemoveCitizen(int playerNumber, Planet planet) {
-    return planet.citizen >= 1;
-  }
-
-  bool removeCitizen(int playerNumber, Planet planet) {
-    if (!canRemoveCitizen(playerNumber, planet)) {
-      return false;
-    }
-
-    final playerState = game.controller.getPlayerState(playerNumber);
-    final sectorData = playerState.sectorDataTable[planet.sector]!;
-    if (sectorData.hasHQ) {
-      playerState.citizenIdle += 1;
-    } else {
-      playerState.citizenInTransport += 1;
-    }
-    planet.removeCitizen();
-    game.playerInfo.updateRender();
-
-    return true;
   }
 
   bool canUpgradePlanet(int playerNumber, Planet planet) {
@@ -188,24 +146,24 @@ class ResourceController {
     return true;
   }
 
-  bool canCreateShip(int playerNumber, ShipTemplate tmpl) {
+  bool canCreateShip(int playerNumber, ShipHull hull) {
     final playerState = game.controller.getPlayerState(playerNumber);
 
-    return playerState.production >= tmpl.cost();
+    return playerState.production >= hull.cost;
   }
 
-  bool createShip(Cell cell, int playerNumber, ShipTemplate tmpl) {
+  bool createShip(Cell cell, int playerNumber, ShipHull hull) {
     if (cell.ship != null) {
       return false;
     }
-    if (!canCreateShip(playerNumber, tmpl)) {
+    if (!canCreateShip(playerNumber, hull)) {
       return false;
     }
 
     final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.addResource(Resources(production: -tmpl.cost()));
+    playerState.addResource(Resources(production: -hull.cost.toDouble()));
 
-    game.mapGrid.createShipAt(cell, playerNumber, tmpl);
+    game.mapGrid.createShipAt(cell, playerNumber, hull);
 
     return true;
   }

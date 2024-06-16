@@ -7,6 +7,8 @@ class Sector {
 
 class SectorData {
   bool hasHQ = false;
+
+  SectorData({this.hasHQ = false});
 }
 
 typedef SectorDataTable = Map<Hex, SectorData>;

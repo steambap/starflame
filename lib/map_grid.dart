@@ -8,7 +8,7 @@ import 'package:flame/extensions.dart';
 
 import 'game_creator.dart';
 import 'ship.dart';
-import "ship_template.dart";
+import "ship_hull.dart";
 import 'scifi_game.dart';
 import 'cell.dart';
 import "pathfinding.dart";
@@ -162,16 +162,9 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       if (capitalCell == null) {
         continue;
       }
-      final basicSupportShip = p.templates[0];
-      spawnShipAt(capitalCell, p.playerNumber, basicSupportShip);
-      // spawn scout at south east
-      final basicCombatShip = p.templates[1];
-      final scoutHex = capitalCell.hex + Hex.directions[5];
-      final sIndex = _hexTable[scoutHex.toInt()] ?? -1;
-      if (sIndex >= 0) {
-        final sCell = cells[sIndex];
-        spawnShipAt(sCell, p.playerNumber, basicCombatShip);
-      }
+      // spawn a scout
+      final scoutHull = p.hulls[0];
+      spawnShipAt(capitalCell, p.playerNumber, scoutHull);
     }
 
     selectControl = SelectControlWaitForInput(game);
@@ -215,9 +208,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     cell.ship = ship;
   }
 
-  Future<void> spawnShipAt(
-      Cell cell, int playerNumber, ShipTemplate tmpl) async {
-    final ship = Ship(cell, playerNumber, tmpl);
+  Future<void> spawnShipAt(Cell cell, int playerNumber, ShipHull hull) async {
+    final ship = Ship(cell, playerNumber, hull);
     cell.ship = ship;
 
     shipListAll.add(ship);
@@ -226,9 +218,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     await add(ship);
   }
 
-  Future<void> createShipAt(
-      Cell cell, int playerNumber, ShipTemplate tmpl) async {
-    final ship = Ship(cell, playerNumber, tmpl);
+  Future<void> createShipAt(Cell cell, int playerNumber, ShipHull hull) async {
+    final ship = Ship(cell, playerNumber, hull);
     cell.ship = ship;
 
     shipListAll.add(ship);
@@ -319,7 +310,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       if (cell.ship != null &&
           cell.ship!.state.playerNumber != attackingPlayerNumber) {
         attackableCells.add(cell);
-      } else if (cell.planet != null && cell.planet!.attackable(attackingPlayerNumber)) {
+      } else if (cell.planet != null &&
+          cell.planet!.attackable(attackingPlayerNumber)) {
         attackableCells.add(cell);
       }
     }
@@ -330,31 +322,6 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   void removeShip(Ship ship) {
     shipListAll.remove(ship);
     shipMap[ship.state.playerNumber]!.remove(ship);
-  }
-
-  void resolveCombat(Ship ship, Cell cell) {
-    final int dx = ship.cell.hex.distance(cell.hex).toInt();
-    final attackerWeapon = ship.template.weaponsInRange(dx);
-    int defenderArmor = 0;
-    if (cell.ship != null) {
-      defenderArmor = cell.ship!.template.hull.armor;
-    }
-    int damage = 0;
-    for (final item in attackerWeapon) {
-      final w = item.weaponData!;
-      final double mod = w.armorPenetration >= defenderArmor
-          ? 1
-          : w.armorPenetration / defenderArmor;
-      damage += (w.damageAtRange[dx - 1] * mod).toInt() * w.shots;
-    }
-
-    ship.useAttack();
-    if (cell.ship != null) {
-      cell.ship!.takeDamage(damage);
-    } else if (cell.planet != null) {
-      cell.planet!.takeDamage(damage);
-    }
-    game.world.renderDamageText("-${damage.toString()}", cell.position);
   }
 
   Map<String, dynamic> toJson() {

@@ -10,8 +10,6 @@ enum PlanetType {
       production: 3,
       credit: 4,
       science: 4,
-      influence: 4,
-      maxCitizen: 4,
       climate: PlanetClimate.temperate,
       weight: 5,
       image: 'terran.png'),
@@ -20,8 +18,6 @@ enum PlanetType {
       production: 2,
       credit: 4,
       science: 6,
-      influence: 4,
-      maxCitizen: 3,
       climate: PlanetClimate.temperate,
       weight: 5,
       image: 'ocean.png'),
@@ -30,8 +26,6 @@ enum PlanetType {
       production: 2,
       credit: 8,
       science: 2,
-      influence: 1,
-      maxCitizen: 3,
       climate: PlanetClimate.temperate,
       weight: 8,
       image: 'swamp.png'),
@@ -40,8 +34,6 @@ enum PlanetType {
       production: 8,
       credit: 4,
       science: 0,
-      influence: 2,
-      maxCitizen: 2,
       climate: PlanetClimate.hot,
       weight: 7,
       image: 'arid.png'),
@@ -50,8 +42,6 @@ enum PlanetType {
       production: 16,
       credit: 2,
       science: 0,
-      influence: 0,
-      maxCitizen: 1,
       climate: PlanetClimate.hot,
       weight: 3,
       image: 'lava.png'),
@@ -60,8 +50,6 @@ enum PlanetType {
       production: 0,
       credit: 4,
       science: 8,
-      influence: 2,
-      maxCitizen: 2,
       climate: PlanetClimate.cold,
       weight: 5,
       image: 'ice.png'),
@@ -70,8 +58,6 @@ enum PlanetType {
       production: 0,
       credit: 2,
       science: 16,
-      influence: 0,
-      maxCitizen: 1,
       climate: PlanetClimate.cold,
       weight: 4,
       image: 'barren.png');
@@ -81,8 +67,6 @@ enum PlanetType {
     required this.production,
     required this.credit,
     required this.science,
-    required this.influence,
-    required this.maxCitizen,
     required this.climate,
     required this.weight,
     required this.image,
@@ -92,8 +76,6 @@ enum PlanetType {
   final int production;
   final int credit;
   final int science;
-  final int influence;
-  final int maxCitizen;
   final PlanetClimate climate;
 
   /// chance to appear in random generation

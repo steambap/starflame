@@ -77,11 +77,6 @@ class Planet extends PositionComponent
   }
 
   void capture(int playerNumber) {
-    // Move all citizens back home before capture
-    final state = game.controller.getPlayerState(this.playerNumber!);
-    state.citizenInTransport = citizen;
-    citizen = 0;
-
     this.playerNumber = playerNumber;
     updateRender();
   }
@@ -111,24 +106,6 @@ class Planet extends PositionComponent
     }
 
     updateRender();
-  }
-
-  bool canRemoveCitizen() {
-    return citizen > 0;
-  }
-
-  void removeCitizen() {
-    citizen--;
-    notifyListeners();
-  }
-
-  bool canAddCitizen() {
-    return citizen < maxCitizen();
-  }
-
-  void addCitizen() {
-    citizen++;
-    notifyListeners();
   }
 
   bool canUpgrade() {
@@ -164,11 +141,7 @@ class Planet extends PositionComponent
 
   int maxBuilding() {
     int num = homePlanet ? 1 : 0;
-    return planetSize + 2 + num;
-  }
-
-  int maxCitizen() {
-    return type.maxCitizen + planetSize;
+    return planetSize + 4 + num;
   }
 
   bool attackable(int playerNumber) {
@@ -196,10 +169,6 @@ class Planet extends PositionComponent
     if (defense > 0) {
       return false;
     }
-    // Move all citizens back home before destroy
-    final state = game.controller.getPlayerState(playerNumber!);
-    state.citizenInTransport = citizen;
-    citizen = 0;
 
     playerNumber = null;
     buildings.clear();

@@ -130,7 +130,7 @@ class SelfRepair extends Action {
 
   @override
   void execute(Ship ship, Cell cell) {
-    ship.repair(ship.template.repairOnActionSelf());
+    ship.repair(10);
     ship.setTurnOver();
   }
 }

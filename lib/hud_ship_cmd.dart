@@ -46,7 +46,7 @@ class HudShipCommand extends PositionComponent
               size: textSize, paintLayers: cardSkin, position: Vector2(84, 84)),
         ]);
 
-    final sprite = Sprite(game.images.fromCache("ships/mk55.png"));
+    final sprite = Sprite(game.images.fromCache("ships/raider.png"));
     final shipImagePos = _shipInfoBackground.position + Vector2(42, 70);
     _shipImage = SpriteComponent(
         sprite: sprite, anchor: Anchor.center, position: shipImagePos);
@@ -105,18 +105,18 @@ class HudShipCommand extends PositionComponent
 
   void _renderShip(Ship ship) {
     final state = ship.state;
-    _shipAndTemplateName.text = ship.template.name;
+    _shipAndTemplateName.text = ship.hull.name;
     _shipLifeAndArmor.text =
-        "HP: ${state.health}/${ship.template.maxHealth()}; Armor: ${ship.template.hull.armor}";
+        "HP: ${state.health}/100";
     _shipMoveAndVision.text =
-        "Move: ${ship.movePoint()}/${ship.template.maxMove()}";
-    _shipItems.text = ship.template.items.map((e) => e.name).join(", ");
-    _shipImage.sprite = Sprite(game.images.fromCache(ship.template.hull.image));
+        "Move: ${ship.movePoint()}/${ship.hull.movement}";
+    _shipItems.text = "Strenth: ${ship.hull.strength}";
+    _shipImage.sprite = Sprite(game.images.fromCache(ship.hull.image));
     _clearActions();
 
     final playerIdx = game.controller.getHumanPlayerNumber();
     if (playerIdx == ship.state.playerNumber) {
-      final actions = ship.template.actions();
+      final actions = ship.hull.actions();
       for (int i = 0; i < actions.length; i++) {
         final aButton = ActionButton(ship.cell, actions[i]);
         aButton.position = Vector2(4,

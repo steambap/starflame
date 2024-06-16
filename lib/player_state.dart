@@ -3,8 +3,7 @@ import "package:flutter/foundation.dart" show ChangeNotifier;
 
 import "resource.dart";
 import "sector.dart";
-import "ship_template.dart";
-import "ship_item.dart";
+import "ship_hull.dart";
 import "empire.dart";
 
 class PlayerState with ChangeNotifier {
@@ -17,29 +16,17 @@ class PlayerState with ChangeNotifier {
   bool isAlive = true;
   final bool isAI;
   // Resources
-  int production = 0;
+  double production = 0;
   double credit = 0.0;
-  int science = 0;
-  int influence = 0;
+  double science = 0;
   double food = 0;
-  int citizenIdle = 0;
-  int citizenInTransport = 0;
-  int citizenOnPlanet = 0;
-  bool citizenBoost = false;
   SectorDataTable sectorDataTable = const {};
-  final List<ShipItem> shipItems = [];
-  final List<ShipTemplate> templates = [];
+  final List<ShipHull> hulls = [];
 
   PlayerState(this.playerNumber, this.isAI);
 
-  int citizenTotal() {
-    return citizenIdle + citizenInTransport + citizenOnPlanet;
-  }
-
   void init() {
-    citizenIdle = 2;
-    shipItems.addAll(empire.startingItems);
-    templates.addAll(empire.startingHulls.map((h) => ShipTemplate(h)));
+    hulls.addAll(empire.startingHulls);
   }
 
   void addResource(Resources resource) {
@@ -47,14 +34,12 @@ class PlayerState with ChangeNotifier {
     production += resource.production;
     credit += resource.credit;
     science += resource.science;
-    influence += resource.influence;
 
     notifyListeners();
   }
 
   void addCapacity(Capacity capacity) {
     sectorDataTable = capacity.sectorDataTable;
-    citizenOnPlanet += capacity.citizen;
 
     notifyListeners();
   }
@@ -65,13 +50,8 @@ class PlayerState with ChangeNotifier {
   }
 
   void runProduction() {
-    citizenIdle += citizenInTransport.clamp(0, 10);
-    citizenInTransport = 0;
-
-    food -= citizenTotal().toDouble();
     if (food >= foodMax) {
       final num = (food / foodMax).floor();
-      citizenIdle += num;
       food -= num * foodMax;
     }
 

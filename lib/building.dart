@@ -6,20 +6,15 @@ enum Building {
       image: 'colony_hq.png'),
 
   constructionYard(
-      cost: 25,
+      cost: 54,
       displayName: "Construction Yard",
       image: 'construction_yard.png'),
-  bank(cost: 15, displayName: "Bank", image: 'bank.png'),
+  bank(cost: 60, displayName: "Bank", image: 'bank.png'),
   lab(
-      cost: 20,
+      cost: 54,
       displayName: "Research Lab",
       image: 'lab.png',
-      uniqueTag: 'lab'),
-  mediaNetwork(
-      cost: 20,
-      displayName: "Media Network",
-      image: 'media_network.png',
-      uniqueTag: 'media_network');
+      uniqueTag: 'lab');
 
   const Building({
     required this.cost,

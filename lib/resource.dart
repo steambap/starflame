@@ -5,17 +5,15 @@ import 'package:flutter/foundation.dart' show immutable;
 @immutable
 class Resources {
   final double food;
-  final int production;
+  final double production;
   final double credit;
-  final int science;
-  final int influence;
+  final double science;
 
   const Resources(
       {this.food = 0,
       this.production = 0,
       this.credit = 0,
-      this.science = 0,
-      this.influence = 0});
+      this.science = 0});
 
   Resources operator +(Resources other) {
     return Resources(
@@ -23,7 +21,6 @@ class Resources {
       production: production + other.production,
       credit: credit + other.credit,
       science: science + other.science,
-      influence: influence + other.influence,
     );
   }
 
@@ -33,7 +30,6 @@ class Resources {
       production: production * multiplier,
       credit: credit * multiplier,
       science: science * multiplier,
-      influence: influence * multiplier,
     );
   }
 }
