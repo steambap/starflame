@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import "package:intl/intl.dart" show toBeginningOfSentenceCase;
 
+import "sim_props.dart";
 import "scifi_game.dart";
 import "planet.dart";
 import "theme.dart" show text12, text16;
@@ -20,42 +21,42 @@ class HudPlanetInfo extends PositionComponent
   // Basic info
   final _planetName = TextComponent(
       textRenderer: text16, anchor: Anchor.topLeft, position: Vector2.all(4));
-  final _foodLabel = TextComponent(
-      text: "Food",
+  final _line1Label = TextComponent(
+      text: "Production",
       textRenderer: text12,
       anchor: Anchor.centerLeft,
       position: Vector2(8, 40));
-  final _foodValue = TextComponent(
+  final _line1Value = TextComponent(
       text: "0",
       textRenderer: text12,
       anchor: Anchor.centerRight,
       position: Vector2(192, 40));
-  final _tradeLabel = TextComponent(
-      text: "Trade",
+  final _line2Label = TextComponent(
+      text: "Credit",
       textRenderer: text12,
       anchor: Anchor.centerLeft,
       position: Vector2(8, 68));
-  final _tradeValue = TextComponent(
+  final _line2Value = TextComponent(
       text: "0",
       textRenderer: text12,
       anchor: Anchor.centerRight,
       position: Vector2(192, 68));
-  final _supportLabel = TextComponent(
-      text: "Support",
+  final _line3Label = TextComponent(
+      text: "Science",
       textRenderer: text12,
       anchor: Anchor.centerLeft,
       position: Vector2(8, 96));
-  final _supportValue = TextComponent(
+  final _line3Value = TextComponent(
       text: "0",
       textRenderer: text12,
       anchor: Anchor.centerRight,
       position: Vector2(192, 96));
-  final _buildingLabel = TextComponent(
-      text: "Building",
+  final _line4Label = TextComponent(
+      text: "Maintaince",
       textRenderer: text12,
       anchor: Anchor.centerLeft,
       position: Vector2(8, 124));
-  final _buildingValue = TextComponent(
+  final _line4Value = TextComponent(
       text: "0",
       textRenderer: text12,
       anchor: Anchor.centerRight,
@@ -70,26 +71,26 @@ class HudPlanetInfo extends PositionComponent
   //     textRenderer: text12,
   //     anchor: Anchor.centerRight,
   //     position: Vector2(192, 152));
-  final _lifeQualityLabel = TextComponent(
-      text: "Life Quality",
-      textRenderer: text12,
-      anchor: Anchor.centerLeft,
-      position: Vector2(8, 180));
-  final _lifeQualityValue = TextComponent(
-      text: "0",
-      textRenderer: text12,
-      anchor: Anchor.centerRight,
-      position: Vector2(192, 180));
-  final _growthLabel = TextComponent(
-      text: "Growth",
-      textRenderer: text12,
-      anchor: Anchor.centerLeft,
-      position: Vector2(8, 208));
-  final _growthValue = TextComponent(
-      text: "0",
-      textRenderer: text12,
-      anchor: Anchor.centerRight,
-      position: Vector2(192, 208));
+  // final _lifeQualityLabel = TextComponent(
+  //     text: "Life Quality",
+  //     textRenderer: text12,
+  //     anchor: Anchor.centerLeft,
+  //     position: Vector2(8, 180));
+  // final _lifeQualityValue = TextComponent(
+  //     text: "0",
+  //     textRenderer: text12,
+  //     anchor: Anchor.centerRight,
+  //     position: Vector2(192, 180));
+  // final _growthLabel = TextComponent(
+  //     text: "Growth",
+  //     textRenderer: text12,
+  //     anchor: Anchor.centerLeft,
+  //     position: Vector2(8, 208));
+  // final _growthValue = TextComponent(
+  //     text: "0",
+  //     textRenderer: text12,
+  //     anchor: Anchor.centerRight,
+  //     position: Vector2(192, 208));
   final _defenseLabel = TextComponent(
       text: "Defense",
       textRenderer: text12,
@@ -135,22 +136,22 @@ class HudPlanetInfo extends PositionComponent
       _infoBackground,
       _buildingList,
       _planetName,
-      _foodLabel,
-      _foodValue,
-      _tradeLabel,
-      _tradeValue,
+      _line1Label,
+      _line1Value,
+      _line2Label,
+      _line2Value,
+      _line3Label,
+      _line3Value,
       // _citizenLabel,
       // _citizenValue,
       _defenseLabel,
       _defenseValue,
-      _growthLabel,
-      _growthValue,
-      _lifeQualityLabel,
-      _lifeQualityValue,
-      _supportLabel,
-      _supportValue,
-      _buildingLabel,
-      _buildingValue,
+      // _growthLabel,
+      // _growthValue,
+      // _lifeQualityLabel,
+      // _lifeQualityValue,
+      _line4Label,
+      _line4Value,
       _planetTypeLabel,
       _planetSizeLabel,
       _buildingTitle,
@@ -195,15 +196,16 @@ class HudPlanetInfo extends PositionComponent
 
   void _setText(Planet planet) {
     _planetName.text =
-        "${planet.displayName} Lv.${planet.developmentLevel + 1}";
-    _foodValue.text = "${planet.type.food * planet.citizen}";
-    // _tradeValue.text = "${planet.trade}/+${planet.investNumber()}";
-    // _citizenValue.text = "${planet.citizen}/${planet.maxCitizen()}";
+        planet.displayName;
+    _line1Value.text = "${planet.getProp(SimProps.production).toInt()}";
+    _line2Value.text = "${planet.getProp(SimProps.credit).toInt()}";
+    _line3Value.text = "${planet.getProp(SimProps.science).toInt()}";
+    _line4Value.text = "${planet.getProp(SimProps.maintainceCost).toInt()}";
+
     _defenseValue.text = "${planet.defense}/${planet.defenseMax()}";
     // _growthValue.text = "${planet.growth()}";
     // _supportValue.text = "${planet.support}(${planet.calcSupport()})";
     // _lifeQualityValue.text = "${planet.lifeQuality()}";
-    _buildingValue.text = "${planet.buildings.length}/${planet.maxBuilding()}";
     _planetTypeLabel.text = toBeginningOfSentenceCase(planet.type.name);
     _planetSizeLabel.text = planet.planetSizeStr();
 

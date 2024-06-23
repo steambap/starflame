@@ -1,3 +1,5 @@
+import "sim_props.dart";
+
 enum Building {
   colonyHQ(
       cost: 150,
@@ -28,4 +30,14 @@ enum Building {
   final String displayName;
 
   final String image;
+}
+
+class BuildingData with SimObject {
+  final Building building;
+
+  BuildingData(this.building, Map<Property, double> data) {
+    data.forEach((key, value) {
+      addProp(key, value);
+    });
+  }
 }

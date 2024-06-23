@@ -17,11 +17,11 @@ class HudShipCommand extends PositionComponent
   late final SpriteComponent _shipImage;
   final TextComponent _shipAndTemplateName =
       TextComponent(textRenderer: text16, anchor: Anchor.centerLeft);
-  final TextComponent _shipLifeAndArmor =
+  final TextComponent _shipInfo1 =
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
-  final TextComponent _shipMoveAndVision =
+  final TextComponent _shipInfo2 =
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
-  final TextComponentClipped _shipItems = TextComponentClipped(rectSize,
+  final TextComponentClipped _shipInfo3 = TextComponentClipped(rectSize,
       textRenderer: text12, anchor: Anchor.centerLeft);
 
   final List<ActionButton> _shipCommandButtons = [];
@@ -52,17 +52,17 @@ class HudShipCommand extends PositionComponent
         sprite: sprite, anchor: Anchor.center, position: shipImagePos);
 
     _shipAndTemplateName.position = Vector2(4, _shipInfoBackground.y + 14);
-    _shipLifeAndArmor.position = Vector2(86, _shipInfoBackground.y + 40);
-    _shipMoveAndVision.position = Vector2(86, _shipInfoBackground.y + 68);
-    _shipItems.position = Vector2(86, _shipInfoBackground.y + 96);
+    _shipInfo1.position = Vector2(86, _shipInfoBackground.y + 40);
+    _shipInfo2.position = Vector2(86, _shipInfoBackground.y + 68);
+    _shipInfo3.position = Vector2(86, _shipInfoBackground.y + 96);
 
     return addAll([
       _shipInfoBackground,
       _shipImage,
       _shipAndTemplateName,
-      _shipLifeAndArmor,
-      _shipMoveAndVision,
-      _shipItems,
+      _shipInfo1,
+      _shipInfo2,
+      _shipInfo3,
     ]);
   }
 
@@ -106,11 +106,9 @@ class HudShipCommand extends PositionComponent
   void _renderShip(Ship ship) {
     final state = ship.state;
     _shipAndTemplateName.text = ship.hull.name;
-    _shipLifeAndArmor.text =
-        "HP: ${state.health}/100";
-    _shipMoveAndVision.text =
-        "Move: ${ship.movePoint()}/${ship.hull.movement}";
-    _shipItems.text = "Strenth: ${ship.hull.strength}";
+    _shipInfo1.text = "Strenth: ${ship.hull.strength}";
+    _shipInfo2.text = "HP: ${state.health}/100";
+    _shipInfo3.text = "Move: ${ship.movePoint()}/${ship.hull.movement}";
     _shipImage.sprite = Sprite(game.images.fromCache(ship.hull.image));
     _clearActions();
 

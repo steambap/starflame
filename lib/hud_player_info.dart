@@ -56,7 +56,7 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     final scienceIcon = game.images.fromCache("research_icon.png");
     _scienceIcon =
         SpriteComponent(sprite: Sprite(scienceIcon), position: Vector2(252, 8));
-    final influenceIcon = game.images.fromCache("influence_icon.png");
+    // final influenceIcon = game.images.fromCache("influence_icon.png");
     // _influenceIcon = SpriteComponent(
     //     sprite: Sprite(influenceIcon), position: Vector2(360, 8));
 

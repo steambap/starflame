@@ -21,7 +21,7 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
   // late final AdvancedButtonComponent _addCitizen;
   // late final AdvancedButtonComponent _removeCitizen;
   late final AdvancedButtonComponent _buildingRemoveButton;
-  late final AdvancedButtonComponent _colonyUpgradeButton;
+  // late final AdvancedButtonComponent _colonyUpgradeButton;
   late final AdvancedButtonComponent _repairButton;
 
   MenuPlanetCmd(this.planet);
@@ -107,34 +107,34 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
       anchor: Anchor.center,
     );
 
-    final upgradeImg = game.images.fromCache('planet_upgrade.png');
-    final upgradeIcon =
-        SpriteComponent(sprite: Sprite(upgradeImg), position: iconPos);
-    final upgradeIconDisabled =
-        SpriteComponent(sprite: Sprite(upgradeImg), position: iconPos);
-    upgradeIconDisabled.decorator.addLast(grayTint);
-    _colonyUpgradeButton = AdvancedButtonComponent(
-      size: iconButtonSize,
-      position: Hex.directions[4].toPixel(),
-      defaultSkin: RectangleComponent(
-        paintLayers: cardSkin,
-        children: [upgradeIcon],
-      ),
-      disabledSkin: RectangleComponent(
-        paintLayers: textButtonDisabledPaintLayer,
-        children: [upgradeIconDisabled],
-      ),
-      onPressed: () async {
-        final result = await game.router.pushAndWait(YesNoDialog(
-            'Upgrade ${planet.displayName} to Level ${planet.developmentLevel + 2}?'));
-        if (!result) {
-          return;
-        }
+    // final upgradeImg = game.images.fromCache('planet_upgrade.png');
+    // final upgradeIcon =
+    //     SpriteComponent(sprite: Sprite(upgradeImg), position: iconPos);
+    // final upgradeIconDisabled =
+    //     SpriteComponent(sprite: Sprite(upgradeImg), position: iconPos);
+    // upgradeIconDisabled.decorator.addLast(grayTint);
+    // _colonyUpgradeButton = AdvancedButtonComponent(
+    //   size: iconButtonSize,
+    //   position: Hex.directions[4].toPixel(),
+    //   defaultSkin: RectangleComponent(
+    //     paintLayers: cardSkin,
+    //     children: [upgradeIcon],
+    //   ),
+    //   disabledSkin: RectangleComponent(
+    //     paintLayers: textButtonDisabledPaintLayer,
+    //     children: [upgradeIconDisabled],
+    //   ),
+    //   onPressed: () async {
+    //     final result = await game.router.pushAndWait(YesNoDialog(
+    //         'Upgrade ${planet.displayName} to Level ${planet.developmentLevel + 2}?'));
+    //     if (!result) {
+    //       return;
+    //     }
 
-        game.resourceController.upgradePlanet(playerNumber, planet);
-      },
-      anchor: Anchor.center,
-    );
+    //     game.resourceController.upgradePlanet(playerNumber, planet);
+    //   },
+    //   anchor: Anchor.center,
+    // );
 
     final repairImg = game.images.fromCache('planet_repair.png');
     final repairIcon =
@@ -164,7 +164,7 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
       // _addCitizen,
       // _removeCitizen,
       _buildingRemoveButton,
-      _colonyUpgradeButton,
+      // _colonyUpgradeButton,
       _repairButton,
     ]);
   }
@@ -172,9 +172,9 @@ class MenuPlanetCmd extends PositionComponent with HasGameRef<ScifiGame> {
   void _addMenuNonPlayer() {}
 
   void _updateAllButtons() {
-    final playerNumber = game.controller.getHumanPlayerNumber();
-    _colonyUpgradeButton.isDisabled =
-        !game.resourceController.canUpgradePlanet(playerNumber, planet);
+    // final playerNumber = game.controller.getHumanPlayerNumber();
+    // _colonyUpgradeButton.isDisabled =
+        // !game.resourceController.canUpgradePlanet(playerNumber, planet);
     _repairButton.isDisabled = true;
     _buildingRemoveButton.isDisabled = true;
     // _addCitizen.isDisabled = !game.resourceController.canAddCitizen(playerNumber, planet);

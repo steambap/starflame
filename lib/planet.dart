@@ -8,17 +8,17 @@ import 'building.dart';
 import 'scifi_game.dart';
 import "hex.dart";
 import "planet_type.dart";
+import "sim_props.dart";
 import "theme.dart" show text12, emptyPaint;
+import "data/building_data.dart";
 
 class Planet extends PositionComponent
-    with HasGameRef<ScifiGame>, ChangeNotifier {
+    with HasGameRef<ScifiGame>, ChangeNotifier, SimObject {
   PlanetType type;
 
   /// 0 = small, 1 = medium, 2 = large
   int planetSize;
   int? playerNumber;
-  int citizen = 0;
-  int developmentLevel = 0;
   int defense = 0;
   bool isUnderSiege = false;
   final List<Building> buildings = [];
@@ -52,6 +52,7 @@ class Planet extends PositionComponent
 
     addAll([planetSprite, ownerCircle, citizenLabel]);
 
+    refreshProps();
     updateRender();
   }
 
@@ -64,7 +65,6 @@ class Planet extends PositionComponent
       Building.colonyHQ,
       Building.constructionYard,
     ]);
-    citizen = 1;
     defense = defenseMax();
   }
 
@@ -86,7 +86,7 @@ class Planet extends PositionComponent
       ownerCircle.paint = emptyPaint;
       citizenLabel.text = "";
     } else {
-      citizenLabel.text = "[$citizen]$displayName";
+      citizenLabel.text = "[${buildings.length}/${maxBuilding()}]$displayName";
       final pState = game.controller.getPlayerState(playerNumber!);
       final playerPaint = Paint()
         ..style = PaintingStyle.stroke
@@ -108,16 +108,6 @@ class Planet extends PositionComponent
     updateRender();
   }
 
-  bool canUpgrade() {
-    return developmentLevel < 2;
-  }
-
-  void upgrade() {
-    developmentLevel = (developmentLevel + 1).clamp(0, 2);
-    updateRender();
-    notifyListeners();
-  }
-
   bool canBuild(Building bd) {
     if (bd.uniqueTag.isNotEmpty) {
       for (final b in buildings) {
@@ -131,12 +121,13 @@ class Planet extends PositionComponent
 
   void build(Building bd) {
     buildings.add(bd);
+    refreshProps();
     updateRender();
     notifyListeners();
   }
 
   int defenseMax() {
-    return 300 + developmentLevel * 100;
+    return 100;
   }
 
   int maxBuilding() {
@@ -172,10 +163,25 @@ class Planet extends PositionComponent
 
     playerNumber = null;
     buildings.clear();
-    developmentLevel = 0;
     updateRender();
 
     return true;
+  }
+
+  void refreshProps() {
+    props.clear();
+    addProp(SimProps.maintainceCost, homePlanet ? 0 : 2);
+    addProp(SimProps.production, type.production.toDouble());
+    addProp(SimProps.credit, (type.credit + type.food).toDouble());
+    addProp(SimProps.science, type.science.toDouble());
+
+    for (final b in buildings) {
+      final bd = buildingTable[b]!;
+      addProp(SimProps.production, bd.getProp(SimProps.production));
+      addProp(SimProps.credit, bd.getProp(SimProps.credit));
+      addProp(SimProps.science, bd.getProp(SimProps.science));
+      addProp(SimProps.maintainceCost, bd.getProp(SimProps.maintainceCost));
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -183,8 +189,6 @@ class Planet extends PositionComponent
       "type": type.name,
       "planetSize": planetSize,
       if (playerNumber != null) "playerNumber": playerNumber,
-      "citizen": citizen,
-      "developmentLevel": developmentLevel,
       "defense": defense,
       "isUnderSiege": isUnderSiege,
       "homePlanet": homePlanet,

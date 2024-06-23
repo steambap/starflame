@@ -6,6 +6,7 @@ import "building.dart";
 import "ship_hull.dart";
 import "resource.dart";
 import "sector.dart";
+import "sim_props.dart";
 
 class ResourceController {
   final ScifiGame game;
@@ -28,7 +29,12 @@ class ResourceController {
 
     for (final planet in game.mapGrid.planets) {
       if (planet.playerNumber == state.playerNumber) {
-        income += calcPlanetIncome(state, planet);
+        income += Resources(
+          maintaince: planet.getProp(SimProps.maintainceCost),
+          production: planet.getProp(SimProps.production),
+          credit: planet.getProp(SimProps.credit),
+          science: planet.getProp(SimProps.science),
+        );
       }
     }
 
@@ -39,29 +45,6 @@ class ResourceController {
     final state = game.controller.getHumanPlayerState();
 
     return playerIncome(state);
-  }
-
-  Resources calcPlanetIncome(PlayerState playerState, Planet planet) {
-    Resources income = const Resources();
-
-    for (final bd in planet.buildings) {
-      if (bd == Building.colonyHQ) {
-        income += const Resources(production: 3, credit: 3, science: 3);
-      } else if (bd == Building.constructionYard) {
-        income += const Resources(production: 6);
-      } else if (bd == Building.bank) {
-        income += const Resources(credit: 6);
-      } else if (bd == Building.lab) {
-        income += const Resources(science: 6);
-      }
-    }
-    // planet base income
-    income += Resources(
-        production: planet.type.production.toDouble(),
-        credit: (planet.type.credit + planet.type.food).toDouble(),
-        science: planet.type.science.toDouble());
-
-    return income;
   }
 
   Capacity scanCapacity(PlayerState playerState) {
@@ -98,31 +81,10 @@ class ResourceController {
     return 0;
   }
 
-  bool canUpgradePlanet(int playerNumber, Planet planet) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-
-    return playerState.production >= 20 && planet.canUpgrade();
-  }
-
-  bool upgradePlanet(int playerNumber, Planet planet) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-
-    if (!canUpgradePlanet(playerNumber, planet)) {
-      return false;
-    }
-
-    planet.upgrade();
-    final capacity = scanCapacity(playerState);
-    playerState.addCapacityAndResource(
-        capacity, const Resources(production: -20));
-
-    return true;
-  }
-
   bool canAffordBuilding(int playerNumber, Building building) {
     final playerState = game.controller.getPlayerState(playerNumber);
 
-    return playerState.credit >= building.cost;
+    return playerState.production >= building.cost;
   }
 
   bool canAddBuilding(int playerNumber, Planet planet, Building building) {
@@ -141,7 +103,7 @@ class ResourceController {
     planet.build(building);
     final capacity = scanCapacity(playerState);
     playerState.addCapacityAndResource(
-        capacity, Resources(credit: -building.cost.toDouble()));
+        capacity, Resources(production: -building.cost.toDouble()));
 
     return true;
   }

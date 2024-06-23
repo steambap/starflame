@@ -30,7 +30,7 @@ class PlayerState with ChangeNotifier {
   }
 
   void addResource(Resources resource) {
-    food += resource.food;
+    food += resource.maintaince;
     production += resource.production;
     credit += resource.credit;
     science += resource.science;
