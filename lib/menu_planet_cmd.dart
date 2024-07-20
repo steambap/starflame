@@ -4,7 +4,6 @@ import 'package:flame/components.dart';
 import 'scifi_game.dart';
 import 'hex.dart';
 import 'planet.dart';
-import 'yes_no_dialog.dart';
 import 'theme.dart'
     show
         text12,
