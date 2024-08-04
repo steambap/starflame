@@ -3,7 +3,7 @@ import 'package:flame/events.dart';
 import 'package:flutter/foundation.dart';
 
 import "scifi_game.dart";
-import "theme.dart" show grayTint, cardSkin, panelBar, text12;
+import "theme.dart" show grayTint, cardSkin, label12, icon16orange;
 import "ship_hull.dart";
 
 class AddShipButton extends PositionComponent
@@ -15,16 +15,11 @@ class AddShipButton extends PositionComponent
     size: buttonSize,
     paintLayers: cardSkin,
   );
-  final RectangleComponent _costBar = RectangleComponent(
-    // Do not overlay the background border
-    position: Vector2(0.5, 68),
-    size: Vector2(113, 15.5),
-    paint: panelBar,
-  );
 
   late final TextComponent _tName;
   late final SpriteComponent _tSprite;
-  late final SpriteComponent _prodIcon;
+  final TextComponent _prodIcon =
+      TextComponent(position: Vector2(2, 68), text: "\u4a95", textRenderer: icon16orange);
   late final TextComponent _prodText;
   void Function(ShipHull hull)? onPressed;
 
@@ -48,7 +43,7 @@ class AddShipButton extends PositionComponent
     _tName = TextComponent(
       text: hull.name,
       position: Vector2(2, 2),
-      textRenderer: text12,
+      textRenderer: label12,
     );
     final hullImg = Sprite(game.images.fromCache(hull.image));
     _tSprite = SpriteComponent(
@@ -56,19 +51,16 @@ class AddShipButton extends PositionComponent
         position: Vector2(buttonSize.x / 2, 48),
         anchor: Anchor.center);
 
-    final prodIcon = Sprite(game.images.fromCache('production_icon.png'));
-    _prodIcon = SpriteComponent(sprite: prodIcon, position: Vector2(2, 68));
     _prodText = TextComponent(
       text: hull.cost.toString(),
       position: Vector2(22, 76),
-      textRenderer: text12,
+      textRenderer: label12,
       anchor: Anchor.centerLeft
     );
     addAll([
       _background,
       _tName,
       _tSprite,
-      _costBar,
       _prodIcon,
       _prodText,
     ]);

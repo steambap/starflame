@@ -195,8 +195,7 @@ class HudPlanetInfo extends PositionComponent
   }
 
   void _setText(Planet planet) {
-    _planetName.text =
-        planet.displayName;
+    _planetName.text = planet.displayName;
     _line1Value.text = "${planet.getProp(SimProps.production).toInt()}";
     _line2Value.text = "${planet.getProp(SimProps.credit).toInt()}";
     _line3Value.text = "${planet.getProp(SimProps.science).toInt()}";
@@ -208,19 +207,6 @@ class HudPlanetInfo extends PositionComponent
     // _lifeQualityValue.text = "${planet.lifeQuality()}";
     _planetTypeLabel.text = toBeginningOfSentenceCase(planet.type.name);
     _planetSizeLabel.text = planet.planetSizeStr();
-
-    _buildingTitle.text =
-        "Buildings (${planet.buildings.length}/${planet.maxBuilding()})";
-    for (int i = 0; i < planet.buildings.length; i++) {
-      final building = planet.buildings[i];
-      final text = TextComponent(
-        text: building.displayName,
-        textRenderer: text12,
-        anchor: Anchor.centerLeft,
-        position: Vector2(8, 324 + i * 28),
-      );
-      _buildingTexts.add(text);
-    }
 
     _clippedContent.addAll(_buildingTexts);
   }

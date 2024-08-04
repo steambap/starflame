@@ -5,7 +5,7 @@ import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
 import 'ship_hull.dart';
-import 'building.dart';
+import "active_ability.dart";
 
 sealed class SelectControl {
   final ScifiGame game;
@@ -30,7 +30,7 @@ class SelectControlWaitForInput extends SelectControl {
   void onCellClick(Cell cell) {
     if (cell.ship != null) {
       game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
-    } else if (cell.planet != null) {
+    } else if (cell.sector != null) {
       game.mapGrid.selectControl = SelectControlPlanet(game, cell);
     }
   }
@@ -44,7 +44,7 @@ class SelectControlHex extends SelectControl {
   void onCellClick(Cell cell) {
     if (cell.ship != null) {
       game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
-    } else if (cell.planet != null) {
+    } else if (cell.sector != null) {
       game.mapGrid.selectControl = SelectControlPlanet(game, cell);
     } else {
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
@@ -63,7 +63,7 @@ class SelectControlCellSelected extends SelectControlHex {
   @override
   void onCellClick(Cell cell) {
     if (this.cell == cell) {
-      if (cell.planet != null) {
+      if (cell.sector != null) {
         game.mapGrid.selectControl = SelectControlPlanet(game, cell);
       }
 
@@ -88,7 +88,6 @@ class SelectControlCellSelected extends SelectControlHex {
       final shipOwner = ship?.state.playerNumber ?? -1;
       final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
       game.shipCommand.updateRender(ship);
-      game.mapDeploy.minimize();
       if (isOwnerHuman) {
         paths =
             game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
@@ -144,15 +143,12 @@ class SelectControlPlanet extends SelectControlHex {
 
   @override
   void onStateEnter() {
-    game.hudPlanet.planet = cell.planet;
-    game.world.renderPlanetMenu(cell.planet);
-    game.mapDeploy.minimize();
+    // game.hudPlanet.planet = cell.sector;
   }
 
   @override
   void onStateExit() {
     game.hudPlanet.planet = null;
-    game.world.renderPlanetMenu(null);
   }
 }
 
@@ -218,30 +214,25 @@ class SelectControlWaitForAction extends SelectControl {
   }
 }
 
-class SelectControlAddBuilding extends SelectControl {
+class SelectControlUseAbility extends SelectControl {
   final Set<Cell> cells = {};
-  final Building building;
-  SelectControlAddBuilding(this.building, super.game);
+  final ActiveAbility aa;
+  SelectControlUseAbility(this.aa, super.game);
 
   @override
   void onCellClick(Cell cell) {
     if (cells.contains(cell)) {
-      final playerNumber = game.controller.getHumanPlayerNumber();
-      game.resourceController.addBuilding(playerNumber, cell.planet!, building);
+      aa.activate(game, cell);
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }
 
   @override
   void onStateEnter() {
-    final playerNumber = game.controller.getHumanPlayerNumber();
-    final deployableCells = game.mapGrid.humanPlayerPlanetCells();
-    for (final cell in deployableCells) {
-      if (game.resourceController
-          .canAddBuilding(playerNumber, cell.planet!, building)) {
-        cells.add(cell);
-        cell.markAsHighlight();
-      }
+    final cells = aa.getTargetCells(game);
+    for (final cell in cells) {
+      this.cells.add(cell);
+      cell.markAsTarget();
     }
   }
 

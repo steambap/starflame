@@ -3,7 +3,7 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 import 'hex.dart';
-import 'planet.dart';
+import 'sector.dart';
 import 'ship.dart';
 import "theme.dart" show highlighterPaint, moveendPaint, targetPaint;
 import 'tile_type.dart';
@@ -11,8 +11,7 @@ import 'tile_type.dart';
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   final int index;
   final Hex hex;
-  Hex sector = Hex.zero;
-  Planet? planet;
+  Sector? sector;
   late final PolygonComponent _highligher;
   TileType tileType = TileType.empty;
   Ship? ship;
@@ -25,8 +24,8 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
 
   @override
   FutureOr<void> onLoad() {
-    if (planet != null) {
-      add(planet!);
+    if (sector != null) {
+      add(sector!);
     }
   }
 
@@ -66,9 +65,8 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
     return {
       "index": index,
       "hex": hex.toInt(),
-      "sector": sector.toInt(),
       "tileType": tileType.name,
-      // planets and ships are saved under map grid
+      // sectors and ships are saved under map grid
     };
   }
 }

@@ -1,12 +1,11 @@
 import "../scifi_game.dart";
 import "../player_state.dart";
-import "../planet.dart";
-import "../building.dart";
+import "../sector.dart";
 
 class BaseAI {
   final ScifiGame game;
 
-  List<Planet> myPlanets = List.empty();
+  List<Sector> mySectors = List.empty();
 
   BaseAI(this.game);
 
@@ -20,31 +19,15 @@ class BaseAI {
   }
 
   void setupInfo(PlayerState playerState) {
-    myPlanets = [];
-    for (final p in game.mapGrid.planets) {
+    mySectors = [];
+    for (final p in game.mapGrid.sectors) {
       if (p.playerNumber == playerState.playerNumber) {
-        myPlanets.add(p);
+        mySectors.add(p);
       }
     }
   }
 
   void improveEconomy(PlayerState playerState) {
-    if (playerState.credit > Building.bank.cost * 2) {
-      _addBuilding(playerState);
-    }
-  }
 
-  void _addBuilding(PlayerState playerState) {
-    for (final p in myPlanets) {
-      if (p.canBuild(Building.bank)) {
-        final result = game.resourceController
-            .addBuilding(playerState.playerNumber, p, Building.bank);
-        if (result) {
-          game.aiController.log(
-              "Add Building [${Building.bank.displayName}] to [${p.displayName}]");
-        }
-        return;
-      }
-    }
   }
 }

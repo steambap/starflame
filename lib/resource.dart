@@ -1,13 +1,12 @@
-import "sector.dart";
 import 'package:flutter/foundation.dart' show immutable;
 
 // Resources that can be stockpiled
 @immutable
 class Resources {
-  final double maintaince;
-  final double production;
-  final double credit;
-  final double science;
+  final int maintaince;
+  final int production;
+  final int credit;
+  final int science;
 
   const Resources(
       {this.maintaince = 0,
@@ -30,26 +29,6 @@ class Resources {
       production: production * multiplier,
       credit: credit * multiplier,
       science: science * multiplier,
-    );
-  }
-}
-
-// Resources that more like a status
-class Capacity {
-  int citizen = 0;
-  SectorDataTable sectorDataTable = {};
-
-  Capacity();
-
-  Capacity.from({required this.sectorDataTable, required this.citizen});
-
-  Capacity operator +(Capacity other) {
-    return Capacity.from(
-      citizen: citizen + other.citizen,
-      sectorDataTable: {
-        ...sectorDataTable,
-        ...other.sectorDataTable,
-      },
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 import "dart:math";
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import "package:flame/events.dart";
@@ -14,9 +13,9 @@ import 'cell.dart';
 import "pathfinding.dart";
 import "hex.dart";
 import "select_control.dart";
-import "planet.dart";
+import "sector.dart";
 import "tile_type.dart";
-import "theme.dart" show hexBorderPaint, sectionBorderPaint;
+import "theme.dart" show hexBorderPaint;
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -33,12 +32,12 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   List<Cell> cells = List.empty();
 
   /// Hex to cell index
-  Map<int, int> _hexTable = {};
+  final Map<int, int> _hexTable = {};
   late final Sprite nebula;
   late final List<Sprite> asteroids;
   late final Sprite gravityRift;
 
-  List<Planet> planets = [];
+  List<Sector> sectors = [];
   Pathfinding pathfinding = Pathfinding({});
   final List<Ship> shipListAll = [];
   final Map<int, List<Ship>> shipMap = {};
@@ -71,16 +70,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
       final ns = cell.hex.getNeighbours();
       for (int i = 0; i < ns.length; i++) {
-        final n = ns[i];
-        Paint paint = sectionBorderPaint;
-        if (_hexTable.containsKey(n.toInt())) {
-          final nCell = cells[_hexTable[n.toInt()]!];
-          if (cell.sector == nCell.sector) {
-            paint = hexBorderPaint;
-          }
-        }
-
-        canvas.drawLine(corners[(11 - i) % 6], corners[(12 - i) % 6], paint);
+        canvas.drawLine(
+            corners[(11 - i) % 6], corners[(12 - i) % 6], hexBorderPaint);
       }
       // draw tile
       final t = cell.tileType;
@@ -118,6 +109,9 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
   @override
   bool containsLocalPoint(Vector2 point) {
+    if (cells.isEmpty) {
+      return false;
+    }
     final radius = Hex.size * (game.currentGameSettings.mapSize + 1) * 2;
     return point.length <= radius;
   }
@@ -145,10 +139,18 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     return cells[cellIndex];
   }
 
+  void initHexTable() {
+    _hexTable.clear();
+    for (int i = 0; i < cells.length; i++) {
+      final cell = cells[i];
+      _hexTable[cell.hex.toInt()] = i;
+    }
+  }
+
   FutureOr<void> initMap(GameCreator gc) async {
     cells = gc.cells;
-    _hexTable = gc.hexTable;
-    planets = gc.planets;
+    sectors = gc.sectors;
+    initHexTable();
 
     pathfinding = Pathfinding(_calcEdges());
 
@@ -230,7 +232,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   }
 
   Cell? getCapitalCell(int playerNumber) {
-    for (final s in planets) {
+    for (final s in sectors) {
       if (s.homePlanet && s.playerNumber == playerNumber) {
         final hex = s.hex;
         final index = _hexTable[hex.toInt()] ?? -1;
@@ -247,8 +249,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   List<Cell> getShipDeployableCells(int playerNumber) {
     final List<Cell> deployableCells = [];
     for (final cell in cells) {
-      if (cell.planet != null) {
-        if (cell.planet?.playerNumber == playerNumber) {
+      if (cell.sector != null) {
+        if (cell.sector?.playerNumber == playerNumber) {
           const range = Block(0, 1);
           final cellsInRange = inRange(cell, range);
           for (final cell in cellsInRange) {
@@ -266,7 +268,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   List<Cell> playerPlanetCells(int playerNumber) {
     final List<Cell> playerCells = [];
     for (final cell in cells) {
-      if (cell.planet != null && cell.planet!.playerNumber == playerNumber) {
+      if (cell.sector != null && cell.sector!.playerNumber == playerNumber) {
         playerCells.add(cell);
       }
     }
@@ -310,8 +312,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       if (cell.ship != null &&
           cell.ship!.state.playerNumber != attackingPlayerNumber) {
         attackableCells.add(cell);
-      } else if (cell.planet != null &&
-          cell.planet!.attackable(attackingPlayerNumber)) {
+      } else if (cell.sector != null &&
+          cell.sector!.attackable(attackingPlayerNumber)) {
         attackableCells.add(cell);
       }
     }
@@ -327,7 +329,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   Map<String, dynamic> toJson() {
     return {
       "cells": cells.map((e) => e.toJson()).toList(),
-      "planets": planets.map((e) => e.toJson()).toList(),
+      "sectors": sectors.map((e) => e.toJson()).toList(),
       // ships goes here
     };
   }

@@ -27,3 +27,9 @@ flutter:
     - family: SpaceMono
       fonts:
         - asset: fonts/SpaceMono-Regular.ttf
+    - family: Chakra
+      fonts:
+        - asset: fonts/ChakraPetch-Light.ttf
+    - family: Icon
+      fonts:
+        - asset: fonts/hgi-stroke-rounded.ttf

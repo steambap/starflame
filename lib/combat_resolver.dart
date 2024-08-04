@@ -13,18 +13,16 @@ class CombatResolver {
   void resolve(Ship ship, Cell cell) {
     final int strengthDiff =
         ship.hull.strength - (cell.ship?.hull.strength ?? 10);
-    if (ship.hull.range == 0) {
-      final damage = getDamage(-strengthDiff);
-      ship.takeDamage(damage);
-      game.world.renderDamageText("-${damage.toString()}", ship.cell.position);
-    }
+    // if (ship.hull.range == 0) {
+    //   final damage = getDamage(-strengthDiff);
+    //   ship.takeDamage(damage);
+    //   game.world.renderDamageText("-${damage.toString()}", ship.cell.position);
+    // }
     final damage = getDamage(strengthDiff);
 
     ship.useAttack();
     if (cell.ship != null) {
       cell.ship!.takeDamage(damage);
-    } else if (cell.planet != null) {
-      cell.planet!.takeDamage(damage);
     }
     game.world.renderDamageText("-${damage.toString()}", cell.position);
   }

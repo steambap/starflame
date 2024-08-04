@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'scifi_game.dart';
 import 'ship.dart';
 import 'theme.dart'
-    show text16, text12, iconButtonSize, panelBackground, cardSkin;
+    show label16, text12, iconButtonSize, panelBackground, cardSkin;
 import 'action_button.dart';
 import 'components/text_component_clipped.dart';
 
@@ -16,7 +16,7 @@ class HudShipCommand extends PositionComponent
   late final RectangleComponent _shipInfoBackground;
   late final SpriteComponent _shipImage;
   final TextComponent _shipAndTemplateName =
-      TextComponent(textRenderer: text16, anchor: Anchor.centerLeft);
+      TextComponent(textRenderer: label16, anchor: Anchor.centerLeft);
   final TextComponent _shipInfo1 =
       TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
   final TextComponent _shipInfo2 =
@@ -36,7 +36,7 @@ class HudShipCommand extends PositionComponent
     _shipInfoBackground = RectangleComponent(
         size: panelSize,
         paint: panelBackground,
-        position: Vector2(0, game.size.y - panelSize.y),
+        position: Vector2(game.size.x - panelSize.x - 8, 8),
         children: [
           RectangleComponent(
               size: textSize, paintLayers: cardSkin, position: Vector2(84, 28)),
@@ -51,10 +51,14 @@ class HudShipCommand extends PositionComponent
     _shipImage = SpriteComponent(
         sprite: sprite, anchor: Anchor.center, position: shipImagePos);
 
-    _shipAndTemplateName.position = Vector2(4, _shipInfoBackground.y + 14);
-    _shipInfo1.position = Vector2(86, _shipInfoBackground.y + 40);
-    _shipInfo2.position = Vector2(86, _shipInfoBackground.y + 68);
-    _shipInfo3.position = Vector2(86, _shipInfoBackground.y + 96);
+    _shipAndTemplateName.position =
+        Vector2(_shipInfoBackground.x + 8, _shipInfoBackground.y + 14);
+    _shipInfo1.position =
+        Vector2(_shipInfoBackground.x + 88, _shipInfoBackground.y + 40);
+    _shipInfo2.position =
+        Vector2(_shipInfoBackground.x + 88, _shipInfoBackground.y + 68);
+    _shipInfo3.position =
+        Vector2(_shipInfoBackground.x + 88, _shipInfoBackground.y + 96);
 
     return addAll([
       _shipInfoBackground,
@@ -117,7 +121,7 @@ class HudShipCommand extends PositionComponent
       final actions = ship.hull.actions();
       for (int i = 0; i < actions.length; i++) {
         final aButton = ActionButton(ship.cell, actions[i]);
-        aButton.position = Vector2(4,
+        aButton.position = Vector2(_shipInfoBackground.x + 8,
             _shipInfoBackground.position.y - (i + 1) * (iconButtonSize.y + 4));
         _shipCommandButtons.add(
           aButton,

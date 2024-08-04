@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
-import "theme.dart" show text16, buttonGreenSkin, buttonGreenHoverSkin;
+import "theme.dart" show label16, btnDefaultSkin, btnHoverSkin;
+import "./components/cut_out_rect.dart";
 
 class HudNextTurnBtn extends AdvancedButtonComponent
     with HasGameRef<ScifiGame> {
@@ -11,11 +12,10 @@ class HudNextTurnBtn extends AdvancedButtonComponent
       : super(
           size: buttonSize,
           defaultLabel: TextComponent(
-              text: "Next Turn", anchor: Anchor.center, textRenderer: text16),
-          defaultSkin: RectangleComponent(
-              size: buttonSize, paintLayers: buttonGreenSkin),
-          hoverSkin: RectangleComponent(
-              size: buttonSize, paintLayers: buttonGreenHoverSkin),
+              text: "Next Turn", anchor: Anchor.center, textRenderer: label16),
+          defaultSkin:
+              CutOutRect(size: buttonSize, paintLayers: btnDefaultSkin),
+          hoverSkin: CutOutRect(size: buttonSize, paintLayers: btnHoverSkin),
         );
 
   @override

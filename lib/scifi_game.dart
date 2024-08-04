@@ -1,4 +1,3 @@
-import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 
@@ -12,11 +11,14 @@ import "game_settings.dart";
 import "resource_controller.dart";
 import 'hud_ship_cmd.dart';
 import "hud_planet.dart";
-import "hud_map_deploy.dart";
+import "start_page.dart";
+import 'hud_page.dart';
 import "ai/ai_controller.dart";
 import "combat_resolver.dart";
+import "hud_map_deploy.dart";
 
-class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents {
+class ScifiGame extends FlameGame<ScifiWorld>
+    with HasKeyboardHandlerComponents {
   final MapGrid mapGrid = MapGrid();
   final GameCreator gameCreator = GameCreator();
   late GameSettings currentGameSettings;
@@ -27,16 +29,18 @@ class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents 
   final HudPlayerInfo playerInfo = HudPlayerInfo();
   final HudNextTurnBtn nextTurnBtn = HudNextTurnBtn();
   final HudPlanet hudPlanet = HudPlanet();
-  final HudMapDeploy mapDeploy = HudMapDeploy();
+  final HudMapDeploy hudMapDeploy = HudMapDeploy();
   final HudShipCommand shipCommand = HudShipCommand();
-  final RouterComponent router = RouterComponent(
+  final HudPage hud = HudPage();
+  late final RouterComponent router = RouterComponent(
     routes: {
-      "placeholder": Route(() => PositionComponent()),
+      HudPage.routeName: Route(() => hud),
+      StartPage.routeName: Route(StartPage.new),
     },
-    initialRoute: "placeholder"
+    initialRoute: HudPage.routeName,
   );
 
-  ScifiGame(): super(world: ScifiWorld()) {
+  ScifiGame() : super(world: ScifiWorld()) {
     controller = GameStateController(this);
     resourceController = ResourceController(this);
     aiController = AIController(this);
@@ -47,8 +51,17 @@ class ScifiGame extends FlameGame<ScifiWorld> with HasKeyboardHandlerComponents 
     await images.loadAllImages();
 
     await world.add(mapGrid);
-    camera.viewport.addAll([playerInfo, nextTurnBtn, mapDeploy, hudPlanet, shipCommand, router]);
+    await hud.addAll([
+      playerInfo,
+      nextTurnBtn,
+      hudPlanet,
+      shipCommand,
+      hudMapDeploy,
+    ]);
+    camera.viewport.add(router);
+  }
 
+  void startTestGame() {
     final s = GameSettings(0);
     currentGameSettings = s;
     s.players = gameCreator.getTestPlayers(s);

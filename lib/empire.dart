@@ -22,17 +22,17 @@ class Empire {
 }
 
 final Map<String, Empire> buildinEmpire = {
-  "neutral": Empire(Faction.neutral, "Neutral", [hullMap["Scout"]!]),
+  "neutral": Empire(Faction.neutral, "Neutral", [hullMap["Interceptor"]!]),
   "terranEmpire": Empire(Faction.terranEmpire, "Terran Empire", [
-    hullMap["Scout"]!,
-    hullMap["Frigate"]!,
+    hullMap["Interceptor"]!,
+    hullMap["Cruiser"]!,
   ]),
   "terranKindom": Empire(Faction.terranKindom, "Kindom of Terran", [
-    hullMap["Scout"]!,
-    hullMap["Frigate"]!,
+    hullMap["Interceptor"]!,
+    hullMap["Cruiser"]!,
   ]),
   "terranAlliance": Empire(Faction.terranAlliance, "Terran Alliance",[
-    hullMap["Scout"]!,
-    hullMap["Frigate"]!,
+    hullMap["Interceptor"]!,
+    hullMap["Cruiser"]!,
   ]),
 };

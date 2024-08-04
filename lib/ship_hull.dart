@@ -1,5 +1,3 @@
-import "dart:math";
-
 import "action.dart";
 import "action_type.dart";
 
@@ -14,9 +12,6 @@ class ShipHull {
   static const maxHealth = 100;
   final int movement;
   final int strength;
-  final int rangedStrength;
-  final int range;
-  final int pointDefense;
   final ShipType type;
   final int cost;
   final String name;
@@ -25,9 +20,6 @@ class ShipHull {
   ShipHull({
     required this.movement,
     required this.strength,
-    required this.rangedStrength,
-    required this.range,
-    required this.pointDefense,
     required this.type,
     required this.cost,
     required this.name,
@@ -51,6 +43,6 @@ class ShipHull {
   }
 
   int attackRange() {
-    return max(1, range);
+    return 1;
   }
 }

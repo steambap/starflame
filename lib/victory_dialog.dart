@@ -3,7 +3,7 @@ import "package:flame/components.dart";
 import "package:flame/events.dart";
 
 import "scifi_game.dart";
-import "theme.dart" show text16, textButtonPaintLayer;
+import "theme.dart" show label16, textButtonPaintLayer;
 import "dialog_background.dart";
 
 class VictoryDialog extends ValueRoute<bool>
@@ -22,12 +22,12 @@ class VictoryDialog extends ValueRoute<bool>
         ),
         TextComponent(
             text: "Victory!!!",
-            textRenderer: text16,
+            textRenderer: label16,
             anchor: Anchor.center,
             position: Vector2(0, -32)),
         AdvancedButtonComponent(
             defaultLabel: TextComponent(
-                text: "Main Menu", anchor: Anchor.center, textRenderer: text16),
+                text: "Main Menu", anchor: Anchor.center, textRenderer: label16),
             onPressed: () => completeWith(true),
             defaultSkin: RectangleComponent(
                 size: buttonSize, paintLayers: textButtonPaintLayer),
@@ -37,7 +37,7 @@ class VictoryDialog extends ValueRoute<bool>
             defaultLabel: TextComponent(
                 text: "Continue Play",
                 anchor: Anchor.center,
-                textRenderer: text16),
+                textRenderer: label16),
             onPressed: () => completeWith(false),
             defaultSkin: RectangleComponent(
                 size: buttonSize, paintLayers: textButtonPaintLayer),

@@ -64,7 +64,8 @@ class Pathfinding {
             neighbour.ship!.state.playerNumber != playerNumber) {
           continue;
         }
-        if (neighbour.planet != null && neighbour.planet!.attackable(playerNumber)) {
+        if (neighbour.sector != null &&
+            neighbour.sector!.attackable(playerNumber)) {
           continue;
         }
         if (newCost > movementPoint) {

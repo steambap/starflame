@@ -1,53 +1,66 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'dart:ui' show Radius;
+import 'package:flutter/painting.dart' show BorderRadius;
 
 import "scifi_game.dart";
-import "add_building_button.dart";
-import "building.dart";
+import "active_ability.dart";
+import "active_ability_button.dart";
 import 'add_ship_button.dart';
 import 'select_control.dart';
+import './components/cut_out_rect.dart';
 import 'theme.dart'
-    show iconButtonSize, textButtonPaintLayer, textButtonSelectedSkin;
+    show
+        iconButtonSize,
+        btnDefaultSkin,
+        btnHoverSkin,
+        btnSelectedSkin,
+        btnHoverAndSelectedSkin,
+        icon36white;
 
-// Container for both create ship and add building on map
+// Container for both create ship and active ability on map
 class HudMapDeploy extends PositionComponent
     with HasGameRef<ScifiGame>, DragCallbacks {
+  static final buttonSize = Vector2(100, 32);
+  static const topRightCut = BorderRadius.only(topRight: Radius.circular(8));
+  static const bottomLeftCut =
+      BorderRadius.only(bottomLeft: Radius.circular(8));
   late final ToggleButtonComponent _shipDeploy;
-  late final ToggleButtonComponent _buildingDeploy;
+  late final ToggleButtonComponent _abilityToggle;
   late final ClipComponent _clip;
   double scrollBoundsX = 0.0;
 
   final _clippedContent = PositionComponent();
   final List<AddShipButton> _shipButtons = [];
-  final List<AddBuildingButton> _buildingButtons = [];
+  final List<ActiveAbilityButton> _abilityButtons = [];
 
   @override
   Future<void> onLoad() async {
-    final shipDeploy = Sprite(game.images.fromCache("ship_deploy.png"));
+    final shipDeploy = TextComponent(text: "\u4626", textRenderer: icon36white);
     _shipDeploy = ToggleButtonComponent(
         size: iconButtonSize,
-        position: Vector2(4, game.size.y - iconButtonSize.y - 4),
-        defaultSkin: RectangleComponent(
+        position: Vector2(8, game.size.y - iconButtonSize.y - 8),
+        defaultLabel: shipDeploy,
+        defaultSelectedLabel: shipDeploy,
+        defaultSkin: CutOutRect(
           size: iconButtonSize,
-          paintLayers: textButtonPaintLayer,
-          children: [
-            SpriteComponent(
-              anchor: Anchor.center,
-              sprite: shipDeploy,
-              position: iconButtonSize / 2,
-            ),
-          ],
+          cut: bottomLeftCut,
+          paintLayers: btnDefaultSkin,
         ),
-        defaultSelectedSkin: RectangleComponent(
+        hoverSkin: CutOutRect(
           size: iconButtonSize,
-          paintLayers: textButtonSelectedSkin,
-          children: [
-            SpriteComponent(
-              anchor: Anchor.center,
-              sprite: shipDeploy,
-              position: iconButtonSize / 2,
-            ),
-          ],
+          cut: bottomLeftCut,
+          paintLayers: btnHoverSkin,
+        ),
+        defaultSelectedSkin: CutOutRect(
+          size: iconButtonSize,
+          cut: bottomLeftCut,
+          paintLayers: btnSelectedSkin,
+        ),
+        hoverAndSelectedSkin: CutOutRect(
+          size: iconButtonSize,
+          cut: bottomLeftCut,
+          paintLayers: btnHoverAndSelectedSkin,
         ),
         onSelectedChanged: (selected) {
           if (selected) {
@@ -56,37 +69,37 @@ class HudMapDeploy extends PositionComponent
             _clearShipButtons();
           }
         });
-    final crane = Sprite(game.images.fromCache("crane.png"));
-    _buildingDeploy = ToggleButtonComponent(
+    final more = TextComponent(text: "\u4408", textRenderer: icon36white);
+    _abilityToggle = ToggleButtonComponent(
         size: iconButtonSize,
-        position: Vector2(4, game.size.y - iconButtonSize.y * 2 - 8),
-        defaultSkin: RectangleComponent(
+        position: Vector2(8, game.size.y - iconButtonSize.y * 2 - 12),
+        defaultLabel: more,
+        defaultSelectedLabel: more,
+        defaultSkin: CutOutRect(
           size: iconButtonSize,
-          paintLayers: textButtonPaintLayer,
-          children: [
-            SpriteComponent(
-              anchor: Anchor.center,
-              sprite: crane,
-              position: iconButtonSize / 2,
-            ),
-          ],
+          cut: topRightCut,
+          paintLayers: btnDefaultSkin,
         ),
-        defaultSelectedSkin: RectangleComponent(
+        hoverSkin: CutOutRect(
           size: iconButtonSize,
-          paintLayers: textButtonSelectedSkin,
-          children: [
-            SpriteComponent(
-              anchor: Anchor.center,
-              sprite: crane,
-              position: iconButtonSize / 2,
-            ),
-          ],
+          cut: topRightCut,
+          paintLayers: btnHoverSkin,
+        ),
+        defaultSelectedSkin: CutOutRect(
+          size: iconButtonSize,
+          cut: topRightCut,
+          paintLayers: btnSelectedSkin,
+        ),
+        hoverAndSelectedSkin: CutOutRect(
+          size: iconButtonSize,
+          cut: topRightCut,
+          paintLayers: btnHoverAndSelectedSkin,
         ),
         onSelectedChanged: (selected) {
           if (selected) {
-            _renderBuildingButtons();
+            _renderAbilityButtons();
           } else {
-            _clearBuildingButtons();
+            _clearAbilityButtons();
           }
         });
     _clip = ClipComponent.rectangle(
@@ -102,7 +115,7 @@ class HudMapDeploy extends PositionComponent
 
     return addAll([
       _shipDeploy,
-      _buildingDeploy,
+      _abilityToggle,
       _clip,
     ]);
   }
@@ -116,7 +129,7 @@ class HudMapDeploy extends PositionComponent
   }
 
   void _renderShipButtons() {
-    _buildingDeploy.isSelected = false;
+    _abilityToggle.isSelected = false;
     _clearShipButtons();
 
     final playerState = game.controller.getHumanPlayerState();
@@ -125,7 +138,8 @@ class HudMapDeploy extends PositionComponent
     for (int i = 0; i < hulls.length; i++) {
       final hull = hulls[i];
       final button = AddShipButton(hull, (selectedHull) {
-        game.mapGrid.selectControl = SelectControlCreateShip(game, selectedHull);
+        game.mapGrid.selectControl =
+            SelectControlCreateShip(game, selectedHull);
       });
       button.position = Vector2(
         i * (AddShipButton.buttonSize.x + 4),
@@ -139,24 +153,27 @@ class HudMapDeploy extends PositionComponent
     _addContent(_shipButtons);
   }
 
-  void _renderBuildingButtons() {
+  void _renderAbilityButtons() {
     _shipDeploy.isSelected = false;
-    _clearBuildingButtons();
+    _clearAbilityButtons();
 
-    final playerNumber = game.controller.getHumanPlayerNumber();
-
-    for (int i = 0; i < Building.values.length; i++) {
-      final bd = Building.values[i];
-      final button = AddBuildingButton(bd, (building) {
-        game.mapGrid.selectControl = SelectControlAddBuilding(building, game);
-      });
-      button.isDisabled =
-          !game.resourceController.canAffordBuilding(playerNumber, bd);
-      button.position = Vector2((AddBuildingButton.buttonSize.x + 4) * i, 0);
-      _buildingButtons.add(button);
+    for (final abEntry in abilities.entries) {
+      final ab = abEntry.key;
+      final aa = abEntry.value;
+      final button = ActiveAbilityButton(
+        ab,
+        size: buttonSize,
+        defaultLabel: aa.getLabel(game),
+        defaultSkin: CutOutRect(size: buttonSize, paintLayers: btnDefaultSkin),
+        hoverSkin: CutOutRect(size: buttonSize, paintLayers: btnHoverSkin),
+        onPressed: () {
+          game.mapGrid.selectControl = SelectControlUseAbility(aa, game);
+        },
+      );
+      _abilityButtons.add(button);
     }
 
-    _addContent(_buildingButtons);
+    _addContent(_abilityButtons);
   }
 
   void _clearShipButtons() {
@@ -166,16 +183,16 @@ class HudMapDeploy extends PositionComponent
     _shipButtons.clear();
   }
 
-  void _clearBuildingButtons() {
-    for (final element in _buildingButtons) {
+  void _clearAbilityButtons() {
+    for (final element in _abilityButtons) {
       element.removeFromParent();
     }
-    _buildingButtons.clear();
+    _abilityButtons.clear();
   }
 
   void minimize() {
     _shipDeploy.isSelected = false;
-    _buildingDeploy.isSelected = false;
+    _abilityToggle.isSelected = false;
   }
 
   void _addContent(Iterable<Component> components) {
@@ -192,9 +209,8 @@ class HudMapDeploy extends PositionComponent
 
   void updateRender() {
     final playerNumber = game.controller.getHumanPlayerNumber();
-    for (final button in _buildingButtons) {
-      button.isDisabled = !game.resourceController
-          .canAffordBuilding(playerNumber, button.building);
+    if (_abilityToggle.isSelected) {
+      _renderAbilityButtons();
     }
     for (final button in _shipButtons) {
       button.isDisabled =
