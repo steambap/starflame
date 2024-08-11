@@ -8,11 +8,11 @@ class SimProps {
 }
 
 mixin SimObject {
-  final Map<Property, double> props = {};
+  final Map<Property, int> props = {};
 
-  double getProp(Property prop) => props[prop] ?? 0;
+  int getProp(Property prop) => props[prop] ?? 0;
 
-  void addProp(Property prop, double value) {
+  void addProp(Property prop, int value) {
     props.update(prop, (prev) => prev + value, ifAbsent: () => value);
   }
 }

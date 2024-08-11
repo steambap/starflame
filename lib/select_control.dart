@@ -143,12 +143,12 @@ class SelectControlPlanet extends SelectControlHex {
 
   @override
   void onStateEnter() {
-    // game.hudPlanet.planet = cell.sector;
+    game.sectorInfo.show(cell.sector);
   }
 
   @override
   void onStateExit() {
-    game.hudPlanet.planet = null;
+    game.sectorInfo.hide();
   }
 }
 

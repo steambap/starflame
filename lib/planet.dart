@@ -1,129 +1,114 @@
-import 'dart:async';
-import 'package:flame/components.dart';
-import 'package:flutter/foundation.dart' show ChangeNotifier;
+enum WorkerType {
+  economy,
+  mining,
+  lab,
+}
 
-// import 'player_state.dart';
-import 'scifi_game.dart';
-import "hex.dart";
-import "planet_type.dart";
-import "sim_props.dart";
-import "theme.dart" show text12, emptyPaint;
+enum PlanetType {
+  temperate,
+  hot,
+  cold,
+  gas,
+  orbital,
+}
 
-class Planet extends PositionComponent
-    with HasGameRef<ScifiGame>, ChangeNotifier, SimObject {
-  PlanetType type;
+class WorkerSlot {
+  static const output = 3;
 
-  /// 0 = small, 1 = medium, 2 = large
-  int planetSize;
-  int? playerNumber;
-  int defense = 0;
-  bool isUnderSiege = false;
-  bool homePlanet = false;
-  String displayName = "";
+  Set<WorkerType> allowedTypes;
+  WorkerType type;
+  bool isOccupied;
+  bool isAdvanced;
 
-  final Hex hex;
-  final Hex sector;
-  final TextComponent citizenLabel = TextComponent(
-      text: "",
-      position: Vector2(0, 36),
-      anchor: Anchor.center,
-      textRenderer: text12);
-  final CircleComponent ownerCircle =
-      CircleComponent(radius: 36, paint: emptyPaint, anchor: Anchor.center);
-  late final SpriteComponent planetSprite;
-  Planet(this.type, this.hex, this.sector, {this.planetSize = 1})
-      : super(anchor: Anchor.center);
+  WorkerSlot(this.allowedTypes,
+      {this.type = WorkerType.economy,
+      this.isOccupied = false,
+      this.isAdvanced = false});
+}
 
-  @override
-  FutureOr<void> onLoad() {
-    final img = game.images.fromCache(type.image);
-    final double xPos = switch (planetSize) {
-      0 => 0,
-      1 => 72,
-      _ => 144,
-    };
-    final srcPos = Vector2(xPos, 0);
-    final sprite = Sprite(img, srcPosition: srcPos, srcSize: Vector2.all(72));
-    planetSprite = SpriteComponent(sprite: sprite, anchor: Anchor.center);
+class Planet {
+  final List<WorkerSlot> workerSlots;
+  final PlanetType type;
+  final bool isUnique;
+  String name = "";
 
-    addAll([planetSprite, ownerCircle, citizenLabel]);
+  Planet(this.type, this.workerSlots, {this.isUnique = false});
 
-    refreshProps();
+  factory Planet.economy11() {
+    return Planet(PlanetType.temperate, [
+      WorkerSlot({WorkerType.economy}),
+      WorkerSlot({WorkerType.economy}, isAdvanced: true),
+    ]);
   }
 
-  void setHomePlanet(int playerNumber) {
-    this.playerNumber = playerNumber;
-    type = PlanetType.terran;
-    planetSize = 1;
-    homePlanet = true;
-
-    defense = defenseMax();
+  factory Planet.economy10() {
+    return Planet(PlanetType.temperate, [
+      WorkerSlot({WorkerType.economy}),
+    ]);
   }
 
-  bool colonize(int playerNumber) {
-    defense = defenseMax();
-    this.playerNumber = playerNumber;
-
-    return false;
+  factory Planet.economy01() {
+    return Planet(PlanetType.temperate, [
+      WorkerSlot({WorkerType.economy}, isAdvanced: true),
+    ]);
   }
 
-  void phaseUpdate(int playerNumber) {
-    if (this.playerNumber != playerNumber) {
-      return;
-    }
-
-    if (!isUnderSiege) {
-      defense = (defense + 20).clamp(0, defenseMax());
-    }
+  factory Planet.mining11() {
+    return Planet(PlanetType.hot, [
+      WorkerSlot({WorkerType.mining}, type: WorkerType.mining),
+      WorkerSlot({WorkerType.mining},
+          type: WorkerType.mining, isAdvanced: true),
+    ]);
   }
 
-  int defenseMax() {
-    return 100;
+  factory Planet.mining10() {
+    return Planet(PlanetType.hot, [
+      WorkerSlot({WorkerType.mining}, type: WorkerType.mining),
+    ]);
   }
 
-  int maxBuilding() {
-    int num = homePlanet ? 1 : 0;
-    return planetSize + 4 + num;
+  factory Planet.mining01() {
+    return Planet(PlanetType.hot, [
+      WorkerSlot({WorkerType.mining},
+          type: WorkerType.mining, isAdvanced: true),
+    ]);
   }
 
-  bool attackable(int playerNumber) {
-    if (this.playerNumber == null) {
-      return false;
-    }
-    return this.playerNumber != playerNumber;
+  factory Planet.lab11() {
+    return Planet(PlanetType.cold, [
+      WorkerSlot({WorkerType.lab}, type: WorkerType.lab),
+      WorkerSlot({WorkerType.lab}, type: WorkerType.lab, isAdvanced: true),
+    ]);
   }
 
-  bool neutral() {
-    return playerNumber == null;
+  factory Planet.lab10() {
+    return Planet(PlanetType.cold, [
+      WorkerSlot({WorkerType.lab}, type: WorkerType.lab),
+    ]);
   }
 
-  String planetSizeStr() {
-    return switch (planetSize) {
-      0 => "Small",
-      1 => "Medium",
-      _ => "Large",
-    };
+  factory Planet.lab01() {
+    return Planet(PlanetType.cold, [
+      WorkerSlot({WorkerType.lab}, type: WorkerType.lab, isAdvanced: true),
+    ]);
   }
 
-  void refreshProps() {
-    props.clear();
-    addProp(SimProps.maintainceCost, homePlanet ? 0 : 2);
-    addProp(SimProps.production, type.production.toDouble());
-    addProp(SimProps.credit, (type.credit + type.food).toDouble());
-    addProp(SimProps.science, type.science.toDouble());
+  factory Planet.gas10() {
+    return Planet(PlanetType.gas, [
+      WorkerSlot({WorkerType.economy, WorkerType.mining, WorkerType.lab}),
+    ]);
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      "type": type.name,
-      "planetSize": planetSize,
-      if (playerNumber != null) "playerNumber": playerNumber,
-      "defense": defense,
-      "isUnderSiege": isUnderSiege,
-      "homePlanet": homePlanet,
-      "displayName": displayName,
-      "hex": hex.toInt(),
-      "sector": sector.toInt(),
-    };
+  factory Planet.gas01() {
+    return Planet(PlanetType.gas, [
+      WorkerSlot({WorkerType.economy, WorkerType.mining, WorkerType.lab},
+          isAdvanced: true),
+    ]);
+  }
+
+  factory Planet.orbital() {
+    return Planet(PlanetType.orbital, [
+      WorkerSlot({WorkerType.economy, WorkerType.lab}),
+    ]);
   }
 }

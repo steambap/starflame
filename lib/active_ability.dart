@@ -8,6 +8,7 @@ import 'theme.dart' show label12, icon16blue;
 enum Ability {
   explore,
   expand,
+  reclaim,
 }
 
 abstract class ActiveAbility {
@@ -22,6 +23,7 @@ class Expand extends ActiveAbility {
   void activate(ScifiGame game, Cell? cell) {
     final playerNumber = game.controller.getHumanPlayerNumber();
     cell?.sector?.colonize(playerNumber);
+    game.playerInfo.updateRender();
   }
 
   @override
@@ -45,7 +47,41 @@ class Expand extends ActiveAbility {
           textRenderer: icon16blue,
         ),
         TextComponent(
-          text: "INF",
+          text: "Colonize",
+          textRenderer: label12,
+        ),
+      ],
+    );
+  }
+}
+
+class Explore extends ActiveAbility {
+  @override
+  void activate(ScifiGame game, Cell? cell) {
+    print("explore hex");
+  }
+
+  @override
+  Iterable<Cell> getTargetCells(ScifiGame game) {
+    return [];
+  }
+
+  @override
+  bool isShow(ScifiGame game) {
+    return true;
+  }
+
+  @override
+  PositionComponent getLabel(ScifiGame game) {
+    return RowContainer(
+      anchor: Anchor.center,
+      children: [
+        TextComponent(
+          text: "\u4696",
+          textRenderer: icon16blue,
+        ),
+        TextComponent(
+          text: "Explore",
           textRenderer: label12,
         ),
       ],
@@ -54,5 +90,6 @@ class Expand extends ActiveAbility {
 }
 
 final abilities = {
+  Ability.explore: Explore(),
   Ability.expand: Expand(),
 };

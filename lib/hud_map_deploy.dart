@@ -157,9 +157,14 @@ class HudMapDeploy extends PositionComponent
     _shipDeploy.isSelected = false;
     _clearAbilityButtons();
 
+    int i = 0;
     for (final abEntry in abilities.entries) {
       final ab = abEntry.key;
       final aa = abEntry.value;
+      if (aa.isShow(game) == false) {
+        continue;
+      }
+
       final button = ActiveAbilityButton(
         ab,
         size: buttonSize,
@@ -170,7 +175,9 @@ class HudMapDeploy extends PositionComponent
           game.mapGrid.selectControl = SelectControlUseAbility(aa, game);
         },
       );
+      button.position.x = i * (buttonSize.x + 8);
       _abilityButtons.add(button);
+      i++;
     }
 
     _addContent(_abilityButtons);

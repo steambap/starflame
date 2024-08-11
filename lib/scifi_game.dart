@@ -10,7 +10,7 @@ import 'map_grid.dart';
 import "game_settings.dart";
 import "resource_controller.dart";
 import 'hud_ship_cmd.dart';
-import "hud_planet.dart";
+import "hud_sector_info.dart";
 import "start_page.dart";
 import 'hud_page.dart';
 import "ai/ai_controller.dart";
@@ -28,7 +28,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
   late final CombatResolver combatResolver = CombatResolver(this);
   final HudPlayerInfo playerInfo = HudPlayerInfo();
   final HudNextTurnBtn nextTurnBtn = HudNextTurnBtn();
-  final HudPlanet hudPlanet = HudPlanet();
+  final HudSectorInfo sectorInfo = HudSectorInfo();
   final HudMapDeploy hudMapDeploy = HudMapDeploy();
   final HudShipCommand shipCommand = HudShipCommand();
   final HudPage hud = HudPage();
@@ -54,7 +54,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await hud.addAll([
       playerInfo,
       nextTurnBtn,
-      hudPlanet,
+      sectorInfo,
       shipCommand,
       hudMapDeploy,
     ]);

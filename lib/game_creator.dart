@@ -1,14 +1,13 @@
 import "dart:math";
 import "package:flutter/material.dart" show Colors;
 
-// import "planet.dart";
+import "planet.dart";
 import "hex.dart";
 import "cell.dart";
 import "sector.dart";
 import "game_settings.dart";
 import "player_state.dart";
 import "tile_type.dart";
-import "planet_type.dart";
 import "empire.dart";
 import "data/name.dart";
 
@@ -28,7 +27,6 @@ List<Hex> generateHexMap(int qMax) {
 class GameCreator {
   late GameSettings gameSettings;
   late Random rand;
-  late final int _weight = _getTotalWeight();
 
   final List<Cell> cells = [];
   final List<Sector> sectors = [];
@@ -64,18 +62,10 @@ class GameCreator {
     }
   }
 
-  int _createPlanets(Cell cell) {
-    final size = rand.nextInt(3);
-
-    final sector = Sector(cell.hex);
+  void _createPlanets(Cell cell) {
+    final sector = Sector(cell.hex, planets: [Planet.economy10()]);
     sectors.add(sector);
     cell.sector = sector;
-    // final s =
-    //     Planet(_getRandPlanet(rand), cell.hex, cell.sector, planetSize: size);
-    // cell.planet = s;
-    // planets.add(s);
-
-    return size + 3;
   }
 
   void _createTile(Cell cell) {
@@ -99,7 +89,7 @@ class GameCreator {
     for (int i = 0; i < gameSettings.players.length; i++) {
       final player = gameSettings.players[i];
       final hex = homes.elementAt(i);
-      final sector = Sector(hex);
+      final sector = Sector(hex, planets: [Planet.economy11(), Planet.mining10(), Planet.lab11()]);
       sectors.add(sector);
       sector.setHome(player.playerNumber);
       final cell = cells.firstWhere((c) => c.hex == hex);
@@ -120,33 +110,6 @@ class GameCreator {
     };
 
     return ret;
-  }
-
-  PlanetType _getRandPlanet(Random? random) {
-    final rand = random ?? Random();
-
-    final num = rand.nextInt(_weight);
-    int sum = 0;
-    for (final type in PlanetType.values) {
-      if (type.weight == 0) {
-        continue;
-      }
-      sum += type.weight;
-      if (num <= sum) {
-        return type;
-      }
-    }
-
-    return PlanetType.terran;
-  }
-
-  int _getTotalWeight() {
-    int sum = 0;
-    for (final type in PlanetType.values) {
-      sum += type.weight;
-    }
-
-    return sum;
   }
 
   void _prepareNames() {
