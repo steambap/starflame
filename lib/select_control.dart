@@ -28,6 +28,12 @@ class SelectControlWaitForInput extends SelectControl {
 
   @override
   void onCellClick(Cell cell) {
+    final pState = game.controller.getHumanPlayerState();
+    final vision = pState.vision;
+    if (!vision.contains(cell.hex)) {
+      return;
+    }
+
     if (cell.ship != null) {
       game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
     } else if (cell.sector != null) {
@@ -225,6 +231,7 @@ class SelectControlUseAbility extends SelectControl {
       aa.activate(game, cell);
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
+    game.hudMapDeploy.updateRender();
   }
 
   @override

@@ -26,6 +26,9 @@ class ScifiWorld extends World
 
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    if (keysPressed.contains(LogicalKeyboardKey.keyF)) {
+      game.mapGrid.removeFog();
+    }
     direction = Vector2.zero();
     direction.x += (keysPressed.contains(LogicalKeyboardKey.keyA) ||
             keysPressed.contains(LogicalKeyboardKey.arrowLeft))

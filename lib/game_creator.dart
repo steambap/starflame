@@ -89,6 +89,7 @@ class GameCreator {
     for (int i = 0; i < gameSettings.players.length; i++) {
       final player = gameSettings.players[i];
       final hex = homes.elementAt(i);
+      player.vision.add(hex);
       final sector = Sector(hex, planets: [Planet.economy11(), Planet.mining10(), Planet.lab11()]);
       sectors.add(sector);
       sector.setHome(player.playerNumber);

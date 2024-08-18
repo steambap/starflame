@@ -4,6 +4,7 @@ import "package:flutter/foundation.dart" show ChangeNotifier;
 import "resource.dart";
 import "ship_hull.dart";
 import "empire.dart";
+import "hex.dart";
 
 class PlayerState with ChangeNotifier {
   static const double foodMax = 50;
@@ -18,12 +19,19 @@ class PlayerState with ChangeNotifier {
   int production = 0;
   int credit = 0;
   int science = 0;
+  // Status
+  int transport = 0;
+  int maxTransport = 3;
+  int probe = 0;
+  int maxProbe = 2;
   final List<ShipHull> hulls = [];
+  final Set<Hex> vision = {};
 
   PlayerState(this.playerNumber, this.isAI);
 
   void init() {
     hulls.addAll(empire.startingHulls);
+    refreshStatus();
   }
 
   void addResource(Resources resource) {
@@ -32,5 +40,11 @@ class PlayerState with ChangeNotifier {
     science += resource.science;
 
     notifyListeners();
+  }
+
+  // Refresh status like probes or transports
+  void refreshStatus() {
+    transport = maxTransport;
+    probe = maxProbe;
   }
 }

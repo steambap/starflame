@@ -26,6 +26,7 @@ class HudNextTurnBtn extends AdvancedButtonComponent
       if (game.controller.isAITurn()) {
         return;
       }
+      game.hudMapDeploy.minimize();
       game.controller.endTurn();
     };
 

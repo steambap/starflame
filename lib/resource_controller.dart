@@ -15,6 +15,7 @@ class ResourceController {
 
     final income = playerIncome(playerState);
     playerState.addResource(income);
+    playerState.refreshStatus();
   }
 
   Resources playerIncome(PlayerState state) {
@@ -64,5 +65,44 @@ class ResourceController {
     game.mapGrid.createShipAt(cell, playerNumber, hull);
 
     return true;
+  }
+
+  bool canColonize(int playerNumber) {
+    final pState = game.controller.getPlayerState(playerNumber);
+
+    return pState.transport > 0;
+  }
+
+  void colonize(int playerNumber, Cell cell) {
+    if (!canColonize(playerNumber) || cell.sector == null) {
+      return;
+    }
+
+    final playerState = game.controller.getPlayerState(playerNumber);
+    playerState.transport -= 1;
+    cell.sector?.colonize(playerNumber);
+    if (game.controller.getHumanPlayerNumber() == playerNumber) {
+      game.playerInfo.updateRender();
+    }
+  }
+
+  bool canExplore(int playerNumber) {
+    final pState = game.controller.getPlayerState(playerNumber);
+
+    return pState.probe > 0;
+  }
+
+  void explore(int playerNumber, Cell cell) {
+    if (!canExplore(playerNumber)) {
+      return;
+    }
+
+    final playerState = game.controller.getPlayerState(playerNumber);
+    playerState.probe -= 1;
+    playerState.vision.add(cell.hex);
+
+    if (game.controller.getHumanPlayerNumber() == playerNumber) {
+      cell.reveal();
+    }
   }
 }

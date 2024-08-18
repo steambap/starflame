@@ -66,6 +66,7 @@ class GameStateController {
     } else {
       // TODO auto save
       game.mapGrid.unSelect();
+      game.mapGrid.updateCellVisibility(currentPlayerState().vision);
       _checkForVictory();
     }
   }

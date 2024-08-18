@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart' show ChangeNotifier;
 import "hex.dart";
 import "sim_props.dart";
 import 'scifi_game.dart';
+import "player_state.dart";
 import "planet.dart";
 import "theme.dart" show label12, emptyPaint;
 
@@ -154,5 +155,27 @@ class Sector extends PositionComponent
 
   Iterable<WorkerSlot> workerSlots() {
     return planets.expand((p) => p.workerSlots);
+  }
+
+  bool placeWorker(PlayerState pState, int slotNumber, WorkerType type) {
+    final slots = workerSlots();
+    if (slotNumber < 0 || slotNumber >= slots.length) {
+      return false;
+    }
+    final slot = slots.elementAt(slotNumber);
+    if (slot.allowedTypes.contains(type) == false) {
+      return false;
+    }
+    if (slot.isOccupied) {
+      return false;
+    }
+    if (slot.isAdvanced) {
+      return false;
+    }
+
+    slot.isOccupied = true;
+    slot.type = type;
+    refreshProps();
+    return true;
   }
 }

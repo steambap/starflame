@@ -111,3 +111,5 @@ final btnSelectedBorder = Paint()
   ..strokeWidth = 2;
 final btnSelectedSkin = [btnDefault, btnSelectedBorder];
 final btnHoverAndSelectedSkin = [btnHover, btnSelectedBorder];
+
+final blackPaint = Paint()..color = Colors.black;

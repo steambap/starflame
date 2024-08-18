@@ -21,20 +21,28 @@ abstract class ActiveAbility {
 class Expand extends ActiveAbility {
   @override
   void activate(ScifiGame game, Cell? cell) {
-    final playerNumber = game.controller.getHumanPlayerNumber();
-    cell?.sector?.colonize(playerNumber);
-    game.playerInfo.updateRender();
+    if (cell != null) {
+      game.resourceController
+          .colonize(game.controller.getHumanPlayerNumber(), cell);
+    }
   }
 
   @override
   Iterable<Cell> getTargetCells(ScifiGame game) {
-    return game.mapGrid.cells
-        .where((cell) => cell.sector?.neutral() ?? false);
+    final pState = game.controller.getHumanPlayerState();
+    final vision = pState.vision;
+    return game.mapGrid.cells.where((cell) {
+      if (!vision.contains(cell.hex)) {
+        return false;
+      }
+      return cell.sector?.neutral() ?? false;
+    });
   }
 
   @override
   bool isShow(ScifiGame game) {
-    return true;
+    return game.resourceController
+        .canColonize(game.controller.getHumanPlayerNumber());
   }
 
   @override
@@ -58,17 +66,43 @@ class Expand extends ActiveAbility {
 class Explore extends ActiveAbility {
   @override
   void activate(ScifiGame game, Cell? cell) {
-    print("explore hex");
+    if (cell != null) {
+      game.resourceController
+          .explore(game.controller.getHumanPlayerNumber(), cell);
+    }
   }
 
   @override
   Iterable<Cell> getTargetCells(ScifiGame game) {
-    return [];
+    final pState = game.controller.getHumanPlayerState();
+    final vision = pState.vision;
+    final Set<Cell> result = {};
+
+    loopMap:
+    for (final cell in game.mapGrid.cells) {
+      if (vision.contains(cell.hex)) {
+        continue loopMap;
+      }
+      // cell is not visible, check if it is in range
+      final ns = cell.hex.getNeighbours();
+      for (final n in ns) {
+        final nCell = game.mapGrid.cellAtHex(n);
+        if (nCell != null) {
+          if (vision.contains(nCell.hex)) {
+            result.add(cell);
+            continue loopMap;
+          }
+        }
+      }
+    }
+
+    return result;
   }
 
   @override
   bool isShow(ScifiGame game) {
-    return true;
+    return game.resourceController
+        .canExplore(game.controller.getHumanPlayerNumber());
   }
 
   @override

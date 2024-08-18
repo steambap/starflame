@@ -14,7 +14,6 @@ import "pathfinding.dart";
 import "hex.dart";
 import "select_control.dart";
 import "sector.dart";
-import "tile_type.dart";
 import "theme.dart" show hexBorderPaint;
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
@@ -33,9 +32,6 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
   /// Hex to cell index
   final Map<int, int> _hexTable = {};
-  late final Sprite nebula;
-  late final List<Sprite> asteroids;
-  late final Sprite gravityRift;
 
   List<Sector> sectors = [];
   Pathfinding pathfinding = Pathfinding({});
@@ -43,27 +39,19 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   final Map<int, List<Ship>> shipMap = {};
   late SelectControl _selectControl;
 
+  late final corners = Hex.zero
+        .polygonCorners()
+        .map((e) => e.toOffset())
+        .toList(growable: false);
+
   @override
   FutureOr<void> onLoad() {
     _selectControl = SelectControlWaitForInput(game);
-    nebula = Sprite(game.images.fromCache("nebula.png"));
-    gravityRift = Sprite(game.images.fromCache("gravity_rift.png"));
-    final asteroidImg = game.images.fromCache("asteroid.png");
-    asteroids = [
-      Sprite(asteroidImg, srcPosition: Vector2(0, 0), srcSize: tileSize),
-      Sprite(asteroidImg, srcPosition: Vector2(72, 0), srcSize: tileSize),
-      Sprite(asteroidImg, srcPosition: Vector2(144, 0), srcSize: tileSize),
-    ];
   }
 
   // Draw all hexagons in one go
   @override
   void render(Canvas canvas) {
-    final corners = Hex.zero
-        .polygonCorners()
-        .map((e) => e.toOffset())
-        .toList(growable: false);
-
     for (final cell in cells) {
       canvas.save();
       canvas.translate(cell.position.x, cell.position.y);
@@ -72,16 +60,6 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       for (int i = 0; i < ns.length; i++) {
         canvas.drawLine(
             corners[(11 - i) % 6], corners[(12 - i) % 6], hexBorderPaint);
-      }
-      // draw tile
-      final t = cell.tileType;
-      if (t == TileType.gravityRift) {
-        gravityRift.render(canvas, size: tileSize, anchor: Anchor.center);
-      } else if (t == TileType.nebula) {
-        nebula.render(canvas, size: tileSize, anchor: Anchor.center);
-      } else if (t == TileType.asteroidField) {
-        final index = cell.hex.q % 3;
-        asteroids[index].render(canvas, size: tileSize, anchor: Anchor.center);
       }
 
       canvas.restore();
@@ -129,14 +107,18 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     _selectControl.onCellClick(cell);
   }
 
-  Cell? cellAtPosition(Vector2 localPosition) {
-    final hex = _pixelToHex(localPosition);
-
+  Cell? cellAtHex(Hex hex) {
     final cellIndex = _hexTable[hex.toInt()] ?? -1;
     if (cellIndex < 0) {
       return null;
     }
     return cells[cellIndex];
+  }
+
+  Cell? cellAtPosition(Vector2 localPosition) {
+    final hex = _pixelToHex(localPosition);
+
+    return cellAtHex(hex);
   }
 
   void initHexTable() {
@@ -324,6 +306,22 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   void removeShip(Ship ship) {
     shipListAll.remove(ship);
     shipMap[ship.state.playerNumber]!.remove(ship);
+  }
+
+  void updateCellVisibility(Set<Hex> vision) {
+    for (final cell in cells) {
+      if (vision.contains(cell.hex)) {
+        cell.hideFog();
+      } else {
+        cell.showFog();
+      }
+    }
+  }
+
+  void removeFog() {
+    for (final cell in cells) {
+      cell.hideFog();
+    }
   }
 
   Map<String, dynamic> toJson() {
