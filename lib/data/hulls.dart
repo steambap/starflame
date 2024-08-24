@@ -26,7 +26,7 @@ final List<ShipHull> hulls = [
     image: 'ships/carrier.png',
   ),
   ShipHull(
-    movement: 50,
+    movement: 20,
     strength: 15,
     type: ShipType.raider,
     cost: 3,

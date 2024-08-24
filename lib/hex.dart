@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart' show immutable;
 
 @immutable
 class Hex {
-  static const double size = 72;
+  static const double size = 36;
   static Hex zero = Hex(0, 0, 0);
   static List<Hex> directions = [
     Hex(1, 0, -1), // E 0-5
@@ -68,6 +68,14 @@ class Hex {
       }
     }
 
+    return results;
+  }
+
+  List<Hex> cubeSpiral(int radius) {
+    final List<Hex> results = [this];
+    for (int k = 1; k <= radius; k++) {
+      results.addAll(cubeRing(k));
+    }
     return results;
   }
 

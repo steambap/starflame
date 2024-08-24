@@ -22,8 +22,8 @@ class Sector extends PositionComponent
   final Hex hex;
   final TextComponent nameLabel = TextComponent(
       text: "",
-      position: Vector2(60, -20),
-      anchor: Anchor.centerRight,
+      position: Vector2(0, 10),
+      anchor: Anchor.center,
       textRenderer: label12);
   final PolygonComponent ownerHex = PolygonComponent(
       Hex.zero.polygonCorners(Hex.size - 0.5),
@@ -60,7 +60,7 @@ class Sector extends PositionComponent
         _ => economySprite,
       };
       final planetSprite = SpriteComponent(
-          sprite: sprite, anchor: Anchor.center, position: position);
+          sprite: sprite, anchor: Anchor.center, position: position, scale: Vector2.all(0.5));
       planetSprites.add(planetSprite);
     }
 

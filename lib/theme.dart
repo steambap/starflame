@@ -39,8 +39,8 @@ final buttonGreenHoverBorder = Paint()
 
 final dialogBackground = Paint()..color = Colors.black87;
 
-final panelBackground = Paint()..color = Colors.grey.shade900;
-final panelBar = Paint()..color = Colors.grey.shade800;
+final panelBackground = Paint()..color = const Color(0xFF222222);
+final panelBottomBorder = Paint()..color = const Color(0xFF333333)..strokeWidth = 1;
 
 final textBox = Paint()..color = Colors.blueGrey.shade900;
 final textBoxBorder = Paint()
@@ -74,6 +74,7 @@ const blue = Color(0xFF02D7F2);
 const darkBlue = Color(0xFF001417);
 const darkBlueHover = Color(0xFF002A30);
 const yellow = Color(0xFFFFEE08);
+const darkYellow = Color(0xFFd8d800);
 const orange = Color(0xFFCB6002);
 
 final label12 = TextPaint(
@@ -85,15 +86,18 @@ final label16 = TextPaint(
 final heading24 = TextPaint(
     style: const TextStyle(
         color: Colors.white, fontSize: 24, fontFamily: "Chakra"));
+final heading20black = TextPaint(
+    style: const TextStyle(
+        color: Colors.black, fontSize: 20, fontFamily: "Chakra"));
 final icon16orange = TextPaint(
     style: const TextStyle(color: orange, fontSize: 16, fontFamily: "Icon"));
 final icon16yellow = TextPaint(
     style: const TextStyle(color: yellow, fontSize: 16, fontFamily: "Icon"));
 final icon16blue = TextPaint(
     style: const TextStyle(color: blue, fontSize: 16, fontFamily: "Icon"));
-final icon36white = TextPaint(
+final icon16white = TextPaint(
     style:
-        const TextStyle(color: Colors.white, fontSize: 36, fontFamily: "Icon"));
+        const TextStyle(color: Colors.white, fontSize: 16, fontFamily: "Icon"));
 
 final btnDefault = Paint()..color = darkBlue;
 final btnDefaultBorder = Paint()
@@ -105,6 +109,9 @@ final btnDefaultSkin = [btnDefault, btnDefaultBorder];
 final btnHover = Paint()..color = darkBlueHover;
 final btnHoverSkin = [btnHover, btnDefaultBorder];
 
+final primaryBtnSkin = Paint()..color = yellow;
+final primaryBtnHover = Paint()..color = darkYellow;
+
 final btnSelectedBorder = Paint()
   ..style = PaintingStyle.stroke
   ..color = Colors.white
@@ -112,4 +119,4 @@ final btnSelectedBorder = Paint()
 final btnSelectedSkin = [btnDefault, btnSelectedBorder];
 final btnHoverAndSelectedSkin = [btnHover, btnSelectedBorder];
 
-final blackPaint = Paint()..color = Colors.black;
+final fogPaint = Paint()..color = darkBlue;

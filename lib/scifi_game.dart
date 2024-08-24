@@ -2,7 +2,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 
 import "scifi_world.dart";
-import 'hud_next_turn_btn.dart';
+import 'hud_bottom_right.dart';
 import 'hud_player_info.dart';
 import 'game_state_controller.dart';
 import 'game_creator.dart';
@@ -16,6 +16,7 @@ import 'hud_page.dart';
 import "ai/ai_controller.dart";
 import "combat_resolver.dart";
 import "hud_map_deploy.dart";
+import "animation_pool.dart";
 
 class ScifiGame extends FlameGame<ScifiWorld>
     with HasKeyboardHandlerComponents {
@@ -26,8 +27,9 @@ class ScifiGame extends FlameGame<ScifiWorld>
   late final ResourceController resourceController;
   late final AIController aiController;
   late final CombatResolver combatResolver = CombatResolver(this);
+  late final AnimationPool animationPool = AnimationPool(this);
   final HudPlayerInfo playerInfo = HudPlayerInfo();
-  final HudNextTurnBtn nextTurnBtn = HudNextTurnBtn();
+  final HudBottomRight bottomRight = HudBottomRight();
   final HudSectorInfo sectorInfo = HudSectorInfo();
   final HudMapDeploy hudMapDeploy = HudMapDeploy();
   final HudShipCommand shipCommand = HudShipCommand();
@@ -53,7 +55,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await world.add(mapGrid);
     await hud.addAll([
       playerInfo,
-      nextTurnBtn,
+      bottomRight,
       sectorInfo,
       shipCommand,
       hudMapDeploy,
@@ -61,14 +63,14 @@ class ScifiGame extends FlameGame<ScifiWorld>
     camera.viewport.add(router);
   }
 
-  void startTestGame() {
+  void startTestGame() async {
     final s = GameSettings(0);
     currentGameSettings = s;
     s.players = gameCreator.getTestPlayers(s);
     gameCreator.create(s);
 
     controller.initGame(s.players);
-    mapGrid.initMap(gameCreator);
+    await mapGrid.initMap(gameCreator);
     controller.startGame();
   }
 }

@@ -7,6 +7,7 @@ import "package:flutter/foundation.dart" show ChangeNotifier;
 
 import 'scifi_game.dart';
 import "cell.dart";
+import "hex.dart";
 import "theme.dart";
 import "ship_state.dart";
 import "ship_hull.dart";
@@ -55,22 +56,13 @@ class Ship extends PositionComponent
     resetAllActions();
   }
 
-  FutureOr<void> moveAnim(Cell cell, List<Cell> fromCells) {
-    final moveEffectList = fromCells.reversed
-        .map((e) => MoveToEffect(e.position, EffectController(duration: 0.1)));
+  onStartMove() {
     _engineEffect.add(OpacityEffect.fadeIn(EffectController(duration: 0.15)));
-    return add(SequenceEffect([
-      ...moveEffectList,
-    ])
-      ..onComplete = () {
-        _engineEffect
-            .add(OpacityEffect.fadeOut(EffectController(duration: 0.15)));
-        final moveCost = fromCells.fold(0, (previousValue, element) {
-          return previousValue + element.tileType.cost;
-        });
-        useMove(moveCost);
-        _maybeSelectAgain();
-      });
+  }
+
+  onEndMove() {
+    _engineEffect.add(OpacityEffect.fadeOut(EffectController(duration: 0.15)));
+    _maybeSelectAgain();
   }
 
   void useMove(int num) {
@@ -174,6 +166,14 @@ class Ship extends PositionComponent
         orElse: () => state.actions.first);
     action.cooldown += cd;
     notifyListeners();
+  }
+
+  List<Hex> vision() {
+    return cell.hex.cubeSpiral(visionRange());
+  }
+
+  int visionRange() {
+    return hull.movement ~/ TileType.empty.cost;
   }
 
   ActionState? getActionState(ActionType type) {

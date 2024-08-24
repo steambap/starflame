@@ -3,6 +3,7 @@ import "dart:math";
 
 import 'package:flame/components.dart';
 import "package:flame/events.dart";
+import "package:flame/effects.dart";
 import 'package:flame/extensions.dart';
 
 import 'game_creator.dart';
@@ -11,6 +12,7 @@ import "ship_hull.dart";
 import 'scifi_game.dart';
 import 'cell.dart';
 import "pathfinding.dart";
+import "player_state.dart";
 import "hex.dart";
 import "select_control.dart";
 import "sector.dart";
@@ -40,9 +42,9 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   late SelectControl _selectControl;
 
   late final corners = Hex.zero
-        .polygonCorners()
-        .map((e) => e.toOffset())
-        .toList(growable: false);
+      .polygonCorners()
+      .map((e) => e.toOffset())
+      .toList(growable: false);
 
   @override
   FutureOr<void> onLoad() {
@@ -148,7 +150,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       }
       // spawn a scout
       final scoutHull = p.hulls[0];
-      spawnShipAt(capitalCell, p.playerNumber, scoutHull);
+      await spawnShipAt(capitalCell, p.playerNumber, scoutHull);
     }
 
     selectControl = SelectControlWaitForInput(game);
@@ -176,11 +178,16 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     return edges;
   }
 
-  moveShip(Ship ship, Cell cell) {
+  _moveShipHex(Ship ship, Cell cell) {
     final prevCell = ship.cell;
     prevCell.ship = null;
 
     ship.cell = cell;
+    cell.ship = ship;
+  }
+
+  moveShip(Ship ship, Cell cell) {
+    _moveShipHex(ship, cell);
     List<Cell> fromCells = List.empty();
     if (_selectControl is SelectControlCellSelected) {
       final paths = (_selectControl as SelectControlCellSelected).paths;
@@ -188,8 +195,29 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
         fromCells = paths[cell]!;
       }
     }
-    ship.moveAnim(cell, fromCells);
-    cell.ship = ship;
+    final moveCost = fromCells.fold(0, (previousValue, element) {
+      return previousValue + element.tileType.cost;
+    });
+    ship.useMove(moveCost);
+    // add move animation to pool
+    ship.onStartMove();
+    for (final e in fromCells.reversed) {
+      game.animationPool.add(() {
+        final effect = MoveToEffect(e.position, EffectController(duration: 0.1));
+        ship.add(effect);
+        final hexes = e.hex.cubeSpiral(ship.visionRange());
+        for (final hex in hexes) {
+          final cell = cellAtHex(hex);
+          if (cell != null) {
+            cell.reveal();
+            game.controller.getHumanPlayerState().vision.add(cell.hex);
+          }
+        }
+      }, 100);
+    }
+    game.animationPool.add(() {
+      ship.onEndMove();
+    }, 100);
   }
 
   Future<void> spawnShipAt(Cell cell, int playerNumber, ShipHull hull) async {
@@ -308,7 +336,16 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     shipMap[ship.state.playerNumber]!.remove(ship);
   }
 
-  void updateCellVisibility(Set<Hex> vision) {
+  void updateCellVisibility(PlayerState pState) {
+    final playerNumber = pState.playerNumber;
+    final vision = pState.vision;
+    if (vision.length == cells.length) {
+      return;
+    }
+    // Ships may have larger vision on the start of a turn due to upgrades
+    for (final ship in shipMap[playerNumber] ?? List<Ship>.empty()) {
+      vision.addAll(ship.vision());
+    }
     for (final cell in cells) {
       if (vision.contains(cell.hex)) {
         cell.hideFog();

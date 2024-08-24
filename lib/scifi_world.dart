@@ -29,6 +29,9 @@ class ScifiWorld extends World
     if (keysPressed.contains(LogicalKeyboardKey.keyF)) {
       game.mapGrid.removeFog();
     }
+    if (keysPressed.contains(LogicalKeyboardKey.enter)) {
+      game.controller.playerEndTurn();
+    }
     direction = Vector2.zero();
     direction.x += (keysPressed.contains(LogicalKeyboardKey.keyA) ||
             keysPressed.contains(LogicalKeyboardKey.arrowLeft))

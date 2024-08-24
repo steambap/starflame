@@ -5,7 +5,6 @@ import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
 import 'ship_hull.dart';
-import "active_ability.dart";
 
 sealed class SelectControl {
   final ScifiGame game;
@@ -29,8 +28,7 @@ class SelectControlWaitForInput extends SelectControl {
   @override
   void onCellClick(Cell cell) {
     final pState = game.controller.getHumanPlayerState();
-    final vision = pState.vision;
-    if (!vision.contains(cell.hex)) {
+    if (!pState.vision.contains(cell.hex)) {
       return;
     }
 
@@ -48,6 +46,11 @@ class SelectControlHex extends SelectControl {
 
   @override
   void onCellClick(Cell cell) {
+    final pState = game.controller.getHumanPlayerState();
+    if (!pState.vision.contains(cell.hex)) {
+      return;
+    }
+
     if (cell.ship != null) {
       game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
     } else if (cell.sector != null) {
@@ -215,37 +218,6 @@ class SelectControlWaitForAction extends SelectControl {
   @override
   void onStateExit() {
     for (final cell in targets) {
-      cell.unmark();
-    }
-  }
-}
-
-class SelectControlUseAbility extends SelectControl {
-  final Set<Cell> cells = {};
-  final ActiveAbility aa;
-  SelectControlUseAbility(this.aa, super.game);
-
-  @override
-  void onCellClick(Cell cell) {
-    if (cells.contains(cell)) {
-      aa.activate(game, cell);
-    }
-    game.mapGrid.selectControl = SelectControlWaitForInput(game);
-    game.hudMapDeploy.updateRender();
-  }
-
-  @override
-  void onStateEnter() {
-    final cells = aa.getTargetCells(game);
-    for (final cell in cells) {
-      this.cells.add(cell);
-      cell.markAsTarget();
-    }
-  }
-
-  @override
-  void onStateExit() {
-    for (final cell in cells) {
       cell.unmark();
     }
   }

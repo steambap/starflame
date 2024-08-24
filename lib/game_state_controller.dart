@@ -1,8 +1,11 @@
+import "package:flame/effects.dart";
+
 import "scifi_game.dart";
 import "game_state.dart";
 import "player_state.dart";
 import "ship.dart";
 import "victory_dialog.dart";
+import "new_turn_overlay.dart";
 
 class GameStateController {
   GameState gameState = GameState();
@@ -50,6 +53,15 @@ class GameStateController {
     _prepareTurnIfAlive();
   }
 
+  void playerEndTurn() {
+    if (isAITurn()) {
+      return;
+    }
+
+    game.bottomRight.minimize();
+    endTurn();
+  }
+
   void _prepareTurnIfAlive() {
     if (currentPlayerState().isAlive) {
       preparationPhaseUpdate();
@@ -61,14 +73,22 @@ class GameStateController {
   }
 
   void _startTurn() {
+    game.mapGrid.updateCellVisibility(currentPlayerState());
     if (isAITurn()) {
       game.aiController.startTurn(gameState.playerNumber);
     } else {
       // TODO auto save
+      _addNewTurnOverlay();
       game.mapGrid.unSelect();
-      game.mapGrid.updateCellVisibility(currentPlayerState().vision);
       _checkForVictory();
     }
+  }
+
+  void _addNewTurnOverlay() {
+    final o = NewTurnOverlay(gameState.turn);
+    o.add(OpacityEffect.fadeOut(EffectController(duration: 1))
+      ..onComplete = o.removeFromParent);
+    game.hud.add(o);
   }
 
   void productionPhaseUpdate() {
@@ -110,7 +130,7 @@ class GameStateController {
     _checkConquest();
     _checkDomination();
   }
-  
+
   void _checkConquest() {
     for (final p in players) {
       if (p.playerNumber != gameState.playerNumber && p.isAlive) {
@@ -126,7 +146,7 @@ class GameStateController {
     final Set<int> victoryTeam = {};
 
     for (final p in game.mapGrid.sectors) {
-      if (p.playerNumber!= null && p.homePlanet) {
+      if (p.playerNumber != null && p.homePlanet) {
         victoryTeam.add(p.playerNumber!);
       }
     }

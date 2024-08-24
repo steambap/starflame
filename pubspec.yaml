@@ -10,7 +10,6 @@ dependencies:
   flame: ^1.18.0
   flutter:
     sdk: flutter
-  intl: ^0.19.0
   test: ^1.25.0
 
 dev_dependencies:

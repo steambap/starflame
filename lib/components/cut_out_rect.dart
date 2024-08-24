@@ -30,51 +30,47 @@ class CutOutRect extends PolygonComponent {
     Anchor? componentAnchor,
   ) {
     final anchor = componentAnchor ?? Anchor.topLeft;
+    final ret = [
+      // top left
+      Vector2(-size.x * anchor.x, -size.y * anchor.y),
+    ];
 
     if (cut.bottomLeft.x > 0) {
       final split = cut.bottomLeft.x;
 
-      return [
-        // top left
-        Vector2(-size.x * anchor.x, -size.y * anchor.y),
+      ret.addAll([
         // 2 points at bottom left
         Vector2(-size.x * anchor.x, size.y - size.y * anchor.y - split),
         Vector2(-size.x * anchor.x + split, size.y - size.y * anchor.y),
-        // bottom right
-        Vector2(size.x - size.x * anchor.x, size.y - size.y * anchor.y),
-        // top right
-        Vector2(size.x - size.x * anchor.x, -size.y * anchor.y),
-      ];
+      ]);
+    } else {
+      ret.add(Vector2(-size.x * anchor.x, size.y - size.y * anchor.y));
+    }
+
+    if (cut.bottomRight.x > 0) {
+      final split = cut.bottomRight.x;
+
+      ret.addAll([
+        // 2 points at bottom right
+        Vector2(size.x - size.x * anchor.x - split, size.y - size.y * anchor.y),
+        Vector2(size.x - size.x * anchor.x, size.y - size.y * anchor.y - split),
+      ]);
+    } else {
+      ret.add(Vector2(size.x - size.x * anchor.x, size.y - size.y * anchor.y));
     }
 
     if (cut.topRight.x > 0) {
       final split = cut.topRight.x;
 
-      return [
-        // top left
-        Vector2(-size.x * anchor.x, -size.y * anchor.y),
-        // bottom left
-        Vector2(-size.x * anchor.x, size.y - size.y * anchor.y),
-        // bottom right
-        Vector2(size.x - size.x * anchor.x, size.y - size.y * anchor.y),
+      ret.addAll([
         // 2 points at top right
         Vector2(size.x - size.x * anchor.x, -size.y * anchor.y + split),
         Vector2(size.x - size.x * anchor.x - split, -size.y * anchor.y),
-      ];
+      ]);
+    } else {
+      ret.add(Vector2(size.x - size.x * anchor.x, -size.y * anchor.y));
     }
 
-    final split = cut.bottomRight.x;
-
-    return [
-      // top left
-      Vector2(-size.x * anchor.x, -size.y * anchor.y),
-      // bottom left
-      Vector2(-size.x * anchor.x, size.y - size.y * anchor.y),
-      // 2 points at bottom right
-      Vector2(size.x - size.x * anchor.x - split, size.y - size.y * anchor.y),
-      Vector2(size.x - size.x * anchor.x, size.y - size.y * anchor.y - split),
-      // top right
-      Vector2(size.x - size.x * anchor.x, -size.y * anchor.y),
-    ];
+    return ret;
   }
 }

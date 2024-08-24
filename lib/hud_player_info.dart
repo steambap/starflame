@@ -4,12 +4,13 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 import "theme.dart"
-    show text12, panelBackground, icon16orange, icon16yellow, icon16blue;
+    show text12, icon16orange, icon16yellow, icon16blue;
 import "components/row_container.dart";
+import "components/panel.dart";
 
 class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
-  final RectangleComponent _background =
-      RectangleComponent(paint: panelBackground, size: Vector2(64, 32));
+  final Panel _panel =
+      Panel(size: Vector2(64, 32));
   // final RowContainer _empireRow = RowContainer(size: Vector2(64, 32));
   final RowContainer _resourceRow = RowContainer(size: Vector2(64, 32));
   // final RowContainer _statusRow = RowContainer(size: Vector2(64, 32));
@@ -46,7 +47,7 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     ]);
 
     addAll([
-      _background,
+      _panel,
       _resourceRow,
     ]);
 
@@ -72,6 +73,6 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     _scienceLabel.text = "${playerState.science}(+${income.science})";
 
     _resourceRow.layout();
-    _background.size = _resourceRow.size;
+    _panel.size = _resourceRow.size;
   }
 }

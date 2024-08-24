@@ -8,7 +8,7 @@ import 'hex.dart';
 import 'sector.dart';
 import 'ship.dart';
 import "theme.dart"
-    show highlighterPaint, moveendPaint, targetPaint, blackPaint;
+    show highlighterPaint, moveendPaint, targetPaint, fogPaint;
 import 'tile_type.dart';
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
@@ -26,7 +26,7 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
     _highligher = PolygonComponent(Hex.zero.polygonCorners(),
         anchor: Anchor.center, paint: highlighterPaint, priority: 2);
     _fog = PolygonComponent(Hex.zero.polygonCorners(Hex.size - 1),
-        anchor: Anchor.center, paint: Paint.from(blackPaint), priority: 1);
+        anchor: Anchor.center, paint: Paint.from(fogPaint), priority: 1);
   }
 
   @override
