@@ -24,6 +24,10 @@ class CutOutRect extends PolygonComponent {
     );
   }
 
+  static final primarySize = Vector2(108, 48);
+  static const primaryCut = BorderRadius.only(
+      bottomLeft: Radius.circular(8), topRight: Radius.circular(8));
+
   static List<Vector2> sizeToVertices(
     Vector2 size,
     BorderRadius cut,

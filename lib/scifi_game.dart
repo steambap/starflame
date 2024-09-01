@@ -3,6 +3,7 @@ import 'package:flame/game.dart';
 
 import "scifi_world.dart";
 import 'hud_bottom_right.dart';
+import "hud_menu_button.dart";
 import 'hud_player_info.dart';
 import 'game_state_controller.dart';
 import 'game_creator.dart';
@@ -29,6 +30,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
   late final CombatResolver combatResolver = CombatResolver(this);
   late final AnimationPool animationPool = AnimationPool(this);
   final HudPlayerInfo playerInfo = HudPlayerInfo();
+  final HudMenuButton menuButton = HudMenuButton();
   final HudBottomRight bottomRight = HudBottomRight();
   final HudSectorInfo sectorInfo = HudSectorInfo();
   final HudMapDeploy hudMapDeploy = HudMapDeploy();
@@ -55,6 +57,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await world.add(mapGrid);
     await hud.addAll([
       playerInfo,
+      menuButton,
       bottomRight,
       sectorInfo,
       shipCommand,

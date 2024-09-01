@@ -1,12 +1,14 @@
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
-import 'theme.dart' show heading24, label16, btnDefaultSkin, btnHoverSkin;
+import 'styles.dart'
+    show heading24, label16, label16DarkGray, btnDefault, btnHover;
 import 'dialog_background.dart';
 import 'hud_page.dart';
-import './components/cut_out_rect.dart';
+import 'components/advanced_button.dart';
 
 class StartPage extends Component with HasGameReference<ScifiGame> {
+  static final buttonSize = Vector2(160, 32);
   StartPage() {
     addAll([
       _background = DialogBackground(),
@@ -15,15 +17,18 @@ class StartPage extends Component with HasGameReference<ScifiGame> {
         textRenderer: heading24,
         anchor: Anchor.center,
       ),
-      _button1 = AdvancedButtonComponent(
-        size: Vector2(160, 32),
+      _button1 = AdvancedButton(
+        size: buttonSize,
         anchor: Anchor.center,
-        defaultSkin: CutOutRect(paintLayers: btnDefaultSkin),
-        hoverSkin: CutOutRect(paintLayers: btnHoverSkin),
+        defaultSkin: RectangleComponent(paint: btnDefault),
+        hoverSkin: RectangleComponent(paint: btnHover),
         defaultLabel: TextComponent(
           text: 'New Game',
           textRenderer: label16,
-          anchor: Anchor.center,
+        ),
+        hoverLabel: TextComponent(
+          text: 'New Game',
+          textRenderer: label16DarkGray,
         ),
         onPressed: () {
           game.router.pushReplacementNamed(HudPage.routeName);
@@ -35,7 +40,7 @@ class StartPage extends Component with HasGameReference<ScifiGame> {
 
   static const routeName = 'start';
   late final TextComponent _logo;
-  late final AdvancedButtonComponent _button1;
+  late final AdvancedButton _button1;
   late final DialogBackground _background;
 
   @override

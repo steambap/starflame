@@ -4,11 +4,11 @@ https://deep-fold.itch.io/pixel-planet-generator
 Seed:
 934587911
 Color:
-#14a02e
-#1a7a3e
-#23523b
+#63ab3f
+#3b7d4f
+#2f5753
 #283540
-#245fde
+#4fa4b8
 #404973
 #f5ffe8
 #dfe0e8
@@ -19,10 +19,10 @@ Color:
 Seed:
 8964
 Color:
-#e4d2aa
-#dba463
-#bb7547
-#71413b
+#f0b541
+#cf752b
+#ab5130
+#7d3833
 #3d2936
 
 3. Swamp - Terrain Wet
@@ -48,15 +48,15 @@ Seed:
 Seed:
 8964
 Color:
-#e9ebff
-#b9bffb
-#928fb8
-#588dbe
+#f5ffe8
+#dfe0e8
+#a3a7c2
+#4fa4b8
 #4c6885
 #3a3f5e
-#e1f2ff
-#c0e3ff
-#5e70a5
+#dfe0e8
+#a3a7c2
+#686f99
 #404973
 
 6. Ocean - Islands
@@ -78,3 +78,13 @@ Color:
 7. Barren - No Atomsphere
 Seed:
 1
+
+8. Gas Giant 2
+Seed:
+1
+#ffae70
+#bd6a62
+#8f4d57
+#52333f
+#3d2936
+#291d2b

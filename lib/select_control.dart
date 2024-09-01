@@ -33,7 +33,7 @@ class SelectControlWaitForInput extends SelectControl {
     }
 
     if (cell.ship != null) {
-      game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+      game.mapGrid.selectControl = SelectControlShipSelected(game, cell.ship!);
     } else if (cell.sector != null) {
       game.mapGrid.selectControl = SelectControlPlanet(game, cell);
     }
@@ -52,7 +52,7 @@ class SelectControlHex extends SelectControl {
     }
 
     if (cell.ship != null) {
-      game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+      game.mapGrid.selectControl = SelectControlShipSelected(game, cell.ship!);
     } else if (cell.sector != null) {
       game.mapGrid.selectControl = SelectControlPlanet(game, cell);
     } else {
@@ -61,13 +61,13 @@ class SelectControlHex extends SelectControl {
   }
 }
 
-class SelectControlCellSelected extends SelectControlHex {
-  final Cell cell;
-  late final Ship? ship;
+class SelectControlShipSelected extends SelectControlHex {
+  late final Cell cell;
+  final Ship ship;
   Map<Cell, List<Cell>> paths = {};
   Set<Cell> attackableCells = {};
 
-  SelectControlCellSelected(super.game, this.cell);
+  SelectControlShipSelected(super.game, this.ship);
 
   @override
   void onCellClick(Cell cell) {
@@ -80,10 +80,10 @@ class SelectControlCellSelected extends SelectControlHex {
     }
 
     if (paths.containsKey(cell)) {
-      game.mapGrid.moveShip(ship!, cell);
+      game.mapGrid.moveShip(ship, cell);
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     } else if (attackableCells.contains(cell)) {
-      game.combatResolver.resolve(ship!, cell);
+      game.combatResolver.resolve(ship, cell);
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     } else {
       super.onCellClick(cell);
@@ -92,20 +92,18 @@ class SelectControlCellSelected extends SelectControlHex {
 
   @override
   void onStateEnter() {
-    if (cell.ship != null) {
-      ship = cell.ship;
-      final shipOwner = ship?.state.playerNumber ?? -1;
-      final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
-      game.shipCommand.updateRender(ship);
-      if (isOwnerHuman) {
-        paths =
-            game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
-        if (ship!.canAttack()) {
-          final maxRange = ship!.hull.attackRange();
-          attackableCells = game.mapGrid
-              .findAttackableCells(cell, Block(1, maxRange))
-              .toSet();
-        }
+    cell = ship.cell;
+    final shipOwner = ship.state.playerNumber;
+    final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
+    game.shipCommand.show(ship);
+    game.bottomRight.isVisible = false;
+    if (isOwnerHuman) {
+      paths =
+          game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
+      if (ship.canAttack()) {
+        final maxRange = ship.hull.attackRange();
+        attackableCells =
+            game.mapGrid.findAttackableCells(cell, Block(1, maxRange)).toSet();
       }
     }
     for (final cell in paths.keys) {
@@ -113,7 +111,7 @@ class SelectControlCellSelected extends SelectControlHex {
       final moveCost = fromCells.fold(0, (previousValue, element) {
         return previousValue + element.tileType.cost;
       });
-      final movePoint = ship!.movePoint() - moveCost;
+      final movePoint = ship.movePoint() - moveCost;
       cell.markAsHighlight(movePoint);
     }
     for (final cell in attackableCells) {
@@ -123,7 +121,8 @@ class SelectControlCellSelected extends SelectControlHex {
 
   @override
   void onStateExit() {
-    game.shipCommand.updateRender(null);
+    game.shipCommand.hide();
+    game.bottomRight.isVisible = true;
     for (final cell in paths.keys) {
       cell.unmark();
     }
@@ -141,7 +140,8 @@ class SelectControlPlanet extends SelectControlHex {
   void onCellClick(Cell cell) {
     if (this.cell == cell) {
       if (cell.ship != null) {
-        game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+        game.mapGrid.selectControl =
+            SelectControlShipSelected(game, cell.ship!);
       }
 
       return;
@@ -152,12 +152,14 @@ class SelectControlPlanet extends SelectControlHex {
 
   @override
   void onStateEnter() {
-    game.sectorInfo.show(cell.sector);
+    game.sectorInfo.show(cell.sector!);
+    game.bottomRight.isVisible = false;
   }
 
   @override
   void onStateExit() {
     game.sectorInfo.hide();
+    game.bottomRight.isVisible = true;
   }
 }
 

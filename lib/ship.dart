@@ -8,7 +8,7 @@ import "package:flutter/foundation.dart" show ChangeNotifier;
 import 'scifi_game.dart';
 import "cell.dart";
 import "hex.dart";
-import "theme.dart";
+import "styles.dart" show grayTint;
 import "ship_state.dart";
 import "ship_hull.dart";
 import "action_type.dart";
@@ -56,11 +56,11 @@ class Ship extends PositionComponent
     resetAllActions();
   }
 
-  onStartMove() {
+  void onStartMove() {
     _engineEffect.add(OpacityEffect.fadeIn(EffectController(duration: 0.15)));
   }
 
-  onEndMove() {
+  void onEndMove() {
     _engineEffect.add(OpacityEffect.fadeOut(EffectController(duration: 0.15)));
     _maybeSelectAgain();
   }
@@ -78,7 +78,7 @@ class Ship extends PositionComponent
       return;
     }
 
-    game.mapGrid.selectControl = SelectControlCellSelected(game, cell);
+    game.mapGrid.selectControl = SelectControlShipSelected(game, this);
   }
 
   void useAttack() {
@@ -141,7 +141,7 @@ class Ship extends PositionComponent
     cell.ship = null;
     game.mapGrid.removeShip(this);
     removeFromParent();
-    if (game.mapGrid.selectControl is SelectControlCellSelected) {
+    if (game.mapGrid.selectControl is SelectControlShipSelected) {
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     }
 

@@ -1,113 +1,123 @@
 import 'dart:async';
-import 'dart:ui';
-import 'package:flutter/painting.dart' show BorderRadius;
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
-import "theme.dart"
-    show
-        heading20black,
-        btnDefaultSkin,
-        btnHoverSkin,
-        btnSelectedSkin,
-        btnHoverAndSelectedSkin,
-        blue,
-        primaryBtnSkin,
-        primaryBtnHover,
-        icon16white;
-import "./components/cut_out_rect.dart";
-import "side_menu_overlay.dart";
+import "styles.dart";
+import "components/advanced_button.dart";
+import "components/row_container.dart";
+import "components/rrect.dart";
 
-class HudBottomRight extends PositionComponent with HasGameRef<ScifiGame> {
-  static final primarySize = Vector2(108, 48);
-  static final lineSkin = Paint()
-    ..color = blue
-    ..strokeWidth = 1.5;
-  static const primaryCut = BorderRadius.only(
-      bottomLeft: Radius.circular(8), topRight: Radius.circular(8));
-  static const topRightCut = BorderRadius.only(topRight: Radius.circular(8));
-  static const bottomLeftCut =
-      BorderRadius.only(bottomLeft: Radius.circular(8));
-  static const double marginX = 20;
-  static final iconButtonSize = Vector2(36, 36);
+class HudBottomRight extends PositionComponent
+    with HasGameRef<ScifiGame>, HasVisibility {
+  static final iconButtonSize = Vector2(24, 24);
 
-  final _primaryButton = AdvancedButtonComponent(
-    size: primarySize,
-    defaultLabel: TextComponent(
-        text: "MENU", anchor: Anchor.center, textRenderer: heading20black),
-    defaultSkin:
-        CutOutRect(size: primarySize, paint: primaryBtnSkin, cut: primaryCut),
-    hoverSkin:
-        CutOutRect(size: primarySize, paint: primaryBtnHover, cut: primaryCut),
+  final AdvancedButton _research = AdvancedButton(
+    size: iconButtonSize,
+    defaultSkin: RowContainer(children: [
+      TextComponent(text: "Research", textRenderer: label12),
+      PositionComponent(size: iconButtonSize, children: [
+        RRectangle(size: iconButtonSize, paint: iconButtonBorder),
+        TextComponent(
+            text: "R",
+            textRenderer: label12,
+            position: iconButtonSize / 2,
+            anchor: Anchor.center),
+      ]),
+    ]),
+    hoverSkin: RowContainer(children: [
+      TextComponent(text: "Research", textRenderer: label12),
+      PositionComponent(size: iconButtonSize, children: [
+        RRectangle(size: iconButtonSize, paint: iconButtonBorderHover),
+        TextComponent(
+            text: "R",
+            textRenderer: label12,
+            position: iconButtonSize / 2,
+            anchor: Anchor.center),
+      ]),
+    ]),
   );
-  final List<Offset> _line = List.filled(4, Offset.zero, growable: false);
-  final _deployIcon = TextComponent(text: "\u4626", textRenderer: icon16white);
-  late final ToggleButtonComponent _shipDeploy;
+
+  final AdvancedButton _shipDesign = AdvancedButton(
+    size: iconButtonSize,
+    defaultSkin: RowContainer(children: [
+      TextComponent(text: "Ship Design", textRenderer: label12),
+      PositionComponent(size: iconButtonSize, children: [
+        RRectangle(size: iconButtonSize, paint: iconButtonBorder),
+        TextComponent(
+            text: "U",
+            textRenderer: label12,
+            position: iconButtonSize / 2,
+            anchor: Anchor.center),
+      ]),
+    ]),
+    hoverSkin: RowContainer(children: [
+      TextComponent(text: "Ship Design", textRenderer: label12),
+      PositionComponent(size: iconButtonSize, children: [
+        RRectangle(size: iconButtonSize, paint: iconButtonBorderHover),
+        TextComponent(
+            text: "U",
+            textRenderer: label12,
+            position: iconButtonSize / 2,
+            anchor: Anchor.center),
+      ]),
+    ]),
+  );
+
+  final AdvancedButton _build = AdvancedButton(
+    size: iconButtonSize,
+    defaultSkin: RowContainer(children: [
+      TextComponent(text: "Build", textRenderer: label12),
+      PositionComponent(size: iconButtonSize, children: [
+        RRectangle(size: iconButtonSize, paint: iconButtonBorder),
+        TextComponent(
+            text: "B",
+            textRenderer: label12,
+            position: iconButtonSize / 2,
+            anchor: Anchor.center),
+      ]),
+    ]),
+    hoverSkin: RowContainer(children: [
+      TextComponent(text: "Build", textRenderer: label12),
+      PositionComponent(size: iconButtonSize, children: [
+        RRectangle(size: iconButtonSize, paint: iconButtonBorderHover),
+        TextComponent(
+            text: "B",
+            textRenderer: label12,
+            position: iconButtonSize / 2,
+            anchor: Anchor.center),
+      ]),
+    ]),
+  );
 
   @override
   FutureOr<void> onLoad() {
-    _primaryButton.onReleased = () {
-      game.router.pushRoute(SideMenuOverlay());
+    _build.onReleased = () {
+      game.hudMapDeploy.renderShipButtons();
     };
-    _shipDeploy = ToggleButtonComponent(
-      size: iconButtonSize,
-      defaultLabel: _deployIcon,
-      defaultSelectedLabel: _deployIcon,
-      defaultSkin: CutOutRect(
-        size: iconButtonSize,
-        cut: bottomLeftCut,
-        paintLayers: btnDefaultSkin,
-      ),
-      hoverSkin: CutOutRect(
-        size: iconButtonSize,
-        cut: bottomLeftCut,
-        paintLayers: btnHoverSkin,
-      ),
-      defaultSelectedSkin: CutOutRect(
-        size: iconButtonSize,
-        cut: bottomLeftCut,
-        paintLayers: btnSelectedSkin,
-      ),
-      hoverAndSelectedSkin: CutOutRect(
-        size: iconButtonSize,
-        cut: bottomLeftCut,
-        paintLayers: btnHoverAndSelectedSkin,
-      ),
-      onSelectedChanged: (value) {
-        if (value) {
-          game.hudMapDeploy.renderShipButtons();
-        } else {
-          game.hudMapDeploy.clearShipButtons();
-        }
-      },
-    );
 
-    addAll([_primaryButton, _shipDeploy]);
+    addAll([_build, _research, _shipDesign]);
   }
 
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    _primaryButton.position =
-        Vector2(size.x - primarySize.x - 8, size.y - primarySize.y - 28);
-    _line[0] = Offset(_primaryButton.position.x - marginX, size.y - 28);
-    _line[1] = Offset(_primaryButton.position.x, size.y - 28);
-    _line[2] = Offset(_primaryButton.position.x + 8, size.y - 20);
-    _line[3] = Offset(size.x, size.y - 20);
-    _shipDeploy.position = Vector2(
-        _primaryButton.position.x - marginX - iconButtonSize.x,
-        size.y - iconButtonSize.y - 8);
+    final dy = size.y - iconButtonSize.y - 8;
+
+    _shipDesign.size = _shipDesign.defaultSkin?.size ?? iconButtonSize;
+    _shipDesign.position = Vector2(size.x - 116 - _shipDesign.size.x, dy);
+    _research.size = _research.defaultSkin?.size ?? iconButtonSize;
+    _research.position =
+        Vector2(_shipDesign.position.x - 4 - _research.size.x, dy);
+    _build.size = _build.defaultSkin?.size ?? iconButtonSize;
+    _build.position = Vector2(_research.position.x - 4 - _build.size.x, dy);
   }
 
   @override
-  void render(Canvas canvas) {
-    canvas.drawLine(_line[0], _line[1], lineSkin);
-    canvas.drawLine(_line[1], _line[2], lineSkin);
-    canvas.drawLine(_line[2], _line[3], lineSkin);
-    super.render(canvas);
-  }
+  bool containsLocalPoint(Vector2 point) {
+    if (isVisible) {
+      return super.containsLocalPoint(point);
+    }
 
-  void minimize() {
-    _shipDeploy.isSelected = false;
+    return false;
   }
 }

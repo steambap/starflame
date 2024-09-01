@@ -22,8 +22,6 @@ class PlayerState with ChangeNotifier {
   // Status
   int transport = 0;
   int maxTransport = 3;
-  int probe = 0;
-  int maxProbe = 2;
   final List<ShipHull> hulls = [];
   final Set<Hex> vision = {};
 
@@ -42,9 +40,8 @@ class PlayerState with ChangeNotifier {
     notifyListeners();
   }
 
-  // Refresh status like probes or transports
+  // Refresh status like transports
   void refreshStatus() {
     transport = maxTransport;
-    probe = maxProbe;
   }
 }

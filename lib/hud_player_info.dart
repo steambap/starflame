@@ -3,14 +3,12 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
-import "theme.dart"
-    show text12, icon16orange, icon16yellow, icon16blue;
+import "styles.dart";
 import "components/row_container.dart";
-import "components/panel.dart";
 
 class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
-  final Panel _panel =
-      Panel(size: Vector2(64, 32));
+  final _panel =
+      RectangleComponent(size: Vector2(64, 32), paintLayers: panelSkin);
   // final RowContainer _empireRow = RowContainer(size: Vector2(64, 32));
   final RowContainer _resourceRow = RowContainer(size: Vector2(64, 32));
   // final RowContainer _statusRow = RowContainer(size: Vector2(64, 32));
@@ -19,7 +17,7 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
       RectangleComponent(size: Vector2(24, 24), position: Vector2(4, 4));
 
   final TextComponent _productionIcon =
-      TextComponent(text: "\u4a95", textRenderer: icon16orange);
+      TextComponent(text: "\u4a95", textRenderer: icon16red);
   final _productionLabel = TextComponent(text: "0", textRenderer: text12);
 
   final TextComponent _creditIcon =
@@ -68,9 +66,9 @@ class HudPlayerInfo extends PositionComponent with HasGameRef<ScifiGame> {
     _empireColor.paint = Paint()..color = playerState.color;
     final income = game.resourceController.humanPlayerIncome();
     _creditLabel.text =
-        "${playerState.credit.toInt()}(+${income.credit.toInt()})";
-    _productionLabel.text = "${playerState.production}(+${income.production})";
-    _scienceLabel.text = "${playerState.science}(+${income.science})";
+        "${playerState.credit.toInt()}+${income.credit.toInt()}";
+    _productionLabel.text = "${playerState.production}+${income.production}";
+    _scienceLabel.text = "${playerState.science}+${income.science}";
 
     _resourceRow.layout();
     _panel.size = _resourceRow.size;

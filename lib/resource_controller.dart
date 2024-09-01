@@ -85,24 +85,4 @@ class ResourceController {
       game.playerInfo.updateRender();
     }
   }
-
-  bool canExplore(int playerNumber) {
-    final pState = game.controller.getPlayerState(playerNumber);
-
-    return pState.probe > 0;
-  }
-
-  void explore(int playerNumber, Cell cell) {
-    if (!canExplore(playerNumber)) {
-      return;
-    }
-
-    final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.probe -= 1;
-    playerState.vision.add(cell.hex);
-
-    if (game.controller.getHumanPlayerNumber() == playerNumber) {
-      cell.reveal();
-    }
-  }
 }

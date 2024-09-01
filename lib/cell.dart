@@ -7,7 +7,7 @@ import 'scifi_game.dart';
 import 'hex.dart';
 import 'sector.dart';
 import 'ship.dart';
-import "theme.dart"
+import "styles.dart"
     show highlighterPaint, moveendPaint, targetPaint, fogPaint;
 import 'tile_type.dart';
 

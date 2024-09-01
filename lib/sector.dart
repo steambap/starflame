@@ -1,15 +1,16 @@
 import 'dart:async';
-import 'dart:math';
+import "dart:collection";
 import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
 
+import "sector_drawing.dart";
 import "hex.dart";
 import "sim_props.dart";
 import 'scifi_game.dart';
 import "player_state.dart";
 import "planet.dart";
-import "theme.dart" show label12, emptyPaint;
+import "styles.dart" show label12, emptyPaint;
 
 class Sector extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier, SimObject {
@@ -23,48 +24,50 @@ class Sector extends PositionComponent
   final TextComponent nameLabel = TextComponent(
       text: "",
       position: Vector2(0, 10),
+      priority: 1,
       anchor: Anchor.center,
       textRenderer: label12);
   final PolygonComponent ownerHex = PolygonComponent(
       Hex.zero.polygonCorners(Hex.size - 0.5),
       paint: emptyPaint,
       anchor: Anchor.center);
-  final List<SpriteComponent> planetSprites = [];
-  final List<Planet> planets;
+  final List<Orbit> _orbits = [];
+  List<Planet> _planets;
 
-  Sector(this.hex, {this.planets = const []});
+  Sector(this.hex, {List<Planet> planets = const []}) : _planets = planets;
+
+  UnmodifiableListView<Planet> get planets => UnmodifiableListView(_planets);
+  set planets(List<Planet> planets) {
+    _planets = planets;
+    String surfix = "I";
+    for (final p in _planets) {
+      if (p.name == "") {
+        p.name = "$displayName $surfix";
+        surfix += surfix;
+      }
+    }
+  }
 
   @override
   FutureOr<void> onLoad() {
-    final economyImage = game.images.fromCache('terran.png');
-    final economySprite = Sprite(economyImage,
-        srcPosition: Vector2.zero(), srcSize: Vector2.all(72));
-    final miningImage = game.images.fromCache('arid.png');
-    final miningSprite = Sprite(miningImage,
-        srcPosition: Vector2.zero(), srcSize: Vector2.all(72));
-    final labImage = game.images.fromCache('ice.png');
-    final labSprite =
-        Sprite(labImage, srcPosition: Vector2.zero(), srcSize: Vector2.all(72));
-
-    for (int i = 0; i < planets.length; i++) {
-      final position = switch (i) {
-        1 => Vector2(-Hex.size * 0.25 * sqrt(3.0), Hex.size * 0.25),
-        2 => Vector2(Hex.size * 0.25 * sqrt(3.0), Hex.size * 0.25),
-        _ => Vector2(0, -Hex.size * 0.5),
-      };
-      final planet = planets[i];
-      final sprite = switch (planet.type) {
-        PlanetType.temperate => economySprite,
-        PlanetType.hot => miningSprite,
-        PlanetType.cold => labSprite,
-        _ => economySprite,
-      };
-      final planetSprite = SpriteComponent(
-          sprite: sprite, anchor: Anchor.center, position: position, scale: Vector2.all(0.5));
-      planetSprites.add(planetSprite);
+    final List<double> rList = switch(_planets.length) {
+      1 => const [16],
+      2 => const [12, 20],
+      _ => const [8, 16, 24],
+    };
+    for (int i = 0; i < _planets.length; i++) {
+      final p = _planets[i];
+      final orbitRadius = rList[i];
+      final double planetRadiius = p.workerSlots.length > 1 ? 4 : 3;
+      final orbit = Orbit(
+          radius: orbitRadius,
+          planet: MiniPlanet(radius: planetRadiius, type: p.type),
+          revolutionPeriod: orbitRadius * 2,
+          initialAngle: orbitRadius + displayName.length);
+      _orbits.add(orbit);
     }
-
-    addAll([ownerHex, ...planetSprites, nameLabel]);
+    // nameLabel.text = displayName;
+    addAll([ownerHex, ..._orbits, nameLabel]);
 
     refreshProps();
     updateRender();
@@ -92,10 +95,8 @@ class Sector extends PositionComponent
 
   void updateRender() {
     if (playerNumber == null) {
-      nameLabel.text = "";
       ownerHex.paint = emptyPaint;
     } else {
-      nameLabel.text = displayName;
       final pState = game.controller.getPlayerState(playerNumber!);
       final playerPaint = Paint()
         ..style = PaintingStyle.stroke
@@ -154,7 +155,7 @@ class Sector extends PositionComponent
   }
 
   Iterable<WorkerSlot> workerSlots() {
-    return planets.expand((p) => p.workerSlots);
+    return _planets.expand((p) => p.workerSlots);
   }
 
   bool placeWorker(PlayerState pState, int slotNumber, WorkerType type) {
@@ -177,5 +178,13 @@ class Sector extends PositionComponent
     slot.type = type;
     refreshProps();
     return true;
+  }
+
+  hasOrbital() {
+    return _planets.any((p) => p.type == PlanetType.orbital);
+  }
+
+  addOrbital() {
+    _planets.add(Planet.orbital());
   }
 }

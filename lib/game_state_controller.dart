@@ -6,6 +6,7 @@ import "player_state.dart";
 import "ship.dart";
 import "victory_dialog.dart";
 import "new_turn_overlay.dart";
+import "hud_page.dart";
 
 class GameStateController {
   GameState gameState = GameState();
@@ -58,7 +59,8 @@ class GameStateController {
       return;
     }
 
-    game.bottomRight.minimize();
+    popAll();
+    game.hudMapDeploy.clearShipButtons();
     endTurn();
   }
 
@@ -196,5 +198,9 @@ class GameStateController {
   int getUniqueID() {
     gameState.uid += 1;
     return gameState.uid;
+  }
+
+  void popAll() {
+    game.router.popUntilNamed(HudPage.routeName);
   }
 }

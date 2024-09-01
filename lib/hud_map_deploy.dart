@@ -48,9 +48,9 @@ class HudMapDeploy extends PositionComponent
 
     for (int i = 0; i < hulls.length; i++) {
       final hull = hulls[i];
-      final button = AddShipButton(hull, (selectedHull) {
+      final button = AddShipButton(hull, onReleased: () {
         game.mapGrid.selectControl =
-            SelectControlCreateShip(game, selectedHull);
+            SelectControlCreateShip(game, hull);
       });
       button.position = Vector2(
         i * (AddShipButton.buttonSize.x + 4),

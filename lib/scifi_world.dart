@@ -5,15 +5,14 @@ import "package:flutter/foundation.dart";
 import 'package:flutter/services.dart';
 
 import 'scifi_game.dart';
-// import 'menu_planet_cmd.dart';
-// import "planet.dart";
-import "theme.dart" show textDamage;
+import "styles.dart" show textDamage;
+import "ai/ai_log_overlay.dart";
+import "ship.dart";
 
 class ScifiWorld extends World
     with HasGameRef<ScifiGame>, KeyboardHandler, DragCallbacks {
   final double moveSpeed = 64;
   Vector2 direction = Vector2.zero();
-  // MenuPlanetCmd? _menuPlanetCmd;
 
   @mustCallSuper
   @override
@@ -31,6 +30,9 @@ class ScifiWorld extends World
     }
     if (keysPressed.contains(LogicalKeyboardKey.enter)) {
       game.controller.playerEndTurn();
+    }
+    if (keysPressed.contains(LogicalKeyboardKey.keyC)) {
+      game.router.pushRoute(AiLogOverlay());
     }
     direction = Vector2.zero();
     direction.x += (keysPressed.contains(LogicalKeyboardKey.keyA) ||
@@ -59,17 +61,6 @@ class ScifiWorld extends World
     game.camera.moveBy(-event.localDelta);
   }
 
-  // void renderPlanetMenu(Planet? planet) {
-  //   if (planet == null) {
-  //     _menuPlanetCmd?.removeFromParent();
-  //     return;
-  //   }
-
-  //   _menuPlanetCmd = MenuPlanetCmd(planet);
-  //   _menuPlanetCmd!.position = planet.hex.toPixel();
-  //   add(_menuPlanetCmd!);
-  // }
-
   void renderDamageText(String text, Vector2 position) {
     final textComponent =
         TextComponent(text: text, textRenderer: textDamage, position: position);
@@ -81,5 +72,9 @@ class ScifiWorld extends World
     );
     textComponent.addAll([removeEff, moveEff]);
     add(textComponent);
+  }
+
+  void focusShip(Ship ship) {
+    game.camera.moveTo(ship.cell.position);
   }
 }

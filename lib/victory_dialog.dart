@@ -3,7 +3,7 @@ import "package:flame/components.dart";
 import "package:flame/events.dart";
 
 import "scifi_game.dart";
-import "theme.dart" show label16, textButtonPaintLayer;
+import "styles.dart" show label16, btnDefault;
 import "dialog_background.dart";
 
 class VictoryDialog extends ValueRoute<bool>
@@ -27,10 +27,12 @@ class VictoryDialog extends ValueRoute<bool>
             position: Vector2(0, -32)),
         AdvancedButtonComponent(
             defaultLabel: TextComponent(
-                text: "Main Menu", anchor: Anchor.center, textRenderer: label16),
+                text: "Main Menu",
+                anchor: Anchor.center,
+                textRenderer: label16),
             onPressed: () => completeWith(true),
-            defaultSkin: RectangleComponent(
-                size: buttonSize, paintLayers: textButtonPaintLayer),
+            defaultSkin:
+                RectangleComponent(size: buttonSize, paint: btnDefault),
             anchor: Anchor.center,
             position: Vector2(buttonSize.x / 2 + 4, 8)),
         AdvancedButtonComponent(
@@ -39,8 +41,8 @@ class VictoryDialog extends ValueRoute<bool>
                 anchor: Anchor.center,
                 textRenderer: label16),
             onPressed: () => completeWith(false),
-            defaultSkin: RectangleComponent(
-                size: buttonSize, paintLayers: textButtonPaintLayer),
+            defaultSkin:
+                RectangleComponent(size: buttonSize, paint: btnDefault),
             anchor: Anchor.center,
             position: Vector2(-4 - buttonSize.x / 2, 8)),
       ],

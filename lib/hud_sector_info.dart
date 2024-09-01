@@ -1,80 +1,66 @@
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 
 import "sim_props.dart";
 import "scifi_game.dart";
 import "sector.dart";
 import "async_updated_ui.dart";
-import "theme.dart" show text12, text16;
+import "styles.dart";
+import "components/row_container.dart";
 
 class HudSectorInfo extends PositionComponent
-    with HasGameRef<ScifiGame>, HasVisibility, DragCallbacks, AsyncUpdatedUi {
-  Sector? sector;
-  // Scrollable on mobile
-  final _clip = ClipComponent.rectangle(
-    position: Vector2(8, 44),
-  );
-  double scrollBoundsY = 0.0;
-  final _clippedContent = PositionComponent();
+    with HasGameRef<ScifiGame>, HasVisibility, AsyncUpdatedUi {
+      static final panelTitleSize = Vector2(160, 24);
+      static final panelBodySize = Vector2(160, 72);
 
-  late final SpriteComponent _infoBackground;
-  // Basic info
+  late Sector sector;
+
+  final _titleBackground = RectangleComponent(size: panelTitleSize, paint: panelTitleBG);
   final _sectorName = TextComponent(
-      textRenderer: text16, anchor: Anchor.topLeft, position: Vector2.all(4));
-  final _line1Label = TextComponent(
-      text: "Production",
-      textRenderer: text12,
-      anchor: Anchor.centerLeft,
-      position: Vector2(8, 40));
-  final _line1Value = TextComponent(
-      text: "0",
-      textRenderer: text12,
-      anchor: Anchor.centerRight,
-      position: Vector2(192, 40));
-  final _line2Label = TextComponent(
-      text: "Credit",
-      textRenderer: text12,
-      anchor: Anchor.centerLeft,
-      position: Vector2(8, 68));
-  final _line2Value = TextComponent(
-      text: "0",
-      textRenderer: text12,
-      anchor: Anchor.centerRight,
-      position: Vector2(192, 68));
-  final _line3Label = TextComponent(
-      text: "Science",
-      textRenderer: text12,
-      anchor: Anchor.centerLeft,
-      position: Vector2(8, 96));
-  final _line3Value = TextComponent(
-      text: "0",
-      textRenderer: text12,
-      anchor: Anchor.centerRight,
-      position: Vector2(192, 96));
+      textRenderer: label16, anchor: Anchor.centerLeft, position: Vector2(4, panelTitleSize.y / 2));
 
-  HudSectorInfo() : super(anchor: Anchor.topLeft);
+  final _bodyBackground = RectangleComponent(size: panelBodySize, paintLayers: panelSkin);
+  final RowContainer _resourceRow = RowContainer(size: Vector2.zero(), position: Vector2(4, 40));
+
+  final TextComponent _productionIcon =
+      TextComponent(text: "\u4a95", textRenderer: icon16red);
+  final _productionLabel = TextComponent(text: "0", textRenderer: text12);
+
+  final TextComponent _creditIcon =
+      TextComponent(text: "\u3fde", textRenderer: icon16yellow);
+  final _creditLabel = TextComponent(text: "0", textRenderer: text12);
+
+  final TextComponent _scienceIcon =
+      TextComponent(text: "\u48bb", textRenderer: icon16blue);
+  final _scienceLabel = TextComponent(text: "0", textRenderer: text12);
+
+  HudSectorInfo();
 
   @override
   Future<void> onLoad() async {
-    size = Vector2(200, game.size.y - 40);
-    _clip.size = size;
     isVisible = false;
 
-    final bgImg = game.images.fromCache("planet_info.png");
-    _infoBackground = SpriteComponent(sprite: Sprite(bgImg));
-
-    add(_clip);
-    _clip.add(_clippedContent);
-    _clippedContent.addAll([
-      _infoBackground,
-      _sectorName,
-      _line1Label,
-      _line1Value,
-      _line2Label,
-      _line2Value,
-      _line3Label,
-      _line3Value,
+    _resourceRow.addAll([
+      _productionIcon,
+      _productionLabel,
+      _creditIcon,
+      _creditLabel,
+      _scienceIcon,
+      _scienceLabel,
     ]);
+
+    addAll([
+      _bodyBackground,
+      _titleBackground,
+      _sectorName,
+      _resourceRow,
+    ]);
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+
+    position = Vector2(size.x - 124 - panelTitleSize.x, size.y - panelBodySize.y - 8);
   }
 
   @override
@@ -86,46 +72,26 @@ class HudSectorInfo extends PositionComponent
     return false;
   }
 
-  @override
-  void onDragUpdate(DragUpdateEvent event) {
-    if (scrollBoundsY < 0) {
-      _clippedContent.y += event.localDelta.y;
-      _clippedContent.y = _clippedContent.y.clamp(scrollBoundsY, 0);
-    }
-  }
-
   void hide() {
     isVisible = false;
   }
 
-  void show(Sector? sector) {
-    if (sector == null) {
-      return;
-    }
+  void show(Sector sector) {
     isVisible = true;
     _setText(sector);
-    _calcScrollBounds();
-    _clippedContent.y = 0;
   }
 
   @override
   void updateRender() {
-    if (sector == null) {
-      return;
-    }
-    _setText(sector!);
+    _setText(sector);
   }
 
   void _setText(Sector sector) {
     _sectorName.text = sector.displayName;
-    _line1Value.text = "${sector.getProp(SimProps.production)}";
-    _line2Value.text = "${sector.getProp(SimProps.credit)}";
-    _line3Value.text = "${sector.getProp(SimProps.science)}";
-  }
+    _productionLabel.text = "+${sector.getProp(SimProps.production)}";
+    _creditLabel.text = "+${sector.getProp(SimProps.credit)}";
+    _scienceLabel.text = "+${sector.getProp(SimProps.science)}";
 
-  void _calcScrollBounds() {
-    double contentHeight = _infoBackground.size.y + 8;
-
-    scrollBoundsY = _clip.size.y - contentHeight;
+    _resourceRow.layout();
   }
 }

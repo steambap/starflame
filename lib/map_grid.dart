@@ -16,7 +16,7 @@ import "player_state.dart";
 import "hex.dart";
 import "select_control.dart";
 import "sector.dart";
-import "theme.dart" show hexBorderPaint;
+import "styles.dart" show hexBorderPaint;
 
 // https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
 Hex _pixelToHex(Vector2 pixel) {
@@ -189,8 +189,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   moveShip(Ship ship, Cell cell) {
     _moveShipHex(ship, cell);
     List<Cell> fromCells = List.empty();
-    if (_selectControl is SelectControlCellSelected) {
-      final paths = (_selectControl as SelectControlCellSelected).paths;
+    if (_selectControl is SelectControlShipSelected) {
+      final paths = (_selectControl as SelectControlShipSelected).paths;
       if (paths.containsKey(cell)) {
         fromCells = paths[cell]!;
       }
@@ -203,7 +203,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     ship.onStartMove();
     for (final e in fromCells.reversed) {
       game.animationPool.add(() {
-        final effect = MoveToEffect(e.position, EffectController(duration: 0.1));
+        final effect =
+            MoveToEffect(e.position, EffectController(duration: 0.1));
         ship.add(effect);
         final hexes = e.hex.cubeSpiral(ship.visionRange());
         for (final hex in hexes) {

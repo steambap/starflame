@@ -62,7 +62,7 @@ class AnimationPool {
   }
 
   void next() {
-    if (!game.controller.isAITurn()) {
+    if (!game.controller.isAITurn() && game.mapGrid.selectControl is SelectControlBlockInput) {
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     }
     _running = false;

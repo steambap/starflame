@@ -1,89 +1,60 @@
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
-import 'package:flutter/foundation.dart';
 
 import "scifi_game.dart";
-import "theme.dart" show grayTint, cardSkin, label12, icon16orange;
+import "styles.dart";
 import "ship_hull.dart";
+import "components/advanced_button.dart";
 
-class AddShipButton extends PositionComponent
-    with TapCallbacks, HasGameRef<ScifiGame> {
+class AddShipButton extends AdvancedButton with HasGameRef<ScifiGame> {
   static Vector2 buttonSize = Vector2(114, 84);
 
   final ShipHull hull;
-  final RectangleComponent _background = RectangleComponent(
-    size: buttonSize,
-    paintLayers: cardSkin,
-  );
 
   late final TextComponent _tName;
   late final SpriteComponent _tSprite;
-  final TextComponent _prodIcon =
-      TextComponent(position: Vector2(2, 68), text: "\u4a95", textRenderer: icon16orange);
+  final TextComponent _prodIcon = TextComponent(
+      position: Vector2(2, 68),
+      text: "\u4a95",
+      textRenderer: icon16red,
+      priority: 1);
   late final TextComponent _prodText;
-  void Function(ShipHull hull)? onPressed;
 
-  AddShipButton(this.hull, this.onPressed) : super(size: buttonSize);
+  AddShipButton(this.hull, {super.onReleased}) : super(size: buttonSize);
 
-  @override
-  @mustCallSuper
-  void onTapDown(TapDownEvent event) {
-    if (_isDisabled) {
-      return;
-    }
-
-    onPressed?.call(hull);
-  }
-
-  @mustCallSuper
   @override
   Future<void> onLoad() async {
-    super.onLoad();
-
     _tName = TextComponent(
       text: hull.name,
       position: Vector2(2, 2),
       textRenderer: label12,
+      priority: 1,
     );
+
     final hullImg = Sprite(game.images.fromCache(hull.image));
     _tSprite = SpriteComponent(
         sprite: hullImg,
         position: Vector2(buttonSize.x / 2, 48),
         anchor: Anchor.center);
+    defaultLabel = _tSprite;
+    defaultSkin =
+        RectangleComponent(size: buttonSize, paintLayers: shipBtnSkin);
+    hoverSkin =
+        RectangleComponent(size: buttonSize, paintLayers: shipBtnHoverSkin);
+    disabledSkin =
+        RectangleComponent(size: buttonSize, paintLayers: shipBtnDisabledSkin);
 
     _prodText = TextComponent(
-      text: hull.cost.toString(),
-      position: Vector2(22, 76),
-      textRenderer: label12,
-      anchor: Anchor.centerLeft
-    );
+        text: hull.cost.toString(),
+        position: Vector2(22, 76),
+        textRenderer: label12,
+        priority: 1,
+        anchor: Anchor.centerLeft);
     addAll([
-      _background,
       _tName,
-      _tSprite,
       _prodIcon,
       _prodText,
     ]);
-  }
 
-  bool _isDisabled = false;
-
-  bool get isDisabled => _isDisabled;
-
-  set isDisabled(bool value) {
-    if (_isDisabled == value) {
-      return;
-    }
-    _isDisabled = value;
-    updateRender();
-  }
-
-  @protected
-  void updateRender() {
-    if (isDisabled) {
-      decorator.addLast(grayTint);
-    } else {
-      decorator.removeLast();
-    }
+    return super.onLoad();
   }
 }

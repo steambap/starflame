@@ -1,15 +1,15 @@
 import "package:flame/components.dart";
 
-import "theme.dart" show heading24;
+import "styles.dart" show heading24, panelSkin;
 import "components/opacity.dart";
-import "components/panel.dart";
 
 class NewTurnOverlay extends PositionComponent with HasOpacityProvider {
   final TextComponent _text = TextComponent(
     textRenderer: heading24,
     anchor: Anchor.center,
   );
-  final Panel _panel = Panel(size: Vector2(200, 64), anchor: Anchor.center);
+  final _panel = RectangleComponent(
+      size: Vector2(200, 64), anchor: Anchor.center, paintLayers: panelSkin);
 
   NewTurnOverlay(int t) {
     _text.text = "Turn $t";
