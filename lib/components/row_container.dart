@@ -40,4 +40,10 @@ class RowContainer extends PositionComponent implements Layouter {
 
     size = Vector2(dx, size.y);
   }
+
+  @override
+  void onGameResize(Vector2 size) {
+    layout();
+    super.onGameResize(size);
+  }
 }

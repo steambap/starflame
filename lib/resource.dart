@@ -7,12 +7,14 @@ class Resources {
   final int production;
   final int credit;
   final int science;
+  final int transport;
 
   const Resources(
       {this.maintaince = 0,
       this.production = 0,
       this.credit = 0,
-      this.science = 0});
+      this.science = 0,
+      this.transport = 0});
 
   Resources operator +(Resources other) {
     return Resources(
@@ -20,6 +22,7 @@ class Resources {
       production: production + other.production,
       credit: credit + other.credit,
       science: science + other.science,
+      transport: transport + other.transport,
     );
   }
 
@@ -29,6 +32,7 @@ class Resources {
       production: production * multiplier,
       credit: credit * multiplier,
       science: science * multiplier,
+      transport: transport * multiplier,
     );
   }
 }

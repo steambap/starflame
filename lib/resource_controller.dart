@@ -4,6 +4,8 @@ import "cell.dart";
 import "ship_hull.dart";
 import "resource.dart";
 import "sim_props.dart";
+import "planet.dart";
+import "sector.dart";
 
 class ResourceController {
   final ScifiGame game;
@@ -13,9 +15,10 @@ class ResourceController {
   void runProduction(int playerNumber) {
     final playerState = game.controller.getPlayerState(playerNumber);
 
-    final income = playerIncome(playerState);
+    final income = playerIncome(playerState) +
+        Resources(transport: playerState.maxTransport);
+
     playerState.addResource(income);
-    playerState.refreshStatus();
   }
 
   Resources playerIncome(PlayerState state) {
@@ -67,22 +70,42 @@ class ResourceController {
     return true;
   }
 
-  bool canColonize(int playerNumber) {
+  bool canCapture(int playerNumber) {
     final pState = game.controller.getPlayerState(playerNumber);
 
     return pState.transport > 0;
   }
 
-  void colonize(int playerNumber, Cell cell) {
-    if (!canColonize(playerNumber) || cell.sector == null) {
+  void capture(int playerNumber, Cell cell) {
+    if (!canCapture(playerNumber) || cell.sector == null) {
       return;
     }
 
     final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.transport -= 1;
+    playerState.addResource(const Resources(transport: -1));
     cell.sector?.colonize(playerNumber);
-    if (game.controller.getHumanPlayerNumber() == playerNumber) {
-      game.playerInfo.updateRender();
+  }
+
+  bool canPlaceWorker(int playerNumber) {
+    final pState = game.controller.getPlayerState(playerNumber);
+
+    return pState.transport > 0;
+  }
+
+  void placeWorker(
+      int playerNumber, Sector sector, WorkerSlot slot, WorkerType type) {
+    if (!canPlaceWorker(playerNumber)) {
+      return;
     }
+
+    final playerState = game.controller.getPlayerState(playerNumber);
+    playerState.addResource(const Resources(transport: -1));
+    sector.placeWorker(playerState, slot, type);
+  }
+
+  void switchWorker(
+      int playerNumber, Sector sector, WorkerSlot slot, WorkerType type) {
+    final playerState = game.controller.getPlayerState(playerNumber);
+    sector.switchWorker(playerState, slot, type);
   }
 }

@@ -13,7 +13,7 @@ enum PlanetType {
 }
 
 class WorkerSlot {
-  static const output = 3;
+  static const output = 2;
 
   Set<WorkerType> allowedTypes;
   WorkerType type;

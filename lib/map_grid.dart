@@ -55,16 +55,13 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   @override
   void render(Canvas canvas) {
     for (final cell in cells) {
-      canvas.save();
-      canvas.translate(cell.position.x, cell.position.y);
-
-      final ns = cell.hex.getNeighbours();
-      for (int i = 0; i < ns.length; i++) {
-        canvas.drawLine(
-            corners[(11 - i) % 6], corners[(12 - i) % 6], hexBorderPaint);
-      }
-
-      canvas.restore();
+      canvas.renderAt(cell.position, (myCanvas) {
+        final ns = cell.hex.getNeighbours();
+        for (int i = 0; i < ns.length; i++) {
+          canvas.drawLine(
+              corners[(11 - i) % 6], corners[(12 - i) % 6], hexBorderPaint);
+        }
+      });
     }
     super.render(canvas);
   }

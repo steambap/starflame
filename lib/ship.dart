@@ -12,6 +12,7 @@ import "styles.dart" show grayTint;
 import "ship_state.dart";
 import "ship_hull.dart";
 import "action_type.dart";
+import "action.dart";
 import "select_control.dart";
 import 'tile_type.dart';
 
@@ -89,6 +90,9 @@ class Ship extends PositionComponent
 
   void setTurnOver() {
     state.isTurnOver = true;
+    if (!state.attacked && state.movementUsed == 0) {
+      repair(10);
+    }
     state.attacked = true;
     state.movementUsed = 999;
     _shipSprite.decorator.addLast(grayTint);
@@ -192,5 +196,12 @@ class Ship extends PositionComponent
         action.cooldown--;
       }
     }
+  }
+
+  List<Action> actions() {
+    return [
+      Capture(this),
+      Stay(this),
+    ];
   }
 }

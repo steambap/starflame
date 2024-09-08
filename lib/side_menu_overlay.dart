@@ -39,6 +39,7 @@ class SideMenuOverlay extends Route with HasGameRef<ScifiGame> {
             defaultSkin: RectangleComponent(paint: btnDefault),
             hoverSkin: RectangleComponent(paint: btnHover),
             onReleased: () {
+              game.router.popRoute(this);
               game.router.pushNamed(StartPage.routeName);
             },
           ),

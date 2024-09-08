@@ -5,21 +5,28 @@ import "scifi_game.dart";
 import "sector.dart";
 import "async_updated_ui.dart";
 import "styles.dart";
+import "sector_overlay.dart";
 import "components/row_container.dart";
+import "components/advanced_button.dart";
 
 class HudSectorInfo extends PositionComponent
     with HasGameRef<ScifiGame>, HasVisibility, AsyncUpdatedUi {
-      static final panelTitleSize = Vector2(160, 24);
-      static final panelBodySize = Vector2(160, 72);
+  static final panelTitleSize = Vector2(160, 24);
+  static final panelBodySize = Vector2(160, 72);
 
   late Sector sector;
 
-  final _titleBackground = RectangleComponent(size: panelTitleSize, paint: panelTitleBG);
+  final _titleBackground =
+      RectangleComponent(size: panelTitleSize, paint: panelTitleBG);
   final _sectorName = TextComponent(
-      textRenderer: label16, anchor: Anchor.centerLeft, position: Vector2(4, panelTitleSize.y / 2));
+      textRenderer: label16,
+      anchor: Anchor.centerLeft,
+      position: Vector2(4, panelTitleSize.y / 2));
 
-  final _bodyBackground = RectangleComponent(size: panelBodySize, paintLayers: panelSkin);
-  final RowContainer _resourceRow = RowContainer(size: Vector2.zero(), position: Vector2(4, 40));
+  final _bodyBackground =
+      RectangleComponent(size: panelBodySize, paintLayers: panelSkin);
+  final RowContainer _resourceRow =
+      RowContainer(size: Vector2.zero(), position: Vector2(4, 40));
 
   final TextComponent _productionIcon =
       TextComponent(text: "\u4a95", textRenderer: icon16red);
@@ -32,6 +39,8 @@ class HudSectorInfo extends PositionComponent
   final TextComponent _scienceIcon =
       TextComponent(text: "\u48bb", textRenderer: icon16blue);
   final _scienceLabel = TextComponent(text: "0", textRenderer: text12);
+
+  final List<AdvancedButton> _sectorActionButtons = [];
 
   HudSectorInfo();
 
@@ -60,7 +69,8 @@ class HudSectorInfo extends PositionComponent
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
 
-    position = Vector2(size.x - 124 - panelTitleSize.x, size.y - panelBodySize.y - 8);
+    position =
+        Vector2(size.x - 124 - panelTitleSize.x, size.y - panelBodySize.y - 8);
   }
 
   @override
@@ -74,6 +84,7 @@ class HudSectorInfo extends PositionComponent
 
   void hide() {
     isVisible = false;
+    _clearActions();
   }
 
   void show(Sector sector) {
@@ -93,5 +104,48 @@ class HudSectorInfo extends PositionComponent
     _scienceLabel.text = "+${sector.getProp(SimProps.science)}";
 
     _resourceRow.layout();
+    _clearActions();
+
+    final playerIdx = game.controller.getHumanPlayerNumber();
+    if (playerIdx != sector.playerNumber) {
+      return;
+    }
+
+    final sButton = AdvancedButton(
+      size: circleIconSize,
+      anchor: Anchor.center,
+      defaultLabel: TextComponent(
+        text: "\u46c2",
+        textRenderer: icon16pale,
+      ),
+      defaultSkin: CircleComponent(
+        radius: circleIconSize.x / 2,
+        paintLayers: shipBtnSkin,
+      ),
+      hoverSkin: CircleComponent(
+        radius: circleIconSize.x / 2,
+        paintLayers: shipBtnHoverSkin,
+      ),
+      disabledSkin: CircleComponent(
+        radius: circleIconSize.x / 2,
+        paintLayers: shipBtnDisabledSkin,
+      ),
+      onReleased: () {
+        game.router.pushRoute(SectorOverlay(sector));
+      },
+    );
+
+    sButton.position = Vector2(
+        _titleBackground.x + (8 + circleIconSize.x) * 0.5,
+        _titleBackground.position.y - 8 - (circleIconSize.y / 2));
+    _sectorActionButtons.add(sButton);
+    addAll(_sectorActionButtons);
+  }
+
+  void _clearActions() {
+    for (final element in _sectorActionButtons) {
+      element.removeFromParent();
+    }
+    _sectorActionButtons.clear();
   }
 }

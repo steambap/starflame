@@ -3,12 +3,13 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 import "styles.dart";
+import "async_updated_ui.dart";
 import "components/advanced_button.dart";
 import "components/row_container.dart";
 import "components/rrect.dart";
 
 class HudBottomRight extends PositionComponent
-    with HasGameRef<ScifiGame>, HasVisibility {
+    with HasGameRef<ScifiGame>, HasVisibility, AsyncUpdatedUi {
   static final iconButtonSize = Vector2(24, 24);
 
   final AdvancedButton _research = AdvancedButton(
@@ -101,10 +102,15 @@ class HudBottomRight extends PositionComponent
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    final dy = size.y - iconButtonSize.y - 8;
+    scheduleUpdate();
+  }
+
+  @override
+  void updateRender() {
+    final dy = game.size.y - iconButtonSize.y - 8;
 
     _shipDesign.size = _shipDesign.defaultSkin?.size ?? iconButtonSize;
-    _shipDesign.position = Vector2(size.x - 116 - _shipDesign.size.x, dy);
+    _shipDesign.position = Vector2(game.size.x - 116 - _shipDesign.size.x, dy);
     _research.size = _research.defaultSkin?.size ?? iconButtonSize;
     _research.position =
         Vector2(_shipDesign.position.x - 4 - _research.size.x, dy);

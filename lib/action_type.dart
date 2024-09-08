@@ -20,7 +20,6 @@ class ActionState {
 }
 
 enum ActionTarget {
-  neutralPlanet,
-  enemyPlanet,
+  hex,
   self,
 }

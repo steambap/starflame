@@ -198,20 +198,20 @@ class SelectControlCreateShip extends SelectControl {
 class SelectControlWaitForAction extends SelectControl {
   final Action action;
   final Cell cell;
-  late final List<Cell> targets;
+  late final Iterable<Cell> targets;
   SelectControlWaitForAction(this.action, this.cell, super.game);
 
   @override
   void onCellClick(Cell cell) {
     if (targets.contains(cell)) {
-      action.execute(this.cell.ship!, cell);
+      action.activate(game);
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }
 
   @override
   void onStateEnter() {
-    targets = action.getTargets(game.mapGrid, cell);
+    targets = action.getTargetCells(game);
     for (final cell in targets) {
       cell.markAsTarget();
     }

@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flame/components.dart';
+import 'package:starfury/select_control.dart';
 
 import 'scifi_game.dart';
 import 'ship.dart';
 import "async_updated_ui.dart";
 import 'styles.dart';
+import "action_type.dart";
 import "components/row_container.dart";
-// import 'action_button.dart';
+import "components/advanced_button.dart";
 
 class HudShipCommand extends PositionComponent
     with HasGameRef<ScifiGame>, HasVisibility, AsyncUpdatedUi {
@@ -26,16 +28,8 @@ class HudShipCommand extends PositionComponent
   final _row1 = RowContainer(size: Vector2.zero(), position: Vector2(4, 40));
   final _moveIcon = TextComponent(text: "\u445e", textRenderer: icon16pale);
   final _movement = TextComponent(text: "0", textRenderer: text12);
-  // final TextComponent _shipAndTemplateName =
-  //     TextComponent(textRenderer: label16, anchor: Anchor.centerLeft);
-  // final TextComponent _shipInfo1 =
-  //     TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
-  // final TextComponent _shipInfo2 =
-  //     TextComponent(textRenderer: text12, anchor: Anchor.centerLeft);
-  // final TextComponentClipped _shipInfo3 = TextComponentClipped(rectSize,
-  //     textRenderer: text12, anchor: Anchor.centerLeft);
 
-  // final List<ActionButton> _shipCommandButtons = [];
+  final List<AdvancedButton> _shipActionButtons = [];
 
   Ship? _ship;
 
@@ -72,6 +66,7 @@ class HudShipCommand extends PositionComponent
 
   void hide() {
     isVisible = false;
+    _clearActions();
   }
 
   void show(Ship ship) {
@@ -89,54 +84,65 @@ class HudShipCommand extends PositionComponent
     }
   }
 
-  // void updateRender(Ship? ship) {
-  //   _ship?.removeListener(_scheduleUpdateRender);
-  //   if (ship != null) {
-  //     ship.addListener(_scheduleUpdateRender);
-  //   }
-  //   _ship = ship;
-  //   _scheduleUpdateRender();
-  // }
-
-  // @override
-  // void _updateRender() {
-  //   if (_ship != null) {
-  //     _renderShip(_ship!);
-  //     isVisible = true;
-  //   } else {
-  //     _clearActions();
-  //     isVisible = false;
-  //   }
-  // }
-
   void _renderShip(Ship ship) {
     _hullName.text = ship.hull.name;
     _shipImage.sprite = Sprite(game.images.fromCache(ship.hull.image));
     _movement.text = ship.movePoint().toString();
     _row1.layout();
-    // _clearActions();
+    _clearActions();
 
     final playerIdx = game.controller.getHumanPlayerNumber();
-    // if (playerIdx == ship.state.playerNumber) {
-    //   final actions = ship.hull.actions();
-    //   for (int i = 0; i < actions.length; i++) {
-    //     final aButton = ActionButton(ship.cell, actions[i]);
-    //     aButton.position = Vector2(_shipInfoBackground.x + 8,
-    //         _shipInfoBackground.position.y - (i + 1) * (iconButtonSize.y + 4));
-    //     _shipCommandButtons.add(
-    //       aButton,
-    //     );
-    //   }
-    //   addAll(_shipCommandButtons);
-    // }
+    if (playerIdx != ship.state.playerNumber) {
+      return;
+    }
+    final actions = ship.actions();
+    for (int i = 0; i < actions.length; i++) {
+      final act = actions[i];
+      final aButton = AdvancedButton(
+        size: circleIconSize,
+        anchor: Anchor.center,
+        defaultLabel: act.getLabel(game),
+        defaultSkin: CircleComponent(
+          radius: circleIconSize.x / 2,
+          paintLayers: shipBtnSkin,
+        ),
+        hoverSkin: CircleComponent(
+          radius: circleIconSize.x / 2,
+          paintLayers: shipBtnHoverSkin,
+        ),
+        disabledSkin: CircleComponent(
+          radius: circleIconSize.x / 2,
+          paintLayers: shipBtnDisabledSkin,
+        ),
+        onReleased: () {
+          if (act.targetType == ActionTarget.self) {
+            act.activate(game);
+          } else {
+            game.mapGrid.selectControl = SelectControlWaitForAction(
+              act,
+              ship.cell,
+              game,
+            );
+          }
+        },
+      );
+      aButton.isDisabled = act.isDisabled(game);
+      aButton.position = Vector2(
+          _titleBackground.x + (8 + circleIconSize.x) * (i + 0.5),
+          _titleBackground.position.y - 8 - (circleIconSize.y / 2));
+      _shipActionButtons.add(
+        aButton,
+      );
+    }
+    addAll(_shipActionButtons);
   }
 
-  // void _clearActions() {
-  //   for (final element in _shipCommandButtons) {
-  //     element.removeFromParent();
-  //   }
-  //   _shipCommandButtons.clear();
-  // }
+  void _clearActions() {
+    for (final element in _shipActionButtons) {
+      element.removeFromParent();
+    }
+    _shipActionButtons.clear();
+  }
 
   @override
   void onGameResize(Vector2 size) {

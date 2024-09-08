@@ -1,5 +1,4 @@
 import 'dart:async';
-import "dart:collection";
 import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
@@ -18,7 +17,6 @@ class Sector extends PositionComponent
   int team = 0;
 
   bool homePlanet = false;
-  String displayName = "";
 
   final Hex hex;
   final TextComponent nameLabel = TextComponent(
@@ -32,31 +30,33 @@ class Sector extends PositionComponent
       paint: emptyPaint,
       anchor: Anchor.center);
   final List<Orbit> _orbits = [];
-  List<Planet> _planets;
+  List<Planet> planets;
 
-  Sector(this.hex, {List<Planet> planets = const []}) : _planets = planets;
+  Sector(this.hex, {this.planets = const []});
 
-  UnmodifiableListView<Planet> get planets => UnmodifiableListView(_planets);
-  set planets(List<Planet> planets) {
-    _planets = planets;
+  String _displayName = "";
+  String get displayName => _displayName;
+  set displayName(String value) {
+    _displayName = value;
+
     String surfix = "I";
-    for (final p in _planets) {
+    for (final p in planets) {
       if (p.name == "") {
         p.name = "$displayName $surfix";
-        surfix += surfix;
+        surfix += "I";
       }
     }
   }
 
   @override
   FutureOr<void> onLoad() {
-    final List<double> rList = switch(_planets.length) {
+    final List<double> rList = switch (planets.length) {
       1 => const [16],
       2 => const [12, 20],
       _ => const [8, 16, 24],
     };
-    for (int i = 0; i < _planets.length; i++) {
-      final p = _planets[i];
+    for (int i = 0; i < planets.length; i++) {
+      final p = planets[i];
       final orbitRadius = rList[i];
       final double planetRadiius = p.workerSlots.length > 1 ? 4 : 3;
       final orbit = Orbit(
@@ -155,24 +155,24 @@ class Sector extends PositionComponent
   }
 
   Iterable<WorkerSlot> workerSlots() {
-    return _planets.expand((p) => p.workerSlots);
+    return planets.expand((p) => p.workerSlots);
   }
 
-  bool placeWorker(PlayerState pState, int slotNumber, WorkerType type) {
+  bool placeWorker(PlayerState pState, WorkerSlot slot, WorkerType type) {
     final slots = workerSlots();
-    if (slotNumber < 0 || slotNumber >= slots.length) {
+    if (!slots.contains(slot)) {
       return false;
     }
-    final slot = slots.elementAt(slotNumber);
+
     if (slot.allowedTypes.contains(type) == false) {
       return false;
     }
     if (slot.isOccupied) {
       return false;
     }
-    if (slot.isAdvanced) {
-      return false;
-    }
+    // if (slot.isAdvanced) {
+    //   return false;
+    // }
 
     slot.isOccupied = true;
     slot.type = type;
@@ -180,11 +180,32 @@ class Sector extends PositionComponent
     return true;
   }
 
+  bool switchWorker(PlayerState pState, WorkerSlot slot, WorkerType type) {
+    final slots = workerSlots();
+    if (!slots.contains(slot)) {
+      return false;
+    }
+
+    if (slot.allowedTypes.contains(type) == false) {
+      return false;
+    }
+    if (!slot.isOccupied) {
+      return false;
+    }
+
+    slot.type = type;
+    refreshProps();
+    if (pState.playerNumber == game.controller.getHumanPlayerNumber()) {
+      pState.refreshStatus();
+    }
+    return true;
+  }
+
   hasOrbital() {
-    return _planets.any((p) => p.type == PlanetType.orbital);
+    return planets.any((p) => p.type == PlanetType.orbital);
   }
 
   addOrbital() {
-    _planets.add(Planet.orbital());
+    planets.add(Planet.orbital());
   }
 }

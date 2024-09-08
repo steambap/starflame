@@ -1,143 +1,95 @@
 import 'package:flame/components.dart';
 
+import "scifi_game.dart";
 import 'cell.dart';
 import 'action_type.dart';
-import 'map_grid.dart';
 import 'ship.dart';
+import "styles.dart" show icon16pale;
 
-sealed class Action {
+abstract class Action {
+  final Ship ship;
   final ActionType actionType;
   final ActionTarget targetType;
-  final bool requireAttack;
   final int cooldown;
-  final Block range;
 
-  Action(
-    this.actionType,
-    this.targetType, {
-    this.requireAttack = false,
-    this.cooldown = 0,
-    this.range = const Block(0, 0),
-  });
+  Action(this.ship, this.actionType, this.targetType, {this.cooldown = 0});
 
-  int cooldownLeft(Cell cell) {
+  int cooldownLeft() {
     if (cooldown == 0) {
       return 0;
     }
 
-    final state = cell.ship?.getActionState(actionType);
-    return state?.cooldown ?? 0;
+    return ship.getActionState(actionType)?.cooldown ?? 0;
   }
 
-  bool isDisabled(MapGrid mapGrid, Cell cell) {
-    if (cooldownLeft(cell) > 0) {
-      return true;
-    }
-
-    if (requireAttack) {
-      if (!(cell.ship?.canAttack() ?? false)) {
-        return true;
-      }
-    }
-    return getTargets(mapGrid, cell).isEmpty;
-  }
-
-  List<Cell> neutralPlanetCells(List<Cell> cells) {
-    return cells.where((cell) => cell.sector?.neutral() ?? false).toList();
-  }
-
-  List<Cell> enemyPlanetCells(List<Cell> cells, int playerNumber) {
-    return cells
-        .where((cell) => cell.sector?.attackable(playerNumber) ?? false)
-        .toList();
-  }
-
-  List<Cell> getTargets(MapGrid mapGrid, Cell cell) {
-    final cellsInRange = mapGrid.inRange(cell, range);
-
-    switch (targetType) {
-      case ActionTarget.neutralPlanet:
-        return neutralPlanetCells(cellsInRange);
-      case ActionTarget.enemyPlanet:
-        final playerNumber = cell.ship?.state.playerNumber ?? -1;
-        return enemyPlanetCells(cellsInRange, playerNumber);
-      case ActionTarget.self:
-        return [];
-    }
-  }
-
-  void execute(Ship ship, Cell cell) {}
+  void activate(ScifiGame game);
+  bool isDisabled(ScifiGame game);
+  Iterable<Cell> getTargetCells(ScifiGame game);
+  PositionComponent getLabel(ScifiGame game);
 }
 
 class Capture extends Action {
-  Capture()
-      : super(ActionType.capture, ActionTarget.enemyPlanet,
-            requireAttack: true);
+  Capture(Ship ship) : super(ship, ActionType.capture, ActionTarget.self);
 
   @override
-  void execute(Ship ship, Cell cell) {
+  void activate(ScifiGame game) {
     ship.useAttack();
-    if (cell.sector == null) {
-      return;
-    }
-    final playerNumber = ship.state.playerNumber;
-    final planet = cell.sector!;
-    planet.capture(playerNumber);
+    final playerNumber = game.controller.getHumanPlayerNumber();
+    game.resourceController.capture(playerNumber, ship.cell);
+    game.mapGrid.unSelect();
   }
-}
-
-class BuildColony extends Action {
-  BuildColony() : super(ActionType.buildColony, ActionTarget.neutralPlanet);
 
   @override
-  bool isDisabled(MapGrid mapGrid, Cell cell) {
-    if ((cell.ship?.movePoint() ?? 0) <= 0) {
+  bool isDisabled(ScifiGame game) {
+    final sector = ship.cell.sector;
+    if (sector == null) {
+      return true;
+    }
+    if (sector.playerNumber == ship.state.playerNumber) {
       return true;
     }
 
-    return super.isDisabled(mapGrid, cell);
+    return !ship.canAttack();
   }
 
   @override
-  void execute(Ship ship, Cell cell) {
-    if (cell.sector == null) {
-      return;
-    }
-    final playerNumber = ship.state.playerNumber;
-    cell.sector!.colonize(playerNumber);
-    ship.dispose();
+  Iterable<Cell> getTargetCells(ScifiGame game) {
+    return const [];
+  }
+
+  @override
+  PositionComponent getLabel(ScifiGame game) {
+    return TextComponent(
+      text: "\u43f4",
+      textRenderer: icon16pale,
+    );
   }
 }
 
 class Stay extends Action {
-  Stay() : super(ActionType.stay, ActionTarget.self);
+  Stay(Ship ship) : super(ship, ActionType.stay, ActionTarget.self);
 
   @override
-  bool isDisabled(MapGrid mapGrid, Cell cell) {
-    return (cell.ship?.movePoint() ?? 0) <= 0;
+  bool isDisabled(ScifiGame game) {
+    return ship.movePoint() <= 0;
   }
 
   @override
-  void execute(Ship ship, Cell cell) {
+  Iterable<Cell> getTargetCells(ScifiGame game) {
+    return const [];
+  }
+
+  @override
+  void activate(ScifiGame game) {
     ship.setTurnOver();
+    game.mapGrid.unSelect();
+  }
+
+  @override
+  PositionComponent getLabel(ScifiGame game) {
+    return TextComponent(
+      text: "\u4907",
+      textRenderer: icon16pale,
+    );
   }
 }
-
-class SelfRepair extends Action {
-  SelfRepair()
-      : super(ActionType.selfRepair, ActionTarget.self,
-            requireAttack: true, cooldown: 3);
-
-  @override
-  void execute(Ship ship, Cell cell) {
-    ship.repair(10);
-    ship.setTurnOver();
-  }
-}
-
-final actionTable = <ActionType, Action>{
-  ActionType.capture: Capture(),
-  ActionType.buildColony: BuildColony(),
-  ActionType.stay: Stay(),
-  ActionType.selfRepair: SelfRepair(),
-};

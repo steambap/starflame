@@ -28,6 +28,51 @@ List<Hex> generateHexMap(int qMax) {
   return hexMap;
 }
 
+List<List<Planet>> generatePlanets() {
+  final List<List<Planet>> planets = [
+    // Inner
+    [Planet.economy10(), Planet.mining11()],
+    [Planet.economy10(), Planet.lab10()],
+    [Planet.economy11(), Planet.lab11()],
+    [Planet.economy10(), Planet.lab10(), Planet.mining01()],
+    [Planet.lab10(), Planet.mining10()],
+    [Planet.economy10(), Planet.lab01(), Planet.mining01()],
+    [Planet.economy10(), Planet.lab01(), Planet.gas10()],
+    [Planet.economy10(), Planet.mining10()],
+    [Planet.economy01(), Planet.gas01()],
+    // Middle
+    [Planet.economy10(), Planet.mining10()],
+    [Planet.lab11()],
+    [Planet.economy01(), Planet.lab10(), Planet.mining10()],
+    [Planet.economy01(), Planet.mining01(), Planet.gas10()],
+    [Planet.economy11(), Planet.lab01()],
+    [Planet.mining10()],
+    [Planet.economy10(), Planet.lab10()],
+    [Planet.economy10(), Planet.mining10()],
+    [Planet.economy10(), Planet.mining01(), Planet.gas10()],
+    [Planet.lab10(), Planet.mining01(), Planet.gas01()],
+    // Outer
+    [Planet.economy10(), Planet.lab10(), Planet.mining01()],
+    [Planet.economy01(), Planet.lab01(), Planet.mining10()],
+    [Planet.economy01(), Planet.lab01(), Planet.gas10()],
+    [Planet.economy01(), Planet.mining10()],
+    [Planet.lab10(), Planet.mining10()],
+    [Planet.economy10(), Planet.mining10()],
+    [Planet.economy10(), Planet.lab01()],
+    [Planet.lab10(), Planet.mining01()],
+    [Planet.economy10(), Planet.lab01()],
+    [Planet.lab10(), Planet.mining10()],
+    [Planet.mining10()],
+    [Planet.mining10()],
+    [Planet.gas10()],
+    [Planet.gas10()],
+    [Planet.economy11()],
+    [Planet.mining01(), Planet.gas10()],
+  ];
+
+  return planets;
+}
+
 class GameCreator {
   late GameSettings gameSettings;
   late Random rand;
@@ -42,6 +87,7 @@ class GameCreator {
   double s2 = 0;
 
   List<String> _names = [];
+  List<List<Planet>> _planets = [];
 
   void create(GameSettings gameSettings) {
     this.gameSettings = gameSettings;
@@ -79,7 +125,7 @@ class GameCreator {
         player.vision.add(cell.hex);
         homes.add(cell.hex);
         final sector = Sector(cell.hex,
-            planets: [Planet.economy11(), Planet.mining10(), Planet.lab11()]);
+            planets: [Planet.gas10(), Planet.mining10(), Planet.lab11()]);
         sectors.add(sector);
         cell.sector = sector;
         sector.setHome(player.playerNumber);
@@ -101,7 +147,7 @@ class GameCreator {
   }
 
   void _createPlanets(Cell cell) {
-    final sector = Sector(cell.hex, planets: [Planet.economy10()]);
+    final sector = Sector(cell.hex, planets: _nextPlanets());
     sectors.add(sector);
     cell.sector = sector;
   }
@@ -128,6 +174,19 @@ class GameCreator {
     final r = (yn * (r2 - r1 + 1) + r1).floor();
 
     return Hex(q, r, -q - r);
+  }
+
+  void _preparePlanets() {
+    _planets = generatePlanets();
+    _planets.shuffle(rand);
+  }
+
+  List<Planet> _nextPlanets() {
+    if (_planets.isEmpty) {
+      _preparePlanets();
+    }
+
+    return _planets.removeLast();
   }
 
   void _prepareNames() {

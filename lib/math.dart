@@ -1,8 +1,9 @@
-import 'dart:math';
-
-final logphi = log((1 + sqrt(5)) / 2);
-final sqrt5 = sqrt(5);
-
-int reverseFib(int n, [int offset = 0]) {
-  return (log(n * sqrt5 + 0.5) / logphi).floor() - offset;
+/// 0, 0, 1, 2, 4, 6, 9, 12, 16, 20, 25, 30
+int getMaintaince(int step) {
+  if (step <= 2) {
+    return 0;
+  }
+  final half = (step - 2) ~/ 2;
+  final mod = step % 2;
+  return (half + mod) * (half + 1);
 }

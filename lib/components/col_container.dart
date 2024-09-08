@@ -3,7 +3,7 @@ import 'package:flame/components.dart';
 import '../layouter.dart';
 
 class ColContainer extends PositionComponent implements Layouter {
-  final int marginBottom;
+  final double marginBottom;
 
   ColContainer({
     this.marginBottom = 4,
@@ -19,7 +19,7 @@ class ColContainer extends PositionComponent implements Layouter {
 
   @override
   void layout() {
-    double dy = marginBottom.toDouble();
+    double dy = marginBottom;
     for (final child in children) {
       if (child is Layouter) {
         (child as Layouter).layout();

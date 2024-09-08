@@ -37,11 +37,13 @@ class PlayerState with ChangeNotifier {
     credit += resource.credit;
     science += resource.science;
 
+    transport += resource.transport;
+    transport = transport.clamp(0, maxTransport);
+
     notifyListeners();
   }
 
-  // Refresh status like transports
   void refreshStatus() {
-    transport = maxTransport;
+    notifyListeners();
   }
 }

@@ -62,6 +62,9 @@ final btnDefault = Paint()..color = darkGray;
 final btnHover = Paint()..color = pale;
 final primarySize = Vector2(100, 48);
 final secondartSize = Vector2(100, 32);
+final menuButtonSize = Vector2(160, 32);
+final circleIconSize = Vector2(36, 36);
+const navbarHeight = 32.0;
 
 final shipBtnSkin = [panelBackground, iconButtonBorder];
 final shipBtnBgHover = Paint()..color = blue;
@@ -80,3 +83,8 @@ final icon16blue = TextPaint(
     style: const TextStyle(color: blue, fontSize: 16, fontFamily: "Icon"));
 final icon16pale = TextPaint(
     style: const TextStyle(color: pale, fontSize: 16, fontFamily: "Icon"));
+
+final miningSlot = Paint()..color = red;
+final economySlot = Paint()..color = yellow;
+final labSlot = Paint()..color = blue;
+final anySlot = Paint()..color = gray;

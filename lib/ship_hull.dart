@@ -1,4 +1,3 @@
-import "action.dart";
 import "action_type.dart";
 
 enum ShipType {
@@ -27,19 +26,9 @@ class ShipHull {
   });
 
   Iterable<ActionType> actionTypes() {
-    final Set<ActionType> ret = {ActionType.stay, ActionType.selfRepair};
+    final Set<ActionType> ret = {ActionType.selfRepair};
 
     return ret;
-  }
-
-  List<Action> actions() {
-    final ret = actionTypes();
-
-    return ret.map((e) {
-      assert(actionTable.containsKey(e), "Action ${e.name} not found in table");
-
-      return actionTable[e]!;
-    }).toList(growable: false);
   }
 
   int attackRange() {
