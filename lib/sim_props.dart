@@ -1,6 +1,11 @@
 typedef Property = String;
 
 class SimProps {
+  static const Property allowFusionSource = 'allowFusionSource';
+  static const Property allowFusionDrive = 'allowFusionDrive';
+  static const Property allowTachyonSource = 'allowTachyonSource';
+  static const Property allowTachyonDrive = 'allowTachyonDrive';
+
   static const Property production = 'production';
   static const Property credit = 'credit';
   static const Property science = 'science';

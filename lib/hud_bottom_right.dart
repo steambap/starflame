@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'scifi_game.dart';
 import "styles.dart";
 import "async_updated_ui.dart";
+import 'research_overlay.dart';
 import "components/advanced_button.dart";
 import "components/row_container.dart";
 import "components/rrect.dart";
@@ -94,6 +95,9 @@ class HudBottomRight extends PositionComponent
   FutureOr<void> onLoad() {
     _build.onReleased = () {
       game.hudMapDeploy.renderShipButtons();
+    };
+    _research.onReleased = () {
+      game.router.pushRoute(ResearchOverlay());
     };
 
     addAll([_build, _research, _shipDesign]);

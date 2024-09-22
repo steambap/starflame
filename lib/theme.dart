@@ -2,6 +2,7 @@ import 'dart:ui' show Color;
 
 const blue = Color(0xFF22678B);
 const yellow = Color(0xFFA8873E);
+const orange = Color(0xFFb97f29);
 const red = Color(0xFFA5322D);
 const purple = Color(0xFF705788);
 const green = Color(0xFF4E624E);

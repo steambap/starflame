@@ -6,6 +6,7 @@ import "resource.dart";
 import "sim_props.dart";
 import "planet.dart";
 import "sector.dart";
+import "data/tech.dart";
 
 class ResourceController {
   final ScifiGame game;
@@ -107,5 +108,32 @@ class ResourceController {
       int playerNumber, Sector sector, WorkerSlot slot, WorkerType type) {
     final playerState = game.controller.getPlayerState(playerNumber);
     sector.switchWorker(playerState, slot, type);
+  }
+
+  bool canResearch(int playerNumber, String techId) {
+    final playerState = game.controller.getPlayerState(playerNumber);
+
+    if (playerState.techs.contains(techId)) {
+      return false;
+    }
+
+    final tech = techMap[techId];
+    if (tech == null) {
+      return false;
+    }
+
+    return playerState.science >= tech.cost;
+  }
+
+  void doResearch(int playerNumber, String techId) {
+    final playerState = game.controller.getPlayerState(playerNumber);
+
+    if (!canResearch(playerNumber, techId)) {
+      return;
+    }
+
+    final tech = techMap[techId]!;
+    playerState.addResource(Resources(science: -tech.cost));
+    playerState.addTech(techId);
   }
 }

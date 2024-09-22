@@ -109,7 +109,7 @@ class GameCreator {
     }
 
     int j = -1;
-    while (sectors.length < 13) {
+    while (sectors.length < gameSettings.numOfPlanets) {
       j += 1;
       final hex = _nextHex(j);
       for (final s in sectors) {

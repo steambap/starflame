@@ -5,8 +5,10 @@ import "resource.dart";
 import "ship_hull.dart";
 import "empire.dart";
 import "hex.dart";
+import "sim_props.dart";
+import "data/tech.dart";
 
-class PlayerState with ChangeNotifier {
+class PlayerState with ChangeNotifier, SimObject {
   static const double foodMax = 50;
 
   final int playerNumber;
@@ -24,6 +26,7 @@ class PlayerState with ChangeNotifier {
   int maxTransport = 3;
   final List<ShipHull> hulls = [];
   final Set<Hex> vision = {};
+  final Set<String> techs = {};
 
   PlayerState(this.playerNumber, this.isAI);
 
@@ -44,6 +47,13 @@ class PlayerState with ChangeNotifier {
   }
 
   void refreshStatus() {
+    notifyListeners();
+  }
+
+  void addTech(String techId) {
+    assert(techMap.containsKey(techId), "Tech $techId not found");
+    techs.add(techId);
+    props.addAll(techMap[techId]!.effects);
     notifyListeners();
   }
 }
