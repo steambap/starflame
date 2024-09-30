@@ -33,7 +33,7 @@ final hexBorderPaint = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 1
   ..color = darkGray.withAlpha(128);
-final highlighterPaint = Paint()..color = blue.withAlpha(255);
+final highlighterPaint = Paint()..color = blue.withAlpha(128);
 final moveendPaint = Paint()..color = purple.withAlpha(128);
 final targetPaint = Paint()..color = red.withAlpha(128);
 final emptyPaint = Paint()

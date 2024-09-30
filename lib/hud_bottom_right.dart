@@ -6,89 +6,48 @@ import "styles.dart";
 import "async_updated_ui.dart";
 import 'research_overlay.dart';
 import "components/advanced_button.dart";
-import "components/row_container.dart";
-import "components/rrect.dart";
 
 class HudBottomRight extends PositionComponent
     with HasGameRef<ScifiGame>, HasVisibility, AsyncUpdatedUi {
   static final iconButtonSize = Vector2(24, 24);
 
   final AdvancedButton _research = AdvancedButton(
-    size: iconButtonSize,
-    defaultSkin: RowContainer(children: [
-      TextComponent(text: "Research", textRenderer: label12),
-      PositionComponent(size: iconButtonSize, children: [
-        RRectangle(size: iconButtonSize, paint: iconButtonBorder),
-        TextComponent(
-            text: "R",
-            textRenderer: label12,
-            position: iconButtonSize / 2,
-            anchor: Anchor.center),
-      ]),
-    ]),
-    hoverSkin: RowContainer(children: [
-      TextComponent(text: "Research", textRenderer: label12),
-      PositionComponent(size: iconButtonSize, children: [
-        RRectangle(size: iconButtonSize, paint: iconButtonBorderHover),
-        TextComponent(
-            text: "R",
-            textRenderer: label12,
-            position: iconButtonSize / 2,
-            anchor: Anchor.center),
-      ]),
-    ]),
+    size: circleIconSize,
+    defaultSkin: CircleComponent(
+      radius: circleIconSize.x / 2,
+      paintLayers: shipBtnSkin,
+    ),
+    hoverSkin: CircleComponent(
+      radius: circleIconSize.x / 2,
+      paintLayers: shipBtnHoverSkin,
+    ),
+    defaultLabel: TextComponent(text: "\u48bb", textRenderer: icon16pale),
   );
 
   final AdvancedButton _shipDesign = AdvancedButton(
-    size: iconButtonSize,
-    defaultSkin: RowContainer(children: [
-      TextComponent(text: "Ship Design", textRenderer: label12),
-      PositionComponent(size: iconButtonSize, children: [
-        RRectangle(size: iconButtonSize, paint: iconButtonBorder),
-        TextComponent(
-            text: "U",
-            textRenderer: label12,
-            position: iconButtonSize / 2,
-            anchor: Anchor.center),
-      ]),
-    ]),
-    hoverSkin: RowContainer(children: [
-      TextComponent(text: "Ship Design", textRenderer: label12),
-      PositionComponent(size: iconButtonSize, children: [
-        RRectangle(size: iconButtonSize, paint: iconButtonBorderHover),
-        TextComponent(
-            text: "U",
-            textRenderer: label12,
-            position: iconButtonSize / 2,
-            anchor: Anchor.center),
-      ]),
-    ]),
+    size: circleIconSize,
+    defaultSkin: CircleComponent(
+      radius: circleIconSize.x / 2,
+      paintLayers: shipBtnSkin,
+    ),
+    hoverSkin: CircleComponent(
+      radius: circleIconSize.x / 2,
+      paintLayers: shipBtnHoverSkin,
+    ),
+    defaultLabel: TextComponent(text: "\u424c", textRenderer: icon16pale),
   );
 
   final AdvancedButton _build = AdvancedButton(
-    size: iconButtonSize,
-    defaultSkin: RowContainer(children: [
-      TextComponent(text: "Build", textRenderer: label12),
-      PositionComponent(size: iconButtonSize, children: [
-        RRectangle(size: iconButtonSize, paint: iconButtonBorder),
-        TextComponent(
-            text: "B",
-            textRenderer: label12,
-            position: iconButtonSize / 2,
-            anchor: Anchor.center),
-      ]),
-    ]),
-    hoverSkin: RowContainer(children: [
-      TextComponent(text: "Build", textRenderer: label12),
-      PositionComponent(size: iconButtonSize, children: [
-        RRectangle(size: iconButtonSize, paint: iconButtonBorderHover),
-        TextComponent(
-            text: "B",
-            textRenderer: label12,
-            position: iconButtonSize / 2,
-            anchor: Anchor.center),
-      ]),
-    ]),
+    size: circleIconSize,
+    defaultSkin: CircleComponent(
+      radius: circleIconSize.x / 2,
+      paintLayers: shipBtnSkin,
+    ),
+    hoverSkin: CircleComponent(
+      radius: circleIconSize.x / 2,
+      paintLayers: shipBtnHoverSkin,
+    ),
+    defaultLabel: TextComponent(text: "\u4a95", textRenderer: icon16pale),
   );
 
   @override
@@ -111,14 +70,11 @@ class HudBottomRight extends PositionComponent
 
   @override
   void updateRender() {
-    final dy = game.size.y - iconButtonSize.y - 8;
+    final dy = game.size.y - navbarHeight - circleIconSize.y - 8;
 
-    _shipDesign.size = _shipDesign.defaultSkin?.size ?? iconButtonSize;
-    _shipDesign.position = Vector2(game.size.x - 116 - _shipDesign.size.x, dy);
-    _research.size = _research.defaultSkin?.size ?? iconButtonSize;
+    _shipDesign.position = Vector2(game.size.x - 124 - _shipDesign.size.x, dy);
     _research.position =
         Vector2(_shipDesign.position.x - 4 - _research.size.x, dy);
-    _build.size = _build.defaultSkin?.size ?? iconButtonSize;
     _build.position = Vector2(_research.position.x - 4 - _build.size.x, dy);
   }
 

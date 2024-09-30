@@ -127,7 +127,6 @@ class Sector extends PositionComponent
 
   void refreshProps() {
     props.clear();
-    addProp(SimProps.maintainceCost, 1);
     for (final slot in workerSlots()) {
       if (slot.isOccupied) {
         switch (slot.type) {

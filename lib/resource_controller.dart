@@ -28,7 +28,6 @@ class ResourceController {
     for (final planet in game.mapGrid.sectors) {
       if (planet.playerNumber == state.playerNumber) {
         income += Resources(
-          maintaince: planet.getProp(SimProps.maintainceCost).floor(),
           production: planet.getProp(SimProps.production).floor(),
           credit: planet.getProp(SimProps.credit).floor(),
           science: planet.getProp(SimProps.science).floor(),

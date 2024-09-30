@@ -9,7 +9,6 @@ class SimProps {
   static const Property production = 'production';
   static const Property credit = 'credit';
   static const Property science = 'science';
-  static const Property maintainceCost = 'maintainceCost';
 }
 
 mixin SimObject {
