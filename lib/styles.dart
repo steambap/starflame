@@ -81,10 +81,16 @@ final icon16yellow = TextPaint(
     style: const TextStyle(color: yellow, fontSize: 16, fontFamily: "Icon"));
 final icon16blue = TextPaint(
     style: const TextStyle(color: blue, fontSize: 16, fontFamily: "Icon"));
+final icon16purple = TextPaint(
+    style: const TextStyle(color: purple, fontSize: 16, fontFamily: "Icon"));
 final icon16pale = TextPaint(
     style: const TextStyle(color: pale, fontSize: 16, fontFamily: "Icon"));
 
+final supportSlot = Paint()..color = purple;
 final miningSlot = Paint()..color = red;
 final economySlot = Paint()..color = yellow;
 final labSlot = Paint()..color = blue;
-final anySlot = Paint()..color = gray;
+final unoccupiedSlot = Paint()..color = darkGray;
+
+final tabDefault = Paint()..color = gray;
+final tabHover = Paint()..color = pale;

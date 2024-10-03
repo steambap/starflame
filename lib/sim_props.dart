@@ -6,6 +6,7 @@ class SimProps {
   static const Property allowTachyonSource = 'allowTachyonSource';
   static const Property allowTachyonDrive = 'allowTachyonDrive';
 
+  static const Property support = 'support';
   static const Property production = 'production';
   static const Property credit = 'credit';
   static const Property science = 'science';

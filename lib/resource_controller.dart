@@ -16,18 +16,18 @@ class ResourceController {
   void runProduction(int playerNumber) {
     final playerState = game.controller.getPlayerState(playerNumber);
 
-    final income = playerIncome(playerState) +
-        Resources(transport: playerState.maxTransport);
+    final income = playerIncome(playerState);
 
-    playerState.addResource(income);
+    playerState.onNewTurn(income);
   }
 
   Resources playerIncome(PlayerState state) {
-    Resources income = const Resources();
+    Resources income = const Resources(support: 6);
 
     for (final planet in game.mapGrid.sectors) {
       if (planet.playerNumber == state.playerNumber) {
         income += Resources(
+          support: planet.getProp(SimProps.support).floor() - 1,
           production: planet.getProp(SimProps.production).floor(),
           credit: planet.getProp(SimProps.credit).floor(),
           science: planet.getProp(SimProps.science).floor(),
@@ -51,7 +51,7 @@ class ResourceController {
   bool canCreateShip(int playerNumber, ShipHull hull) {
     final playerState = game.controller.getPlayerState(playerNumber);
 
-    return playerState.production >= hull.cost;
+    return playerState.canTakeAction() && playerState.production >= hull.cost;
   }
 
   bool createShip(Cell cell, int playerNumber, ShipHull hull) {
@@ -63,7 +63,7 @@ class ResourceController {
     }
 
     final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.addResource(Resources(production: -hull.cost));
+    playerState.takeAction(Resources(production: -hull.cost));
 
     game.mapGrid.createShipAt(cell, playerNumber, hull);
 
@@ -71,9 +71,7 @@ class ResourceController {
   }
 
   bool canCapture(int playerNumber) {
-    final pState = game.controller.getPlayerState(playerNumber);
-
-    return pState.transport > 0;
+    return true;
   }
 
   void capture(int playerNumber, Cell cell) {
@@ -81,15 +79,13 @@ class ResourceController {
       return;
     }
 
-    final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.addResource(const Resources(transport: -1));
     cell.sector?.colonize(playerNumber);
   }
 
   bool canPlaceWorker(int playerNumber) {
     final pState = game.controller.getPlayerState(playerNumber);
 
-    return pState.transport > 0;
+    return pState.canTakeAction();
   }
 
   void placeWorker(
@@ -99,12 +95,16 @@ class ResourceController {
     }
 
     final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.addResource(const Resources(transport: -1));
+    playerState.takeAction(const Resources());
     sector.placeWorker(playerState, slot, type);
   }
 
   void switchWorker(
       int playerNumber, Sector sector, WorkerSlot slot, WorkerType type) {
+    if (!canPlaceWorker(playerNumber)) {
+      return;
+    }
+
     final playerState = game.controller.getPlayerState(playerNumber);
     sector.switchWorker(playerState, slot, type);
   }
@@ -121,7 +121,7 @@ class ResourceController {
       return false;
     }
 
-    return playerState.science >= tech.cost;
+    return playerState.canTakeAction() && playerState.science >= tech.cost;
   }
 
   void doResearch(int playerNumber, String techId) {
@@ -132,7 +132,7 @@ class ResourceController {
     }
 
     final tech = techMap[techId]!;
-    playerState.addResource(Resources(science: -tech.cost));
+    playerState.takeAction(Resources(science: -tech.cost));
     playerState.addTech(techId);
   }
 }

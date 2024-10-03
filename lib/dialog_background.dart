@@ -23,6 +23,6 @@ class DialogBackground extends RectangleComponent
     if (keysPressed.contains(LogicalKeyboardKey.escape)) {
       onClick?.call();
     }
-    return true;
+    return false;
   }
 }

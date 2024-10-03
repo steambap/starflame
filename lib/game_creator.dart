@@ -31,43 +31,49 @@ List<Hex> generateHexMap(int qMax) {
 List<List<Planet>> generatePlanets() {
   final List<List<Planet>> planets = [
     // Inner
-    [Planet.economy10(), Planet.mining11()],
-    [Planet.economy10(), Planet.lab10()],
-    [Planet.economy11(), Planet.lab11()],
-    [Planet.economy10(), Planet.lab10(), Planet.mining01()],
-    [Planet.lab10(), Planet.mining10()],
-    [Planet.economy10(), Planet.lab01(), Planet.mining01()],
-    [Planet.economy10(), Planet.lab01(), Planet.gas10()],
-    [Planet.economy10(), Planet.mining10()],
-    [Planet.economy01(), Planet.gas01()],
+    [Planet.desert10(), Planet.iron11()],
+    [Planet.terran(), Planet.ice10()],
+    [Planet.desert10(), Planet.ice10()],
+    [Planet.desert11(), Planet.ice11()],
+    [Planet.desert10(), Planet.ice10(), Planet.iron01()],
+    [Planet.ice10(), Planet.iron10()],
+    [Planet.desert10(), Planet.ice01(), Planet.iron01()],
+    [Planet.desert10(), Planet.ice01(), Planet.gas10()],
+    [Planet.desert10(), Planet.iron10()],
+    [Planet.desert01(), Planet.gas01()],
     // Middle
-    [Planet.economy10(), Planet.mining10()],
-    [Planet.lab11()],
-    [Planet.economy01(), Planet.lab10(), Planet.mining10()],
-    [Planet.economy01(), Planet.mining01(), Planet.gas10()],
-    [Planet.economy11(), Planet.lab01()],
-    [Planet.mining10()],
-    [Planet.economy10(), Planet.lab10()],
-    [Planet.economy10(), Planet.mining10()],
-    [Planet.economy10(), Planet.mining01(), Planet.gas10()],
-    [Planet.lab10(), Planet.mining01(), Planet.gas01()],
+    [Planet.desert10(), Planet.iron10()],
+    [Planet.ice11()],
+    [Planet.desert01(), Planet.ice10(), Planet.iron10()],
+    [Planet.desert01(), Planet.iron01(), Planet.gas10()],
+    [Planet.desert11(), Planet.ice01()],
+    [Planet.iron10()],
+    [Planet.desert10(), Planet.ice10()],
+    [Planet.desert10(), Planet.iron10()],
+    [Planet.desert10(), Planet.iron01(), Planet.gas10()],
+    [Planet.ice10(), Planet.iron01(), Planet.gas01()],
     // Outer
-    [Planet.economy10(), Planet.lab10(), Planet.mining01()],
-    [Planet.economy01(), Planet.lab01(), Planet.mining10()],
-    [Planet.economy01(), Planet.lab01(), Planet.gas10()],
-    [Planet.economy01(), Planet.mining10()],
-    [Planet.lab10(), Planet.mining10()],
-    [Planet.economy10(), Planet.mining10()],
-    [Planet.economy10(), Planet.lab01()],
-    [Planet.lab10(), Planet.mining01()],
-    [Planet.economy10(), Planet.lab01()],
-    [Planet.lab10(), Planet.mining10()],
-    [Planet.mining10()],
-    [Planet.mining10()],
+    [Planet.desert10(), Planet.ice10(), Planet.iron01()],
+    [Planet.desert01(), Planet.ice01(), Planet.iron10()],
+    [Planet.desert01(), Planet.ice01(), Planet.gas10()],
+    [Planet.desert01(), Planet.iron10()],
+    [Planet.ice10(), Planet.iron10()],
+    [Planet.desert10(), Planet.iron10()],
+    [Planet.desert10(), Planet.ice01()],
+    [Planet.ice10(), Planet.iron01()],
+    [Planet.desert10(), Planet.ice01()],
+    [Planet.ice10(), Planet.iron10()],
+    [Planet.iron10()],
+    [Planet.iron10()],
     [Planet.gas10()],
     [Planet.gas10()],
-    [Planet.economy11()],
-    [Planet.mining01(), Planet.gas10()],
+    [Planet.desert11()],
+    [Planet.iron01(), Planet.gas10()],
+    // Mine
+    [Planet.terran(), Planet.ice10(), Planet.gas01()],
+    [Planet.terran(), Planet.ice11()],
+    [Planet.terran(), Planet.desert01(), Planet.iron11()],
+    [Planet.terran(), Planet.desert01(), Planet.ice10()],
   ];
 
   return planets;
@@ -125,7 +131,7 @@ class GameCreator {
         player.vision.add(cell.hex);
         homes.add(cell.hex);
         final sector = Sector(cell.hex,
-            planets: [Planet.gas10(), Planet.mining10(), Planet.lab11()]);
+            planets: [Planet.terran(), Planet.iron10(), Planet.ice11()]);
         sectors.add(sector);
         cell.sector = sector;
         sector.setHome(player.playerNumber);

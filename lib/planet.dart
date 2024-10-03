@@ -1,32 +1,83 @@
+import 'sim_props.dart';
+
 enum WorkerType {
-  economy,
-  mining,
-  lab,
+  support(output: SimProps.support),
+  economy(output: SimProps.credit),
+  mining(output: SimProps.production),
+  lab(output: SimProps.science);
+
+  const WorkerType({
+    required this.output
+  });
+
+  final Property output;
 }
 
 enum PlanetType {
-  temperate,
-  hot,
-  cold,
+  terran,
+  desert,
+  iron,
+  ice,
   gas,
   orbital,
 }
 
 class WorkerSlot {
-  static const output = 2;
-
-  Set<WorkerType> allowedTypes;
   WorkerType type;
   bool isOccupied;
   bool isAdvanced;
 
-  WorkerSlot(this.allowedTypes,
+  WorkerSlot(
       {this.type = WorkerType.economy,
       this.isOccupied = false,
       this.isAdvanced = false});
 }
 
+int slotOutput(Planet planet, WorkerType wType) {
+  return switch (planet.type) {
+    PlanetType.terran => switch (wType) {
+        WorkerType.support => Planet.output2,
+        WorkerType.economy => Planet.output2,
+        WorkerType.mining => Planet.output1,
+        WorkerType.lab => Planet.output2,
+      },
+    PlanetType.desert => switch (wType) {
+        WorkerType.support => Planet.output1,
+        WorkerType.economy => Planet.output2,
+        WorkerType.mining => Planet.output1,
+        WorkerType.lab => Planet.output1,
+      },
+    PlanetType.iron => switch (wType) {
+        WorkerType.support => Planet.output1,
+        WorkerType.economy => Planet.output1,
+        WorkerType.mining => Planet.output2,
+        WorkerType.lab => Planet.output1,
+      },
+    PlanetType.ice => switch (wType) {
+        WorkerType.support => Planet.output1,
+        WorkerType.economy => Planet.output1,
+        WorkerType.mining => Planet.output1,
+        WorkerType.lab => Planet.output2,
+      },
+    PlanetType.gas => switch (wType) {
+        WorkerType.support => Planet.output1,
+        WorkerType.economy => Planet.output2,
+        WorkerType.mining => Planet.output2,
+        WorkerType.lab => Planet.output2,
+      },
+    PlanetType.orbital => switch (wType) {
+        WorkerType.support => Planet.output1,
+        WorkerType.economy => Planet.output2,
+        WorkerType.mining => Planet.output1,
+        WorkerType.lab => Planet.output2,
+      }
+  };
+}
+
 class Planet {
+  static const output1 = 1;
+  static const output2 = 2;
+
   final List<WorkerSlot> workerSlots;
   final PlanetType type;
   final bool isUnique;
@@ -34,81 +85,85 @@ class Planet {
 
   Planet(this.type, this.workerSlots, {this.isUnique = false});
 
-  factory Planet.economy11() {
-    return Planet(PlanetType.temperate, [
-      WorkerSlot({WorkerType.economy}),
-      WorkerSlot({WorkerType.economy}, isAdvanced: true),
+  factory Planet.terran() {
+    return Planet(PlanetType.terran, [
+      WorkerSlot(),
+      WorkerSlot(),
     ]);
   }
 
-  factory Planet.economy10() {
-    return Planet(PlanetType.temperate, [
-      WorkerSlot({WorkerType.economy}),
+  factory Planet.desert11() {
+    return Planet(PlanetType.desert, [
+      WorkerSlot(),
+      WorkerSlot(isAdvanced: true),
     ]);
   }
 
-  factory Planet.economy01() {
-    return Planet(PlanetType.temperate, [
-      WorkerSlot({WorkerType.economy}, isAdvanced: true),
+  factory Planet.desert10() {
+    return Planet(PlanetType.desert, [
+      WorkerSlot(),
     ]);
   }
 
-  factory Planet.mining11() {
-    return Planet(PlanetType.hot, [
-      WorkerSlot({WorkerType.mining}, type: WorkerType.mining),
-      WorkerSlot({WorkerType.mining},
-          type: WorkerType.mining, isAdvanced: true),
+  factory Planet.desert01() {
+    return Planet(PlanetType.desert, [
+      WorkerSlot(isAdvanced: true),
     ]);
   }
 
-  factory Planet.mining10() {
-    return Planet(PlanetType.hot, [
-      WorkerSlot({WorkerType.mining}, type: WorkerType.mining),
+  factory Planet.iron11() {
+    return Planet(PlanetType.iron, [
+      WorkerSlot(type: WorkerType.mining),
+      WorkerSlot(type: WorkerType.mining, isAdvanced: true),
     ]);
   }
 
-  factory Planet.mining01() {
-    return Planet(PlanetType.hot, [
-      WorkerSlot({WorkerType.mining},
-          type: WorkerType.mining, isAdvanced: true),
+  factory Planet.iron10() {
+    return Planet(PlanetType.iron, [
+      WorkerSlot(type: WorkerType.mining),
     ]);
   }
 
-  factory Planet.lab11() {
-    return Planet(PlanetType.cold, [
-      WorkerSlot({WorkerType.lab}, type: WorkerType.lab),
-      WorkerSlot({WorkerType.lab}, type: WorkerType.lab, isAdvanced: true),
+  factory Planet.iron01() {
+    return Planet(PlanetType.iron, [
+      WorkerSlot(type: WorkerType.mining, isAdvanced: true),
     ]);
   }
 
-  factory Planet.lab10() {
-    return Planet(PlanetType.cold, [
-      WorkerSlot({WorkerType.lab}, type: WorkerType.lab),
+  factory Planet.ice11() {
+    return Planet(PlanetType.ice, [
+      WorkerSlot(type: WorkerType.lab),
+      WorkerSlot(type: WorkerType.lab, isAdvanced: true),
     ]);
   }
 
-  factory Planet.lab01() {
-    return Planet(PlanetType.cold, [
-      WorkerSlot({WorkerType.lab}, type: WorkerType.lab, isAdvanced: true),
+  factory Planet.ice10() {
+    return Planet(PlanetType.ice, [
+      WorkerSlot(type: WorkerType.lab),
+    ]);
+  }
+
+  factory Planet.ice01() {
+    return Planet(PlanetType.ice, [
+      WorkerSlot(type: WorkerType.lab, isAdvanced: true),
     ]);
   }
 
   factory Planet.gas10() {
     return Planet(PlanetType.gas, [
-      WorkerSlot({WorkerType.economy, WorkerType.mining, WorkerType.lab}),
+      WorkerSlot(),
     ]);
   }
 
   factory Planet.gas01() {
     return Planet(PlanetType.gas, [
-      WorkerSlot({WorkerType.economy, WorkerType.mining, WorkerType.lab},
-          isAdvanced: true),
+      WorkerSlot(isAdvanced: true),
     ]);
   }
 
   factory Planet.orbital() {
     return Planet(PlanetType.orbital, [
-      WorkerSlot({WorkerType.economy, WorkerType.lab}),
+      WorkerSlot(),
     ]);
   }
 }

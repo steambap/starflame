@@ -12,7 +12,6 @@ import "components/col_container.dart";
 class WorkerSelectDialog extends ValueRoute<WorkerType>
     with HasGameRef<ScifiGame> {
   final String text;
-  final Set<WorkerType> allowedTypes;
 
   late final _prompt = TextComponent(
     text: text,
@@ -22,13 +21,13 @@ class WorkerSelectDialog extends ValueRoute<WorkerType>
   final _col = ColContainer(marginBottom: 8);
 
   WorkerSelectDialog(
-    this.allowedTypes, {
+    {
     this.text = "Select worker type",
-  }) : super(value: allowedTypes.first);
+  }) : super(value: WorkerType.economy);
 
   @override
   Component build() {
-    final buttons = allowedTypes.map((type) => AdvancedButton(
+    final buttons = WorkerType.values.map((type) => AdvancedButton(
           size: menuButtonSize,
           anchor: Anchor.center,
           defaultSkin: RectangleComponent(paint: btnDefault),

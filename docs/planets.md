@@ -1,6 +1,6 @@
 https://deep-fold.itch.io/pixel-planet-generator
 
-1. Terrain - Terrain Wet
+1. Terrain Wet
 Seed:
 934587911
 Color:
@@ -15,7 +15,7 @@ Color:
 #686f99
 #404973
 
-2. Arid - Terrain Dry
+2. Terrain Dry
 Seed:
 8964
 Color:
@@ -25,7 +25,7 @@ Color:
 #7d3833
 #3d2936
 
-3. Swamp - Terrain Wet
+3. Terrain Wet
 Seed:
 4242
 Color:
@@ -40,11 +40,11 @@ Color:
 #686f99
 #404973
 
-4. Lava - Lava
+4. Lava
 Seed:
 105
 
-5. Ice - Ice World
+5. Ice World
 Seed:
 8964
 Color:
@@ -59,7 +59,7 @@ Color:
 #686f99
 #404973
 
-6. Ocean - Islands
+6. Islands
 Seed:
 18249
 Color:
@@ -75,7 +75,7 @@ Color:
 #686f99
 #404973
 
-7. Barren - No Atomsphere
+7. No Atomsphere
 Seed:
 1
 

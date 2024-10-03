@@ -13,10 +13,14 @@ class HudPlayerInfo extends PositionComponent
       RectangleComponent(paintLayers: panelSkin, position: Vector2(-0.5, 0));
   final RowContainer _resourceRow =
       RowContainer(size: Vector2(0, navbarHeight));
-  // final RowContainer _statusRow = RowContainer(size: Vector2(64, 32));
+  final RowContainer _statusRow = RowContainer(size: Vector2(0, navbarHeight));
 
   final _empireColor =
       RectangleComponent(size: Vector2(24, 24), position: Vector2(4, 4));
+
+  final TextComponent _supportIcon =
+      TextComponent(text: "\u49c9", textRenderer: icon16purple);
+  final _supportLabel = TextComponent(text: "0", textRenderer: text12);
 
   final TextComponent _productionIcon =
       TextComponent(text: "\u4a95", textRenderer: icon16red);
@@ -30,9 +34,10 @@ class HudPlayerInfo extends PositionComponent
       TextComponent(text: "\u48bb", textRenderer: icon16blue);
   final _scienceLabel = TextComponent(text: "0", textRenderer: text12);
 
-  final TextComponent _transportIcon =
-      TextComponent(text: "\u3d57", textRenderer: icon16pale);
-  final _transportLabel = TextComponent(text: "0/0", textRenderer: text12);
+  final _supportLabel2 =
+      TextComponent(text: "Next Action Cost: 1", textRenderer: text12);
+  final TextComponent _supportIcon2 =
+      TextComponent(text: "\u49c9", textRenderer: icon16purple);
 
   HudPlayerInfo();
 
@@ -40,19 +45,25 @@ class HudPlayerInfo extends PositionComponent
   FutureOr<void> onLoad() {
     _resourceRow.addAll([
       _empireColor,
+      _supportIcon,
+      _supportLabel,
       _productionIcon,
       _productionLabel,
       _creditIcon,
       _creditLabel,
       _scienceIcon,
       _scienceLabel,
-      _transportIcon,
-      _transportLabel,
     ]);
+    _statusRow.addAll([
+      _supportLabel2,
+      _supportIcon2,
+    ]);
+    _statusRow.layout();
 
     addAll([
       _panel,
       _resourceRow,
+      _statusRow,
     ]);
 
     addListener();
@@ -62,6 +73,7 @@ class HudPlayerInfo extends PositionComponent
   void onGameResize(Vector2 size) {
     position = Vector2(0, size.y - navbarHeight + 0.5);
     _panel.size = Vector2(size.x + 1, navbarHeight);
+    _statusRow.position = Vector2(size.x - _statusRow.size.x - 124, 0);
     super.onGameResize(size);
   }
 
@@ -79,13 +91,15 @@ class HudPlayerInfo extends PositionComponent
     final playerState = game.controller.getHumanPlayerState();
     _empireColor.paint = Paint()..color = playerState.color;
     final income = game.resourceController.humanPlayerIncome();
+    _supportLabel.text = "${playerState.support}+${income.support}";
     _creditLabel.text =
         "${playerState.credit.toInt()}+${income.credit.toInt()}";
     _productionLabel.text = "${playerState.production}+${income.production}";
     _scienceLabel.text = "${playerState.science}+${income.science}";
-    _transportLabel.text =
-        "${playerState.transport}/${playerState.maxTransport}";
+    _supportLabel2.text = "Next Action Cost: ${playerState.nextActionCost}";
+
     _resourceRow.layout();
+    _statusRow.layout();
   }
 
   @override

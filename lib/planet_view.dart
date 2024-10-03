@@ -1,7 +1,6 @@
 // Planet view for sector overlay
 import "dart:async";
-import "dart:math";
-import 'dart:ui' show Canvas, Paint, Rect;
+import 'dart:ui' show Canvas, Paint;
 
 import "package:flame/components.dart";
 
@@ -14,8 +13,7 @@ import "components/advanced_button.dart";
 class SlotCircle extends CircleComponent {
   final WorkerSlot slot;
   late final double innerRadius;
-  late final bool isMultiSlot;
-  late final List<Paint> piePaints;
+  late final Paint piePaints;
 
   SlotCircle(
     this.slot, {
@@ -31,45 +29,27 @@ class SlotCircle extends CircleComponent {
     super.key,
   }) : super(radius: radius) {
     innerRadius = radius - 3;
-    isMultiSlot = slot.allowedTypes.length == 2;
+
     if (slot.isOccupied) {
-      piePaints = [getPaintForType(slot.type)];
-    } else if (slot.allowedTypes.length == 3) {
-      piePaints = [anySlot];
-    } else if (isMultiSlot) {
-      piePaints = slot.allowedTypes.map((t) => getPaintForType(t)).toList();
+      piePaints = getPaintForType(slot.type);
     } else {
-      piePaints = [getPaintForType(slot.type)];
+      piePaints = unoccupiedSlot;
     }
   }
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    if (isMultiSlot) {
-      for (final p in piePaints) {
-        canvas.drawArc(
-            Rect.fromCenter(
-                center: center.toOffset(), width: width, height: height),
-            pi / 2,
-            pi,
-            true,
-            p);
-      }
-    } else {
-      canvas.drawCircle(center.toOffset(), innerRadius, piePaints.first);
-    }
+    canvas.drawCircle(center.toOffset(), innerRadius, piePaints);
   }
 
   static Paint getPaintForType(WorkerType type) {
-    switch (type) {
-      case WorkerType.mining:
-        return miningSlot;
-      case WorkerType.economy:
-        return economySlot;
-      case WorkerType.lab:
-        return labSlot;
-    }
+    return switch (type) {
+      WorkerType.support => supportSlot,
+      WorkerType.mining => miningSlot,
+      WorkerType.economy => economySlot,
+      WorkerType.lab => labSlot
+    };
   }
 }
 
@@ -88,9 +68,10 @@ class PlanetView extends PositionComponent with HasGameRef<ScifiGame> {
   @override
   FutureOr<void> onLoad() {
     final imageName = switch (planet.type) {
-      PlanetType.temperate => "economy.png",
-      PlanetType.hot => "mining.png",
-      PlanetType.cold => "lab.png",
+      PlanetType.terran => "terran.png",
+      PlanetType.desert => "desert.png",
+      PlanetType.iron => "iron.png",
+      PlanetType.ice => "ice.png",
       PlanetType.gas => "gas.png",
       _ => "gas.png",
     };
@@ -124,19 +105,19 @@ class PlanetView extends PositionComponent with HasGameRef<ScifiGame> {
           ? AdvancedButton(
               size: circleIconSize,
               defaultLabel: TextComponent(
-                  text: WorkerSlot.output.toString(), textRenderer: label16),
+                  text: slotOutput(planet, slot.type).toString(),
+                  textRenderer: label16),
               defaultSkin: SlotCircle(slot,
                   radius: circleIconSize.x / 2, paint: iconButtonBorder),
               hoverSkin: SlotCircle(slot,
                   radius: circleIconSize.x / 2, paint: iconButtonBorderHover),
               onReleased: () async {
-                if (slot.allowedTypes.length > 1)  {
-                  final selectedType = await game.router.pushAndWait(
-                    WorkerSelectDialog(slot.allowedTypes),
-                  );
+                final selectedType = await game.router.pushAndWait(
+                  WorkerSelectDialog(
+                      text: "Select worker type for ${planet.name}"),
+                );
 
-                  _onSwitchWorker(slot, selectedType);
-                }
+                _onSwitchWorker(slot, selectedType);
               },
             )
           : AdvancedButton(
@@ -153,15 +134,12 @@ class PlanetView extends PositionComponent with HasGameRef<ScifiGame> {
                   radius: circleIconSize.x / 2,
                   paintLayers: shipBtnDisabledSkin),
               onReleased: () async {
-                if (slot.allowedTypes.length == 1) {
-                  _onPlaceWorker(slot, slot.allowedTypes.first);
-                } else {
-                  final selectedType = await game.router.pushAndWait(
-                    WorkerSelectDialog(slot.allowedTypes),
-                  );
+                final selectedType = await game.router.pushAndWait(
+                  WorkerSelectDialog(
+                      text: "Select worker type for ${planet.name}"),
+                );
 
-                  _onPlaceWorker(slot, selectedType);
-                }
+                _onPlaceWorker(slot, selectedType);
               },
             );
       button.position = Vector2(i * (circleIconSize.x + 8), 168);

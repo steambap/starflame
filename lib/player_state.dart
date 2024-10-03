@@ -18,12 +18,12 @@ class PlayerState with ChangeNotifier, SimObject {
   bool isAlive = true;
   final bool isAI;
   // Resources
+  int support = 0;
   int production = 0;
   int credit = 0;
   int science = 0;
   // Status
-  int transport = 0;
-  int maxTransport = 3;
+  int nextActionCost = 1;
   final List<ShipHull> hulls = [];
   final Set<Hex> vision = {};
   final Set<String> techs = {};
@@ -36,14 +36,27 @@ class PlayerState with ChangeNotifier, SimObject {
   }
 
   void addResource(Resources resource) {
+    support += resource.support;
     production += resource.production;
     credit += resource.credit;
     science += resource.science;
 
-    transport += resource.transport;
-    transport = transport.clamp(0, maxTransport);
-
     notifyListeners();
+  }
+
+  bool canTakeAction() {
+    return support >= nextActionCost;
+  }
+
+  void takeAction(Resources res) {
+    support -= nextActionCost;
+    nextActionCost += 1;
+    addResource(res);
+  }
+
+  void onNewTurn(Resources res) {
+    nextActionCost = 1;
+    addResource(res);
   }
 
   void refreshStatus() {

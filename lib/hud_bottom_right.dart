@@ -34,7 +34,7 @@ class HudBottomRight extends PositionComponent
       radius: circleIconSize.x / 2,
       paintLayers: shipBtnHoverSkin,
     ),
-    defaultLabel: TextComponent(text: "\u424c", textRenderer: icon16pale),
+    defaultLabel: TextComponent(text: "\u4778", textRenderer: icon16pale),
   );
 
   final AdvancedButton _build = AdvancedButton(

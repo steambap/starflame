@@ -66,7 +66,7 @@ class Sector extends PositionComponent
           initialAngle: orbitRadius + displayName.length);
       _orbits.add(orbit);
     }
-    // nameLabel.text = displayName;
+
     addAll([ownerHex, ..._orbits, nameLabel]);
 
     refreshProps();
@@ -127,18 +127,10 @@ class Sector extends PositionComponent
 
   void refreshProps() {
     props.clear();
-    for (final slot in workerSlots()) {
-      if (slot.isOccupied) {
-        switch (slot.type) {
-          case WorkerType.economy:
-            addProp(SimProps.credit, WorkerSlot.output);
-            break;
-          case WorkerType.mining:
-            addProp(SimProps.production, WorkerSlot.output);
-            break;
-          case WorkerType.lab:
-            addProp(SimProps.science, WorkerSlot.output);
-            break;
+    for (final p in planets) {
+      for (final slot in p.workerSlots) {
+        if (slot.isOccupied) {
+          addProp(slot.type.output, slotOutput(p, slot.type));
         }
       }
     }
@@ -163,9 +155,6 @@ class Sector extends PositionComponent
       return false;
     }
 
-    if (slot.allowedTypes.contains(type) == false) {
-      return false;
-    }
     if (slot.isOccupied) {
       return false;
     }
@@ -185,9 +174,6 @@ class Sector extends PositionComponent
       return false;
     }
 
-    if (slot.allowedTypes.contains(type) == false) {
-      return false;
-    }
     if (!slot.isOccupied) {
       return false;
     }

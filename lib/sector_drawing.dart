@@ -3,7 +3,7 @@ import 'package:flame/geometry.dart';
 import "package:flame/components.dart";
 
 import "planet.dart";
-import "theme.dart" show yellow, red, blue, gray, transparentBlue;
+import "theme.dart" show green, yellow, red, blue, gray, transparentBlue;
 
 class MiniPlanet extends PositionComponent {
   MiniPlanet({
@@ -13,9 +13,10 @@ class MiniPlanet extends PositionComponent {
     super.children,
   }) {
     _paint.color = switch (type) {
-      PlanetType.temperate => yellow,
-      PlanetType.hot => red,
-      PlanetType.cold => blue,
+      PlanetType.terran => green,
+      PlanetType.desert => yellow,
+      PlanetType.iron => red,
+      PlanetType.ice => blue,
       _ => gray,
     };
   }
