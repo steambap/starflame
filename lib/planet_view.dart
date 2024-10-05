@@ -123,9 +123,9 @@ class PlanetView extends PositionComponent with HasGameRef<ScifiGame> {
           : AdvancedButton(
               size: circleIconSize,
               defaultLabel:
-                  TextComponent(text: "\u454c", textRenderer: icon16pale),
+                  TextComponent(text: "\ue141", textRenderer: icon16pale),
               disabledLabel:
-                  TextComponent(text: "\u47ca", textRenderer: icon16pale),
+                  TextComponent(text: "\ue10f", textRenderer: icon16pale),
               defaultSkin: SlotCircle(slot,
                   radius: circleIconSize.x / 2, paint: iconButtonBorder),
               hoverSkin: SlotCircle(slot,

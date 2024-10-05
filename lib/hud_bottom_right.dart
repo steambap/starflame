@@ -21,7 +21,7 @@ class HudBottomRight extends PositionComponent
       radius: circleIconSize.x / 2,
       paintLayers: shipBtnHoverSkin,
     ),
-    defaultLabel: TextComponent(text: "\u48bb", textRenderer: icon16pale),
+    defaultLabel: TextComponent(text: "\ue0db", textRenderer: icon16pale),
   );
 
   final AdvancedButton _shipDesign = AdvancedButton(
@@ -34,7 +34,7 @@ class HudBottomRight extends PositionComponent
       radius: circleIconSize.x / 2,
       paintLayers: shipBtnHoverSkin,
     ),
-    defaultLabel: TextComponent(text: "\u4778", textRenderer: icon16pale),
+    defaultLabel: TextComponent(text: "\ue451", textRenderer: icon16pale),
   );
 
   final AdvancedButton _build = AdvancedButton(
@@ -47,7 +47,7 @@ class HudBottomRight extends PositionComponent
       radius: circleIconSize.x / 2,
       paintLayers: shipBtnHoverSkin,
     ),
-    defaultLabel: TextComponent(text: "\u4a95", textRenderer: icon16pale),
+    defaultLabel: TextComponent(text: "\ue1b1", textRenderer: icon16pale),
   );
 
   @override

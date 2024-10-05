@@ -1,8 +1,8 @@
 import 'dart:ui' show PaintingStyle, Paint, Color;
-import "package:flutter/painting.dart" show TextStyle;
 import "package:flutter/material.dart" show Colors;
 import "package:flame/game.dart";
 import "package:flame/rendering.dart";
+import 'package:flame/text.dart';
 
 import "theme.dart";
 
@@ -62,6 +62,7 @@ final btnDefault = Paint()..color = darkGray;
 final btnHover = Paint()..color = pale;
 final primarySize = Vector2(100, 48);
 final secondartSize = Vector2(100, 32);
+final iconButtonSize = Vector2(120, 32);
 final menuButtonSize = Vector2(160, 32);
 final circleIconSize = Vector2(36, 36);
 const navbarHeight = 32.0;

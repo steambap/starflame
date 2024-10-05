@@ -26,7 +26,7 @@ class HudShipCommand extends PositionComponent
       position: Vector2(4, panelTitleSize.y / 2));
 
   final _row1 = RowContainer(size: Vector2.zero(), position: Vector2(4, 40));
-  final _moveIcon = TextComponent(text: "\u445e", textRenderer: icon16pale);
+  final _moveIcon = TextComponent(text: "\ue127", textRenderer: icon16pale);
   final _movement = TextComponent(text: "0", textRenderer: text12);
 
   final List<AdvancedButton> _shipActionButtons = [];

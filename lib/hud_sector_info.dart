@@ -29,15 +29,15 @@ class HudSectorInfo extends PositionComponent
       RowContainer(size: Vector2.zero(), position: Vector2(4, 40));
 
   final TextComponent _productionIcon =
-      TextComponent(text: "\u4a95", textRenderer: icon16red);
+      TextComponent(text: "\ue1b1", textRenderer: icon16red);
   final _productionLabel = TextComponent(text: "0", textRenderer: text12);
 
   final TextComponent _creditIcon =
-      TextComponent(text: "\u3fde", textRenderer: icon16yellow);
+      TextComponent(text: "\ue0bc", textRenderer: icon16yellow);
   final _creditLabel = TextComponent(text: "0", textRenderer: text12);
 
   final TextComponent _scienceIcon =
-      TextComponent(text: "\u48bb", textRenderer: icon16blue);
+      TextComponent(text: "\ue0db", textRenderer: icon16blue);
   final _scienceLabel = TextComponent(text: "0", textRenderer: text12);
 
   final List<AdvancedButton> _sectorActionButtons = [];
@@ -115,7 +115,7 @@ class HudSectorInfo extends PositionComponent
       size: circleIconSize,
       anchor: Anchor.center,
       defaultLabel: TextComponent(
-        text: "\u46c2",
+        text: "\ue3eb",
         textRenderer: icon16pale,
       ),
       defaultSkin: CircleComponent(

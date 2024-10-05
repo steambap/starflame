@@ -32,4 +32,4 @@ flutter:
         - asset: fonts/ChakraPetch-Light.ttf
     - family: Icon
       fonts:
-        - asset: fonts/hgi-stroke-rounded.ttf
+        - asset: fonts/lucide.ttf

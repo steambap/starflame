@@ -1,4 +1,5 @@
 import "dart:async";
+import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flame/components.dart';
 import "package:flame/game.dart";
@@ -9,7 +10,6 @@ import "scifi_game.dart";
 import "styles.dart";
 import "hud_player_info.dart";
 import "components/advanced_button.dart";
-import "hud_page.dart";
 import "research.dart";
 import "data/tech.dart";
 
@@ -21,7 +21,7 @@ class TechButton extends AdvancedButton {
     textRenderer: label12,
     priority: 1,
   );
-  late final TextBoxComponent _desc;
+  late final ScrollTextBoxComponent _desc;
 
   TechButton(this.tech,
       {super.size,
@@ -34,12 +34,13 @@ class TechButton extends AdvancedButton {
   @override
   Future<void> onLoad() {
     _title.text = tech.displayName;
-    _desc = TextBoxComponent(
+    _desc = ScrollTextBoxComponent(
       size: Vector2(size.x, 56),
       text: tech.description,
-      position: Vector2(0, 20),
+      position: Vector2(0, 24),
       textRenderer: text12,
       priority: 1,
+      pixelRatio: PlatformDispatcher.instance.views.first.devicePixelRatio,
     );
     addAll([
       _title,
@@ -226,9 +227,7 @@ class ResearchOverlay extends Route with HasGameRef<ScifiGame> {
               TextComponent(text: "Close", textRenderer: heading20DarkGray),
           defaultSkin: RectangleComponent(paint: btnDefault),
           hoverSkin: RectangleComponent(paint: btnHover),
-          onReleased: () {
-            game.router.popUntilNamed(HudPage.routeName);
-          },
+          onReleased: game.controller.popAll,
         ),
       ],
     );

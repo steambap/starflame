@@ -14,7 +14,7 @@ class AddShipButton extends AdvancedButton with HasGameRef<ScifiGame> {
   late final SpriteComponent _tSprite;
   final TextComponent _prodIcon = TextComponent(
       position: Vector2(2, 68),
-      text: "\u4a95",
+      text: "\ue1b1",
       textRenderer: icon16red,
       priority: 1);
   late final TextComponent _prodText;

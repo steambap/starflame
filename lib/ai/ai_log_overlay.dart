@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import "package:flame/components.dart";
 import 'package:flame/game.dart';
 
@@ -29,6 +31,7 @@ class AiLogOverlay extends Route with HasGameRef<ScifiGame> {
           textRenderer: text12,
           position: Vector2(0, -160),
           anchor: Anchor.topCenter,
+          pixelRatio: PlatformDispatcher.instance.views.first.devicePixelRatio,
         ),
         AdvancedButton(
             size: secondartSize,

@@ -60,7 +60,7 @@ class Capture extends Action {
   @override
   PositionComponent getLabel(ScifiGame game) {
     return TextComponent(
-      text: "\u43f4",
+      text: "\ue52d",
       textRenderer: icon16pale,
     );
   }
@@ -88,7 +88,7 @@ class Stay extends Action {
   @override
   PositionComponent getLabel(ScifiGame game) {
     return TextComponent(
-      text: "\u4907",
+      text: "\ue070",
       textRenderer: icon16pale,
     );
   }

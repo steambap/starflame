@@ -19,25 +19,25 @@ class HudPlayerInfo extends PositionComponent
       RectangleComponent(size: Vector2(24, 24), position: Vector2(4, 4));
 
   final TextComponent _supportIcon =
-      TextComponent(text: "\u49c9", textRenderer: icon16purple);
+      TextComponent(text: "\ue467", textRenderer: icon16purple);
   final _supportLabel = TextComponent(text: "0", textRenderer: text12);
 
   final TextComponent _productionIcon =
-      TextComponent(text: "\u4a95", textRenderer: icon16red);
+      TextComponent(text: "\ue1b1", textRenderer: icon16red);
   final _productionLabel = TextComponent(text: "0", textRenderer: text12);
 
   final TextComponent _creditIcon =
-      TextComponent(text: "\u3fde", textRenderer: icon16yellow);
+      TextComponent(text: "\ue0bc", textRenderer: icon16yellow);
   final _creditLabel = TextComponent(text: "0", textRenderer: text12);
 
   final TextComponent _scienceIcon =
-      TextComponent(text: "\u48bb", textRenderer: icon16blue);
+      TextComponent(text: "\ue0db", textRenderer: icon16blue);
   final _scienceLabel = TextComponent(text: "0", textRenderer: text12);
 
   final _supportLabel2 =
       TextComponent(text: "Next Action Cost: 1", textRenderer: text12);
   final TextComponent _supportIcon2 =
-      TextComponent(text: "\u49c9", textRenderer: icon16purple);
+      TextComponent(text: "\ue467", textRenderer: icon16purple);
 
   HudPlayerInfo();
 

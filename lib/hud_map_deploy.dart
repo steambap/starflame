@@ -4,6 +4,7 @@ import 'package:flame/events.dart';
 import "scifi_game.dart";
 import 'add_ship_button.dart';
 import 'select_control.dart';
+import 'styles.dart';
 
 // Container for both create ship and active ability on map
 class HudMapDeploy extends PositionComponent
@@ -19,7 +20,7 @@ class HudMapDeploy extends PositionComponent
     _clip = ClipComponent.rectangle(
         position: Vector2(
           8,
-          game.size.y - AddShipButton.buttonSize.y - 8,
+          game.size.y - AddShipButton.buttonSize.y - navbarHeight - 8,
         ),
         size: Vector2(
           game.size.x - 200,

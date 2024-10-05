@@ -3,7 +3,12 @@ import 'package:flame/components.dart';
 import '../layouter.dart';
 
 class RowContainer extends PositionComponent implements Layouter {
+  final double columnSize;
+  final double columnGap;
+
   RowContainer({
+    this.columnSize = 0,
+    this.columnGap = 4,
     super.position,
     super.size,
     super.scale,
@@ -32,10 +37,10 @@ class RowContainer extends PositionComponent implements Layouter {
         continue;
       }
 
-      final size = child.size;
       child.position = Vector2(dx, y);
       child.anchor = Anchor.centerLeft;
-      dx += size.x + 4;
+      final w = columnSize > 0 ? columnSize : child.size.x;
+      dx += w + columnGap;
     }
 
     size = Vector2(dx, size.y);
