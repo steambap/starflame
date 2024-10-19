@@ -1,7 +1,7 @@
 import "dart:convert";
 import 'package:test/test.dart';
 
-import "package:starfury/sim_props.dart";
+import "package:starflame/sim_props.dart";
 
 class SimTest with SimObject {}
 

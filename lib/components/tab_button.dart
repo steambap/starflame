@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
-import 'package:starfury/styles.dart';
 
+import '../styles.dart';
 import 'advanced_button.dart';
 
 class TabButton extends AdvancedButton {

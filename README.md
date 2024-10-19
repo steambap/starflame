@@ -1,3 +1,3 @@
-# starfury
+# starflame
 
-A new Flutter project.
+A space strategy game.

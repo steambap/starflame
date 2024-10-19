@@ -1,4 +1,4 @@
-import 'package:starfury/hex.dart';
+import 'package:starflame/hex.dart';
 import 'package:test/test.dart';
 
 void main() {

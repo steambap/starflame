@@ -3,7 +3,7 @@ import "package:flame/components.dart";
 import "styles.dart";
 import "scifi_game.dart";
 import "components/advanced_button.dart";
-import "side_menu_overlay.dart";
+import "widgets/in_game_menu.dart";
 
 class HudMenuButton extends AdvancedButton with HasGameRef<ScifiGame> {
   HudMenuButton()
@@ -21,7 +21,7 @@ class HudMenuButton extends AdvancedButton with HasGameRef<ScifiGame> {
   @override
   Future<void> onLoad() {
     onReleased = () {
-      game.router.pushRoute(SideMenuOverlay());
+      game.overlays.add(InGameMenu.id);
     };
     return super.onLoad();
   }

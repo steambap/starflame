@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flame/components.dart';
-import 'package:starfury/select_control.dart';
 
+import 'select_control.dart';
 import 'scifi_game.dart';
 import 'ship.dart';
 import "async_updated_ui.dart";

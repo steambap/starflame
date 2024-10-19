@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "starfury" "\0"
+            VALUE "CompanyName", "Weilin Shi" "\0"
+            VALUE "FileDescription", "starflame" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "starfury" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "starfury.exe" "\0"
-            VALUE "ProductName", "starfury" "\0"
+            VALUE "InternalName", "starflame" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 Weilin Shi. All rights reserved." "\0"
+            VALUE "OriginalFilename", "starflame.exe" "\0"
+            VALUE "ProductName", "starflame" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

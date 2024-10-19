@@ -12,7 +12,6 @@ import "game_settings.dart";
 import "resource_controller.dart";
 import 'hud_ship_cmd.dart';
 import "hud_sector_info.dart";
-import "start_page.dart";
 import 'hud_page.dart';
 import "ai/ai_controller.dart";
 import "combat_resolver.dart";
@@ -39,7 +38,6 @@ class ScifiGame extends FlameGame<ScifiWorld>
   late final RouterComponent router = RouterComponent(
     routes: {
       HudPage.routeName: Route(() => hud),
-      StartPage.routeName: Route(StartPage.new),
     },
     initialRoute: HudPage.routeName,
   );

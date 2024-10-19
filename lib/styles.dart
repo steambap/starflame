@@ -1,5 +1,4 @@
-import 'dart:ui' show PaintingStyle, Paint, Color;
-import "package:flutter/material.dart" show Colors;
+import "package:flutter/material.dart";
 import "package:flame/game.dart";
 import "package:flame/rendering.dart";
 import 'package:flame/text.dart';
@@ -95,3 +94,17 @@ final unoccupiedSlot = Paint()..color = darkGray;
 
 final tabDefault = Paint()..color = gray;
 final tabHover = Paint()..color = pale;
+
+class AppTheme {
+  static final dialogBackground = black.withAlpha(225);
+  static final ButtonStyle menuButton = ElevatedButton.styleFrom(
+    fixedSize: const Size(160, 32),
+    foregroundColor: pale,
+    backgroundColor: darkGray,
+    shape: const RoundedRectangleBorder(),
+  );
+
+  static const label12 = TextStyle(color: pale, fontSize: 12, fontFamily: "Chakra");
+  static const label16 = TextStyle(color: pale, fontSize: 16, fontFamily: "Chakra");
+  static const heading24 = TextStyle(color: pale, fontSize: 24, fontFamily: "Chakra");
+}

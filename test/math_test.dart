@@ -1,4 +1,4 @@
-import 'package:starfury/math.dart';
+import 'package:starflame/math.dart';
 import 'package:test/test.dart';
 
 void main() {
