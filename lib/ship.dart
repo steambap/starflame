@@ -10,7 +10,7 @@ import "cell.dart";
 import "hex.dart";
 import "styles.dart" show grayTint;
 import "ship_state.dart";
-import "ship_hull.dart";
+import "ship_blueprint.dart";
 import "action_type.dart";
 import "action.dart";
 import "select_control.dart";
@@ -22,15 +22,16 @@ class Ship extends PositionComponent
   late SpriteComponent _engineEffect;
   Cell cell;
   late ShipState state;
-  ShipHull hull;
+  ShipBlueprint blueprint;
 
-  Ship(this.cell, int playerNumber, this.hull) : super(anchor: Anchor.center) {
+  Ship(this.cell, int playerNumber, this.blueprint)
+      : super(anchor: Anchor.center) {
     state = ShipState(playerNumber);
   }
 
   @override
   FutureOr<void> onLoad() {
-    final imgShip = game.images.fromCache(hull.image);
+    final imgShip = game.images.fromCache(blueprint.image);
     final spriteShip = Sprite(imgShip);
     _shipSprite = SpriteComponent(
         sprite: spriteShip,
@@ -53,7 +54,7 @@ class Ship extends PositionComponent
 
     final uid = game.controller.getUniqueID();
     state.id = uid;
-    state.health = ShipHull.maxHealth;
+    state.health = blueprint.maxHealth();
     resetAllActions();
   }
 
@@ -103,7 +104,7 @@ class Ship extends PositionComponent
     if (state.isTurnOver) {
       return 0;
     }
-    final maxMove = hull.movement;
+    final maxMove = blueprint.movement();
 
     return max(maxMove - state.movementUsed, 0);
   }
@@ -153,12 +154,12 @@ class Ship extends PositionComponent
   }
 
   void repair(int amount) {
-    state.health = min(state.health + amount, ShipHull.maxHealth);
+    state.health = min(state.health + amount, blueprint.maxHealth());
     notifyListeners();
   }
 
   void resetAllActions() {
-    final actionTypes = hull.actionTypes();
+    final actionTypes = blueprint.actionTypes();
     state.actions.clear();
     for (final at in actionTypes) {
       state.actions.add(ActionState(at));
@@ -177,7 +178,7 @@ class Ship extends PositionComponent
   }
 
   int visionRange() {
-    return hull.movement ~/ TileType.empty.cost;
+    return blueprint.movement() ~/ TileType.empty.cost;
   }
 
   ActionState? getActionState(ActionType type) {

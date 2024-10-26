@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'player_info.dart';
+import 'action_bar.dart';
+import 'ship_cmd.dart';
 import '../scifi_game.dart';
 import '../styles.dart';
 
@@ -23,12 +26,12 @@ class MainMenu extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 10,
                 children: [
-                  const Text('Starflame',
-                      style: AppTheme.heading24),
+                  const Text('Starflame', style: AppTheme.heading24),
                   const SizedBox(height: 16),
                   ElevatedButton(
                       onPressed: () {
                         game.overlays.remove(MainMenu.id);
+                        game.overlays.addAll([ActionBar.id,ShipCmd.id, PlayerInfoBar.id]);
                         game.startTestGame();
                       },
                       style: AppTheme.menuButton,

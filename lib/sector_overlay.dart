@@ -7,7 +7,6 @@ import "package:flutter/foundation.dart" show ValueNotifier;
 import "dialog_background.dart";
 import "scifi_game.dart";
 import "styles.dart";
-import "hud_player_info.dart";
 import "planet.dart";
 import "planet_view.dart";
 import "sector.dart";
@@ -124,7 +123,6 @@ class SectorScreen extends PositionComponent with HasGameRef<ScifiGame> {
 }
 
 class SectorOverlay extends Route with HasGameRef<ScifiGame> {
-  final _playerInfo = HudPlayerInfo();
   late final SectorScreen _sectorScreen;
 
   SectorOverlay(Sector sector) : super(null) {
@@ -134,7 +132,6 @@ class SectorOverlay extends Route with HasGameRef<ScifiGame> {
   @override
   Component build() {
     return DialogBackground(size: game.size, children: [
-      _playerInfo,
       _sectorScreen,
       AdvancedButton(
         size: primarySize,

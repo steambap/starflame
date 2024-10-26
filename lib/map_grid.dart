@@ -8,7 +8,7 @@ import 'package:flame/extensions.dart';
 
 import 'game_creator.dart';
 import 'ship.dart';
-import "ship_hull.dart";
+import "ship_blueprint.dart";
 import 'scifi_game.dart';
 import 'cell.dart';
 import "pathfinding.dart";
@@ -146,8 +146,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
         continue;
       }
       // spawn a scout
-      final scoutHull = p.hulls[0];
-      await spawnShipAt(capitalCell, p.playerNumber, scoutHull);
+      final interceptor = p.blueprints[0];
+      await spawnShipAt(capitalCell, p.playerNumber, interceptor);
     }
 
     selectControl = SelectControlWaitForInput(game);
@@ -218,8 +218,9 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     }, 100);
   }
 
-  Future<void> spawnShipAt(Cell cell, int playerNumber, ShipHull hull) async {
-    final ship = Ship(cell, playerNumber, hull);
+  Future<void> spawnShipAt(
+      Cell cell, int playerNumber, ShipBlueprint blueprint) async {
+    final ship = Ship(cell, playerNumber, blueprint);
     cell.ship = ship;
 
     shipListAll.add(ship);
@@ -228,8 +229,9 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     await add(ship);
   }
 
-  Future<void> createShipAt(Cell cell, int playerNumber, ShipHull hull) async {
-    final ship = Ship(cell, playerNumber, hull);
+  Future<void> createShipAt(
+      Cell cell, int playerNumber, ShipBlueprint blueprint) async {
+    final ship = Ship(cell, playerNumber, blueprint);
     cell.ship = ship;
 
     shipListAll.add(ship);

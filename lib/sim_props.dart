@@ -10,6 +10,18 @@ class SimProps {
   static const Property production = 'production';
   static const Property credit = 'credit';
   static const Property science = 'science';
+  // Ship
+  static const Property hull = 'hull';
+  static const Property energy = 'energy';
+  static const Property movement = 'movement';
+  static const Property isFTL = 'isFTL';
+  static const Property initiative = 'initiative';
+  static const Property computers = 'computers';
+  static const Property allowLockon = 'allowLockon';
+  static const Property countermeasures = 'countermeasures';
+  static const Property shield = 'shield';
+  static const Property cannon = 'cannon';
+  static const Property missile = 'missile';
 }
 
 mixin SimObject {

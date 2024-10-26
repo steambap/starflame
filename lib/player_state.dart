@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' show Color, Colors;
 import "package:flutter/foundation.dart" show ChangeNotifier;
 
 import "resource.dart";
-import "ship_hull.dart";
+import "ship_blueprint.dart";
 import "empire.dart";
 import "hex.dart";
 import "sim_props.dart";
@@ -24,14 +24,14 @@ class PlayerState with ChangeNotifier, SimObject {
   int science = 0;
   // Status
   int nextActionCost = 1;
-  final List<ShipHull> hulls = [];
+  final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
   final Set<String> techs = {};
 
   PlayerState(this.playerNumber, this.isAI);
 
   void init() {
-    hulls.addAll(empire.startingHulls);
+    blueprints.addAll(empire.blueprints);
     refreshStatus();
   }
 

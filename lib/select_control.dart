@@ -4,7 +4,7 @@ import "action.dart";
 import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
-import 'ship_hull.dart';
+import 'ship_blueprint.dart';
 
 sealed class SelectControl {
   final ScifiGame game;
@@ -95,13 +95,12 @@ class SelectControlShipSelected extends SelectControlHex {
     cell = ship.cell;
     final shipOwner = ship.state.playerNumber;
     final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
-    game.shipCommand.show(ship);
-    game.bottomRight.isVisible = false;
+    game.hudState.ship.value = ship;
     if (isOwnerHuman) {
       paths =
           game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
       if (ship.canAttack()) {
-        final maxRange = ship.hull.attackRange();
+        final maxRange = ship.blueprint.attackRange();
         attackableCells =
             game.mapGrid.findAttackableCells(cell, Block(1, maxRange)).toSet();
       }
@@ -121,8 +120,7 @@ class SelectControlShipSelected extends SelectControlHex {
 
   @override
   void onStateExit() {
-    game.shipCommand.hide();
-    game.bottomRight.isVisible = true;
+    game.hudState.ship.value = null;
     for (final cell in paths.keys) {
       cell.unmark();
     }
@@ -153,26 +151,24 @@ class SelectControlPlanet extends SelectControlHex {
   @override
   void onStateEnter() {
     game.sectorInfo.show(cell.sector!);
-    game.bottomRight.isVisible = false;
   }
 
   @override
   void onStateExit() {
     game.sectorInfo.hide();
-    game.bottomRight.isVisible = true;
   }
 }
 
 class SelectControlCreateShip extends SelectControl {
   final Set<Cell> cells = {};
-  final ShipHull hull;
-  SelectControlCreateShip(super.game, this.hull);
+  final ShipBlueprint blueprint;
+  SelectControlCreateShip(super.game, this.blueprint);
 
   @override
   void onCellClick(Cell cell) {
     if (cells.contains(cell)) {
       game.resourceController
-          .createShip(cell, game.controller.getHumanPlayerNumber(), hull);
+          .createShip(cell, game.controller.getHumanPlayerNumber(), blueprint);
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }

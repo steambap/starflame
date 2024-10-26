@@ -2,13 +2,13 @@ import 'package:flame/components.dart';
 
 import "scifi_game.dart";
 import "styles.dart";
-import "ship_hull.dart";
+import "ship_blueprint.dart";
 import "components/advanced_button.dart";
 
 class AddShipButton extends AdvancedButton with HasGameRef<ScifiGame> {
   static Vector2 buttonSize = Vector2(114, 84);
 
-  final ShipHull hull;
+  final ShipBlueprint blueprint;
 
   late final TextComponent _tName;
   late final SpriteComponent _tSprite;
@@ -19,18 +19,18 @@ class AddShipButton extends AdvancedButton with HasGameRef<ScifiGame> {
       priority: 1);
   late final TextComponent _prodText;
 
-  AddShipButton(this.hull, {super.onReleased}) : super(size: buttonSize);
+  AddShipButton(this.blueprint, {super.onReleased}) : super(size: buttonSize);
 
   @override
   Future<void> onLoad() async {
     _tName = TextComponent(
-      text: hull.name,
+      text: blueprint.className,
       position: Vector2(2, 2),
       textRenderer: label12,
       priority: 1,
     );
 
-    final hullImg = Sprite(game.images.fromCache(hull.image));
+    final hullImg = Sprite(game.images.fromCache(blueprint.image));
     _tSprite = SpriteComponent(
         sprite: hullImg,
         position: Vector2(buttonSize.x / 2, 48),
@@ -44,7 +44,7 @@ class AddShipButton extends AdvancedButton with HasGameRef<ScifiGame> {
         RectangleComponent(size: buttonSize, paintLayers: shipBtnDisabledSkin);
 
     _prodText = TextComponent(
-        text: hull.cost.toString(),
+        text: blueprint.cost.toString(),
         position: Vector2(22, 76),
         textRenderer: label12,
         priority: 1,

@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'scifi_game.dart';
 import 'widgets/main_menu.dart';
 import 'widgets/in_game_menu.dart';
+import 'widgets/player_info.dart';
+import 'widgets/action_bar.dart';
+import 'widgets/ship_cmd.dart';
 
 class ScifiApp extends StatelessWidget {
   const ScifiApp({super.key});
@@ -27,10 +30,17 @@ class ScifiApp extends StatelessWidget {
               ),
             ),
             overlayBuilderMap: {
+              ActionBar.id: (_, game) => ActionBar(game),
+              ShipCmd.id: (_, game) => ShipCmd(game),
+              PlayerInfoBar.id: (_, game) => PlayerInfoBar(game),
               InGameMenu.id: (_, game) => InGameMenu(game),
               MainMenu.id: (_, game) => MainMenu(game),
             },
-            initialActiveOverlays: const [MainMenu.id],
+            initialActiveOverlays: const [
+              ActionBar.id,
+              ShipCmd.id,
+              PlayerInfoBar.id
+            ],
             gameFactory: () => ScifiGame(),
           ),
         ));

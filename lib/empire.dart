@@ -1,5 +1,4 @@
-import "ship_hull.dart";
-import "data/hulls.dart";
+import "ship_blueprint.dart";
 
 enum Faction {
   neutral,
@@ -11,9 +10,9 @@ enum Faction {
 class Empire {
   final Faction faction;
   final String displayName;
-  final List<ShipHull> startingHulls;
+  final List<ShipBlueprint> blueprints;
 
-  Empire(this.faction, this.displayName, this.startingHulls);
+  Empire(this.faction, this.displayName, this.blueprints);
 
   static Empire getEmpire(String name) {
     assert(buildinEmpire.containsKey(name), "Empire $name not found");
@@ -22,17 +21,17 @@ class Empire {
 }
 
 final Map<String, Empire> buildinEmpire = {
-  "neutral": Empire(Faction.neutral, "Neutral", [hullMap["Interceptor"]!]),
+  "neutral": Empire(Faction.neutral, "Neutral", []),
   "terranEmpire": Empire(Faction.terranEmpire, "Terran Empire", [
-    hullMap["Interceptor"]!,
-    hullMap["Cruiser"]!,
+    ShipBlueprint.interceptor(),
+    ShipBlueprint.cruiser(),
   ]),
   "terranKindom": Empire(Faction.terranKindom, "Kindom of Terran", [
-    hullMap["Interceptor"]!,
-    hullMap["Cruiser"]!,
+    ShipBlueprint.interceptor(),
+    ShipBlueprint.cruiser(),
   ]),
-  "terranAlliance": Empire(Faction.terranAlliance, "Terran Alliance",[
-    hullMap["Interceptor"]!,
-    hullMap["Cruiser"]!,
+  "terranAlliance": Empire(Faction.terranAlliance, "Terran Alliance", [
+    ShipBlueprint.interceptor(),
+    ShipBlueprint.cruiser(),
   ]),
 };

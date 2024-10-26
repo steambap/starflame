@@ -45,13 +45,12 @@ class HudMapDeploy extends PositionComponent
     clearShipButtons();
 
     final playerState = game.controller.getHumanPlayerState();
-    final hulls = playerState.hulls;
+    final hulls = playerState.blueprints;
 
     for (int i = 0; i < hulls.length; i++) {
       final hull = hulls[i];
       final button = AddShipButton(hull, onReleased: () {
-        game.mapGrid.selectControl =
-            SelectControlCreateShip(game, hull);
+        game.mapGrid.selectControl = SelectControlCreateShip(game, hull);
       });
       button.position = Vector2(
         i * (AddShipButton.buttonSize.x + 4),
@@ -88,8 +87,8 @@ class HudMapDeploy extends PositionComponent
     final playerNumber = game.controller.getHumanPlayerNumber();
 
     for (final button in _shipButtons) {
-      button.isDisabled =
-          !game.resourceController.canCreateShip(playerNumber, button.hull);
+      button.isDisabled = !game.resourceController
+          .canCreateShip(playerNumber, button.blueprint);
     }
   }
 

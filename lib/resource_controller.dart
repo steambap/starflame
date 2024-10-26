@@ -1,7 +1,7 @@
 import "scifi_game.dart";
 import "player_state.dart";
 import "cell.dart";
-import "ship_hull.dart";
+import "ship_blueprint.dart";
 import "resource.dart";
 import "sim_props.dart";
 import "planet.dart";
@@ -48,24 +48,25 @@ class ResourceController {
     return 0;
   }
 
-  bool canCreateShip(int playerNumber, ShipHull hull) {
+  bool canCreateShip(int playerNumber, ShipBlueprint blueprint) {
     final playerState = game.controller.getPlayerState(playerNumber);
 
-    return playerState.canTakeAction() && playerState.production >= hull.cost;
+    return playerState.canTakeAction() &&
+        playerState.production >= blueprint.cost;
   }
 
-  bool createShip(Cell cell, int playerNumber, ShipHull hull) {
+  bool createShip(Cell cell, int playerNumber, ShipBlueprint blueprint) {
     if (cell.ship != null) {
       return false;
     }
-    if (!canCreateShip(playerNumber, hull)) {
+    if (!canCreateShip(playerNumber, blueprint)) {
       return false;
     }
 
     final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.takeAction(Resources(production: -hull.cost));
+    playerState.takeAction(Resources(production: -blueprint.cost));
 
-    game.mapGrid.createShipAt(cell, playerNumber, hull);
+    game.mapGrid.createShipAt(cell, playerNumber, blueprint);
 
     return true;
   }

@@ -8,7 +8,6 @@ import "package:flutter/foundation.dart" show ValueNotifier;
 import "dialog_background.dart";
 import "scifi_game.dart";
 import "styles.dart";
-import "hud_player_info.dart";
 import "components/advanced_button.dart";
 import "research.dart";
 import "data/tech.dart";
@@ -206,7 +205,6 @@ class ResearchScreen extends PositionComponent with HasGameRef<ScifiGame> {
 }
 
 class ResearchOverlay extends Route with HasGameRef<ScifiGame> {
-  final _playerInfo = HudPlayerInfo();
   final _researchScreen = ResearchScreen();
 
   ResearchOverlay() : super(null);
@@ -216,7 +214,6 @@ class ResearchOverlay extends Route with HasGameRef<ScifiGame> {
     return DialogBackground(
       size: game.size,
       children: [
-        _playerInfo,
         _researchScreen,
         AdvancedButton(
           size: primarySize,

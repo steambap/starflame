@@ -1,18 +1,21 @@
-import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 
 import "scifi_game.dart";
 import 'cell.dart';
 import 'action_type.dart';
 import 'ship.dart';
-import "styles.dart" show icon16pale;
+
+import 'data/lucide_icon.dart';
 
 abstract class Action {
   final Ship ship;
   final ActionType actionType;
   final ActionTarget targetType;
   final int cooldown;
+  final Icon icon;
 
-  Action(this.ship, this.actionType, this.targetType, {this.cooldown = 0});
+  Action(this.ship, this.actionType, this.targetType, this.icon,
+      {this.cooldown = 0});
 
   int cooldownLeft() {
     if (cooldown == 0) {
@@ -25,11 +28,11 @@ abstract class Action {
   void activate(ScifiGame game);
   bool isDisabled(ScifiGame game);
   Iterable<Cell> getTargetCells(ScifiGame game);
-  PositionComponent getLabel(ScifiGame game);
 }
 
 class Capture extends Action {
-  Capture(Ship ship) : super(ship, ActionType.capture, ActionTarget.self);
+  Capture(Ship ship)
+      : super(ship, ActionType.capture, ActionTarget.self, LucideIcon.landPlot);
 
   @override
   void activate(ScifiGame game) {
@@ -56,18 +59,11 @@ class Capture extends Action {
   Iterable<Cell> getTargetCells(ScifiGame game) {
     return const [];
   }
-
-  @override
-  PositionComponent getLabel(ScifiGame game) {
-    return TextComponent(
-      text: "\ue52d",
-      textRenderer: icon16pale,
-    );
-  }
 }
 
 class Stay extends Action {
-  Stay(Ship ship) : super(ship, ActionType.stay, ActionTarget.self);
+  Stay(Ship ship)
+      : super(ship, ActionType.stay, ActionTarget.self, LucideIcon.check);
 
   @override
   bool isDisabled(ScifiGame game) {
@@ -83,13 +79,5 @@ class Stay extends Action {
   void activate(ScifiGame game) {
     ship.setTurnOver();
     game.mapGrid.unSelect();
-  }
-
-  @override
-  PositionComponent getLabel(ScifiGame game) {
-    return TextComponent(
-      text: "\ue070",
-      textRenderer: icon16pale,
-    );
   }
 }

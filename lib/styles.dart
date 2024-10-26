@@ -98,13 +98,34 @@ final tabHover = Paint()..color = pale;
 class AppTheme {
   static final dialogBackground = black.withAlpha(225);
   static final ButtonStyle menuButton = ElevatedButton.styleFrom(
-    fixedSize: const Size(160, 32),
+    fixedSize: const Size(120, 40),
     foregroundColor: pale,
     backgroundColor: darkGray,
+    padding: const EdgeInsets.all(0),
     shape: const RoundedRectangleBorder(),
   );
+  static final ButtonStyle iconButton = IconButton.styleFrom(
+    foregroundColor: pale,
+    hoverColor: blue,
+    disabledBackgroundColor: darkGray,
+  );
 
-  static const label12 = TextStyle(color: pale, fontSize: 12, fontFamily: "Chakra");
-  static const label16 = TextStyle(color: pale, fontSize: 16, fontFamily: "Chakra");
-  static const heading24 = TextStyle(color: pale, fontSize: 24, fontFamily: "Chakra");
+  static const panelBackground = black;
+  static const panelBorder = darkGray;
+
+  static const iconButtonColor = pale;
+  static const iconButtonHoverColor = blue;
+
+  static const navbarHeight = 32.0;
+
+  static const label12 = TextStyle(color: pale, fontSize: 12);
+  static const label12Gray = TextStyle(color: gray, fontSize: 12);
+  static const label16 = TextStyle(color: pale, fontSize: 16);
+  static const heading24 = TextStyle(color: pale, fontSize: 24);
+
+  static const icon16red = TextStyle(color: red, fontSize: 16, fontFamily: "Icon");
+  static const icon16yellow = TextStyle(color: yellow, fontSize: 16, fontFamily: "Icon");
+  static const icon16blue = TextStyle(color: blue, fontSize: 16, fontFamily: "Icon");
+  static const icon16purple = TextStyle(color: purple, fontSize: 16, fontFamily: "Icon");
+  static const icon16pale = TextStyle(color: pale, fontSize: 16, fontFamily: "Icon");
 }
