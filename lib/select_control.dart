@@ -48,6 +48,7 @@ class SelectControlHex extends SelectControl {
   void onCellClick(Cell cell) {
     final pState = game.controller.getHumanPlayerState();
     if (!pState.vision.contains(cell.hex)) {
+      game.mapGrid.selectControl = SelectControlWaitForInput(game);
       return;
     }
 
@@ -150,12 +151,12 @@ class SelectControlPlanet extends SelectControlHex {
 
   @override
   void onStateEnter() {
-    game.sectorInfo.show(cell.sector!);
+    game.hudState.sector.value = cell.sector;
   }
 
   @override
   void onStateExit() {
-    game.sectorInfo.hide();
+    game.hudState.sector.value = null;
   }
 }
 

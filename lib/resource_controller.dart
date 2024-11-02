@@ -100,6 +100,12 @@ class ResourceController {
     sector.placeWorker(playerState, slot, type);
   }
 
+  bool canSwitchWorker(int playerNumber) {
+    final pState = game.controller.getPlayerState(playerNumber);
+
+    return pState.canTakeAction();
+  }
+
   void switchWorker(
       int playerNumber, Sector sector, WorkerSlot slot, WorkerType type) {
     if (!canPlaceWorker(playerNumber)) {
@@ -107,6 +113,7 @@ class ResourceController {
     }
 
     final playerState = game.controller.getPlayerState(playerNumber);
+    playerState.takeAction(const Resources());
     sector.switchWorker(playerState, slot, type);
   }
 

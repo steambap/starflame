@@ -4,9 +4,10 @@ import "scifi_game.dart";
 import "game_state.dart";
 import "player_state.dart";
 import "ship.dart";
-import "victory_dialog.dart";
 import "new_turn_overlay.dart";
 import "hud_page.dart";
+import 'widgets/map_deploy.dart';
+import 'widgets/victory_overlay.dart';
 
 class GameStateController {
   GameState gameState = GameState();
@@ -60,7 +61,7 @@ class GameStateController {
     }
 
     popAll();
-    game.hudMapDeploy.clearShipButtons();
+    game.overlays.remove(MapDeploy.id);
     endTurn();
   }
 
@@ -160,14 +161,14 @@ class GameStateController {
     }
   }
 
-  void _winGame() async {
+  void _winGame() {
     gameState.isGameOver = true;
-    final result = await game.router.pushAndWait(VictoryDialog());
-    if (result) {
-      // Go to main menu
-    } else {
-      gameState.isContinue = true;
-    }
+
+    game.overlays.add(VictoryOverlay.id);
+  }
+
+  void debugWinGame() {
+    _winGame();
   }
 
   bool isAITurn() => currentPlayerState().isAI;

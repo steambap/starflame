@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'map_deploy.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/research_overlay.dart';
@@ -20,7 +21,11 @@ class ActionBar extends StatelessWidget {
         children: [
           IconButton.outlined(
             onPressed: () {
-              game.hudMapDeploy.renderShipButtons();
+              if (game.overlays.isActive(MapDeploy.id)) {
+                game.overlays.remove(MapDeploy.id);
+              } else {
+                game.overlays.add(MapDeploy.id);
+              }
             },
             icon: LucideIcon.wrench,
             style: AppTheme.iconButton,

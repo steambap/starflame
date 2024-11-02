@@ -3,17 +3,14 @@ import 'package:flame/game.dart';
 
 import "scifi_world.dart";
 import 'hud_state.dart';
-import "hud_menu_button.dart";
 import 'game_state_controller.dart';
 import 'game_creator.dart';
 import 'map_grid.dart';
 import "game_settings.dart";
 import "resource_controller.dart";
-import "hud_sector_info.dart";
 import 'hud_page.dart';
 import "ai/ai_controller.dart";
 import "combat_resolver.dart";
-import "hud_map_deploy.dart";
 import "animation_pool.dart";
 
 class ScifiGame extends FlameGame<ScifiWorld>
@@ -27,9 +24,6 @@ class ScifiGame extends FlameGame<ScifiWorld>
   late final CombatResolver combatResolver = CombatResolver(this);
   late final AnimationPool animationPool = AnimationPool(this);
   final HudState hudState = HudState();
-  final HudMenuButton menuButton = HudMenuButton();
-  final HudSectorInfo sectorInfo = HudSectorInfo();
-  final HudMapDeploy hudMapDeploy = HudMapDeploy();
   final HudPage hud = HudPage();
   late final RouterComponent router = RouterComponent(
     routes: {
@@ -49,11 +43,6 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await images.loadAllImages();
 
     await world.add(mapGrid);
-    await hud.addAll([
-      menuButton,
-      sectorInfo,
-      hudMapDeploy,
-    ]);
     camera.viewport.add(router);
   }
 

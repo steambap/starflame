@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'main_menu.dart';
+import 'log_dialog.dart';
 import '../scifi_game.dart';
 import '../styles.dart';
 import '../research_overlay.dart';
-import 'package:starflame/ai/ai_log_overlay.dart';
 
 class InGameMenu extends StatelessWidget {
   const InGameMenu(this.game, {super.key});
@@ -50,8 +50,7 @@ class InGameMenu extends StatelessWidget {
                       const SizedBox(height: 8),
                       ElevatedButton(
                           onPressed: () {
-                            game.overlays.remove(id);
-                            game.router.pushRoute(AiLogOverlay());
+                            showLogDialog(game, context);
                           },
                           style: AppTheme.menuButton,
                           child: const Text('Logs'))
@@ -78,6 +77,7 @@ class InGameMenu extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
+                        game.hudState.deselectAll();
                         game.overlays.remove(id);
                         game.overlays.add(MainMenu.id);
                       },

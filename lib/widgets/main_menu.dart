@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'player_info.dart';
 import 'action_bar.dart';
 import 'ship_cmd.dart';
+import 'sector_info.dart';
+import 'hud_menu_button.dart';
 import '../scifi_game.dart';
 import '../styles.dart';
 
@@ -31,7 +33,13 @@ class MainMenu extends StatelessWidget {
                   ElevatedButton(
                       onPressed: () {
                         game.overlays.remove(MainMenu.id);
-                        game.overlays.addAll([ActionBar.id,ShipCmd.id, PlayerInfoBar.id]);
+                        game.overlays.addAll([
+                          ActionBar.id,
+                          HudMenuButton.id,
+                          SectorInfo.id,
+                          ShipCmd.id,
+                          PlayerInfoBar.id
+                        ]);
                         game.startTestGame();
                       },
                       style: AppTheme.menuButton,
@@ -60,7 +68,7 @@ class MainMenu extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('License'),
+          title: const Text('License', style: AppTheme.heading24,),
           shape: const RoundedRectangleBorder(),
           scrollable: true,
           content: const Text("""
@@ -87,13 +95,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-          """),
+          """, style: AppTheme.label12,),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
-              child: const Text('OK'),
+              child: const Text('OK', style: AppTheme.label16,),
               onPressed: () {
                 Navigator.of(context).pop();
               },

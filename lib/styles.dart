@@ -86,12 +86,6 @@ final icon16purple = TextPaint(
 final icon16pale = TextPaint(
     style: const TextStyle(color: pale, fontSize: 16, fontFamily: "Icon"));
 
-final supportSlot = Paint()..color = purple;
-final miningSlot = Paint()..color = red;
-final economySlot = Paint()..color = yellow;
-final labSlot = Paint()..color = blue;
-final unoccupiedSlot = Paint()..color = darkGray;
-
 final tabDefault = Paint()..color = gray;
 final tabHover = Paint()..color = pale;
 
@@ -110,22 +104,57 @@ class AppTheme {
     disabledBackgroundColor: darkGray,
   );
 
+  static final dialogTheme = DialogTheme(
+    backgroundColor: panelBackground,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6),
+        side: const BorderSide(color: panelBorder)),
+    clipBehavior: Clip.hardEdge,
+  );
+  static const dialogTitleBg = blue;
+
   static const panelBackground = black;
   static const panelBorder = darkGray;
 
+  static const cardColor = Color(0xff373336);
+
   static const iconButtonColor = pale;
   static const iconButtonHoverColor = blue;
+
+  static const addShipButtonColor = black;
+  static const addShipButtonHoverColor = blue;
+  static const addShipButtonDisabledColor = darkGray;
+  static const addShipButtonBorder = gray;
 
   static const navbarHeight = 32.0;
 
   static const label12 = TextStyle(color: pale, fontSize: 12);
   static const label12Gray = TextStyle(color: gray, fontSize: 12);
   static const label16 = TextStyle(color: pale, fontSize: 16);
+  static const label16Gray = TextStyle(color: gray, fontSize: 16);
   static const heading24 = TextStyle(color: pale, fontSize: 24);
 
-  static const icon16red = TextStyle(color: red, fontSize: 16, fontFamily: "Icon");
-  static const icon16yellow = TextStyle(color: yellow, fontSize: 16, fontFamily: "Icon");
-  static const icon16blue = TextStyle(color: blue, fontSize: 16, fontFamily: "Icon");
-  static const icon16purple = TextStyle(color: purple, fontSize: 16, fontFamily: "Icon");
-  static const icon16pale = TextStyle(color: pale, fontSize: 16, fontFamily: "Icon");
+  static const icon16red =
+      TextStyle(color: red, fontSize: 16, fontFamily: "Icon");
+  static const icon16yellow =
+      TextStyle(color: yellow, fontSize: 16, fontFamily: "Icon");
+  static const icon16blue =
+      TextStyle(color: blue, fontSize: 16, fontFamily: "Icon");
+  static const icon16purple =
+      TextStyle(color: purple, fontSize: 16, fontFamily: "Icon");
+  static const icon16pale =
+      TextStyle(color: pale, fontSize: 16, fontFamily: "Icon");
+  static const iconSlot =
+      TextStyle(color: pale, fontSize: 48, fontFamily: "Icon");
+  static const iconSlotDisabled =
+      TextStyle(color: gray, fontSize: 48, fontFamily: "Icon");
+
+  static const slotBorder = pale;
+  static const slotBorderDisabled = gray;
+
+  static const supportSlot = purple;
+  static const miningSlot = red;
+  static const economySlot = yellow;
+  static const labSlot = blue;
+  static const unoccupiedSlot = darkGray;
 }

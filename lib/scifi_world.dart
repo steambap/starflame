@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'scifi_game.dart';
 import "styles.dart" show textDamage;
-import "ai/ai_log_overlay.dart";
-import 'research_overlay.dart';
 import "ship.dart";
 
 class ScifiWorld extends World
@@ -32,11 +30,11 @@ class ScifiWorld extends World
     if (keysPressed.contains(LogicalKeyboardKey.enter)) {
       game.controller.playerEndTurn();
     }
-    if (keysPressed.contains(LogicalKeyboardKey.keyC)) {
-      game.router.pushRoute(AiLogOverlay());
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyR)) {
-      game.router.pushRoute(ResearchOverlay());
+    if (keysPressed.containsAll([
+      LogicalKeyboardKey.shiftLeft,
+      LogicalKeyboardKey.keyV
+    ])) {
+      game.controller.debugWinGame();
     }
     direction = Vector2.zero();
     direction.x += (keysPressed.contains(LogicalKeyboardKey.keyA) ||

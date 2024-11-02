@@ -86,6 +86,7 @@ class Sector extends PositionComponent
   void colonize(int playerNumber) {
     this.playerNumber = playerNumber;
     updateRender();
+    notifyListeners();
   }
 
   void capture(int playerNumber) {
@@ -134,6 +135,7 @@ class Sector extends PositionComponent
         }
       }
     }
+    notifyListeners();
   }
 
   Map<String, dynamic> toJson() {
@@ -177,12 +179,12 @@ class Sector extends PositionComponent
     if (!slot.isOccupied) {
       return false;
     }
+    // if (slot.isAdvanced) {
+    //   return false;
+    // }
 
     slot.type = type;
     refreshProps();
-    if (pState.playerNumber == game.controller.getHumanPlayerNumber()) {
-      pState.refreshStatus();
-    }
     return true;
   }
 
@@ -192,5 +194,6 @@ class Sector extends PositionComponent
 
   addOrbital() {
     planets.add(Planet.orbital());
+    notifyListeners();
   }
 }

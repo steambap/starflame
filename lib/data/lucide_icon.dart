@@ -6,4 +6,5 @@ class LucideIcon {
   static const wrench = Icon(IconData(0xe1b1, fontFamily: 'Icon'));
   static const flaskRoundBottom = Icon(IconData(0xe0db, fontFamily: 'Icon'));
   static const combine = Icon(IconData(0xe451, fontFamily: 'Icon'));
+  static const orbit = Icon(IconData(0xe3eb, fontFamily: 'Icon'));
 }

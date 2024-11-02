@@ -20,7 +20,7 @@ class ShipCmd extends StatelessWidget {
         value: game.hudState.ship,
         child: Positioned(
           bottom: 8,
-          right: 124,
+          right: 132,
           child: Consumer<ValueNotifier<Ship?>>(
             builder: (context, shipValue, child) {
               return shipValue.value == null
@@ -86,7 +86,7 @@ class ShipCmd extends StatelessWidget {
         ),
         Row(
           children: [
-            Image.asset("images/${ship.blueprint.image}"),
+            Image.asset("assets/images/${ship.blueprint.image}"),
             Padding(
               padding: const EdgeInsets.all(4.0),
               child: Column(
@@ -132,7 +132,7 @@ class ShipCmd extends StatelessWidget {
             ],
           ),
         ),
-        if (ship.blueprint.cannons().isNotEmpty) ...[
+        if (ship.blueprint.cannons().isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
             child: Row(
@@ -144,7 +144,6 @@ class ShipCmd extends StatelessWidget {
               ],
             ),
           ),
-        ],
       ],
     );
   }
