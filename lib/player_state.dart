@@ -6,6 +6,7 @@ import "ship_blueprint.dart";
 import "empire.dart";
 import "hex.dart";
 import "sim_props.dart";
+import "research.dart";
 import "data/tech.dart";
 
 class PlayerState with ChangeNotifier, SimObject {
@@ -27,6 +28,11 @@ class PlayerState with ChangeNotifier, SimObject {
   final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
   final Set<String> techs = {};
+  final Map<TechSection, int> techLevel = {
+    TechSection.construction: 0,
+    TechSection.nano: 0,
+    TechSection.warfare: 0,
+  };
 
   PlayerState(this.playerNumber, this.isAI);
 
@@ -66,7 +72,16 @@ class PlayerState with ChangeNotifier, SimObject {
   void addTech(String techId) {
     assert(techMap.containsKey(techId), "Tech $techId not found");
     techs.add(techId);
-    props.addAll(techMap[techId]!.effects);
+    final tech = techMap[techId]!;
+    for (final eff in tech.effects.entries) {
+      props.update(eff.key, (prev) => prev + eff.value,
+          ifAbsent: () => eff.value);
+    }
+    props.addAll(tech.effects);
+    if (techLevel[tech.section]! <= tech.tier) {
+      techLevel.update(tech.section, (prev) => prev + 1);
+    }
+
     notifyListeners();
   }
 }

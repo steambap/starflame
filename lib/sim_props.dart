@@ -1,10 +1,22 @@
 typedef Property = String;
 
 class SimProps {
+  static const Property neutronBombs = 'neutronBombs';
+  static const Property allowIonMissile = 'allowIonMissile';
+  static const Property neutronDefense = 'neutronDefense';
+  static const Property starbaseFreeUpdate = 'starbaseFreeUpdate';
+  static const Property starbaseInitiative = 'starbaseInitiative';
+  static const Property allowImprovedHull = 'allowImprovedHull';
+  static const Property allowSentientHull = 'allowSentientHull';
+  static const Property allowAbsorptionShield = 'allowAbsorptionShield';
+  static const Property moveCostAsteroid = 'moveCostAsteroid';
   static const Property allowFusionSource = 'allowFusionSource';
   static const Property allowFusionDrive = 'allowFusionDrive';
+  static const Property allowTerraforming = 'allowTerraforming';
+  static const Property allowAdvancedSlot = 'allowAdvancedSlot';
   static const Property allowTachyonSource = 'allowTachyonSource';
   static const Property allowTachyonDrive = 'allowTachyonDrive';
+  static const Property allowElectronCountermeasures = 'allowElectronCountermeasures';
 
   static const Property support = 'support';
   static const Property production = 'production';

@@ -14,6 +14,7 @@ import 'widgets/hud_menu_button.dart';
 import 'widgets/sector_overlay.dart';
 import 'widgets/map_deploy.dart';
 import 'widgets/victory_overlay.dart';
+import 'widgets/research_overlay.dart';
 
 class ScifiApp extends StatelessWidget {
   const ScifiApp({super.key});
@@ -41,6 +42,7 @@ class ScifiApp extends StatelessWidget {
               ActionBar.id: (_, game) => ActionBar(game),
               HudMenuButton.id: (_, game) => HudMenuButton(game),
               SectorInfo.id: (_, game) => SectorInfo(game),
+              ResearchOverlay.id: (_, game) => ResearchOverlay(game),
               ShipCmd.id: (_, game) => ShipCmd(game),
               SectorOverlay.id: (_, game) => SectorOverlay(game),
               PlayerInfoBar.id: (_, game) => PlayerInfoBar(game),

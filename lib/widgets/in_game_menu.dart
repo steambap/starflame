@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'main_menu.dart';
 import 'log_dialog.dart';
+import 'research_overlay.dart';
+import 'player_info.dart';
 import '../scifi_game.dart';
 import '../styles.dart';
-import '../research_overlay.dart';
 
 class InGameMenu extends StatelessWidget {
   const InGameMenu(this.game, {super.key});
@@ -29,8 +30,9 @@ class InGameMenu extends StatelessWidget {
                       const SizedBox(height: 8),
                       ElevatedButton(
                         onPressed: () {
-                          game.overlays.remove(id);
-                          game.router.pushRoute(ResearchOverlay());
+                          game.overlays.removeAll([id, PlayerInfoBar.id]);
+                          game.overlays
+                              .addAll([ResearchOverlay.id, PlayerInfoBar.id]);
                         },
                         style: AppTheme.menuButton,
                         child: const Text('Research'),

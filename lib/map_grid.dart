@@ -186,11 +186,8 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   moveShip(Ship ship, Cell cell) {
     _moveShipHex(ship, cell);
     List<Cell> fromCells = List.empty();
-    if (_selectControl is SelectControlShipSelected) {
-      final paths = (_selectControl as SelectControlShipSelected).paths;
-      if (paths.containsKey(cell)) {
-        fromCells = paths[cell]!;
-      }
+    if (ship.cachedPaths.containsKey(cell)) {
+      fromCells = ship.cachedPaths[cell]!;
     }
     final moveCost = fromCells.fold(0, (previousValue, element) {
       return previousValue + element.tileType.cost;

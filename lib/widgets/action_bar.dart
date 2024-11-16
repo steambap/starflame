@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'map_deploy.dart';
+import 'research_overlay.dart';
+import 'player_info.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
-import 'package:starflame/research_overlay.dart';
 import 'package:starflame/data/lucide_icon.dart';
 
 class ActionBar extends StatelessWidget {
@@ -33,7 +34,8 @@ class ActionBar extends StatelessWidget {
           const SizedBox(width: 4),
           IconButton.outlined(
             onPressed: () {
-              game.router.pushRoute(ResearchOverlay());
+              game.overlays.remove(PlayerInfoBar.id);
+              game.overlays.addAll([ResearchOverlay.id, PlayerInfoBar.id]);
             },
             icon: LucideIcon.flaskRoundBottom,
             style: AppTheme.iconButton,

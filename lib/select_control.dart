@@ -65,7 +65,6 @@ class SelectControlHex extends SelectControl {
 class SelectControlShipSelected extends SelectControlHex {
   late final Cell cell;
   final Ship ship;
-  Map<Cell, List<Cell>> paths = {};
   Set<Cell> attackableCells = {};
 
   SelectControlShipSelected(super.game, this.ship);
@@ -80,7 +79,7 @@ class SelectControlShipSelected extends SelectControlHex {
       return;
     }
 
-    if (paths.containsKey(cell)) {
+    if (ship.cachedPaths.containsKey(cell)) {
       game.mapGrid.moveShip(ship, cell);
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     } else if (attackableCells.contains(cell)) {
@@ -97,9 +96,11 @@ class SelectControlShipSelected extends SelectControlHex {
     final shipOwner = ship.state.playerNumber;
     final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
     game.hudState.ship.value = ship;
+    Map<Cell, List<Cell>> paths = {};
     if (isOwnerHuman) {
       paths =
           game.mapGrid.pathfinding.findAllPath(cell, cell.ship!.movePoint());
+      ship.cachedPaths = paths;
       if (ship.canAttack()) {
         final maxRange = ship.blueprint.attackRange();
         attackableCells =
@@ -122,7 +123,7 @@ class SelectControlShipSelected extends SelectControlHex {
   @override
   void onStateExit() {
     game.hudState.ship.value = null;
-    for (final cell in paths.keys) {
+    for (final cell in ship.cachedPaths.keys) {
       cell.unmark();
     }
     for (final cell in attackableCells) {
@@ -151,6 +152,7 @@ class SelectControlPlanet extends SelectControlHex {
 
   @override
   void onStateEnter() {
+    game.camera.moveTo(cell.position);
     game.hudState.sector.value = cell.sector;
   }
 

@@ -23,6 +23,7 @@ class Ship extends PositionComponent
   Cell cell;
   late ShipState state;
   ShipBlueprint blueprint;
+  Map<Cell, List<Cell>> cachedPaths = const {};
 
   Ship(this.cell, int playerNumber, this.blueprint)
       : super(anchor: Anchor.center) {
@@ -143,6 +144,7 @@ class Ship extends PositionComponent
 
   @override
   void dispose() {
+    cachedPaths = const {};
     cell.ship = null;
     game.mapGrid.removeShip(this);
     removeFromParent();
