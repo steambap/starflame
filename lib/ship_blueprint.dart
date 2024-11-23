@@ -30,6 +30,10 @@ class ShipBlueprint with SimObject {
   final List<ShipPart> parts;
 
   late String className;
+  bool active;
+  bool buildable;
+  bool hasUpdated = false;
+  bool freeUpdate = false;
 
   ShipBlueprint({
     required this.type,
@@ -38,6 +42,8 @@ class ShipBlueprint with SimObject {
     required this.parts,
     required Map<Property, int> obj,
     required String name,
+    this.active = true,
+    this.buildable = true,
   }) {
     props.addAll(obj);
     className = name.isNotEmpty ? name : type.name;
@@ -134,14 +140,15 @@ class ShipBlueprint with SimObject {
     return ret;
   }
 
-  factory ShipBlueprint.interceptor() {
+  factory ShipBlueprint.interceptor([String name = "", bool active = true]) {
     return ShipBlueprint(
         type: ShipType.interceptor,
         cost: 3,
-        name: "",
+        name: name,
         image: "ships/raider.png",
         obj: {
           SimProps.hull: 12,
+          SimProps.initiative: 2,
         },
         parts: [
           ShipPart("Nuclear Source", const {
@@ -156,17 +163,19 @@ class ShipBlueprint with SimObject {
             SimProps.energy: -1,
           }),
           ShipPart.none(),
-        ]);
+        ],
+        active: active);
   }
 
-  factory ShipBlueprint.cruiser() {
+  factory ShipBlueprint.cruiser([String name = "", bool active = true]) {
     return ShipBlueprint(
         type: ShipType.cruiser,
         cost: 5,
-        name: "",
+        name: name,
         image: "ships/screen.png",
         obj: {
           SimProps.hull: 12,
+          SimProps.initiative: 1,
         },
         parts: [
           ShipPart("Nano Computer", const {
@@ -187,14 +196,15 @@ class ShipBlueprint with SimObject {
             SimProps.movement: 20,
             SimProps.energy: -1,
           }),
-        ]);
+        ],
+        active: active);
   }
 
-  factory ShipBlueprint.dreadnought() {
+  factory ShipBlueprint.dreadnought([String name = "", bool active = true]) {
     return ShipBlueprint(
         type: ShipType.dreadnought,
         cost: 8,
-        name: "",
+        name: name,
         image: "ships/capital.png",
         obj: {
           SimProps.hull: 12,
@@ -225,6 +235,7 @@ class ShipBlueprint with SimObject {
             SimProps.movement: 20,
             SimProps.energy: -1,
           }),
-        ]);
+        ],
+        active: active);
   }
 }

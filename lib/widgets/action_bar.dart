@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'map_deploy.dart';
 import 'research_overlay.dart';
 import 'player_info.dart';
+import 'ship_update.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/data/lucide_icon.dart';
@@ -42,7 +43,10 @@ class ActionBar extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           IconButton.outlined(
-            onPressed: null,
+            onPressed: () {
+              game.overlays.remove(PlayerInfoBar.id);
+              game.overlays.addAll([ShipUpdate.id, PlayerInfoBar.id]);
+            },
             icon: LucideIcon.combine,
             style: AppTheme.iconButton,
           ),

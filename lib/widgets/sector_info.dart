@@ -94,7 +94,7 @@ class SectorInfo extends StatelessWidget {
                     style: AppTheme.icon16purple,
                   ),
                   Text(
-                    "+${sector.getProp(SimProps.production)}",
+                    "+${sector.getProp(SimProps.support)}",
                     style: AppTheme.label12,
                   ),
                 ],

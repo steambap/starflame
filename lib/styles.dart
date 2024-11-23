@@ -58,6 +58,16 @@ class AppTheme {
         side: const BorderSide(color: panelBorder)),
     clipBehavior: Clip.hardEdge,
   );
+  static const tabTheme = TabBarTheme(
+    dividerHeight: 0,
+    labelColor: pale,
+    unselectedLabelColor: gray,
+    indicator: BoxDecoration(
+      border: Border(
+        bottom: BorderSide(color: pale, width: 2),
+      ),
+    ),
+  );
   static const dialogTitleBg = blue;
 
   static const panelBackground = black;

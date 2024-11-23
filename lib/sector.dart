@@ -16,7 +16,7 @@ class Sector extends PositionComponent
   int? playerNumber;
   int team = 0;
 
-  bool homePlanet = false;
+  int homePlanet = -1;
 
   final Hex hex;
   final TextComponent nameLabel = TextComponent(
@@ -75,7 +75,7 @@ class Sector extends PositionComponent
 
   void setHome(int playerNumber) {
     this.playerNumber = playerNumber;
-    homePlanet = true;
+    homePlanet = playerNumber;
     for (final slot in workerSlots()) {
       if (!slot.isAdvanced) {
         slot.isOccupied = true;
@@ -135,6 +135,8 @@ class Sector extends PositionComponent
         }
       }
     }
+    final supportOutput = playerNumber == homePlanet ? 6 : -1;
+    addProp(SimProps.support, supportOutput);
     notifyListeners();
   }
 

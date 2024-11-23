@@ -22,12 +22,12 @@ class ResourceController {
   }
 
   Resources playerIncome(PlayerState state) {
-    Resources income = const Resources(support: 6);
+    Resources income = const Resources();
 
     for (final planet in game.mapGrid.sectors) {
       if (planet.playerNumber == state.playerNumber) {
         income += Resources(
-          support: planet.getProp(SimProps.support).floor() - 1,
+          support: planet.getProp(SimProps.support).floor(),
           production: planet.getProp(SimProps.production).floor(),
           credit: planet.getProp(SimProps.credit).floor(),
           science: planet.getProp(SimProps.science).floor(),

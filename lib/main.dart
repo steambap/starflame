@@ -15,6 +15,7 @@ import 'widgets/sector_overlay.dart';
 import 'widgets/map_deploy.dart';
 import 'widgets/victory_overlay.dart';
 import 'widgets/research_overlay.dart';
+import 'widgets/ship_update.dart';
 
 class ScifiApp extends StatelessWidget {
   const ScifiApp({super.key});
@@ -28,6 +29,7 @@ class ScifiApp extends StatelessWidget {
           fontFamily: 'Chakra',
           visualDensity: VisualDensity.adaptivePlatformDensity,
           dialogTheme: AppTheme.dialogTheme,
+          tabBarTheme: AppTheme.tabTheme,
         ),
         home: Scaffold(
           body: GameWidget<ScifiGame>.controlled(
@@ -42,6 +44,7 @@ class ScifiApp extends StatelessWidget {
               ActionBar.id: (_, game) => ActionBar(game),
               HudMenuButton.id: (_, game) => HudMenuButton(game),
               SectorInfo.id: (_, game) => SectorInfo(game),
+              ShipUpdate.id: (_, game) => ShipUpdate(game),
               ResearchOverlay.id: (_, game) => ResearchOverlay(game),
               ShipCmd.id: (_, game) => ShipCmd(game),
               SectorOverlay.id: (_, game) => SectorOverlay(game),

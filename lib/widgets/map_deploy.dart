@@ -25,7 +25,7 @@ class MapDeploy extends StatelessWidget {
               builder: (context, playerState, child) {
                 return Column(
                   children: [
-                    for (final hull in playerState.blueprints)
+                    for (final hull in playerState.blueprints.where((bp) => bp.active && bp.buildable))
                       _addShipButton(playerState, hull)
                   ],
                 );

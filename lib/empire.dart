@@ -25,13 +25,16 @@ final Map<String, Empire> buildinEmpire = {
   "terranEmpire": Empire(Faction.terranEmpire, "Terran Empire", [
     ShipBlueprint.interceptor(),
     ShipBlueprint.cruiser(),
+    ShipBlueprint.dreadnought("", false),
   ]),
   "terranKindom": Empire(Faction.terranKindom, "Kindom of Terran", [
     ShipBlueprint.interceptor(),
     ShipBlueprint.cruiser(),
+    ShipBlueprint.dreadnought("", false),
   ]),
   "terranAlliance": Empire(Faction.terranAlliance, "Terran Alliance", [
     ShipBlueprint.interceptor(),
     ShipBlueprint.cruiser(),
+    ShipBlueprint.dreadnought("", false),
   ]),
 };

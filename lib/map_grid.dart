@@ -240,7 +240,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
   Cell? getCapitalCell(int playerNumber) {
     for (final s in sectors) {
-      if (s.homePlanet && s.playerNumber == playerNumber) {
+      if (s.homePlanet == playerNumber) {
         final hex = s.hex;
         final index = _hexTable[hex.toInt()] ?? -1;
         if (index < 0) {

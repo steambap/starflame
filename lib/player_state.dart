@@ -73,11 +73,8 @@ class PlayerState with ChangeNotifier, SimObject {
     assert(techMap.containsKey(techId), "Tech $techId not found");
     techs.add(techId);
     final tech = techMap[techId]!;
-    for (final eff in tech.effects.entries) {
-      props.update(eff.key, (prev) => prev + eff.value,
-          ifAbsent: () => eff.value);
-    }
-    props.addAll(tech.effects);
+    tech.applyBenefit(this);
+    
     if (techLevel[tech.section]! <= tech.tier) {
       techLevel.update(tech.section, (prev) => prev + 1);
     }

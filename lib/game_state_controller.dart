@@ -149,7 +149,7 @@ class GameStateController {
     final Set<int> victoryTeam = {};
 
     for (final p in game.mapGrid.sectors) {
-      if (p.playerNumber != null && p.homePlanet) {
+      if (p.playerNumber != null && p.homePlanet > -1) {
         victoryTeam.add(p.playerNumber!);
       }
     }
