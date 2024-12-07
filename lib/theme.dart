@@ -10,4 +10,3 @@ const black = Color(0xFF081319);
 const darkGray = Color(0xFF686F73);
 const gray = Color(0xFF9C9C9C);
 const pale = Color(0xFFEDEBEA);
-const transparentBlue = Color(0x888888aa);

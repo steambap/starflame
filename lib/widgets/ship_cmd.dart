@@ -6,6 +6,7 @@ import 'package:starflame/ship.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/select_control.dart';
 import 'package:starflame/action_type.dart';
+import 'package:starflame/data/lucide_icon.dart';
 
 class ShipCmd extends StatelessWidget {
   const ShipCmd(this.game, {super.key});
@@ -60,7 +61,7 @@ class ShipCmd extends StatelessWidget {
                           }
                         },
                   style: AppTheme.iconButton,
-                  icon: act.icon),
+                  icon: Icon(act.icon)),
             )
         ]),
         Container(
@@ -94,25 +95,24 @@ class ShipCmd extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Text(
-                        "\ue0f5",
-                        style: AppTheme.icon16pale,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                          "${ship.state.health} / ${ship.blueprint.maxHealth()}",
-                          style: AppTheme.label16),
+                      RichText(text: TextSpan(style: AppTheme.label16, children: [
+                        const WidgetSpan(
+                            child: Icon(LucideIcon.heart,
+                                size: 14, color: AppTheme.iconPale)),
+                        const WidgetSpan(child: SizedBox(width: 4)),
+                        TextSpan(text: "${ship.state.health} / ${ship.blueprint.maxHealth()}"),
+                      ])),
                     ],
                   ),
                   Row(
                     children: [
-                      const Text(
-                        "\ue127",
-                        style: AppTheme.icon16pale,
-                      ),
-                      const SizedBox(width: 4),
-                      Text("${ship.movePoint()} / ${ship.blueprint.movement()}",
-                          style: AppTheme.label16),
+                      RichText(text: TextSpan(style: AppTheme.label16, children: [
+                        const WidgetSpan(
+                            child: Icon(LucideIcon.navigation,
+                                size: 14, color: AppTheme.iconPale)),
+                        const WidgetSpan(child: SizedBox(width: 4)),
+                        TextSpan(text: "${ship.movePoint()} / ${ship.blueprint.movement()}"),
+                      ])),
                     ],
                   ),
                 ],

@@ -33,16 +33,19 @@ class BaseAI {
     }
     loop:
     for (final sector in mySectors) {
-      for (final slot in sector.workerSlots()) {
-        if (!slot.isOccupied &&
-            game.resourceController.canPlaceWorker(playerState.playerNumber)) {
-          game.resourceController
-              .placeWorker(playerState.playerNumber, sector, slot, slot.type);
-          game.aiController.log(
-              "Placed ${slot.type} worker in sector ${sector.displayName}");
+      for (final planet in sector.planets) {
+        for (final slot in sector.workerSlots()) {
+          if (!slot.isOccupied &&
+              game.resourceController
+                  .canPlaceWorker(playerState.playerNumber)) {
+            game.resourceController.placeWorker(
+                playerState.playerNumber, sector, planet, slot.type);
+            game.aiController.log(
+                "Placed ${slot.type} worker on planet ${planet.name} in sector ${sector.displayName}");
 
-          if (!playerState.canTakeAction()) {
-            break loop;
+            if (!playerState.canTakeAction()) {
+              break loop;
+            }
           }
         }
       }

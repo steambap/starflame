@@ -7,8 +7,6 @@ import "theme.dart";
 final grayTint = PaintDecorator.tint(const Color(0x7f7f7f7f));
 final textDamage = TextPaint(
     style: const TextStyle(color: red, fontSize: 16, fontFamily: "SpaceMono"));
-final text12 = TextPaint(
-    style: const TextStyle(color: pale, fontSize: 12, fontFamily: "SpaceMono"));
 final label12 = TextPaint(
     style: const TextStyle(color: pale, fontSize: 12, fontFamily: "Chakra"));
 final heading24 = TextPaint(
@@ -21,9 +19,6 @@ final hexBorderPaint = Paint()
 final highlighterPaint = Paint()..color = blue.withAlpha(128);
 final moveendPaint = Paint()..color = purple.withAlpha(128);
 final targetPaint = Paint()..color = red.withAlpha(128);
-final emptyPaint = Paint()
-  ..style = PaintingStyle.stroke
-  ..color = Colors.transparent;
 final fogPaint = Paint()..color = black;
 
 final dialogBackground = Paint()..color = black.withAlpha(225);
@@ -35,6 +30,39 @@ final panelBorder = Paint()
 final panelSkin = [panelBackground, panelBorder];
 
 const navbarHeight = 32.0;
+
+class FlameTheme {
+  static final emptyPaint = Paint();
+  static final labelBackground = [
+    Paint()..color = black,
+    Paint()
+      ..color = darkGray
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+  ];
+  static final binaryPaintLayer = [Paint()..color = purple];
+  static final noStarPaintLayer = [
+    Paint()..color = black,
+    Paint()
+      ..color = pale
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+  ];
+  static final blueStarPaintLayer = [Paint()..color = blue];
+  static final redStarPaintLayer = [Paint()..color = red];
+  static final yellowStarPaintLayer = [Paint()..color = yellow];
+  static final whiteStarPaintLayer = [Paint()..color = pale];
+  static final text10pale = TextPaint(
+      style:
+          const TextStyle(color: pale, fontSize: 10, fontFamily: "SpaceMono"));
+
+  static final planetColonizable = [Paint()..color = pale];
+  static final planetUncolonizable = [
+    Paint()
+      ..color = gray
+      ..style = PaintingStyle.stroke
+  ];
+}
 
 class AppTheme {
   static final dialogBackground = black.withAlpha(225);
@@ -91,28 +119,22 @@ class AppTheme {
   static const label16Gray = TextStyle(color: gray, fontSize: 16);
   static const heading24 = TextStyle(color: pale, fontSize: 24);
 
-  static const icon16red =
-      TextStyle(color: red, fontSize: 16, fontFamily: "Icon");
-  static const icon16yellow =
-      TextStyle(color: yellow, fontSize: 16, fontFamily: "Icon");
-  static const icon16blue =
-      TextStyle(color: blue, fontSize: 16, fontFamily: "Icon");
-  static const icon16purple =
-      TextStyle(color: purple, fontSize: 16, fontFamily: "Icon");
-  static const icon16pale =
-      TextStyle(color: pale, fontSize: 16, fontFamily: "Icon");
+  static const iconPurple = purple;
+  static const iconBlue = blue;
+  static const iconRed = red;
+  static const iconYellow = yellow;
+  static const iconPale = pale;
+
   static const iconSlot =
       TextStyle(color: pale, fontSize: 48, fontFamily: "Icon");
   static const iconSlotDisabled =
       TextStyle(color: gray, fontSize: 48, fontFamily: "Icon");
 
-  static const slotBorder = pale;
-  static const slotBorderDisabled = gray;
-
-  static const supportSlot = purple;
   static const miningSlot = red;
   static const economySlot = yellow;
   static const labSlot = blue;
+  static const disabledSlot = darkGray;
+  static const disabledSlotBorder = gray;
   static const unoccupiedSlot = darkGray;
 
   static const warfareTech = red;

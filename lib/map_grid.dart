@@ -175,7 +175,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     return edges;
   }
 
-  _moveShipHex(Ship ship, Cell cell) {
+  void _moveShipHex(Ship ship, Cell cell) {
     final prevCell = ship.cell;
     prevCell.ship = null;
 
@@ -183,7 +183,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     cell.ship = ship;
   }
 
-  moveShip(Ship ship, Cell cell) {
+  void moveShip(Ship ship, Cell cell) {
     _moveShipHex(ship, cell);
     List<Cell> fromCells = List.empty();
     if (ship.cachedPaths.containsKey(cell)) {

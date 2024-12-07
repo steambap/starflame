@@ -8,6 +8,7 @@ import 'package:starflame/sector.dart';
 import 'package:starflame/sim_props.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/data/lucide_icon.dart';
+import 'package:starflame/fmt.dart';
 
 class SectorInfo extends StatelessWidget {
   const SectorInfo(this.game, {super.key});
@@ -57,7 +58,7 @@ class SectorInfo extends StatelessWidget {
                       }
                     : null,
                 style: AppTheme.iconButton,
-                icon: LucideIcon.orbit),
+                icon: const Icon(LucideIcon.orbit)),
           )
         ]),
         Container(
@@ -82,67 +83,44 @@ class SectorInfo extends StatelessWidget {
           color: AppTheme.panelBorder,
           child: Text(sector.displayName, style: AppTheme.label12),
         ),
-        Wrap(
-          spacing: 4,
-          children: [
+        Padding(
+          padding: const EdgeInsets.all(4),
+          child: RichText(
+              text: TextSpan(style: AppTheme.label12, children: [
             if (sector.getProp(SimProps.support) != 0)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "\ue467",
-                    style: AppTheme.icon16purple,
-                  ),
-                  Text(
-                    "+${sector.getProp(SimProps.support)}",
-                    style: AppTheme.label12,
-                  ),
-                ],
-              ),
+              const WidgetSpan(
+                  child: Icon(LucideIcon.circleUserRound,
+                      size: 16, color: AppTheme.iconPurple)),
+            if (sector.getProp(SimProps.support) != 0)
+              TextSpan(
+                  text:
+                      " ${formatterSigned.format(sector.getProp(SimProps.support))}  "),
             if (sector.getProp(SimProps.production) != 0)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "\ue1b1",
-                    style: AppTheme.icon16red,
-                  ),
-                  Text(
-                    "+${sector.getProp(SimProps.production)}",
-                    style: AppTheme.label12,
-                  ),
-                ],
-              ),
+              const WidgetSpan(
+                  child: Icon(LucideIcon.wrench,
+                      size: 16, color: AppTheme.iconRed)),
+            if (sector.getProp(SimProps.production) != 0)
+              TextSpan(
+                  text:
+                      " ${formatterSigned.format(sector.getProp(SimProps.production))} "),
             if (sector.getProp(SimProps.credit) != 0)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "\ue0bc",
-                    style: AppTheme.icon16yellow,
-                  ),
-                  Text(
-                    "+${sector.getProp(SimProps.credit)}",
-                    style: AppTheme.label12,
-                  ),
-                ],
-              ),
+              const WidgetSpan(
+                  child: Icon(LucideIcon.euro,
+                      size: 16, color: AppTheme.iconYellow)),
+            if (sector.getProp(SimProps.credit) != 0)
+              TextSpan(
+                  text:
+                      " ${formatterSigned.format(sector.getProp(SimProps.credit))} "),
             if (sector.getProp(SimProps.science) != 0)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "\ue0db",
-                    style: AppTheme.icon16blue,
-                  ),
-                  Text(
-                    "+${sector.getProp(SimProps.science)}",
-                    style: AppTheme.label12,
-                  ),
-                ],
-              ),
-          ],
-        )
+              const WidgetSpan(
+                  child: Icon(LucideIcon.flaskRoundBottom,
+                      size: 16, color: AppTheme.iconBlue)),
+            if (sector.getProp(SimProps.science) != 0)
+              TextSpan(
+                  text:
+                      " ${formatterSigned.format(sector.getProp(SimProps.science))} "),
+          ])),
+        ),
       ],
     );
   }

@@ -98,43 +98,23 @@ class _SectorOverlayState extends State<SectorOverlay> {
                         width: 36,
                         height: 36,
                         margin: const EdgeInsets.symmetric(vertical: 4),
-                        child: Stack(
-                            fit: StackFit.passthrough,
-                            clipBehavior: Clip.none,
-                            children: [
-                              if (slot.isAdvanced)
-                                Positioned(
-                                    left: -6,
-                                    top: -16,
-                                    child: Text('\ue257',
-                                        style: _isDisabled(slot)
-                                            ? AppTheme.iconSlotDisabled
-                                            : AppTheme.iconSlot)),
-                              ElevatedButton(
-                                  onPressed: _isDisabled(slot)
-                                      ? null
-                                      : () {
-                                          _askForWorker(
-                                              planet, slot, slot.isOccupied);
-                                        },
-                                  style: _getStyle(slot),
-                                  child: Text(
-                                    slot.isOccupied
-                                        ? slotOutput(planet, slot.type)
-                                            .toString()
-                                        : "+",
-                                    style: AppTheme.label16,
-                                  )),
-                            ]),
+                        child: (slot.isOccupied)
+                            ? _renderSlotOutput(planet, slot)
+                            : _renderButton(planet, slot),
                       )
                   ],
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 8),
-                  child: Image.asset(
-                    imageName(planet.type),
-                    width: imgWidth,
-                    height: imgWidth,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        imageName(planet.type),
+                        width: imgWidth,
+                        height: imgWidth,
+                      ),
+                      const SizedBox(height: 36,)
+                    ],
                   ),
                 )
               ],
@@ -143,26 +123,49 @@ class _SectorOverlayState extends State<SectorOverlay> {
         ));
   }
 
-  ButtonStyle _getStyle(WorkerSlot slot) {
-    final isDisabled = _isDisabled(slot);
-    Color slotColor = switch (slot.type) {
-      WorkerType.support => AppTheme.supportSlot,
-      WorkerType.economy => AppTheme.economySlot,
-      WorkerType.mining => AppTheme.miningSlot,
-      WorkerType.lab => AppTheme.labSlot,
-    };
-    Color? disabledSlotColor;
-    if (slot.isOccupied) {
-      disabledSlotColor = slotColor.withOpacity(0.5);
-    } else {
-      slotColor = AppTheme.unoccupiedSlot;
+  Widget _renderSlotOutput(Planet planet, WorkerSlot slot) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: getSlotColor(slot.type).withAlpha(128),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: getSlotColor(slot.type), width: 1),
+      ),
+      child: Center(
+        child: Text(
+          Sector.output.toString(),
+          style: AppTheme.label16,
+        ),
+      ),
+    );
+  }
+
+  Widget _renderButton(Planet planet, WorkerSlot slot) {
+    return ElevatedButton(
+        onPressed: _isDisabled(planet)
+            ? null
+            : () {
+                _onPlaceWorker(planet, slot.type);
+              },
+        style: _getStyle(planet, slot),
+        child: Text(
+          "+",
+          style: _isDisabled(planet) ? AppTheme.label16Gray : AppTheme.label16,
+        ));
+  }
+
+  ButtonStyle _getStyle(Planet planet, WorkerSlot slot) {
+    final isDisabled = _isDisabled(planet);
+    Color slotColor = getSlotColor(slot.type).withAlpha(128);
+    Color borderColor = getSlotColor(slot.type);
+    if (isDisabled) {
+      borderColor = AppTheme.disabledSlotBorder;
     }
 
-    final borderColor =
-        isDisabled ? AppTheme.slotBorderDisabled : AppTheme.slotBorder;
     return ElevatedButton.styleFrom(
       backgroundColor: slotColor,
-      disabledBackgroundColor: disabledSlotColor,
+      disabledBackgroundColor: AppTheme.disabledSlot,
       padding: const EdgeInsets.all(0),
       elevation: isDisabled ? 0 : 1,
       shape: RoundedRectangleBorder(
@@ -171,76 +174,18 @@ class _SectorOverlayState extends State<SectorOverlay> {
     );
   }
 
-  void _onPlaceWorker(WorkerSlot slot, WorkerType type) {
+  void _onPlaceWorker(Planet planet, WorkerType type) {
     final playerNumber = widget.game.controller.getHumanPlayerNumber();
     widget.game.resourceController
-        .placeWorker(playerNumber, sector, slot, type);
+        .placeWorker(playerNumber, sector, planet, type);
   }
 
-  void _onSwitchWorker(WorkerSlot slot, WorkerType type) {
-    final playerNumber = widget.game.controller.getHumanPlayerNumber();
-    widget.game.resourceController
-        .switchWorker(playerNumber, sector, slot, type);
-  }
-
-  bool _isDisabled(WorkerSlot slot) {
-    final playerNumber = widget.game.controller.getHumanPlayerNumber();
-    return slot.isOccupied
-        ? !widget.game.resourceController.canSwitchWorker(playerNumber)
-        : !widget.game.resourceController.canPlaceWorker(playerNumber);
-  }
-
-  bool _isCurrentWorker(WorkerSlot slot, bool isSwitch, WorkerType type) {
-    if (isSwitch) {
-      return slot.type == type;
-    }
-
-    return false;
-  }
-
-  Future<void> _askForWorker(
-      Planet planet, WorkerSlot slot, bool isSwitch) async {
-    final prompt = isSwitch
-        ? 'Switch to a different worker type'
-        : 'Please select a worker type';
-    final result = await showDialog<WorkerType>(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            titlePadding: const EdgeInsets.all(0),
-            title: Container(
-                color: AppTheme.dialogTitleBg,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                child: Text(prompt, style: AppTheme.label16)),
-            children: WorkerType.values
-                .where((type) => !_isCurrentWorker(slot, isSwitch, type))
-                .map((type) => SimpleDialogOption(
-                      onPressed: () {
-                        Navigator.pop(context, type);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(type.name, style: AppTheme.label16Gray),
-                          Row(
-                            children: [
-                              Text("+${slotOutput(planet, type).toString()}",
-                                  style: AppTheme.label16),
-                              const SizedBox(width: 4),
-                              workerIcon(type),
-                            ],
-                          )
-                        ],
-                      ),
-                    ))
-                .toList(),
-          );
-        });
-
-    if (result != null) {
-      isSwitch ? _onSwitchWorker(slot, result) : _onPlaceWorker(slot, result);
-    }
+  bool _isDisabled(Planet planet) {
+    final playerState = widget.game.controller.getHumanPlayerState();
+    final canColonize = sector.canColonizePlanet(planet, playerState);
+    return !canColonize ||
+        !widget.game.resourceController
+            .canPlaceWorker(playerState.playerNumber);
   }
 
   static String imageName(PlanetType type) {
@@ -255,24 +200,11 @@ class _SectorOverlayState extends State<SectorOverlay> {
     return 'assets/images/$img';
   }
 
-  static Text workerIcon(WorkerType type) {
+  static Color getSlotColor(WorkerType type) {
     return switch (type) {
-      WorkerType.support => const Text(
-          "\ue467",
-          style: AppTheme.icon16purple,
-        ),
-      WorkerType.economy => const Text(
-          "\ue0bc",
-          style: AppTheme.icon16yellow,
-        ),
-      WorkerType.mining => const Text(
-          "\ue1b1",
-          style: AppTheme.icon16red,
-        ),
-      WorkerType.lab => const Text(
-          "\ue0db",
-          style: AppTheme.icon16blue,
-        ),
+      WorkerType.economy => AppTheme.economySlot,
+      WorkerType.mining => AppTheme.miningSlot,
+      WorkerType.lab => AppTheme.labSlot,
     };
   }
 }

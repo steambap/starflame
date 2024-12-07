@@ -3,82 +3,105 @@ import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
 
-import "sector_drawing.dart";
 import "hex.dart";
 import "sim_props.dart";
 import 'scifi_game.dart';
 import "player_state.dart";
 import "planet.dart";
-import "styles.dart" show label12, emptyPaint;
+import "star.dart";
+import "styles.dart";
 
 class Sector extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier, SimObject {
+  static const output = 10;
+
   int? playerNumber;
   int team = 0;
 
   int homePlanet = -1;
 
   final Hex hex;
-  final TextComponent nameLabel = TextComponent(
+  final StarType starType;
+  final ClipComponent _clip = ClipComponent.polygon(
+      points: Hex.zero.polygonCorners(Hex.size - 1),
+      size: Vector2.all(1),
+      priority: 1);
+  final TextComponent _nameLabel = TextComponent(
       text: "",
-      position: Vector2(0, 10),
-      priority: 1,
+      position: Vector2(0, -18),
       anchor: Anchor.center,
-      textRenderer: label12);
-  final PolygonComponent ownerHex = PolygonComponent(
-      Hex.zero.polygonCorners(Hex.size - 0.5),
-      paint: emptyPaint,
+      textRenderer: FlameTheme.text10pale);
+  final RectangleComponent _nameBG = RectangleComponent(
+      size: Vector2(64, 14),
+      position: Vector2(0, -18),
+      paintLayers: FlameTheme.labelBackground,
       anchor: Anchor.center);
-  final List<Orbit> _orbits = [];
-  List<Planet> planets;
+  final PolygonComponent _ownerHex = PolygonComponent(
+      Hex.zero.polygonCorners(Hex.size - 0.5),
+      paint: FlameTheme.emptyPaint,
+      anchor: Anchor.center);
+  final CircleComponent _star = CircleComponent(
+      radius: 30, position: Vector2(0, 36), anchor: Anchor.center);
 
-  Sector(this.hex, {this.planets = const []});
+  List<Planet> planets;
+  final List<CircleComponent> _planetCircles = [];
+
+  Sector(this.hex, this.starType, {this.planets = const []});
 
   String _displayName = "";
   String get displayName => _displayName;
   set displayName(String value) {
     _displayName = value;
 
-    String surfix = "I";
+    int surfix = 1;
     for (final p in planets) {
-      if (p.name == "") {
+      if (!p.isUnique) {
         p.name = "$displayName $surfix";
-        surfix += "I";
+        surfix += 1;
       }
     }
   }
 
   @override
   FutureOr<void> onLoad() {
-    final List<double> rList = switch (planets.length) {
-      1 => const [16],
-      2 => const [12, 20],
-      _ => const [8, 16, 24],
+    _nameLabel.text = displayName;
+    _star.paintLayers = switch (starType) {
+      StarType.binary => FlameTheme.binaryPaintLayer,
+      StarType.none => FlameTheme.noStarPaintLayer,
+      StarType.blue => FlameTheme.blueStarPaintLayer,
+      StarType.red => FlameTheme.redStarPaintLayer,
+      StarType.yellow => FlameTheme.yellowStarPaintLayer,
+      StarType.white => FlameTheme.whiteStarPaintLayer,
     };
+    final planetCirclesStart = 3 - (planets.length * 3.0 + (planets.length - 1) * 2);
     for (int i = 0; i < planets.length; i++) {
-      final p = planets[i];
-      final orbitRadius = rList[i];
-      final double planetRadiius = p.workerSlots.length > 1 ? 4 : 3;
-      final orbit = Orbit(
-          radius: orbitRadius,
-          planet: MiniPlanet(radius: planetRadiius, type: p.type),
-          revolutionPeriod: orbitRadius * 2,
-          initialAngle: orbitRadius + displayName.length);
-      _orbits.add(orbit);
+      final circle = CircleComponent(
+          radius: 3,
+          position: Vector2(planetCirclesStart + i * 10, -4),
+          paintLayers: FlameTheme.planetColonizable,
+          anchor: Anchor.center);
+      _planetCircles.add(circle);
     }
-
-    addAll([ownerHex, ..._orbits, nameLabel]);
+    _clip.addAll([
+      _nameBG,
+      _nameLabel,
+      _star,
+      ..._planetCircles,
+    ]);
+    addAll([_clip, _ownerHex]);
 
     refreshProps();
     updateRender();
   }
 
-  void setHome(int playerNumber) {
-    this.playerNumber = playerNumber;
-    homePlanet = playerNumber;
-    for (final slot in workerSlots()) {
-      if (!slot.isAdvanced) {
-        slot.isOccupied = true;
+  void setHome(PlayerState playerState) {
+    playerNumber = playerState.playerNumber;
+    homePlanet = playerState.playerNumber;
+    for (final planet in planets) {
+      if (canColonizePlanet(planet, playerState)) {
+        for (final slot in planet.workerSlots) {
+          slot.isOccupied = true;
+        }
       }
     }
   }
@@ -95,15 +118,39 @@ class Sector extends PositionComponent
   }
 
   void updateRender() {
+    final pState = playerNumber != null ? game.controller.getPlayerState(playerNumber!) : game.controller.getHumanPlayerState();
     if (playerNumber == null) {
-      ownerHex.paint = emptyPaint;
+      _ownerHex.paint = FlameTheme.emptyPaint;
     } else {
-      final pState = game.controller.getPlayerState(playerNumber!);
       final playerPaint = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
         ..color = pState.color;
-      ownerHex.paint = playerPaint;
+      _ownerHex.paint = playerPaint;
+    }
+
+    final playerPaintLayer = [
+      Paint()
+        ..color = pState.color
+    ];
+
+    final humanPlayerState = game.controller.getHumanPlayerState();
+
+    for (int i = 0; i < planets.length; i++) {
+      final planet = planets[i];
+      if (planet.type == PlanetType.orbital) {
+        continue;
+      }
+      final circle = _planetCircles[i];
+      if (planet.hasWorker()) {
+        circle.paintLayers = playerPaintLayer;
+      } else {
+        if (humanPlayerState.colonizable.contains(planet.type)) {
+          circle.paintLayers = FlameTheme.planetColonizable;
+        } else {
+          circle.paintLayers = FlameTheme.planetUncolonizable;
+        }
+      }
     }
   }
 
@@ -116,7 +163,7 @@ class Sector extends PositionComponent
   }
 
   bool attackable(int playerNumber) {
-    if (this.playerNumber == null) {
+    if (neutral()) {
       return false;
     }
     return this.playerNumber != playerNumber;
@@ -131,12 +178,14 @@ class Sector extends PositionComponent
     for (final p in planets) {
       for (final slot in p.workerSlots) {
         if (slot.isOccupied) {
-          addProp(slot.type.output, slotOutput(p, slot.type));
+          addProp(slot.type.output, output);
         }
       }
     }
     final supportOutput = playerNumber == homePlanet ? 6 : -1;
     addProp(SimProps.support, supportOutput);
+    final maintaince = playerNumber == homePlanet ? 0 : 2;
+    addProp(SimProps.credit, -maintaince);
     notifyListeners();
   }
 
@@ -153,49 +202,30 @@ class Sector extends PositionComponent
     return planets.expand((p) => p.workerSlots);
   }
 
-  bool placeWorker(PlayerState pState, WorkerSlot slot, WorkerType type) {
-    final slots = workerSlots();
-    if (!slots.contains(slot)) {
-      return false;
-    }
+  bool placeWorker(PlayerState pState, Planet planet, WorkerType type) {
+    final slot = planet.workerSlots.firstWhere((s) => s.type == type);
 
     if (slot.isOccupied) {
       return false;
     }
-    // if (slot.isAdvanced) {
-    //   return false;
-    // }
 
     slot.isOccupied = true;
-    slot.type = type;
     refreshProps();
     return true;
   }
 
-  bool switchWorker(PlayerState pState, WorkerSlot slot, WorkerType type) {
-    final slots = workerSlots();
-    if (!slots.contains(slot)) {
-      return false;
-    }
-
-    if (!slot.isOccupied) {
-      return false;
-    }
-    // if (slot.isAdvanced) {
-    //   return false;
-    // }
-
-    slot.type = type;
-    refreshProps();
-    return true;
-  }
-
-  hasOrbital() {
+  bool hasOrbital() {
     return planets.any((p) => p.type == PlanetType.orbital);
   }
 
-  addOrbital() {
+  void addOrbital() {
     planets.add(Planet.orbital());
     notifyListeners();
+  }
+
+  bool canColonizePlanet(Planet planet, PlayerState? pState) {
+    final playerState = pState ?? game.controller.getHumanPlayerState();
+
+    return playerState.colonizable.contains(planet.type);
   }
 }

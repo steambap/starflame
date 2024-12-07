@@ -12,7 +12,7 @@ abstract class Action {
   final ActionType actionType;
   final ActionTarget targetType;
   final int cooldown;
-  final Icon icon;
+  final IconData icon;
 
   Action(this.ship, this.actionType, this.targetType, this.icon,
       {this.cooldown = 0});

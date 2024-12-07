@@ -6,6 +6,7 @@ import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/player_state.dart';
 import 'package:starflame/select_control.dart';
+import 'package:starflame/data/lucide_icon.dart';
 
 class MapDeploy extends StatelessWidget {
   const MapDeploy(this.game, {super.key});
@@ -61,29 +62,26 @@ class MapDeploy extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(hull.className, style: textStyle)),
-                    Expanded(child: Image.asset("assets/images/${hull.image}")),
-                    Row(
-                      children: [
-                        const Text(
-                          "\ue467",
-                          style: AppTheme.icon16purple,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(playerState.nextActionCost.toString(),
-                            style: textStyle),
-                        const SizedBox(width: 8),
-                        const Text(
-                          "\ue1b1",
-                          style: AppTheme.icon16red,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(hull.cost.toString(), style: textStyle)
-                      ],
-                    )
+                    Text(hull.className, style: textStyle),
+                    Expanded(child: Center(child: Image.asset("assets/images/${hull.image}"))),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2),
+                      child: RichText(text: TextSpan(style: textStyle, children: [
+                        const WidgetSpan(
+                            child: Icon(LucideIcon.circleUserRound,
+                                size: 14, color: AppTheme.iconPurple)),
+                        const WidgetSpan(child: SizedBox(width: 4)),
+                        TextSpan(text: playerState.nextActionCost.toString()),
+                        const WidgetSpan(child: SizedBox(width: 8)),
+                        const WidgetSpan(
+                            child: Icon(LucideIcon.wrench,
+                                size: 14, color: AppTheme.iconRed)),
+                        const WidgetSpan(child: SizedBox(width: 4)),
+                        TextSpan(text: hull.cost.toString()),
+                      ])),
+                    ),
                   ],
                 ),
               )),

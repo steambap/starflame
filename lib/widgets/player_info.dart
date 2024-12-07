@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/player_state.dart';
+import 'package:starflame/data/lucide_icon.dart';
+import 'package:starflame/fmt.dart';
 
 class PlayerInfoBar extends StatelessWidget {
   const PlayerInfoBar(this.game, {super.key});
@@ -50,77 +52,63 @@ class PlayerInfoBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 4),
-            const Text(
-              "\ue467",
-              style: AppTheme.icon16purple,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              "${playerState.support}",
-              style: AppTheme.label12,
-            ),
-            Text(
-              "+${income.support}",
-              style: AppTheme.label12Gray,
-            ),
-            const SizedBox(width: 4),
-            const Text(
-              "\ue1b1",
-              style: AppTheme.icon16red,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              "${playerState.production}",
-              style: AppTheme.label12,
-            ),
-            Text(
-              "+${income.production}",
-              style: AppTheme.label12Gray,
-            ),
-            const SizedBox(width: 4),
-            const Text(
-              "\ue0bc",
-              style: AppTheme.icon16yellow,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              "${playerState.credit}",
-              style: AppTheme.label12,
-            ),
-            Text(
-              "+${income.credit}",
-              style: AppTheme.label12Gray,
-            ),
-            const SizedBox(width: 4),
-            const Text(
-              "\ue0db",
-              style: AppTheme.icon16blue,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              "${playerState.science}",
-              style: AppTheme.label12,
-            ),
-            Text(
-              "+${income.science}",
-              style: AppTheme.label12Gray,
-            ),
+            RichText(
+                text: TextSpan(style: AppTheme.label12, children: [
+              const WidgetSpan(
+                  child: Icon(LucideIcon.circleUserRound,
+                      size: 14, color: AppTheme.iconPurple)),
+              const WidgetSpan(child: SizedBox(width: 4)),
+              TextSpan(
+                  text: formatterUnsigned.format(playerState.support)),
+              TextSpan(
+                  text: formatterSigned.format(income.support),
+                  style: AppTheme.label12Gray),
+              const WidgetSpan(child: SizedBox(width: 4)),
+              const WidgetSpan(
+                  child: Icon(LucideIcon.wrench,
+                      size: 14, color: AppTheme.iconRed)),
+              const WidgetSpan(child: SizedBox(width: 4)),
+              TextSpan(
+                  text: formatterUnsigned.format(playerState.production)),
+              TextSpan(
+                  text: formatterSigned.format(income.production),
+                  style: AppTheme.label12Gray),
+              const WidgetSpan(child: SizedBox(width: 4)),
+              const WidgetSpan(
+                  child: Icon(LucideIcon.euro,
+                      size: 14, color: AppTheme.iconYellow)),
+              const WidgetSpan(child: SizedBox(width: 4)),
+              TextSpan(
+                  text: formatterUnsigned.format(playerState.credit)),
+              TextSpan(
+                  text: formatterSigned.format(income.credit),
+                  style: AppTheme.label12Gray),
+              const WidgetSpan(child: SizedBox(width: 4)),
+              const WidgetSpan(
+                  child: Icon(LucideIcon.flaskRoundBottom,
+                      size: 14, color: AppTheme.iconBlue)),
+              const WidgetSpan(child: SizedBox(width: 4)),
+              TextSpan(
+                  text: formatterUnsigned.format(playerState.science)),
+              TextSpan(
+                  text: formatterSigned.format(income.science),
+                  style: AppTheme.label12Gray),
+            ])),
           ],
         ),
         // Right
-        Row(
-          children: [
-            Text(
-              "Next Action Cost: ${playerState.nextActionCost}",
-              style: AppTheme.label12,
-            ),
-            const SizedBox(width: 4),
-            const Text(
-              "\ue467",
-              style: AppTheme.icon16purple,
-            ),
-            const SizedBox(width: 4),
-          ],
+        RichText(
+          text: TextSpan(
+            style: AppTheme.label12,
+            children: [
+              TextSpan(
+                text: "Next Action Cost: ${playerState.nextActionCost} ",
+              ),
+              const WidgetSpan(
+                  child: Icon(LucideIcon.circleUserRound,
+                      size: 14, color: AppTheme.iconPurple)),
+            ],
+          ),
         ),
       ],
     );

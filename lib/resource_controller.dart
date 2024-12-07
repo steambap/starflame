@@ -90,31 +90,14 @@ class ResourceController {
   }
 
   void placeWorker(
-      int playerNumber, Sector sector, WorkerSlot slot, WorkerType type) {
+      int playerNumber, Sector sector, Planet planet, WorkerType type) {
     if (!canPlaceWorker(playerNumber)) {
       return;
     }
 
     final playerState = game.controller.getPlayerState(playerNumber);
     playerState.takeAction(const Resources());
-    sector.placeWorker(playerState, slot, type);
-  }
-
-  bool canSwitchWorker(int playerNumber) {
-    final pState = game.controller.getPlayerState(playerNumber);
-
-    return pState.canTakeAction();
-  }
-
-  void switchWorker(
-      int playerNumber, Sector sector, WorkerSlot slot, WorkerType type) {
-    if (!canPlaceWorker(playerNumber)) {
-      return;
-    }
-
-    final playerState = game.controller.getPlayerState(playerNumber);
-    playerState.takeAction(const Resources());
-    sector.switchWorker(playerState, slot, type);
+    sector.placeWorker(playerState, planet, type);
   }
 
   bool canResearch(int playerNumber, String techId) {

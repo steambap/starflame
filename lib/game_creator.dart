@@ -4,6 +4,7 @@ import "package:flutter/material.dart" show Colors;
 import "planet.dart";
 import "hex.dart";
 import "cell.dart";
+import "star.dart";
 import "sector.dart";
 import "game_settings.dart";
 import "player_state.dart";
@@ -28,57 +29,6 @@ List<Hex> generateHexMap(int qMax) {
   return hexMap;
 }
 
-List<List<Planet>> generatePlanets() {
-  final List<List<Planet>> planets = [
-    // Inner
-    [Planet.desert10(), Planet.iron11()],
-    [Planet.terran(), Planet.ice10()],
-    [Planet.desert10(), Planet.ice10()],
-    [Planet.desert11(), Planet.ice11()],
-    [Planet.desert10(), Planet.ice10(), Planet.iron01()],
-    [Planet.ice10(), Planet.iron10()],
-    [Planet.desert10(), Planet.ice01(), Planet.iron01()],
-    [Planet.desert10(), Planet.ice01(), Planet.gas10()],
-    [Planet.desert10(), Planet.iron10()],
-    [Planet.desert01(), Planet.gas01()],
-    // Middle
-    [Planet.desert10(), Planet.iron10()],
-    [Planet.ice11()],
-    [Planet.desert01(), Planet.ice10(), Planet.iron10()],
-    [Planet.desert01(), Planet.iron01(), Planet.gas10()],
-    [Planet.desert11(), Planet.ice01()],
-    [Planet.iron10()],
-    [Planet.desert10(), Planet.ice10()],
-    [Planet.desert10(), Planet.iron10()],
-    [Planet.desert10(), Planet.iron01(), Planet.gas10()],
-    [Planet.ice10(), Planet.iron01(), Planet.gas01()],
-    // Outer
-    [Planet.desert10(), Planet.ice10(), Planet.iron01()],
-    [Planet.desert01(), Planet.ice01(), Planet.iron10()],
-    [Planet.desert01(), Planet.ice01(), Planet.gas10()],
-    [Planet.desert01(), Planet.iron10()],
-    [Planet.ice10(), Planet.iron10()],
-    [Planet.desert10(), Planet.iron10()],
-    [Planet.desert10(), Planet.ice01()],
-    [Planet.ice10(), Planet.iron01()],
-    [Planet.desert10(), Planet.ice01()],
-    [Planet.ice10(), Planet.iron10()],
-    [Planet.iron10()],
-    [Planet.iron10()],
-    [Planet.gas10()],
-    [Planet.gas10()],
-    [Planet.desert11()],
-    [Planet.iron01(), Planet.gas10()],
-    // Mine
-    [Planet.terran(), Planet.ice10(), Planet.gas01()],
-    [Planet.terran(), Planet.ice11()],
-    [Planet.terran(), Planet.desert01(), Planet.iron11()],
-    [Planet.terran(), Planet.desert01(), Planet.ice10()],
-  ];
-
-  return planets;
-}
-
 class GameCreator {
   late GameSettings gameSettings;
   late Random rand;
@@ -93,7 +43,6 @@ class GameCreator {
   double s2 = 0;
 
   List<String> _names = [];
-  List<List<Planet>> _planets = [];
 
   void create(GameSettings gameSettings) {
     this.gameSettings = gameSettings;
@@ -130,11 +79,15 @@ class GameCreator {
         final player = gameSettings.players[homes.length];
         player.vision.add(cell.hex);
         homes.add(cell.hex);
-        final sector = Sector(cell.hex,
-            planets: [Planet.terran(), Planet.iron10(), Planet.ice11()]);
+        final sector = Sector(cell.hex, StarType.yellow, planets: [
+          Planet.terran(),
+          Planet.iron(),
+          Planet.desert(),
+          Planet.ice()
+        ]);
         sectors.add(sector);
         cell.sector = sector;
-        sector.setHome(player.playerNumber);
+        sector.setHome(player);
       } else {
         _createPlanets(cell);
       }
@@ -153,7 +106,9 @@ class GameCreator {
   }
 
   void _createPlanets(Cell cell) {
-    final sector = Sector(cell.hex, planets: _nextPlanets());
+    final starAndPlanets = starGenerator.generateStarAndPlanets(rand);
+    final sector = Sector(cell.hex, starAndPlanets.starType,
+        planets: starAndPlanets.planets);
     sectors.add(sector);
     cell.sector = sector;
   }
@@ -180,19 +135,6 @@ class GameCreator {
     final r = (yn * (r2 - r1 + 1) + r1).floor();
 
     return Hex(q, r, -q - r);
-  }
-
-  void _preparePlanets() {
-    _planets = generatePlanets();
-    _planets.shuffle(rand);
-  }
-
-  List<Planet> _nextPlanets() {
-    if (_planets.isEmpty) {
-      _preparePlanets();
-    }
-
-    return _planets.removeLast();
   }
 
   void _prepareNames() {

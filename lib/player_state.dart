@@ -7,6 +7,7 @@ import "empire.dart";
 import "hex.dart";
 import "sim_props.dart";
 import "research.dart";
+import "planet.dart";
 import "data/tech.dart";
 
 class PlayerState with ChangeNotifier, SimObject {
@@ -28,6 +29,7 @@ class PlayerState with ChangeNotifier, SimObject {
   final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
   final Set<String> techs = {};
+  final Set<PlanetType> colonizable = {PlanetType.terran};
   final Map<TechSection, int> techLevel = {
     TechSection.construction: 0,
     TechSection.nano: 0,

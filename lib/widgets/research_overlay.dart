@@ -6,6 +6,7 @@ import 'package:starflame/scifi_game.dart';
 import 'package:starflame/research.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/data/tech.dart';
+import 'package:starflame/data/lucide_icon.dart';
 
 class ResearchOverlay extends StatelessWidget {
   const ResearchOverlay(this.game, {super.key});
@@ -120,22 +121,25 @@ class ResearchOverlay extends StatelessWidget {
                 tech.description,
                 style: AppTheme.label12,
               )),
-          Row(
-            children: [
-              const Text(
-                "\ue467",
-                style: AppTheme.icon16purple,
-              ),
-              const SizedBox(width: 4),
-              Text(state.nextActionCost.toString(), style: textStyle),
-              const SizedBox(width: 8),
-              const Text(
-                "\ue0db",
-                style: AppTheme.icon16blue,
-              ),
-              const SizedBox(width: 4),
-              Text(tech.cost.toString(), style: textStyle)
-            ],
+          RichText(
+            text: TextSpan(
+              style: textStyle,
+              children: [
+                const WidgetSpan(
+                    child: Icon(LucideIcon.circleUserRound,
+                        size: 16, color: AppTheme.iconPurple)),
+                TextSpan(
+                  text: " ${state.nextActionCost} ",
+                ),
+                const WidgetSpan(
+                  child: Icon(LucideIcon.flaskRoundBottom,
+                      size: 16, color: AppTheme.iconBlue),
+                ),
+                TextSpan(
+                  text: " ${tech.cost}",
+                ),
+              ],
+            ),
           )
         ],
       ),

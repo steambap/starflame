@@ -29,7 +29,7 @@ class ActionBar extends StatelessWidget {
                 game.overlays.add(MapDeploy.id);
               }
             },
-            icon: LucideIcon.wrench,
+            icon: const Icon(LucideIcon.wrench),
             style: AppTheme.iconButton,
           ),
           const SizedBox(width: 4),
@@ -38,7 +38,7 @@ class ActionBar extends StatelessWidget {
               game.overlays.remove(PlayerInfoBar.id);
               game.overlays.addAll([ResearchOverlay.id, PlayerInfoBar.id]);
             },
-            icon: LucideIcon.flaskRoundBottom,
+            icon: const Icon(LucideIcon.flaskRoundBottom),
             style: AppTheme.iconButton,
           ),
           const SizedBox(width: 4),
@@ -47,7 +47,7 @@ class ActionBar extends StatelessWidget {
               game.overlays.remove(PlayerInfoBar.id);
               game.overlays.addAll([ShipUpdate.id, PlayerInfoBar.id]);
             },
-            icon: LucideIcon.combine,
+            icon: const Icon(LucideIcon.combine),
             style: AppTheme.iconButton,
           ),
         ],
