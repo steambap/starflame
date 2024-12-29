@@ -16,7 +16,6 @@ enum PlanetType {
   iron,
   ice,
   gas,
-  orbital,
 }
 
 class WorkerSlot {
@@ -83,15 +82,6 @@ class Planet {
         return Planet.ice();
       case PlanetType.gas:
         return Planet.gas();
-      case PlanetType.orbital:
-        return Planet.orbital();
     }
-  }
-
-  factory Planet.orbital() {
-    return Planet(PlanetType.orbital, [
-      WorkerSlot(),
-      WorkerSlot(type: WorkerType.lab),
-    ]);
   }
 }

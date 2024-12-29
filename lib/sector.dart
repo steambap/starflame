@@ -73,7 +73,8 @@ class Sector extends PositionComponent
       StarType.yellow => FlameTheme.yellowStarPaintLayer,
       StarType.white => FlameTheme.whiteStarPaintLayer,
     };
-    final planetCirclesStart = 3 - (planets.length * 3.0 + (planets.length - 1) * 2);
+    final planetCirclesStart =
+        3 - (planets.length * 3.0 + (planets.length - 1) * 2);
     for (int i = 0; i < planets.length; i++) {
       final circle = CircleComponent(
           radius: 3,
@@ -118,7 +119,9 @@ class Sector extends PositionComponent
   }
 
   void updateRender() {
-    final pState = playerNumber != null ? game.controller.getPlayerState(playerNumber!) : game.controller.getHumanPlayerState();
+    final pState = playerNumber != null
+        ? game.controller.getPlayerState(playerNumber!)
+        : game.controller.getHumanPlayerState();
     if (playerNumber == null) {
       _ownerHex.paint = FlameTheme.emptyPaint;
     } else {
@@ -129,18 +132,12 @@ class Sector extends PositionComponent
       _ownerHex.paint = playerPaint;
     }
 
-    final playerPaintLayer = [
-      Paint()
-        ..color = pState.color
-    ];
+    final playerPaintLayer = [Paint()..color = pState.color];
 
     final humanPlayerState = game.controller.getHumanPlayerState();
 
     for (int i = 0; i < planets.length; i++) {
       final planet = planets[i];
-      if (planet.type == PlanetType.orbital) {
-        continue;
-      }
       final circle = _planetCircles[i];
       if (planet.hasWorker()) {
         circle.paintLayers = playerPaintLayer;
@@ -212,15 +209,6 @@ class Sector extends PositionComponent
     slot.isOccupied = true;
     refreshProps();
     return true;
-  }
-
-  bool hasOrbital() {
-    return planets.any((p) => p.type == PlanetType.orbital);
-  }
-
-  void addOrbital() {
-    planets.add(Planet.orbital());
-    notifyListeners();
   }
 
   bool canColonizePlanet(Planet planet, PlayerState? pState) {

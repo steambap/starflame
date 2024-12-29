@@ -195,7 +195,6 @@ class _SectorOverlayState extends State<SectorOverlay> {
       PlanetType.iron => "iron.png",
       PlanetType.ice => "ice.png",
       PlanetType.gas => "gas.png",
-      _ => "gas.png",
     };
     return 'assets/images/$img';
   }

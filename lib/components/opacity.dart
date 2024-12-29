@@ -10,12 +10,12 @@ mixin HasOpacityProvider on Component implements OpacityProvider {
   final Paint _srcOverPaint = Paint()..blendMode = BlendMode.srcOver;
 
   @override
-  double get opacity => _paint.color.opacity;
+  double get opacity => _paint.color.a;
 
   @override
   set opacity(double newOpacity) {
     _paint
-      ..color = _paint.color.withOpacity(newOpacity)
+      ..color = _paint.color.withValues(alpha: newOpacity)
       ..blendMode = BlendMode.modulate;
   }
 

@@ -10,7 +10,6 @@ import "game_settings.dart";
 import "player_state.dart";
 import "tile_type.dart";
 import "empire.dart";
-import "data/name.dart";
 
 const plasticRatio = 1.324717957244746;
 const a1 = 1 / plasticRatio;
@@ -41,8 +40,6 @@ class GameCreator {
   final List<Hex> homes = [];
   double s1 = 0;
   double s2 = 0;
-
-  List<String> _names = [];
 
   void create(GameSettings gameSettings) {
     this.gameSettings = gameSettings;
@@ -99,9 +96,9 @@ class GameCreator {
       }
     }
 
-    _prepareNames();
+    starGenerator.prepareNames(rand);
     for (final s in sectors) {
-      s.displayName = _nextName();
+      s.displayName = starGenerator.nextName(s.starType, rand);
     }
   }
 
@@ -135,21 +132,6 @@ class GameCreator {
     final r = (yn * (r2 - r1 + 1) + r1).floor();
 
     return Hex(q, r, -q - r);
-  }
-
-  void _prepareNames() {
-    _names = List.from(planetNames);
-    _names.shuffle(rand);
-  }
-
-  String _nextName() {
-    if (_names.isNotEmpty) {
-      return _names.removeLast();
-    }
-
-    final i = rand.nextInt(1013) + 42;
-
-    return "Kepler-$i";
   }
 
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {

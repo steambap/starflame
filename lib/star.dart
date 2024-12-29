@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'planet.dart';
+import "data/name.dart";
 
 enum StarType {
   binary,
@@ -69,6 +70,12 @@ class StarGenerationHelper {
   late final int _whiteWeight =
       whiteWeightTable.values.fold(0, (a, b) => a + b);
   late final int _redWeight = redWeightTable.values.fold(0, (a, b) => a + b);
+
+  List<String> _noneNames = [];
+  List<String> _binaryNames = [];
+  List<String> _sysNames = [];
+  List<String> _yellowNames = [];
+  List<String> _redNames = [];
 
   StarType getRandStar(Random? random) {
     final rand = random ?? Random();
@@ -175,6 +182,80 @@ class StarGenerationHelper {
     final planets = getRandPlanets(star, random);
 
     return StarAndPlanets(star, planets);
+  }
+
+  void prepareNames(Random? random) {
+    final rand = random ?? Random();
+
+    _noneNames = List.from(noneNames)..shuffle(rand);
+    _binaryNames = List.from(binaryNames)..shuffle(rand);
+    _sysNames = List.from(sysNames)..shuffle(rand);
+    _yellowNames = List.from(yellowNames)..shuffle(rand);
+    _redNames = List.from(redNames)..shuffle(rand);
+  }
+
+  String _nextNoneName(Random rand) {
+    if (_noneNames.isNotEmpty) {
+      return _noneNames.removeLast();
+    }
+
+    final i = rand.nextInt(8964) + 1013;
+
+    return "Void-$i";
+  }
+
+  String _nextBinaryName(Random rand) {
+    if (_binaryNames.isNotEmpty) {
+      return _binaryNames.removeLast();
+    }
+
+    final i = rand.nextInt(2233) + 42;
+
+    return "Duo-$i";
+  }
+
+  String _nextSysName(Random rand) {
+    if (_sysNames.isNotEmpty) {
+      return _sysNames.removeLast();
+    }
+
+    final i = rand.nextInt(1013) + 42;
+
+    return "Kepler-$i";
+  }
+
+  String _nextYellowName(Random rand) {
+    if (_yellowNames.isNotEmpty) {
+      return _yellowNames.removeLast();
+    }
+
+    final i = rand.nextInt(1125) + 28;
+
+    return "Gaia-$i";
+  }
+
+  String _nextRedName(Random rand) {
+    if (_redNames.isNotEmpty) {
+      return _redNames.removeLast();
+    }
+
+    final i = rand.nextInt(1013) + 42;
+
+    return "Alpha-$i";
+  }
+
+  String nextName(StarType star, Random? random) {
+    final rand = random ?? Random();
+    final result = switch (star) {
+      StarType.none => _nextNoneName(rand),
+      StarType.binary => _nextBinaryName(rand),
+      StarType.blue => _nextSysName(rand),
+      StarType.yellow => _nextYellowName(rand),
+      StarType.white => _nextSysName(rand),
+      StarType.red => _nextRedName(rand),
+    };
+
+    return result;
   }
 }
 

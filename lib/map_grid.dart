@@ -205,7 +205,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
           final cell = cellAtHex(hex);
           if (cell != null) {
             cell.reveal();
-            game.controller.getHumanPlayerState().vision.add(cell.hex);
+            game.controller.currentPlayerState().vision.add(cell.hex);
           }
         }
       }, 100);
@@ -343,6 +343,10 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     for (final ship in shipMap[playerNumber] ?? List<Ship>.empty()) {
       vision.addAll(ship.vision());
     }
+    if (playerNumber != game.controller.getHumanPlayerNumber()) {
+      return;
+    }
+    // Human player vision update
     for (final cell in cells) {
       if (vision.contains(cell.hex)) {
         cell.hideFog();
