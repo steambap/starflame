@@ -24,16 +24,17 @@ class ScifiWorld extends World
 
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    if (!game.controller.isGameStarted) {
+      return false;
+    }
     if (keysPressed.contains(LogicalKeyboardKey.keyF)) {
       game.mapGrid.removeFog();
     }
     if (keysPressed.contains(LogicalKeyboardKey.enter)) {
       game.controller.playerEndTurn();
     }
-    if (keysPressed.containsAll([
-      LogicalKeyboardKey.shiftLeft,
-      LogicalKeyboardKey.keyV
-    ])) {
+    if (keysPressed
+        .containsAll([LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyV])) {
       game.controller.debugWinGame();
     }
     direction = Vector2.zero();
@@ -77,6 +78,6 @@ class ScifiWorld extends World
   }
 
   void focusShip(Ship ship) {
-    game.camera.moveTo(ship.cell.position);
+    game.camera.moveTo(ship.position);
   }
 }

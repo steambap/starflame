@@ -176,10 +176,10 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   }
 
   void _moveShipHex(Ship ship, Cell cell) {
-    final prevCell = ship.cell;
-    prevCell.ship = null;
+    final prevCell = cellAtHex(ship.hex);
+    prevCell?.ship = null;
 
-    ship.cell = cell;
+    ship.hex = cell.hex;
     cell.ship = ship;
   }
 
@@ -217,7 +217,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
   Future<void> spawnShipAt(
       Cell cell, int playerNumber, ShipBlueprint blueprint) async {
-    final ship = Ship(cell, playerNumber, blueprint);
+    final ship = Ship(cell.hex, playerNumber, blueprint);
     cell.ship = ship;
 
     shipListAll.add(ship);
@@ -228,7 +228,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
   Future<void> createShipAt(
       Cell cell, int playerNumber, ShipBlueprint blueprint) async {
-    final ship = Ship(cell, playerNumber, blueprint);
+    final ship = Ship(cell.hex, playerNumber, blueprint);
     cell.ship = ship;
 
     shipListAll.add(ship);

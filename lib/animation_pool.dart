@@ -37,7 +37,7 @@ class AnimationPool {
   }
 
   void _run() {
-    if (_running || _paused || _pool.isEmpty) {
+    if (!game.controller.isGameStarted || _running || _paused || _pool.isEmpty) {
       return;
     }
 

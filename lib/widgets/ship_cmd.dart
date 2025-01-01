@@ -55,7 +55,6 @@ class ShipCmd extends StatelessWidget {
                             game.mapGrid.selectControl =
                                 SelectControlWaitForAction(
                               act,
-                              ship.cell,
                               game,
                             );
                           }
@@ -95,23 +94,29 @@ class ShipCmd extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      RichText(text: TextSpan(style: AppTheme.label16, children: [
+                      RichText(
+                          text: TextSpan(style: AppTheme.label16, children: [
                         const WidgetSpan(
                             child: Icon(LucideIcon.heart,
                                 size: 14, color: AppTheme.iconPale)),
                         const WidgetSpan(child: SizedBox(width: 4)),
-                        TextSpan(text: "${ship.state.health} / ${ship.blueprint.maxHealth()}"),
+                        TextSpan(
+                            text:
+                                "${ship.state.health} / ${ship.blueprint.maxHealth()}"),
                       ])),
                     ],
                   ),
                   Row(
                     children: [
-                      RichText(text: TextSpan(style: AppTheme.label16, children: [
+                      RichText(
+                          text: TextSpan(style: AppTheme.label16, children: [
                         const WidgetSpan(
                             child: Icon(LucideIcon.navigation,
                                 size: 14, color: AppTheme.iconPale)),
                         const WidgetSpan(child: SizedBox(width: 4)),
-                        TextSpan(text: "${ship.movePoint()} / ${ship.blueprint.movement()}"),
+                        TextSpan(
+                            text:
+                                "${ship.movePoint()} / ${ship.blueprint.movement()}"),
                       ])),
                     ],
                   ),

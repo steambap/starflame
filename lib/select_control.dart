@@ -92,7 +92,7 @@ class SelectControlShipSelected extends SelectControlHex {
 
   @override
   void onStateEnter() {
-    cell = ship.cell;
+    cell = game.mapGrid.cellAtHex(ship.hex)!;
     final shipOwner = ship.state.playerNumber;
     final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
     game.hudState.ship.value = ship;
@@ -196,9 +196,8 @@ class SelectControlCreateShip extends SelectControl {
 
 class SelectControlWaitForAction extends SelectControl {
   final Action action;
-  final Cell cell;
   late final Iterable<Cell> targets;
-  SelectControlWaitForAction(this.action, this.cell, super.game);
+  SelectControlWaitForAction(this.action, super.game);
 
   @override
   void onCellClick(Cell cell) {

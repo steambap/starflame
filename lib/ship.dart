@@ -20,12 +20,12 @@ class Ship extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier {
   late SpriteComponent _shipSprite;
   late SpriteComponent _engineEffect;
-  Cell cell;
+  Hex hex;
   late ShipState state;
   ShipBlueprint blueprint;
   Map<Cell, List<Cell>> cachedPaths = const {};
 
-  Ship(this.cell, int playerNumber, this.blueprint)
+  Ship(this.hex, int playerNumber, this.blueprint)
       : super(anchor: Anchor.center) {
     state = ShipState(playerNumber);
   }
@@ -51,7 +51,7 @@ class Ship extends PositionComponent
     _engineEffect.opacity = 0;
     add(_engineEffect);
 
-    position = cell.position;
+    position = hex.toPixel();
 
     final uid = game.controller.getUniqueID();
     state.id = uid;
@@ -145,7 +145,7 @@ class Ship extends PositionComponent
   @override
   void dispose() {
     cachedPaths = const {};
-    cell.ship = null;
+    game.mapGrid.cellAtHex(hex)?.ship = null;
     game.mapGrid.removeShip(this);
     removeFromParent();
     if (game.mapGrid.selectControl is SelectControlShipSelected) {
@@ -176,7 +176,7 @@ class Ship extends PositionComponent
   }
 
   List<Hex> vision() {
-    return cell.hex.cubeSpiral(visionRange());
+    return hex.cubeSpiral(visionRange());
   }
 
   int visionRange() {

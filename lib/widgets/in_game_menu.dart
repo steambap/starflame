@@ -80,6 +80,7 @@ class InGameMenu extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         game.hudState.deselectAll();
+                        game.controller.reset();
                         game.overlays.remove(id);
                         game.overlays.add(MainMenu.id);
                       },

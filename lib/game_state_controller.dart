@@ -5,13 +5,13 @@ import "game_state.dart";
 import "player_state.dart";
 import "ship.dart";
 import "new_turn_overlay.dart";
-import "hud_page.dart";
 import 'widgets/map_deploy.dart';
 import 'widgets/victory_overlay.dart';
 
 class GameStateController {
   GameState gameState = GameState();
   List<PlayerState> players = List.empty();
+  bool isGameStarted = false;
   final ScifiGame game;
 
   GameStateController(this.game);
@@ -26,6 +26,7 @@ class GameStateController {
   }
 
   void startGame() {
+    isGameStarted = true;
     lookAtCapital();
     _prepareTurnIfAlive();
   }
@@ -60,7 +61,6 @@ class GameStateController {
       return;
     }
 
-    popAll();
     game.overlays.remove(MapDeploy.id);
     endTurn();
   }
@@ -201,7 +201,7 @@ class GameStateController {
     return gameState.uid;
   }
 
-  void popAll() {
-    game.router.popUntilNamed(HudPage.routeName);
+  void reset() {
+    isGameStarted = false;
   }
 }

@@ -38,13 +38,13 @@ class Capture extends Action {
   void activate(ScifiGame game) {
     ship.useAttack();
     final playerNumber = game.controller.getHumanPlayerNumber();
-    game.resourceController.capture(playerNumber, ship.cell);
+    game.resourceController.capture(playerNumber, game.mapGrid.cellAtHex(ship.hex)!);
     game.mapGrid.unSelect();
   }
 
   @override
   bool isDisabled(ScifiGame game) {
-    final sector = ship.cell.sector;
+    final sector = game.mapGrid.cellAtHex(ship.hex)?.sector;
     if (sector == null) {
       return true;
     }

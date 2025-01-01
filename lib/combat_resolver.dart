@@ -12,7 +12,7 @@ class CombatResolver {
 
   void resolve(Ship ship, Cell cell) {
     final defender = cell.ship!;
-    final dx = ship.cell.distance(cell);
+    final dx = ship.hex.distance(cell.hex);
     if (dx > 1) {
       resolveMissileAttack(ship, defender);
       return;
