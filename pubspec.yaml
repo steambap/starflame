@@ -26,6 +26,8 @@ flutter:
   assets:
     - assets/images/
     - assets/images/ships/
+  shaders:
+    - shaders/backdrop.frag
   fonts:
     - family: SpaceMono
       fonts:

@@ -12,6 +12,7 @@ import 'hud_page.dart';
 import "ai/ai_controller.dart";
 import "combat_resolver.dart";
 import "animation_pool.dart";
+import "backdrop.dart";
 
 class ScifiGame extends FlameGame<ScifiWorld>
     with HasKeyboardHandlerComponents {
@@ -44,6 +45,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
 
     await world.add(mapGrid);
     camera.viewport.add(router);
+    camera.backdrop.add(Backdrop());
   }
 
   void startTestGame() async {

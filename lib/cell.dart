@@ -61,6 +61,7 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
     _fog.removeFromParent();
   }
 
+  /// Hide fog with animation
   void reveal() {
     if (_fog.parent == null) {
       return;

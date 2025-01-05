@@ -140,12 +140,15 @@ class ShipBlueprint with SimObject {
     return ret;
   }
 
-  factory ShipBlueprint.interceptor([String name = "", bool active = true]) {
+  factory ShipBlueprint.interceptor(
+      {String name = "",
+      bool active = true,
+      String image = "ships/raider.png"}) {
     return ShipBlueprint(
         type: ShipType.interceptor,
         cost: 3,
         name: name,
-        image: "ships/raider.png",
+        image: image,
         obj: {
           SimProps.hull: 12,
           SimProps.initiative: 2,
@@ -167,12 +170,15 @@ class ShipBlueprint with SimObject {
         active: active);
   }
 
-  factory ShipBlueprint.cruiser([String name = "", bool active = true]) {
+  factory ShipBlueprint.cruiser(
+      {String name = "",
+      bool active = true,
+      String image = "ships/screen.png"}) {
     return ShipBlueprint(
         type: ShipType.cruiser,
         cost: 5,
         name: name,
-        image: "ships/screen.png",
+        image: image,
         obj: {
           SimProps.hull: 12,
           SimProps.initiative: 1,
@@ -200,7 +206,10 @@ class ShipBlueprint with SimObject {
         active: active);
   }
 
-  factory ShipBlueprint.dreadnought([String name = "", bool active = true]) {
+  factory ShipBlueprint.dreadnought(
+      {String name = "",
+      bool active = true,
+      String image = "ships/capital.png"}) {
     return ShipBlueprint(
         type: ShipType.dreadnought,
         cost: 8,

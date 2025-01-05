@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import "package:flame/effects.dart";
+import "package:flame/rendering.dart";
 import "package:flutter/foundation.dart" show ChangeNotifier;
 
 import 'scifi_game.dart';
 import "cell.dart";
 import "hex.dart";
-import "styles.dart" show grayTint;
 import "ship_state.dart";
 import "ship_blueprint.dart";
 import "action_type.dart";
@@ -18,8 +17,8 @@ import 'tile_type.dart';
 
 class Ship extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier {
-  late SpriteComponent _shipSprite;
-  late SpriteComponent _engineEffect;
+  late final SpriteComponent _shipSprite;
+
   Hex hex;
   late ShipState state;
   ShipBlueprint blueprint;
@@ -31,25 +30,13 @@ class Ship extends PositionComponent
   }
 
   @override
-  FutureOr<void> onLoad() {
+  FutureOr<void> onLoad() async {
     final imgShip = game.images.fromCache(blueprint.image);
-    final spriteShip = Sprite(imgShip);
-    _shipSprite = SpriteComponent(
-        sprite: spriteShip,
-        anchor: Anchor.center,
-        scale: Vector2.all(0.75),
-        priority: 1);
-    add(_shipSprite);
 
-    final imgEffect = game.images.fromCache("effect_yellow.png");
-    final spriteEffect = Sprite(imgEffect);
-    _engineEffect = SpriteComponent(
-        sprite: spriteEffect,
-        anchor: Anchor.center,
-        scale: Vector2.all(0.25),
-        position: Vector2(0, 15));
-    _engineEffect.opacity = 0;
-    add(_engineEffect);
+    final spriteShip = Sprite(imgShip);
+    _shipSprite =
+        SpriteComponent(sprite: spriteShip, anchor: Anchor.center);
+    add(_shipSprite);
 
     position = hex.toPixel();
 
@@ -59,12 +46,9 @@ class Ship extends PositionComponent
     resetAllActions();
   }
 
-  void onStartMove() {
-    _engineEffect.add(OpacityEffect.fadeIn(EffectController(duration: 0.15)));
-  }
+  void onStartMove() {}
 
   void onEndMove() {
-    _engineEffect.add(OpacityEffect.fadeOut(EffectController(duration: 0.15)));
     _maybeSelectAgain();
   }
 
@@ -97,7 +81,7 @@ class Ship extends PositionComponent
     }
     state.attacked = true;
     state.movementUsed = 999;
-    _shipSprite.decorator.addLast(grayTint);
+    _shipSprite.decorator.addLast(PaintDecorator.grayscale());
     notifyListeners();
   }
 

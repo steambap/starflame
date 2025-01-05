@@ -199,20 +199,33 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       game.animationPool.add(() {
         final effect =
             MoveToEffect(e.position, EffectController(duration: 0.1));
+        final angle = atan2(e.position.y - ship.position.y,
+                e.position.x - ship.position.x) +
+            pi / 2;
+        ship.angle = angle;
         ship.add(effect);
-        final hexes = e.hex.cubeSpiral(ship.visionRange());
-        for (final hex in hexes) {
-          final cell = cellAtHex(hex);
-          if (cell != null) {
-            cell.reveal();
-            game.controller.currentPlayerState().vision.add(cell.hex);
-          }
-        }
+        updateVision(e, ship.visionRange());
       }, 100);
     }
     game.animationPool.add(() {
       ship.onEndMove();
     }, 100);
+  }
+
+  void updateVision(Cell cell, int visionRange) {
+    final hexes = cell.hex.cubeSpiral(visionRange);
+    for (final hex in hexes) {
+      final cell = cellAtHex(hex);
+      if (cell == null) {
+        continue;
+      }
+      final currentPlayer = game.controller.currentPlayerState();
+      currentPlayer.vision.add(cell.hex);
+      if (currentPlayer.playerNumber ==
+          game.controller.getHumanPlayerNumber()) {
+        cell.reveal();
+      }
+    }
   }
 
   Future<void> spawnShipAt(
@@ -270,21 +283,6 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     }
 
     return deployableCells;
-  }
-
-  List<Cell> playerPlanetCells(int playerNumber) {
-    final List<Cell> playerCells = [];
-    for (final cell in cells) {
-      if (cell.sector != null && cell.sector!.playerNumber == playerNumber) {
-        playerCells.add(cell);
-      }
-    }
-
-    return playerCells;
-  }
-
-  List<Cell> humanPlayerPlanetCells() {
-    return playerPlanetCells(game.controller.getHumanPlayerNumber());
   }
 
   List<Cell> inRange(Cell center, Block range) {

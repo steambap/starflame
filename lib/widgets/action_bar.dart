@@ -20,6 +20,7 @@ class ActionBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           vertical: AppTheme.navbarHeight + 4, horizontal: 4),
       child: Row(
+        spacing: 4,
         children: [
           IconButton.outlined(
             onPressed: () {
@@ -32,7 +33,6 @@ class ActionBar extends StatelessWidget {
             icon: const Icon(LucideIcon.wrench),
             style: AppTheme.iconButton,
           ),
-          const SizedBox(width: 4),
           IconButton.outlined(
             onPressed: () {
               game.overlays.remove(PlayerInfoBar.id);
@@ -41,7 +41,6 @@ class ActionBar extends StatelessWidget {
             icon: const Icon(LucideIcon.flaskRoundBottom),
             style: AppTheme.iconButton,
           ),
-          const SizedBox(width: 4),
           IconButton.outlined(
             onPressed: () {
               game.overlays.remove(PlayerInfoBar.id);
