@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui' show Paint, PaintingStyle;
+import 'dart:ui' show Paint;
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
 
@@ -22,26 +22,17 @@ class Sector extends PositionComponent
 
   final Hex hex;
   final StarType starType;
-  final ClipComponent _clip = ClipComponent.polygon(
-      points: Hex.zero.polygonCorners(Hex.size - 1),
-      size: Vector2.all(1),
-      priority: 1);
   final TextComponent _nameLabel = TextComponent(
       text: "",
-      position: Vector2(0, -18),
+      position: Vector2(0, 16),
       anchor: Anchor.center,
       textRenderer: FlameTheme.text10pale);
   final RectangleComponent _nameBG = RectangleComponent(
       size: Vector2(64, 14),
-      position: Vector2(0, -18),
+      position: Vector2(0, 16),
       paintLayers: FlameTheme.labelBackground,
       anchor: Anchor.center);
-  final PolygonComponent _ownerHex = PolygonComponent(
-      Hex.zero.polygonCorners(Hex.size - 0.5),
-      paint: FlameTheme.emptyPaint,
-      anchor: Anchor.center);
-  final CircleComponent _star = CircleComponent(
-      radius: 30, position: Vector2(0, 36), anchor: Anchor.center);
+  late final SpriteComponent _star;
 
   List<Planet> planets;
   final List<CircleComponent> _planetCircles = [];
@@ -65,31 +56,36 @@ class Sector extends PositionComponent
   @override
   FutureOr<void> onLoad() {
     _nameLabel.text = displayName;
-    _star.paintLayers = switch (starType) {
-      StarType.binary => FlameTheme.binaryPaintLayer,
-      StarType.none => FlameTheme.noStarPaintLayer,
-      StarType.blue => FlameTheme.blueStarPaintLayer,
-      StarType.red => FlameTheme.redStarPaintLayer,
-      StarType.yellow => FlameTheme.yellowStarPaintLayer,
-      StarType.white => FlameTheme.whiteStarPaintLayer,
+    final starImgName = switch (starType) {
+      StarType.binary => 'binary_star.png',
+      StarType.none => 'none.png',
+      StarType.blue => 'blue_star.png',
+      StarType.red => 'red_star.png',
+      StarType.yellow => 'yellow_star.png',
+      StarType.white => 'white_star.png',
     };
+    final starImg = game.images.fromCache(starImgName);
+    _star = SpriteComponent(sprite: Sprite(starImg), anchor: Anchor.center);
+
     final planetCirclesStart =
         3 - (planets.length * 3.0 + (planets.length - 1) * 2);
     for (int i = 0; i < planets.length; i++) {
       final circle = CircleComponent(
           radius: 3,
-          position: Vector2(planetCirclesStart + i * 10, -4),
+          position: Vector2(planetCirclesStart + i * 10, -16),
           paintLayers: FlameTheme.planetColonizable,
           anchor: Anchor.center);
       _planetCircles.add(circle);
     }
-    _clip.addAll([
+
+    _nameBG.size.x = _nameLabel.size.x + 4;
+
+    addAll([
       _nameBG,
-      _nameLabel,
-      _star,
       ..._planetCircles,
+      if (starType != StarType.none) _star,
+      _nameLabel,
     ]);
-    addAll([_clip, _ownerHex]);
 
     refreshProps();
     updateRender();
@@ -122,14 +118,11 @@ class Sector extends PositionComponent
     final pState = playerNumber != null
         ? game.controller.getPlayerState(playerNumber!)
         : game.controller.getHumanPlayerState();
+
     if (playerNumber == null) {
-      _ownerHex.paint = FlameTheme.emptyPaint;
+      _nameBG.paintLayers = FlameTheme.labelBackground;
     } else {
-      final playerPaint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1
-        ..color = pState.color;
-      _ownerHex.paint = playerPaint;
+      _nameBG.paintLayers = pState.paintLayer;
     }
 
     final playerPaintLayer = [Paint()..color = pState.color];

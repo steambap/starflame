@@ -32,7 +32,7 @@ final panelSkin = [panelBackground, panelBorder];
 const navbarHeight = 32.0;
 
 class FlameTheme {
-  static final emptyPaint = Paint();
+  static final emptyPaint = Paint()..color = Colors.transparent;
   static final labelBackground = [
     Paint()..color = black,
     Paint()
@@ -40,18 +40,14 @@ class FlameTheme {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
   ];
-  static final binaryPaintLayer = [Paint()..color = purple];
-  static final noStarPaintLayer = [
-    Paint()..color = black,
-    Paint()
-      ..color = pale
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-  ];
-  static final blueStarPaintLayer = [Paint()..color = blue];
-  static final redStarPaintLayer = [Paint()..color = red];
-  static final yellowStarPaintLayer = [Paint()..color = yellow];
-  static final whiteStarPaintLayer = [Paint()..color = pale];
+  
+  static final binaryTint = PaintDecorator.tint(purple);
+  static final noStarTint = PaintDecorator.grayscale();
+  static final blueStarTint = PaintDecorator.tint(blue);
+  static final redStarTint = PaintDecorator.tint(red);
+  static final yellowStarTint = PaintDecorator.tint(yellow);
+  static final whiteStarTint = PaintDecorator.tint(pale);
+
   static final text10pale = TextPaint(
       style:
           const TextStyle(color: pale, fontSize: 10, fontFamily: "SpaceMono"));

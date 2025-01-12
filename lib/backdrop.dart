@@ -18,7 +18,6 @@ class Backdrop extends RectangleComponent with HasGameRef<ScifiGame> {
     _shader = program.fragmentShader();
     _shader.setFloat(0, size.x);
     _shader.setFloat(1, size.y);
-    _shader.setFloat(2, 0);
     paint = Paint()..shader = _shader;
 
     return super.onLoad();

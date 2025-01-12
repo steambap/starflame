@@ -2,10 +2,10 @@
 
 #include <flutter/runtime_effect.glsl>
 
-precision mediump float;
+precision highp float;
 // https://www.shadertoy.com/view/MslGWN
 uniform vec2 resolution;
-uniform vec4 mouse; // Mouse input
+uniform vec2 mouse; // Mouse input
 out vec4 fragColor;
 
 // Field function
@@ -59,6 +59,10 @@ void main() {
 	p.y += mix(-0.05, 0.05, (mouse.y / resolution.y));
 
     float freqs[4];
+	freqs[0] = 0.1;
+	freqs[1] = 0.2;
+	freqs[2] = 0.3;
+	freqs[3] = 0.4;
 
     float t = field(p, freqs[2]);
     float v = (1.0 - exp((abs(uv.x) - 1.0) * 6.0)) * (1.0 - exp((abs(uv.y) - 1.0) * 6.0));

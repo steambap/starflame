@@ -1,3 +1,5 @@
+import 'dart:ui' show Paint, PaintingStyle;
+
 import 'package:flutter/material.dart' show Color, Colors;
 import "package:flutter/foundation.dart" show ChangeNotifier;
 
@@ -14,7 +16,6 @@ class PlayerState with ChangeNotifier, SimObject {
   static const double foodMax = 50;
 
   final int playerNumber;
-  Color color = Colors.black;
   late final Empire empire;
   int team = -1;
   bool isAlive = true;
@@ -37,6 +38,21 @@ class PlayerState with ChangeNotifier, SimObject {
   };
 
   PlayerState(this.playerNumber, this.isAI);
+
+  List<Paint> paintLayer = [];
+  Color _color = Colors.black;
+
+  Color get color => _color;
+
+  set color(Color value) {
+    _color = value;
+    paintLayer = [
+      Paint()..color = value.withAlpha(128),
+      Paint()
+        ..color = value
+        ..style = PaintingStyle.stroke,
+    ];
+  }
 
   void init() {
     blueprints.addAll(empire.blueprints);
@@ -76,7 +92,7 @@ class PlayerState with ChangeNotifier, SimObject {
     techs.add(techId);
     final tech = techMap[techId]!;
     tech.applyBenefit(this);
-    
+
     if (techLevel[tech.section]! <= tech.tier) {
       techLevel.update(tech.section, (prev) => prev + 1);
     }

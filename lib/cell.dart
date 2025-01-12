@@ -7,8 +7,7 @@ import 'scifi_game.dart';
 import 'hex.dart';
 import 'sector.dart';
 import 'ship.dart';
-import "styles.dart"
-    show highlighterPaint, moveendPaint, targetPaint, fogPaint;
+import "styles.dart" show highlighterPaint, moveendPaint, targetPaint, fogPaint;
 import 'tile_type.dart';
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
@@ -25,15 +24,12 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
     position = hex.toPixel();
     _highligher = PolygonComponent(Hex.zero.polygonCorners(),
         anchor: Anchor.center, paint: highlighterPaint, priority: 2);
-    _fog = PolygonComponent(Hex.zero.polygonCorners(Hex.size - 1),
-        anchor: Anchor.center, paint: Paint.from(fogPaint), priority: 1);
+    _fog = PolygonComponent(Hex.zero.polygonCorners(Hex.size - 0.5),
+        position: position, anchor: Anchor.center, paint: Paint.from(fogPaint));
   }
 
   @override
   FutureOr<void> onLoad() {
-    if (sector != null) {
-      add(sector!);
-    }
     Sprite? sprite;
     if (tileType == TileType.gravityRift) {
       sprite = Sprite(game.images.fromCache("gravity_rift.png"));
@@ -49,12 +45,15 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
       tileSprite = SpriteComponent(sprite: sprite, anchor: Anchor.center);
       add(tileSprite!);
     }
+    if (sector != null) {
+      add(sector!);
+    }
 
     showFog();
   }
 
   void showFog() {
-    add(_fog);
+    game.mapGrid.fogLayer.add(_fog);
   }
 
   void hideFog() {

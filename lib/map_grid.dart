@@ -45,10 +45,12 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
       .polygonCorners()
       .map((e) => e.toOffset())
       .toList(growable: false);
+  final fogLayer = PositionComponent(priority: 3);
 
   @override
   FutureOr<void> onLoad() {
     _selectControl = SelectControlWaitForInput(game);
+    add(fogLayer);
   }
 
   // Draw all hexagons in one go
