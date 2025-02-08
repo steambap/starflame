@@ -6,7 +6,7 @@ import "resource.dart";
 import "sim_props.dart";
 import "planet.dart";
 import "sector.dart";
-import "data/tech.dart";
+import "research.dart";
 
 class ResourceController {
   final ScifiGame game;
@@ -100,30 +100,21 @@ class ResourceController {
     sector.placeWorker(playerState, planet, type);
   }
 
-  bool canResearch(int playerNumber, String techId) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-
-    if (playerState.techs.contains(techId)) {
+  bool canResearch(PlayerState playerState, TechSection sec, int tier) {
+    if ((playerState.techLevel[sec] ?? 0) != tier - 1) {
       return false;
     }
 
-    final tech = techMap[techId];
-    if (tech == null) {
-      return false;
-    }
-
-    return playerState.canTakeAction() && playerState.science >= tech.cost;
+    return playerState.canTakeAction() &&
+        playerState.science >= Research.getCost(tier);
   }
 
-  void doResearch(int playerNumber, String techId) {
-    final playerState = game.controller.getPlayerState(playerNumber);
-
-    if (!canResearch(playerNumber, techId)) {
+  void doResearch(PlayerState playerState, TechSection sec, int tier) {
+    if (!canResearch(playerState, sec, tier)) {
       return;
     }
 
-    final tech = techMap[techId]!;
-    playerState.takeAction(Resources(science: -tech.cost));
-    playerState.addTech(techId);
+    playerState.takeAction(Resources(science: -Research.getCost(tier)));
+    playerState.addTech(sec, tier);
   }
 }

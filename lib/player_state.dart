@@ -2,6 +2,7 @@ import 'dart:ui' show Paint, PaintingStyle;
 
 import 'package:flutter/material.dart' show Color, Colors;
 import "package:flutter/foundation.dart" show ChangeNotifier;
+import "package:starflame/data/tech.dart";
 
 import "resource.dart";
 import "ship_blueprint.dart";
@@ -10,7 +11,6 @@ import "hex.dart";
 import "sim_props.dart";
 import "research.dart";
 import "planet.dart";
-import "data/tech.dart";
 
 class PlayerState with ChangeNotifier, SimObject {
   static const double foodMax = 50;
@@ -29,12 +29,13 @@ class PlayerState with ChangeNotifier, SimObject {
   int nextActionCost = 1;
   final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
-  final Set<String> techs = {};
   final Set<PlanetType> colonizable = {PlanetType.terran};
   final Map<TechSection, int> techLevel = {
-    TechSection.construction: 0,
-    TechSection.nano: 0,
-    TechSection.warfare: 0,
+    TechSection.military: 0,
+    TechSection.science: 0,
+    TechSection.industry: 0,
+    TechSection.trade: 0,
+    TechSection.empire: 0,
   };
 
   PlayerState(this.playerNumber, this.isAI);
@@ -87,14 +88,10 @@ class PlayerState with ChangeNotifier, SimObject {
     notifyListeners();
   }
 
-  void addTech(String techId) {
-    assert(techMap.containsKey(techId), "Tech $techId not found");
-    techs.add(techId);
-    final tech = techMap[techId]!;
-    tech.applyBenefit(this);
-
-    if (techLevel[tech.section]! <= tech.tier) {
-      techLevel.update(tech.section, (prev) => prev + 1);
+  void addTech(TechSection sec, int tier) {
+    techLevel.update(sec, (prev) => tier, ifAbsent: () => tier);
+    if (techTable[sec]?.containsKey(tier) ?? false) {
+      techTable[sec]![tier]!.applyBenefit(this);
     }
 
     notifyListeners();

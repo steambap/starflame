@@ -34,23 +34,23 @@ class ResearchOverlay extends StatelessWidget {
                     'x',
                     style: AppTheme.label16,
                   ))),
-          ChangeNotifierProvider<PlayerState>.value(
-            value: game.controller.getHumanPlayerState(),
-            child: Consumer<PlayerState>(
-              builder: (context, value, child) => Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _techColumn(context, value, TechSection.warfare),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  _techColumn(context, value, TechSection.construction),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  _techColumn(context, value, TechSection.nano),
-                ],
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            child: ChangeNotifierProvider<PlayerState>.value(
+              value: game.controller.getHumanPlayerState(),
+              child: Consumer<PlayerState>(
+                builder: (context, value, child) => Column(
+                  spacing: 16,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _techRow(context, value, TechSection.science),
+                    _techRow(context, value, TechSection.industry),
+                    _techRow(context, value, TechSection.military),
+                    _techRow(context, value, TechSection.trade),
+                    _techRow(context, value, TechSection.empire),
+                  ],
+                ),
               ),
             ),
           )
@@ -59,98 +59,140 @@ class ResearchOverlay extends StatelessWidget {
     );
   }
 
-  Widget _techColumn(
+  Widget _techRow(
       BuildContext context, PlayerState state, TechSection section) {
-    final double colWidth =
-        MediaQuery.of(context).size.width > 1024 ? 288 : 216;
-    final selectedTechs = techs
-        .where((t) =>
-            (t.section == section) && (t.tier == state.techLevel[section]))
-        .toList()
-        .sublist(0, 2);
+    final maxTechs = maxTechTable[section] ?? 10;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      spacing: 8,
       children: [
         Container(
-          width: colWidth,
-          height: 24,
-          color: techColor(section),
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          child: Text(
-            section.name,
-            style: AppTheme.label12,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          decoration: BoxDecoration(
+            color: techColor(section),
+            border: Border.all(color: techColor(section)),
+            borderRadius: BorderRadius.circular(4),
           ),
+          child: techIcon(section),
         ),
-        for (final tech in selectedTechs) _techCell(state, tech, colWidth),
+        for (int i = 1; i <= maxTechs; i++)
+          _techCell(context, state, section, i),
       ],
     );
   }
 
-  Widget _techCell(PlayerState state, Research tech, double width) {
-    final isEnabled = game.resourceController.canResearch(
-        game.controller.getHumanPlayerState().playerNumber, tech.id);
-    final textStyle = isEnabled ? AppTheme.label12 : AppTheme.label12Gray;
-
-    return Container(
-      padding: const EdgeInsets.all(4),
-      width: width,
-      decoration: const BoxDecoration(
-        border: Border(
-          left: BorderSide(
-            color: AppTheme.panelBorder,
-          ),
-          bottom: BorderSide(
-            color: AppTheme.panelBorder,
-          ),
-          right: BorderSide(
-            color: AppTheme.panelBorder,
-          ),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            tech.displayName,
+  Widget _techCell(
+      BuildContext context, PlayerState state, TechSection section, int tier) {
+    final currentLevel = state.techLevel[section] ?? 1;
+    final primaryColor =
+        tier <= currentLevel ? techColor(section) : AppTheme.panelBorder;
+    final tech = techTable[section]![tier];
+    final canResearch =
+        game.resourceController.canResearch(state, section, tier);
+    final Widget leftCell = tier <= currentLevel
+        ? const Icon(LucideIcon.check, color: AppTheme.iconPale)
+        : Text(
+            Research.getCost(tier).toString(),
             style: AppTheme.label16,
-          ),
-          SizedBox(
-              height: 72,
-              child: Text(
-                tech.description,
-                style: AppTheme.label12,
-              )),
-          RichText(
-            text: TextSpan(
-              style: textStyle,
-              children: [
-                const WidgetSpan(
-                    child: Icon(LucideIcon.circleUserRound,
-                        size: 16, color: AppTheme.iconPurple)),
-                TextSpan(
-                  text: " ${state.nextActionCost} ",
-                ),
-                const WidgetSpan(
-                  child: Icon(LucideIcon.flaskRoundBottom,
-                      size: 16, color: AppTheme.iconBlue),
-                ),
-                TextSpan(
-                  text: " ${tech.cost}",
+          );
+
+    return InkWell(
+      splashColor: primaryColor,
+      onTap: () {
+        showDialog<void>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('${section.name} level $tier',
+                  style: AppTheme.heading24),
+              shape: const RoundedRectangleBorder(),
+              content: Text(tech?.description ?? 'No Immediate Benefit',
+                  style: AppTheme.label12),
+              actions: [
+                if (canResearch)
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    onPressed: () {
+                      game.resourceController.doResearch(state, section, tier);
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Research', style: AppTheme.label16),
+                  ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel', style: AppTheme.label16),
                 ),
               ],
+            );
+          },
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: techColor(section)),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 60,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              color: primaryColor,
+              child: Center(
+                child: leftCell,
+              ),
             ),
-          )
-        ],
+            SizedBox(
+              width: 60,
+              child: tech == null
+                  ? null
+                  : Icon(tech.icon, color: AppTheme.iconPale),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   static Color techColor(TechSection section) {
     return switch (section) {
-      TechSection.warfare => AppTheme.warfareTech,
-      TechSection.construction => AppTheme.constructionTech,
-      TechSection.nano => AppTheme.nanoTech,
+      TechSection.military => AppTheme.militaryTech,
+      TechSection.science => AppTheme.scienceTech,
+      TechSection.industry => AppTheme.industryTech,
+      TechSection.trade => AppTheme.tradeTech,
+      TechSection.empire => AppTheme.empireTech,
+    };
+  }
+
+  static Icon techIcon(TechSection section) {
+    return switch (section) {
+      TechSection.military => const Icon(
+          LucideIcon.swords,
+          color: AppTheme.iconPale,
+        ),
+      TechSection.science => const Icon(
+          LucideIcon.flaskRoundBottom,
+          color: AppTheme.iconPale,
+        ),
+      TechSection.industry => const Icon(
+          LucideIcon.wrench,
+          color: AppTheme.iconPale,
+        ),
+      TechSection.trade => const Icon(
+          LucideIcon.euro,
+          color: AppTheme.iconPale,
+        ),
+      TechSection.empire => const Icon(
+          LucideIcon.circleUserRound,
+          color: AppTheme.iconPale,
+        ),
     };
   }
 }

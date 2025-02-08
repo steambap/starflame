@@ -133,7 +133,9 @@ class AppTheme {
   static const disabledSlotBorder = gray;
   static const unoccupiedSlot = darkGray;
 
-  static const warfareTech = red;
-  static const constructionTech = green;
-  static const nanoTech = yellow;
+  static const militaryTech = red;
+  static const scienceTech = blue;
+  static const industryTech = orange;
+  static const tradeTech = yellow;
+  static const empireTech = purple;
 }

@@ -1,176 +1,200 @@
-import "../research.dart";
-import "../sim_props.dart";
+import "package:starflame/research.dart";
+import "package:starflame/planet.dart";
+// import "../sim_props.dart";
+import "./lucide_icon.dart";
 
-final List<Research> techs = [
+final List<Research> scienceTechs = [
   Research(
-    id: "neutron_absorber",
-    displayName: 'Neutron Absorber',
-    tier: 0,
-    section: TechSection.construction,
-    cost: 4,
-    effects: {
-      SimProps.neutronDefense: 1,
-    },
-    description: 'Enemy [Neutron Bombs] have no effect on you.',
-  ),
-  Research(
-      id: 'sector_defense',
-      displayName: 'Sector Defense',
-      section: TechSection.construction,
-      tier: 0,
-      cost: 4,
-      effects: {
-        SimProps.starbaseFreeUpdate: 1,
-        SimProps.starbaseInitiative: 4,
-      },
-      description:
-          'Starbases have +4 initiative and blueprint update is free.'),
-  Research(
-    id: "improved_hull",
-    displayName: 'Improved Hull',
     tier: 1,
-    section: TechSection.construction,
-    cost: 6,
-    effects: {
-      SimProps.allowImprovedHull: 1,
+    description: "Can colonize ice planets.",
+    section: TechSection.science,
+    effects: {},
+    icon: LucideIcon.earth,
+    provideBenefit: (playerState) {
+      playerState.colonizable.add(PlanetType.ice);
     },
-    description:
-        'You may upgrade your ship blueprints with [Improved Hull] ship parts.',
   ),
   Research(
-    id: "sentient_hull",
-    displayName: 'Sentient Hull',
-    tier: 1,
-    section: TechSection.construction,
-    cost: 7,
-    effects: {
-      SimProps.allowSentientHull: 1,
-    },
-    description:
-        'You may upgrade your ship blueprints with [Sentient Hull] ship parts.',
-  ),
-  Research(
-      id: 'anti-mass deflector',
-      displayName: 'Anti-mass Deflector',
-      section: TechSection.construction,
-      tier: 2,
-      cost: 8,
-      effects: {
-        SimProps.moveCostAsteroid: -5,
-      },
-      description: 'Your ships move through asteroid faster.'),
-  Research(
-    id: "fusion_drive",
-    displayName: 'Fusion Drive',
-    section: TechSection.construction,
     tier: 2,
-    cost: 12,
-    effects: {
-      SimProps.allowFusionDrive: 1,
-    },
-    description:
-        'You may upgrade your ship blueprints with [Fusion Drive] ship parts.',
+    description: "Unlocks the ability to build lab.",
+    section: TechSection.science,
+    effects: {},
+    icon: LucideIcon.microscope,
   ),
   Research(
-      id: 'absorption_shield',
-      displayName: 'Absorption Shield',
-      section: TechSection.construction,
-      tier: 3,
-      cost: 14,
-      effects: {
-        SimProps.allowAbsorptionShield: 1,
-      },
-      image: ''),
-  Research(
-    id: "tachyon_drive",
-    displayName: 'Tachyon Drive',
-    section: TechSection.construction,
-    tier: 3,
-    cost: 14,
-    effects: {
-      SimProps.allowTachyonDrive: 1,
-    },
-    description:
-        'You may upgrade your ship blueprints with [Tachyon Drive] ship parts.',
+    tier: 5,
+    description: "Unlocks the ability to build lab.",
+    section: TechSection.science,
+    effects: {},
+    icon: LucideIcon.microscope,
   ),
   Research(
-      id: 'climate_engineering',
-      displayName: 'Climate Engineering',
-      section: TechSection.construction,
-      tier: 4,
-      cost: 18,
-      effects: {
-        SimProps.allowTerraforming: 1,
-      },
-      description: 'You may terraform planets.'),
-  Research(
-      id: 'adaptive_colony_blueprint',
-      displayName: 'Adaptive Colony Blueprint',
-      section: TechSection.construction,
-      tier: 4,
-      cost: 18,
-      effects: {
-        SimProps.allowAdvancedSlot: 1,
-      },
-      description: 'You may colonize any advanced slot.'),
-  Research(
-      id: "electron_countermeasures",
-      displayName: 'Electron Countermeasures',
-      section: TechSection.nano,
-      tier: 0,
-      cost: 4,
-      effects: {
-        SimProps.allowElectronCountermeasures: 1,
-      },
-      description:
-          'You may upgrade your ship blueprints with [Electron Countermeasures] ship parts.'),
-  Research(
-      id: "fusion_source",
-      displayName: 'Fusion Source',
-      section: TechSection.nano,
-      tier: 0,
-      cost: 4,
-      effects: {
-        SimProps.allowFusionSource: 1,
-      },
-      description:
-          'You may upgrade your ship blueprints with [Fusion Source] ship parts.'),
-  Research(
-    id: "tachyon_source",
-    displayName: 'Tachyon Source',
-    section: TechSection.nano,
-    tier: 3,
-    cost: 12,
-    effects: {
-      SimProps.allowTachyonSource: 1,
-    },
-    description:
-        'You may upgrade your ship blueprints with [Tachyon Source] ship parts.',
+    tier: 8,
+    description: "Unlocks the ability to build lab.",
+    section: TechSection.science,
+    effects: {},
+    icon: LucideIcon.microscope,
   ),
-  Research(
-      id: 'neutron_bombs',
-      displayName: 'Neutron Bombs',
-      section: TechSection.warfare,
-      tier: 0,
-      cost: 4,
-      effects: {
-        SimProps.neutronBombs: 1,
-      },
-      description:
-          'You may use [Neutron Bombs] action, which destroys enemy colony.'),
-  Research(
-      id: 'ion_missile',
-      displayName: 'Ion Missile',
-      section: TechSection.warfare,
-      tier: 0,
-      cost: 4,
-      effects: {
-        SimProps.allowIonMissile: 1,
-      },
-      description:
-          'You may upgrade your ship blueprints with [Ion Missile] ship parts.')
 ];
 
-final Map<String, Research> techMap = {
-  for (var tech in techs) tech.id: tech,
+final Map<int, Research> scienceTechMap = {
+  for (final tech in scienceTechs) tech.tier: tech,
+};
+
+final List<Research> industryTechs = [
+  Research(
+    tier: 1,
+    description: "Unlocks the ability to build factory.",
+    section: TechSection.industry,
+    effects: {},
+    icon: LucideIcon.factory,
+  ),
+  Research(
+    tier: 2,
+    description: "Can colonize iron planets.",
+    section: TechSection.science,
+    effects: {},
+    icon: LucideIcon.earth,
+    provideBenefit: (playerState) {
+      playerState.colonizable.add(PlanetType.iron);
+    },
+  ),
+  Research(
+    tier: 4,
+    description: "Unlocks the ability to build factory.",
+    section: TechSection.industry,
+    effects: {},
+    icon: LucideIcon.factory,
+  ),
+  Research(
+    tier: 7,
+    description: "Unlocks the ability to build factory.",
+    section: TechSection.industry,
+    effects: {},
+    icon: LucideIcon.factory,
+  ),
+];
+
+final Map<int, Research> industryTechMap = {
+  for (final tech in industryTechs) tech.tier: tech,
+};
+
+final List<Research> militaryTechs = [
+  Research(
+    tier: 2,
+    description: "Unlocks new ship.",
+    section: TechSection.military,
+    effects: {},
+    icon: LucideIcon.swords,
+  ),
+  Research(
+    tier: 7,
+    description: "Unlocks new ship.",
+    section: TechSection.military,
+    effects: {},
+    icon: LucideIcon.swords,
+  ),
+  Research(
+    tier: 12,
+    description: "Unlocks new ship.",
+    section: TechSection.military,
+    effects: {},
+    icon: LucideIcon.swords,
+  ),
+];
+
+final Map<int, Research> militaryTechMap = {
+  for (final tech in militaryTechs) tech.tier: tech,
+};
+
+final List<Research> tradeTechs = [
+  Research(
+    tier: 1,
+    description: "Can colonize desert planets.",
+    section: TechSection.trade,
+    effects: {},
+    icon: LucideIcon.earth,
+    provideBenefit: (playerState) {
+      playerState.colonizable.add(PlanetType.desert);
+    },
+  ),
+  Research(
+    tier: 2,
+    description: "Unlocks the ability to build bank.",
+    section: TechSection.trade,
+    effects: {},
+    icon: LucideIcon.store,
+  ),
+  Research(
+    tier: 6,
+    description: "Unlocks the ability to build bank.",
+    section: TechSection.trade,
+    effects: {},
+    icon: LucideIcon.store,
+  ),
+  Research(
+    tier: 10,
+    description: "Unlocks the ability to build bank.",
+    section: TechSection.trade,
+    effects: {},
+    icon: LucideIcon.store,
+  ),
+];
+
+final Map<int, Research> tradeTechMap = {
+  for (final tech in tradeTechs) tech.tier: tech,
+};
+
+final List<Research> empireTechs = [
+  Research(
+    tier: 1,
+    description: "Unlocks the ability to build farm.",
+    section: TechSection.empire,
+    effects: {},
+    icon: LucideIcon.wheat,
+  ),
+  Research(
+    tier: 3,
+    description: "Can colonize gas planets.",
+    section: TechSection.empire,
+    effects: {},
+    icon: LucideIcon.earth,
+    provideBenefit: (playerState) {
+      playerState.colonizable.add(PlanetType.gas);
+    },
+  ),
+  Research(
+    tier: 4,
+    description: "Unlocks the ability to build farm.",
+    section: TechSection.empire,
+    effects: {},
+    icon: LucideIcon.wheat,
+  ),
+  Research(
+    tier: 7,
+    description: "Unlocks the ability to build farm.",
+    section: TechSection.empire,
+    effects: {},
+    icon: LucideIcon.wheat,
+  ),
+];
+
+final Map<int, Research> empireTechMap = {
+  for (final tech in empireTechs) tech.tier: tech,
+};
+
+final Map<TechSection, Map<int, Research>> techTable = {
+  TechSection.science: scienceTechMap,
+  TechSection.industry: industryTechMap,
+  TechSection.military: militaryTechMap,
+  TechSection.trade: tradeTechMap,
+  TechSection.empire: empireTechMap,
+};
+
+final Map<TechSection, int> maxTechTable = {
+  TechSection.science: 10,
+  TechSection.industry: 10,
+  TechSection.military: 12,
+  TechSection.trade: 10,
+  TechSection.empire: 10,
 };
