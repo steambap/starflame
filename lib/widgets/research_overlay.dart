@@ -84,8 +84,10 @@ class ResearchOverlay extends StatelessWidget {
   Widget _techCell(
       BuildContext context, PlayerState state, TechSection section, int tier) {
     final currentLevel = state.techLevel[section] ?? 1;
-    final primaryColor =
-        tier <= currentLevel ? techColor(section) : AppTheme.panelBorder;
+    final buttonColor =
+        tier <= currentLevel ? techColor(section) : AppTheme.techNotResearched;
+    final borderColor =
+        tier <= currentLevel ? techColor(section) : AppTheme.techBorder;
     final tech = techTable[section]![tier];
     final canResearch =
         game.resourceController.canResearch(state, section, tier);
@@ -97,7 +99,7 @@ class ResearchOverlay extends StatelessWidget {
           );
 
     return InkWell(
-      splashColor: primaryColor,
+      splashColor: buttonColor,
       onTap: () {
         showDialog<void>(
           context: context,
@@ -136,7 +138,7 @@ class ResearchOverlay extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: techColor(section)),
+          border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
@@ -144,7 +146,7 @@ class ResearchOverlay extends StatelessWidget {
             Container(
               width: 60,
               padding: const EdgeInsets.symmetric(vertical: 8),
-              color: primaryColor,
+              color: buttonColor,
               child: Center(
                 child: leftCell,
               ),

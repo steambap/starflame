@@ -58,13 +58,12 @@ void main() {
 	p.x += mix(-0.05, 0.05, (mouse.x / resolution.x));
 	p.y += mix(-0.05, 0.05, (mouse.y / resolution.y));
 
-    float freqs[4];
-	freqs[0] = 0.1;
-	freqs[1] = 0.2;
-	freqs[2] = 0.3;
-	freqs[3] = 0.4;
+	float f0 = 0.1;
+	float f1 = 0.2;
+	float f2 = 0.3;
+	float f3 = 0.4;
 
-    float t = field(p, freqs[2]);
+    float t = field(p, f2);
     float v = (1.0 - exp((abs(uv.x) - 1.0) * 6.0)) * (1.0 - exp((abs(uv.y) - 1.0) * 6.0));
 
     vec3 p2 = vec3(uvs / 4.6, 1.5) + vec3(2.0, -1.3, -1.0);
@@ -72,8 +71,8 @@ void main() {
 	p2.x += mix(-0.02, 0.02, (mouse.x / resolution.x));
 	p2.y += mix(-0.02, 0.02, (mouse.y / resolution.y));
 
-    float t2 = field2(p2, freqs[3]);
-    vec4 c2 = mix(0.4, 1.0, v) * vec4(1.3 * t2 * t2 * t2, 1.8 * t2 * t2, t2 * freqs[0], t2);
+    float t2 = field2(p2, f3);
+    vec4 c2 = mix(0.4, 1.0, v) * vec4(1.3 * t2 * t2 * t2, 1.8 * t2 * t2, t2 * f0, t2);
 
     vec2 seed = p.xy * 2.0;
     seed = floor(seed * resolution.x);
@@ -85,5 +84,5 @@ void main() {
     vec3 rnd2 = nrand3(seed2);
     starcolor += vec4(pow(rnd2.y, 40.0));
 
-    fragColor = mix(freqs[3] - 0.3, 1.0, v) * vec4(1.5 * freqs[2] * t * t * t, 1.2 * freqs[1] * t * t, freqs[3] * t, 1.0) + c2 + starcolor;
+    fragColor = mix(f3 - 0.3, 1.0, v) * vec4(1.5 * f2 * t * t * t, 1.2 * f1 * t * t, f3 * t, 1.0) + c2 + starcolor;
 }

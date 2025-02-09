@@ -138,4 +138,6 @@ class AppTheme {
   static const industryTech = orange;
   static const tradeTech = yellow;
   static const empireTech = purple;
+  static const techNotResearched = darkGray;
+  static const techBorder = gray;
 }

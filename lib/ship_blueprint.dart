@@ -59,7 +59,7 @@ class ShipBlueprint with SimObject {
   }
 
   int movement() {
-    int ret = 0;
+    int ret = getProp(SimProps.movement);
     for (final part in parts) {
       final mov = part.getProp(SimProps.movement);
       if (mov > 0) {
@@ -152,6 +152,8 @@ class ShipBlueprint with SimObject {
         obj: {
           SimProps.hull: 12,
           SimProps.initiative: 2,
+          SimProps.movement: 30,
+          SimProps.energyUpkeep: 1,
         },
         parts: [
           ShipPart("Nuclear Source", const {
@@ -159,12 +161,9 @@ class ShipBlueprint with SimObject {
           }),
           ShipPart("Ion Cannon", const {
             SimProps.cannon: 2,
-            SimProps.energy: -1,
+            SimProps.energyUpkeep: 1,
           }),
-          ShipPart("Nuclear Drive", const {
-            SimProps.movement: 20,
-            SimProps.energy: -1,
-          }),
+          ShipPart.none(),
           ShipPart.none(),
         ],
         active: active);
@@ -182,6 +181,8 @@ class ShipBlueprint with SimObject {
         obj: {
           SimProps.hull: 12,
           SimProps.initiative: 1,
+          SimProps.movement: 30,
+          SimProps.energyUpkeep: 1,
         },
         parts: [
           ShipPart("Nano Computer", const {
@@ -192,16 +193,13 @@ class ShipBlueprint with SimObject {
           }),
           ShipPart("Ion Cannon", const {
             SimProps.cannon: 2,
-            SimProps.energy: -1,
+            SimProps.energyUpkeep: 1,
           }),
           ShipPart("Hull", const {
             SimProps.hull: 6,
           }),
           ShipPart.none(),
-          ShipPart("Nuclear Drive", const {
-            SimProps.movement: 20,
-            SimProps.energy: -1,
-          }),
+          ShipPart.none(),
         ],
         active: active);
   }
@@ -217,6 +215,8 @@ class ShipBlueprint with SimObject {
         image: "ships/capital.png",
         obj: {
           SimProps.hull: 12,
+          SimProps.movement: 20,
+          SimProps.energyUpkeep: 2,
         },
         parts: [
           ShipPart("Nano Computer", const {
@@ -227,23 +227,20 @@ class ShipBlueprint with SimObject {
           }),
           ShipPart("Ion Cannon", const {
             SimProps.cannon: 2,
-            SimProps.energy: -1,
+            SimProps.energyUpkeep: 1,
           }),
           ShipPart("Hull", const {
             SimProps.hull: 6,
           }),
           ShipPart("Ion Cannon", const {
             SimProps.cannon: 2,
-            SimProps.energy: -1,
+            SimProps.energyUpkeep: 1,
           }),
           ShipPart("Hull", const {
             SimProps.hull: 6,
           }),
           ShipPart.none(),
-          ShipPart("Nuclear Drive", const {
-            SimProps.movement: 20,
-            SimProps.energy: -1,
-          }),
+          ShipPart.none(),
         ],
         active: active);
   }
