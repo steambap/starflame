@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flame/components.dart';
+import 'package:flame/widgets.dart';
 
 import 'package:starflame/ship_blueprint.dart';
 import 'package:starflame/styles.dart';
@@ -26,7 +28,8 @@ class MapDeploy extends StatelessWidget {
               builder: (context, playerState, child) {
                 return Column(
                   children: [
-                    for (final hull in playerState.blueprints.where((bp) => bp.active && bp.buildable))
+                    for (final hull in playerState.blueprints
+                        .where((bp) => bp.active && bp.buildable))
                       _addShipButton(playerState, hull)
                   ],
                 );
@@ -65,10 +68,18 @@ class MapDeploy extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(hull.className, style: textStyle),
-                    Expanded(child: Center(child: Image.asset("assets/images/${hull.image}"))),
+                    Expanded(
+                        child: Center(
+                      child: SpriteWidget(
+                        sprite: Sprite(game.images.fromCache(hull.image),
+                            srcSize: Vector2.all(72)),
+                        anchor: Anchor.center,
+                      ),
+                    )),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2),
-                      child: RichText(text: TextSpan(style: textStyle, children: [
+                      child: RichText(
+                          text: TextSpan(style: textStyle, children: [
                         const WidgetSpan(
                             child: Icon(LucideIcon.circleUserRound,
                                 size: 14, color: AppTheme.iconPurple)),

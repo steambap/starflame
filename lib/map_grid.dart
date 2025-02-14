@@ -198,18 +198,20 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     // add move animation to pool
     ship.onStartMove();
     for (final e in fromCells.reversed) {
-      game.animationPool.add(() {
+      game.animationPool.add(() async {
         final effect =
             MoveToEffect(e.position, EffectController(duration: 0.1));
         final angle = atan2(e.position.y - ship.position.y,
                 e.position.x - ship.position.x) +
             pi / 2;
-        ship.angle = angle;
+        ship.sprite.angle = angle;
         ship.add(effect);
         updateVision(e, ship.visionRange());
-      }, 100);
+
+        return effect.completed;
+      });
     }
-    game.animationPool.add(() {
+    game.animationPool.addSyncFunc(() {
       ship.onEndMove();
     }, 100);
   }

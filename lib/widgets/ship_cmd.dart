@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flame/components.dart';
+import 'package:flame/widgets.dart';
 
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/ship.dart';
@@ -86,7 +88,11 @@ class ShipCmd extends StatelessWidget {
         ),
         Row(
           children: [
-            Image.asset("assets/images/${ship.blueprint.image}"),
+            SpriteWidget(
+              sprite: Sprite(game.images.fromCache(ship.blueprint.image),
+                  srcSize: Vector2.all(72)),
+              anchor: Anchor.center,
+            ),
             Padding(
               padding: const EdgeInsets.all(4.0),
               child: Column(

@@ -2,12 +2,13 @@ import "dart:collection";
 import "dart:async";
 
 import "scifi_game.dart";
-import "animation_item.dart";
 import "select_control.dart";
+
+typedef AnimationFuture = Future<void> Function();
 
 class AnimationPool {
   final ScifiGame game;
-  final Queue<AnimationItem> _pool = Queue();
+  final Queue<AnimationFuture> _pool = Queue();
   bool _running = false;
   bool _paused = false;
   bool userSkip = false;
@@ -27,16 +28,26 @@ class AnimationPool {
     }
   }
 
-  void add(void Function() callback, [int? time]) {
-    _pool.add(AnimationItem(callback, time));
+  void add(AnimationFuture callback) {
+    _pool.add(callback);
+    _run();
+  }
+
+  void addSyncFunc(void Function() callback, [int? time]) {
+    _pool.add(() async {
+      callback();
+
+      return Future.delayed(Duration(milliseconds: time ?? 0));
+    });
     _run();
   }
 
   void addTimeout(int time) {
-    _pool.add(AnimationItem(null, time));
+    _pool.add(() => Future.delayed(Duration(milliseconds: time)));
+    _run();
   }
 
-  void _run() {
+  void _run() async {
     if (!game.controller.isGameStarted || _running || _paused || _pool.isEmpty) {
       return;
     }
@@ -45,23 +56,20 @@ class AnimationPool {
     game.mapGrid.selectControl = SelectControlBlockInput(game);
     final item = _pool.removeFirst();
     if (userSkip) {
-      next();
+      _next();
       return;
     }
-    if (item.time != null) {
-      if (item.callback != null) {
-        item.callback!();
-      }
-      Future.delayed(Duration(milliseconds: item.time!), next);
-      return;
+    
+    try {
+      await item();
+    } catch (e) {
+      print("Animation error: $e");
     }
-    if (item.callback != null) {
-      item.callback!();
-    }
-    next();
+
+    _next();
   }
 
-  void next() {
+  void _next() {
     if (!game.controller.isAITurn() && game.mapGrid.selectControl is SelectControlBlockInput) {
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
     }

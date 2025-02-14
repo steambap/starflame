@@ -17,7 +17,7 @@ import 'tile_type.dart';
 
 class Ship extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier {
-  late final SpriteComponent _shipSprite;
+  late final SpriteAnimationComponent _shipSprite;
 
   Hex hex;
   late ShipState state;
@@ -29,13 +29,20 @@ class Ship extends PositionComponent
     state = ShipState(playerNumber);
   }
 
+  SpriteAnimationComponent get sprite => _shipSprite;
+
   @override
   FutureOr<void> onLoad() async {
     final imgShip = game.images.fromCache(blueprint.image);
 
-    final spriteShip = Sprite(imgShip);
-    _shipSprite =
-        SpriteComponent(sprite: spriteShip, anchor: Anchor.center);
+    _shipSprite = SpriteAnimationComponent.fromFrameData(
+        imgShip,
+        SpriteAnimationData.sequenced(
+            amount: blueprint.totalFrames,
+            stepTime: 0.2,
+            textureSize: Vector2.all(72)),
+        anchor: Anchor.center,
+        playing: false);
     add(_shipSprite);
 
     position = hex.toPixel();
@@ -46,18 +53,21 @@ class Ship extends PositionComponent
     resetAllActions();
   }
 
-  void onStartMove() {}
+  void onStartMove() {
+    _shipSprite.playing = true;
+    priority = 1;
+  }
 
   void onEndMove() {
+    _shipSprite.playing = false;
+    _shipSprite.animationTicker?.reset();
+    priority = 0;
     _maybeSelectAgain();
   }
 
   void useMove(int num) {
     state.movementUsed += num;
     notifyListeners();
-    if (movePoint() == 0) {
-      setTurnOver();
-    }
   }
 
   void _maybeSelectAgain() {

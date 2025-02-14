@@ -28,6 +28,7 @@ class ShipBlueprint with SimObject {
   final int cost;
   final String image;
   final List<ShipPart> parts;
+  final int totalFrames;
 
   late String className;
   bool active;
@@ -40,6 +41,7 @@ class ShipBlueprint with SimObject {
     required this.cost,
     required this.image,
     required this.parts,
+    required this.totalFrames,
     required Map<Property, int> obj,
     required String name,
     this.active = true,
@@ -143,7 +145,8 @@ class ShipBlueprint with SimObject {
   factory ShipBlueprint.interceptor(
       {String name = "",
       bool active = true,
-      String image = "ships/raider.png"}) {
+      String image = "ships/raider.png",
+      int totalFrames = 1}) {
     return ShipBlueprint(
         type: ShipType.interceptor,
         cost: 3,
@@ -166,13 +169,15 @@ class ShipBlueprint with SimObject {
           ShipPart.none(),
           ShipPart.none(),
         ],
+        totalFrames: totalFrames,
         active: active);
   }
 
   factory ShipBlueprint.cruiser(
       {String name = "",
       bool active = true,
-      String image = "ships/screen.png"}) {
+      String image = "ships/screen.png",
+      int totalFrames = 1}) {
     return ShipBlueprint(
         type: ShipType.cruiser,
         cost: 5,
@@ -201,13 +206,15 @@ class ShipBlueprint with SimObject {
           ShipPart.none(),
           ShipPart.none(),
         ],
+        totalFrames: totalFrames,
         active: active);
   }
 
   factory ShipBlueprint.dreadnought(
       {String name = "",
       bool active = true,
-      String image = "ships/capital.png"}) {
+      String image = "ships/capital.png",
+      int totalFrames = 1}) {
     return ShipBlueprint(
         type: ShipType.dreadnought,
         cost: 8,
@@ -242,6 +249,7 @@ class ShipBlueprint with SimObject {
           ShipPart.none(),
           ShipPart.none(),
         ],
+        totalFrames: totalFrames,
         active: active);
   }
 }

@@ -23,9 +23,15 @@ class Empire {
 final Map<String, Empire> empireTable = {
   "neutral": Empire(Faction.neutral, "Neutral", []),
   "terranEmpire": Empire(Faction.terranEmpire, "Terran Empire", [
-    ShipBlueprint.interceptor(name: "Destroyer"),
-    ShipBlueprint.cruiser(name: "Cruiser"),
-    ShipBlueprint.dreadnought(name: 'Dreadnought', active: false),
+    ShipBlueprint.interceptor(
+        name: "Destroyer", image: "ships/orange_destroyer.png", totalFrames: 4),
+    ShipBlueprint.cruiser(
+        name: "Cruiser", image: "ships/orange_cruiser.png", totalFrames: 4),
+    ShipBlueprint.dreadnought(
+        name: 'Dreadnought',
+        active: false,
+        image: "ships/orange_dreadnought.png",
+        totalFrames: 4),
   ]),
   "terranKindom": Empire(Faction.terranKindom, "Kindom of Terran", [
     ShipBlueprint.interceptor(),
