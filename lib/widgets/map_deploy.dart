@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flame/components.dart';
 import 'package:flame/widgets.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/ship_blueprint.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/player_state.dart';
 import 'package:starflame/select_control.dart';
-import 'package:starflame/data/lucide_icon.dart';
 
 class MapDeploy extends StatelessWidget {
   const MapDeploy(this.game, {super.key});
@@ -81,13 +81,13 @@ class MapDeploy extends StatelessWidget {
                       child: RichText(
                           text: TextSpan(style: textStyle, children: [
                         const WidgetSpan(
-                            child: Icon(LucideIcon.circleUserRound,
+                            child: Icon(Symbols.account_circle_rounded,
                                 size: 14, color: AppTheme.iconPurple)),
                         const WidgetSpan(child: SizedBox(width: 4)),
                         TextSpan(text: playerState.nextActionCost.toString()),
                         const WidgetSpan(child: SizedBox(width: 8)),
                         const WidgetSpan(
-                            child: Icon(LucideIcon.wrench,
+                            child: Icon(Symbols.settings_rounded,
                                 size: 14, color: AppTheme.iconRed)),
                         const WidgetSpan(child: SizedBox(width: 4)),
                         TextSpan(text: hull.cost.toString()),

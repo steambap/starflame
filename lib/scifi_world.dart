@@ -5,7 +5,7 @@ import "package:flutter/foundation.dart";
 import 'package:flutter/services.dart';
 
 import 'scifi_game.dart';
-import "styles.dart" show textDamage;
+import "styles.dart";
 import "ship.dart";
 
 class ScifiWorld extends World
@@ -65,8 +65,8 @@ class ScifiWorld extends World
   }
 
   void renderDamageText(String text, Vector2 position) {
-    final textComponent =
-        TextComponent(text: text, textRenderer: textDamage, position: position);
+    final textComponent = TextComponent(
+        text: text, textRenderer: FlameTheme.textDamage, position: position);
 
     final removeEff = RemoveEffect(delay: 0.5);
     final moveEff = MoveByEffect(

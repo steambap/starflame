@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import "package:flame/rendering.dart";
 import "package:flutter/foundation.dart" show ChangeNotifier;
+import "package:flutter/material.dart" show Paint, PaintingStyle;
 
 import 'scifi_game.dart';
 import "cell.dart";
@@ -14,10 +15,21 @@ import "action_type.dart";
 import "action.dart";
 import "select_control.dart";
 import 'tile_type.dart';
+import "styles.dart";
 
 class Ship extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier {
   late final SpriteAnimationComponent _shipSprite;
+  final _panel = RectangleComponent(
+      size: Vector2(4, 25),
+      anchor: Anchor.center,
+      paintLayers: FlameTheme.panelSkin,
+      position: Vector2(12, -15));
+  final _healthbar = RectangleComponent(
+      size: Vector2(3, 24),
+      anchor: Anchor.bottomCenter,
+      paint: FlameTheme.emptyPaint,
+      position: Vector2(12, -3));
 
   Hex hex;
   late ShipState state;
@@ -43,7 +55,12 @@ class Ship extends PositionComponent
             textureSize: Vector2.all(72)),
         anchor: Anchor.center,
         playing: false);
-    add(_shipSprite);
+    final playerState = game.controller.getPlayerState(state.playerNumber);
+    _healthbar.paint = Paint()
+      ..color = playerState.color
+      ..style = PaintingStyle.fill;
+
+    addAll([_shipSprite, _panel, _healthbar]);
 
     position = hex.toPixel();
 
@@ -51,6 +68,12 @@ class Ship extends PositionComponent
     state.id = uid;
     state.health = blueprint.maxHealth();
     resetAllActions();
+
+    updateRender();
+  }
+
+  void updateRender() {
+    _healthbar.size = Vector2(3, 24 * state.health / blueprint.maxHealth());
   }
 
   void onStartMove() {

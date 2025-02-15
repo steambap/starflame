@@ -1,33 +1,7 @@
 import "package:flutter/material.dart";
-import "package:flame/rendering.dart";
 import 'package:flame/text.dart';
 
 import "theme.dart";
-
-final grayTint = PaintDecorator.tint(const Color(0x7f7f7f7f));
-final textDamage = TextPaint(
-    style: const TextStyle(color: red, fontSize: 16, fontFamily: "SpaceMono"));
-final label12 = TextPaint(
-    style: const TextStyle(color: pale, fontSize: 12, fontFamily: "Chakra"));
-final heading24 = TextPaint(
-    style: const TextStyle(color: pale, fontSize: 24, fontFamily: "Chakra"));
-
-final hexBorderPaint = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 1
-  ..color = darkGray.withAlpha(128);
-final highlighterPaint = Paint()..color = blue.withAlpha(128);
-final moveendPaint = Paint()..color = purple.withAlpha(128);
-final targetPaint = Paint()..color = red.withAlpha(128);
-final fogPaint = Paint()..color = black;
-
-final dialogBackground = Paint()..color = black.withAlpha(225);
-final panelBackground = Paint()..color = black;
-final panelBorder = Paint()
-  ..color = darkGray
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 1;
-final panelSkin = [panelBackground, panelBorder];
 
 const navbarHeight = 32.0;
 
@@ -40,17 +14,22 @@ class FlameTheme {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
   ];
-  
-  static final binaryTint = PaintDecorator.tint(purple);
-  static final noStarTint = PaintDecorator.grayscale();
-  static final blueStarTint = PaintDecorator.tint(blue);
-  static final redStarTint = PaintDecorator.tint(red);
-  static final yellowStarTint = PaintDecorator.tint(yellow);
-  static final whiteStarTint = PaintDecorator.tint(pale);
 
   static final text10pale = TextPaint(
       style:
           const TextStyle(color: pale, fontSize: 10, fontFamily: "SpaceMono"));
+  static final textDamage = TextPaint(
+      style:
+          const TextStyle(color: red, fontSize: 16, fontFamily: "SpaceMono"));
+  static final heading24 = TextPaint(
+      style: const TextStyle(color: pale, fontSize: 24, fontFamily: "Chakra"));
+
+  static final panelBackground = Paint()..color = black;
+  static final panelBorder = Paint()
+    ..color = darkGray
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1;
+  static final panelSkin = [panelBackground, panelBorder];
 
   static final planetColonizable = [Paint()..color = pale];
   static final planetUncolonizable = [
@@ -58,6 +37,15 @@ class FlameTheme {
       ..color = gray
       ..style = PaintingStyle.stroke
   ];
+
+  static final hexBorderPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1
+    ..color = darkGray.withAlpha(128);
+  static final highlighterPaint = Paint()..color = blue.withAlpha(128);
+  static final moveendPaint = Paint()..color = purple.withAlpha(128);
+  static final targetPaint = Paint()..color = red.withAlpha(128);
+  static final fogPaint = Paint()..color = black;
 }
 
 class AppTheme {
@@ -120,11 +108,6 @@ class AppTheme {
   static const iconRed = red;
   static const iconYellow = yellow;
   static const iconPale = pale;
-
-  static const iconSlot =
-      TextStyle(color: pale, fontSize: 48, fontFamily: "Icon");
-  static const iconSlotDisabled =
-      TextStyle(color: gray, fontSize: 48, fontFamily: "Icon");
 
   static const miningSlot = red;
   static const economySlot = yellow;

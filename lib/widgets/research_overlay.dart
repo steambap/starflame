@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:starflame/player_state.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/research.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/data/tech.dart';
-import 'package:starflame/data/lucide_icon.dart';
 
 class ResearchOverlay extends StatelessWidget {
   const ResearchOverlay(this.game, {super.key});
@@ -92,7 +92,7 @@ class ResearchOverlay extends StatelessWidget {
     final canResearch =
         game.resourceController.canResearch(state, section, tier);
     final Widget leftCell = tier <= currentLevel
-        ? const Icon(LucideIcon.check, color: AppTheme.iconPale)
+        ? const Icon(Symbols.check_rounded, color: AppTheme.iconPale)
         : Text(
             Research.getCost(tier).toString(),
             style: AppTheme.label16,
@@ -176,23 +176,23 @@ class ResearchOverlay extends StatelessWidget {
   static Icon techIcon(TechSection section) {
     return switch (section) {
       TechSection.military => const Icon(
-          LucideIcon.swords,
+          Symbols.swords_rounded,
           color: AppTheme.iconPale,
         ),
       TechSection.science => const Icon(
-          LucideIcon.flaskRoundBottom,
+          Symbols.experiment_rounded,
           color: AppTheme.iconPale,
         ),
       TechSection.industry => const Icon(
-          LucideIcon.wrench,
+          Symbols.settings_rounded,
           color: AppTheme.iconPale,
         ),
       TechSection.trade => const Icon(
-          LucideIcon.euro,
+          Symbols.copyright_rounded,
           color: AppTheme.iconPale,
         ),
       TechSection.empire => const Icon(
-          LucideIcon.circleUserRound,
+          Symbols.account_circle_rounded,
           color: AppTheme.iconPale,
         ),
     };

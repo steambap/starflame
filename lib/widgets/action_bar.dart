@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'map_deploy.dart';
 import 'research_overlay.dart';
@@ -6,7 +7,6 @@ import 'player_info.dart';
 import 'ship_update.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
-import 'package:starflame/data/lucide_icon.dart';
 
 class ActionBar extends StatelessWidget {
   const ActionBar(this.game, {super.key});
@@ -30,7 +30,7 @@ class ActionBar extends StatelessWidget {
                 game.overlays.add(MapDeploy.id);
               }
             },
-            icon: const Icon(LucideIcon.wrench),
+            icon: const Icon(Symbols.build_rounded),
             style: AppTheme.iconButton,
           ),
           IconButton.outlined(
@@ -38,7 +38,7 @@ class ActionBar extends StatelessWidget {
               game.overlays.remove(PlayerInfoBar.id);
               game.overlays.addAll([ResearchOverlay.id, PlayerInfoBar.id]);
             },
-            icon: const Icon(LucideIcon.flaskRoundBottom),
+            icon: const Icon(Symbols.experiment_rounded),
             style: AppTheme.iconButton,
           ),
           IconButton.outlined(
@@ -46,7 +46,7 @@ class ActionBar extends StatelessWidget {
               game.overlays.remove(PlayerInfoBar.id);
               game.overlays.addAll([ShipUpdate.id, PlayerInfoBar.id]);
             },
-            icon: const Icon(LucideIcon.combine),
+            icon: const Icon(Symbols.combine_columns_rounded),
             style: AppTheme.iconButton,
           ),
         ],

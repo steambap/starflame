@@ -1,7 +1,7 @@
 import "package:starflame/research.dart";
 import "package:starflame/planet.dart";
 // import "../sim_props.dart";
-import "./lucide_icon.dart";
+import 'package:material_symbols_icons/symbols.dart';
 
 final List<Research> scienceTechs = [
   Research(
@@ -9,7 +9,7 @@ final List<Research> scienceTechs = [
     description: "Can colonize ice planets.",
     section: TechSection.science,
     effects: {},
-    icon: LucideIcon.earth,
+    icon: Symbols.public_rounded,
     provideBenefit: (playerState) {
       playerState.colonizable.add(PlanetType.ice);
     },
@@ -19,21 +19,21 @@ final List<Research> scienceTechs = [
     description: "Unlocks the ability to build lab.",
     section: TechSection.science,
     effects: {},
-    icon: LucideIcon.microscope,
+    icon: Symbols.biotech_rounded,
   ),
   Research(
     tier: 5,
     description: "Unlocks the ability to build lab.",
     section: TechSection.science,
     effects: {},
-    icon: LucideIcon.microscope,
+    icon: Symbols.biotech_rounded,
   ),
   Research(
     tier: 8,
     description: "Unlocks the ability to build lab.",
     section: TechSection.science,
     effects: {},
-    icon: LucideIcon.microscope,
+    icon: Symbols.biotech_rounded,
   ),
 ];
 
@@ -47,14 +47,14 @@ final List<Research> industryTechs = [
     description: "Unlocks the ability to build factory.",
     section: TechSection.industry,
     effects: {},
-    icon: LucideIcon.factory,
+    icon: Symbols.factory_rounded,
   ),
   Research(
     tier: 2,
     description: "Can colonize iron planets.",
     section: TechSection.science,
     effects: {},
-    icon: LucideIcon.earth,
+    icon: Symbols.public_rounded,
     provideBenefit: (playerState) {
       playerState.colonizable.add(PlanetType.iron);
     },
@@ -64,14 +64,14 @@ final List<Research> industryTechs = [
     description: "Unlocks the ability to build factory.",
     section: TechSection.industry,
     effects: {},
-    icon: LucideIcon.factory,
+    icon: Symbols.factory_rounded,
   ),
   Research(
     tier: 7,
     description: "Unlocks the ability to build factory.",
     section: TechSection.industry,
     effects: {},
-    icon: LucideIcon.factory,
+    icon: Symbols.factory_rounded,
   ),
 ];
 
@@ -85,21 +85,21 @@ final List<Research> militaryTechs = [
     description: "Unlocks new ship.",
     section: TechSection.military,
     effects: {},
-    icon: LucideIcon.swords,
+    icon: Symbols.swords_rounded,
   ),
   Research(
     tier: 7,
     description: "Unlocks new ship.",
     section: TechSection.military,
     effects: {},
-    icon: LucideIcon.swords,
+    icon: Symbols.swords_rounded,
   ),
   Research(
     tier: 12,
     description: "Unlocks new ship.",
     section: TechSection.military,
     effects: {},
-    icon: LucideIcon.swords,
+    icon: Symbols.swords_rounded,
   ),
 ];
 
@@ -113,7 +113,7 @@ final List<Research> tradeTechs = [
     description: "Can colonize desert planets.",
     section: TechSection.trade,
     effects: {},
-    icon: LucideIcon.earth,
+    icon: Symbols.public_rounded,
     provideBenefit: (playerState) {
       playerState.colonizable.add(PlanetType.desert);
     },
@@ -123,21 +123,21 @@ final List<Research> tradeTechs = [
     description: "Unlocks the ability to build bank.",
     section: TechSection.trade,
     effects: {},
-    icon: LucideIcon.store,
+    icon: Symbols.account_balance_rounded,
   ),
   Research(
     tier: 6,
     description: "Unlocks the ability to build bank.",
     section: TechSection.trade,
     effects: {},
-    icon: LucideIcon.store,
+    icon: Symbols.account_balance_rounded,
   ),
   Research(
     tier: 10,
     description: "Unlocks the ability to build bank.",
     section: TechSection.trade,
     effects: {},
-    icon: LucideIcon.store,
+    icon: Symbols.account_balance_rounded,
   ),
 ];
 
@@ -151,14 +151,14 @@ final List<Research> empireTechs = [
     description: "Unlocks the ability to build farm.",
     section: TechSection.empire,
     effects: {},
-    icon: LucideIcon.wheat,
+    icon: Symbols.agriculture_rounded,
   ),
   Research(
     tier: 3,
     description: "Can colonize gas planets.",
     section: TechSection.empire,
     effects: {},
-    icon: LucideIcon.earth,
+    icon: Symbols.public_rounded,
     provideBenefit: (playerState) {
       playerState.colonizable.add(PlanetType.gas);
     },
@@ -168,14 +168,14 @@ final List<Research> empireTechs = [
     description: "Unlocks the ability to build farm.",
     section: TechSection.empire,
     effects: {},
-    icon: LucideIcon.wheat,
+    icon: Symbols.agriculture_rounded,
   ),
   Research(
     tier: 7,
     description: "Unlocks the ability to build farm.",
     section: TechSection.empire,
     effects: {},
-    icon: LucideIcon.wheat,
+    icon: Symbols.agriculture_rounded,
   ),
 ];
 

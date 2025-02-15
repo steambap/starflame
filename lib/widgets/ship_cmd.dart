@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flame/components.dart';
 import 'package:flame/widgets.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/ship.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/select_control.dart';
 import 'package:starflame/action_type.dart';
-import 'package:starflame/data/lucide_icon.dart';
 
 class ShipCmd extends StatelessWidget {
   const ShipCmd(this.game, {super.key});
@@ -103,8 +103,8 @@ class ShipCmd extends StatelessWidget {
                       RichText(
                           text: TextSpan(style: AppTheme.label16, children: [
                         const WidgetSpan(
-                            child: Icon(LucideIcon.heart,
-                                size: 14, color: AppTheme.iconPale)),
+                            child: Icon(Symbols.favorite_rounded,
+                                size: 16, color: AppTheme.iconPale)),
                         const WidgetSpan(child: SizedBox(width: 4)),
                         TextSpan(
                             text:
@@ -117,8 +117,8 @@ class ShipCmd extends StatelessWidget {
                       RichText(
                           text: TextSpan(style: AppTheme.label16, children: [
                         const WidgetSpan(
-                            child: Icon(LucideIcon.navigation,
-                                size: 14, color: AppTheme.iconPale)),
+                            child: Icon(Symbols.near_me_rounded,
+                                size: 16, color: AppTheme.iconPale)),
                         const WidgetSpan(child: SizedBox(width: 4)),
                         TextSpan(
                             text:

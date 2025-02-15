@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import "scifi_game.dart";
 import 'cell.dart';
 import 'action_type.dart';
 import 'ship.dart';
-
-import 'data/lucide_icon.dart';
 
 abstract class Action {
   final Ship ship;
@@ -32,7 +31,7 @@ abstract class Action {
 
 class Capture extends Action {
   Capture(Ship ship)
-      : super(ship, ActionType.capture, ActionTarget.self, LucideIcon.landPlot);
+      : super(ship, ActionType.capture, ActionTarget.self, Symbols.flag_rounded);
 
   @override
   void activate(ScifiGame game) {
@@ -63,7 +62,7 @@ class Capture extends Action {
 
 class Stay extends Action {
   Stay(Ship ship)
-      : super(ship, ActionType.stay, ActionTarget.self, LucideIcon.check);
+      : super(ship, ActionType.stay, ActionTarget.self, Symbols.check_rounded);
 
   @override
   bool isDisabled(ScifiGame game) {

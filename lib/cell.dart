@@ -7,7 +7,7 @@ import 'scifi_game.dart';
 import 'hex.dart';
 import 'sector.dart';
 import 'ship.dart';
-import "styles.dart" show highlighterPaint, moveendPaint, targetPaint, fogPaint;
+import "styles.dart";
 import 'tile_type.dart';
 
 class Cell extends PositionComponent with HasGameRef<ScifiGame> {
@@ -23,9 +23,11 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
   Cell(this.index, this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
     _highligher = PolygonComponent(Hex.zero.polygonCorners(),
-        anchor: Anchor.center, paint: highlighterPaint, priority: 2);
+        anchor: Anchor.center, paint: FlameTheme.highlighterPaint, priority: 2);
     _fog = PolygonComponent(Hex.zero.polygonCorners(Hex.size - 0.5),
-        position: position, anchor: Anchor.center, paint: Paint.from(fogPaint));
+        position: position,
+        anchor: Anchor.center,
+        paint: Paint.from(FlameTheme.fogPaint));
   }
 
   @override
@@ -75,16 +77,16 @@ class Cell extends PositionComponent with HasGameRef<ScifiGame> {
 
   FutureOr<void> markAsHighlight([int movePoint = -1]) {
     if (movePoint < TileType.empty.cost) {
-      _highligher.paint = moveendPaint;
+      _highligher.paint = FlameTheme.moveendPaint;
     } else {
-      _highligher.paint = highlighterPaint;
+      _highligher.paint = FlameTheme.highlighterPaint;
     }
 
     return add(_highligher);
   }
 
   FutureOr<void> markAsTarget() {
-    _highligher.paint = targetPaint;
+    _highligher.paint = FlameTheme.targetPaint;
     return add(_highligher);
   }
 

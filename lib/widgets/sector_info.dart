@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'player_info.dart';
 import 'sector_overlay.dart';
@@ -7,7 +8,6 @@ import 'package:starflame/scifi_game.dart';
 import 'package:starflame/sector.dart';
 import 'package:starflame/sim_props.dart';
 import 'package:starflame/styles.dart';
-import 'package:starflame/data/lucide_icon.dart';
 import 'package:starflame/fmt.dart';
 
 class SectorInfo extends StatelessWidget {
@@ -58,7 +58,7 @@ class SectorInfo extends StatelessWidget {
                       }
                     : null,
                 style: AppTheme.iconButton,
-                icon: const Icon(LucideIcon.orbit)),
+                icon: const Icon(Symbols.planet_rounded)),
           )
         ]),
         Container(
@@ -89,7 +89,7 @@ class SectorInfo extends StatelessWidget {
               text: TextSpan(style: AppTheme.label12, children: [
             if (sector.getProp(SimProps.support) != 0)
               const WidgetSpan(
-                  child: Icon(LucideIcon.circleUserRound,
+                  child: Icon(Symbols.account_circle_rounded,
                       size: 16, color: AppTheme.iconPurple)),
             if (sector.getProp(SimProps.support) != 0)
               TextSpan(
@@ -97,7 +97,7 @@ class SectorInfo extends StatelessWidget {
                       " ${formatterSigned.format(sector.getProp(SimProps.support))}  "),
             if (sector.getProp(SimProps.production) != 0)
               const WidgetSpan(
-                  child: Icon(LucideIcon.wrench,
+                  child: Icon(Symbols.settings_rounded,
                       size: 16, color: AppTheme.iconRed)),
             if (sector.getProp(SimProps.production) != 0)
               TextSpan(
@@ -105,7 +105,7 @@ class SectorInfo extends StatelessWidget {
                       " ${formatterSigned.format(sector.getProp(SimProps.production))} "),
             if (sector.getProp(SimProps.credit) != 0)
               const WidgetSpan(
-                  child: Icon(LucideIcon.euro,
+                  child: Icon(Symbols.copyright_rounded,
                       size: 16, color: AppTheme.iconYellow)),
             if (sector.getProp(SimProps.credit) != 0)
               TextSpan(
@@ -113,7 +113,7 @@ class SectorInfo extends StatelessWidget {
                       " ${formatterSigned.format(sector.getProp(SimProps.credit))} "),
             if (sector.getProp(SimProps.science) != 0)
               const WidgetSpan(
-                  child: Icon(LucideIcon.flaskRoundBottom,
+                  child: Icon(Symbols.experiment_rounded,
                       size: 16, color: AppTheme.iconBlue)),
             if (sector.getProp(SimProps.science) != 0)
               TextSpan(
