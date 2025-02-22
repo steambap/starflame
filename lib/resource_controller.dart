@@ -27,13 +27,15 @@ class ResourceController {
     for (final planet in game.mapGrid.sectors) {
       if (planet.playerNumber == state.playerNumber) {
         income += Resources(
-          support: planet.getProp(SimProps.support).floor(),
-          production: planet.getProp(SimProps.production).floor(),
-          credit: planet.getProp(SimProps.credit).floor(),
-          science: planet.getProp(SimProps.science).floor(),
+          support: planet.getProp(SimProps.support),
+          production: planet.getProp(SimProps.production),
+          credit: planet.getProp(SimProps.credit),
+          science: planet.getProp(SimProps.science),
         );
       }
     }
+
+    income += getMaintaince(state.playerNumber);
 
     return income;
   }
@@ -44,8 +46,15 @@ class ResourceController {
     return playerIncome(state);
   }
 
-  double getMaintaince(int playerNumber) {
-    return 0;
+  Resources getMaintaince(int playerNumber) {
+    Resources ret = const Resources();
+    final ships = game.mapGrid.shipMap[playerNumber] ?? [];
+
+    for (final ship in ships) {
+      ret += Resources(credit: -ship.blueprint.energyUpkeep());
+    }
+
+    return ret;
   }
 
   bool canCreateShip(int playerNumber, ShipBlueprint blueprint) {

@@ -18,7 +18,7 @@ class ActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-          vertical: AppTheme.navbarHeight + 4, horizontal: 4),
+          vertical: AppTheme.navbarMargin, horizontal: 4),
       child: Row(
         spacing: 4,
         children: [

@@ -137,11 +137,11 @@ class GameCreator {
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {
     final humanPlayer = PlayerState(0, false)
       ..credit = gameSettings.playerStartingCredit
-      ..empire = Empire.getEmpire("terranEmpire")
+      ..empire = Empire.getEmpire(Faction.terranTechnocracy)
       ..color = Colors.blue;
     final testAI = PlayerState(1, true)
       ..credit = gameSettings.playerStartingCredit
-      ..empire = Empire.getEmpire("terranKindom")
+      ..empire = Empire.getEmpire(Faction.terranSeparatists)
       ..color = Colors.red;
 
     return [humanPlayer, testAI];

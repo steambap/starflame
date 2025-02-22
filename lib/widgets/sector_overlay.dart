@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/sector.dart';
@@ -34,19 +35,19 @@ class _SectorOverlayState extends State<SectorOverlay> {
       color: AppTheme.dialogBackground,
       child: Column(
         children: [
-          const SizedBox(
-            height: navbarHeight,
+          SizedBox(
+            height: AppTheme.navbarMargin,
+            child: TextButton.icon(
+                onPressed: () {
+                  widget.game.overlays.remove(SectorOverlay.id);
+                },
+                icon: const Icon(Symbols.cancel_rounded,
+                    color: AppTheme.iconPale),
+                label: const Text(
+                  'Planet Management',
+                  style: AppTheme.label16,
+                )),
           ),
-          Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                  onPressed: () {
-                    widget.game.overlays.remove(SectorOverlay.id);
-                  },
-                  child: const Text(
-                    'x',
-                    style: AppTheme.label16,
-                  ))),
           ChangeNotifierProvider<Sector>.value(
             value: sector,
             child: Consumer<Sector>(
@@ -113,7 +114,9 @@ class _SectorOverlayState extends State<SectorOverlay> {
                         width: imgWidth,
                         height: imgWidth,
                       ),
-                      const SizedBox(height: 36,)
+                      const SizedBox(
+                        height: 36,
+                      )
                     ],
                   ),
                 )

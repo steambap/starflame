@@ -82,6 +82,15 @@ class ShipBlueprint with SimObject {
     return ret;
   }
 
+  int energyUpkeep() {
+    int ret = getProp(SimProps.energyUpkeep);
+    for (final part in parts) {
+      ret += part.getProp(SimProps.energyUpkeep);
+    }
+
+    return ret;
+  }
+
   int initiative() {
     int ret = getProp(SimProps.initiative);
     for (final part in parts) {

@@ -21,19 +21,19 @@ class ResearchOverlay extends StatelessWidget {
       color: AppTheme.dialogBackground,
       child: Column(
         children: [
-          const SizedBox(
-            height: navbarHeight,
+          SizedBox(
+            height: AppTheme.navbarMargin,
+            child: TextButton.icon(
+                onPressed: () {
+                  game.overlays.remove(id);
+                },
+                icon: const Icon(Symbols.cancel_rounded,
+                    color: AppTheme.iconPale),
+                label: const Text(
+                  'Technology Screen',
+                  style: AppTheme.label16,
+                )),
           ),
-          Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                  onPressed: () {
-                    game.overlays.remove(id);
-                  },
-                  child: const Text(
-                    'x',
-                    style: AppTheme.label16,
-                  ))),
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,

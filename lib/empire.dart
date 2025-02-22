@@ -2,9 +2,11 @@ import "ship_blueprint.dart";
 
 enum Faction {
   neutral,
-  terranEmpire,
-  terranKindom,
-  terranAlliance,
+  terranTechnocracy,
+  terranSeparatists,
+  terranProtectorate,
+  megaWar,
+  soulHarvesters,
 }
 
 class Empire {
@@ -14,15 +16,16 @@ class Empire {
 
   Empire(this.faction, this.displayName, this.blueprints);
 
-  static Empire getEmpire(String name) {
+  static Empire getEmpire(Faction name) {
     assert(empireTable.containsKey(name), "Empire $name not found");
     return empireTable[name]!;
   }
 }
 
-final Map<String, Empire> empireTable = {
-  "neutral": Empire(Faction.neutral, "Neutral", []),
-  "terranEmpire": Empire(Faction.terranEmpire, "Terran Empire", [
+final Map<Faction, Empire> empireTable = {
+  Faction.neutral: Empire(Faction.neutral, "Neutral", []),
+  Faction.terranTechnocracy:
+      Empire(Faction.terranTechnocracy, "Terran Technocracy", [
     ShipBlueprint.interceptor(
         name: "Destroyer", image: "ships/orange_destroyer.png", totalFrames: 4),
     ShipBlueprint.cruiser(
@@ -33,12 +36,13 @@ final Map<String, Empire> empireTable = {
         image: "ships/orange_dreadnought.png",
         totalFrames: 4),
   ]),
-  "terranKindom": Empire(Faction.terranKindom, "Kindom of Terran", [
+  Faction.terranSeparatists:
+      Empire(Faction.terranSeparatists, "Terran Separatists", [
     ShipBlueprint.interceptor(),
     ShipBlueprint.cruiser(),
     ShipBlueprint.dreadnought(active: false),
   ]),
-  "terranAlliance": Empire(Faction.terranAlliance, "Terran Alliance", [
+  Faction.megaWar: Empire(Faction.megaWar, "Mega War Combine", [
     ShipBlueprint.interceptor(),
     ShipBlueprint.cruiser(),
     ShipBlueprint.dreadnought(active: false),

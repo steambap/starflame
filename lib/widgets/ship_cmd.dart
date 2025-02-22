@@ -68,8 +68,9 @@ class ShipCmd extends StatelessWidget {
         Container(
           width: 196,
           decoration: BoxDecoration(
+            color: AppTheme.panelBackground,
               border: Border.all(
-            color: AppTheme.panelBorder,
+            color: AppTheme.panelBorderDisabled,
           )),
           child: _renderShipInfo(ship),
         ),
@@ -83,7 +84,7 @@ class ShipCmd extends StatelessWidget {
         Container(
           width: 196,
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          color: AppTheme.panelBorder,
+          color: AppTheme.panelTitle,
           child: Text(ship.blueprint.className, style: AppTheme.label12),
         ),
         Row(

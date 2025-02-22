@@ -1,66 +1,92 @@
 import "package:flutter/material.dart";
 import 'package:flame/text.dart';
 
-import "theme.dart";
+// radix-ui/colors
+const sand3 = Color(0xFF222221);
+const sand5 = Color(0xFF31312E);
+const sand6 = Color(0xFF3B3A37);
+const sand8 = Color(0xFF62605B);
+const sand10 = Color(0xFF7C7B74);
+const sand11 = Color(0xB0FFFCF4);
+const sand12 = Color(0xEDFFFFFD);
 
-const navbarHeight = 32.0;
+const gold10 = Color(0xFFB88C67);
+const gold11 = Color(0xD9FED1AA);
+const orange10 = Color(0xFFFF801F);
+const orange11 = Color(0xFFFFA057);
+const red7 = Color(0x84FF5361);
+const red11 = Color(0xFFFF9592);
+const purple7 = Color(0x7AC378FD);
+const purple10 = Color(0xFF9A5CD0);
+const purple11 = Color(0xFFD19DFF);
+const crimson10 = Color(0xFFEE518A);
+
+const cyan3 = Color(0xFF082C36);
+const cyan7 = Color(0x7514CDFF);
+const cyan10 = Color(0xFF23AFD0);
+const cyan11 = Color(0xE552E1FE);
 
 class FlameTheme {
   static final emptyPaint = Paint()..color = Colors.transparent;
   static final labelBackground = [
-    Paint()..color = black,
+    Paint()..color = sand3,
     Paint()
-      ..color = darkGray
+      ..color = sand6
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
   ];
 
   static final text10pale = TextPaint(
       style:
-          const TextStyle(color: pale, fontSize: 10, fontFamily: "SpaceMono"));
+          const TextStyle(color: sand12, fontSize: 10, fontFamily: "SpaceMono"));
   static final textDamage = TextPaint(
       style:
-          const TextStyle(color: red, fontSize: 16, fontFamily: "SpaceMono"));
+          const TextStyle(color: red11, fontSize: 16, fontFamily: "SpaceMono"));
   static final heading24 = TextPaint(
-      style: const TextStyle(color: pale, fontSize: 24, fontFamily: "Chakra"));
+      style: const TextStyle(color: sand12, fontSize: 24, fontFamily: "Chakra"));
 
-  static final panelBackground = Paint()..color = black;
+  static final panelBackground = Paint()..color = sand3;
   static final panelBorder = Paint()
-    ..color = darkGray
+    ..color = sand6
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1;
   static final panelSkin = [panelBackground, panelBorder];
 
-  static final planetColonizable = [Paint()..color = pale];
+  static final planetColonizable = [Paint()..color = sand12];
   static final planetUncolonizable = [
     Paint()
-      ..color = gray
+      ..color = sand8
       ..style = PaintingStyle.stroke
   ];
 
   static final hexBorderPaint = Paint()
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1
-    ..color = darkGray.withAlpha(128);
-  static final highlighterPaint = Paint()..color = blue.withAlpha(128);
-  static final moveendPaint = Paint()..color = purple.withAlpha(128);
-  static final targetPaint = Paint()..color = red.withAlpha(128);
-  static final fogPaint = Paint()..color = black;
+    ..color = sand8;
+  static final highlighterPaint = Paint()..color = cyan7;
+  static final moveendPaint = Paint()..color = purple7;
+  static final targetPaint = Paint()..color = red7;
+  static final fogPaint = Paint()..color = sand3;
 }
 
 class AppTheme {
-  static final dialogBackground = black.withAlpha(225);
+  static const dialogBackground = Color.fromRGBO(0, 0, 0, 0.9);
   static final ButtonStyle menuButton = ElevatedButton.styleFrom(
-    fixedSize: const Size(120, 40),
-    foregroundColor: pale,
-    backgroundColor: darkGray,
+    fixedSize: const Size(120, 36),
+    foregroundColor: sand12,
+    backgroundColor: sand10,
     padding: const EdgeInsets.all(0),
-    shape: const RoundedRectangleBorder(),
+    shape: const BeveledRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(6),
+        bottomRight: Radius.circular(6),
+      ),
+    ),
   );
   static final ButtonStyle iconButton = IconButton.styleFrom(
-    foregroundColor: pale,
-    hoverColor: blue,
-    disabledBackgroundColor: darkGray,
+    foregroundColor: sand11,
+    hoverColor: cyan3,
+    disabledBackgroundColor: sand8,
   );
 
   static final dialogTheme = DialogTheme(
@@ -72,55 +98,56 @@ class AppTheme {
   );
   static const tabTheme = TabBarTheme(
     dividerHeight: 0,
-    labelColor: pale,
-    unselectedLabelColor: gray,
+    labelColor: sand12,
+    unselectedLabelColor: sand8,
     indicator: BoxDecoration(
       border: Border(
-        bottom: BorderSide(color: pale, width: 2),
+        bottom: BorderSide(color: sand8, width: 2),
       ),
     ),
   );
-  static const dialogTitleBg = blue;
 
-  static const panelBackground = black;
-  static const panelBorder = darkGray;
+  static const panelBackground = sand3;
+  static const panelTitle = sand5;
+  static const panelBorder = sand6;
+  static const panelBorderDisabled = sand8;
 
-  static const cardColor = Color(0xff373336);
+  static const cardColor = Color.fromRGBO(255, 255, 255, 0.1);
 
-  static const iconButtonColor = pale;
-  static const iconButtonHoverColor = blue;
+  static const addShipButtonColor = sand5;
+  static const addShipButtonHoverColor = cyan3;
+  static const addShipButtonDisabledColor = sand6;
+  static const addShipButtonBorder = sand8;
 
-  static const addShipButtonColor = black;
-  static const addShipButtonHoverColor = blue;
-  static const addShipButtonDisabledColor = darkGray;
-  static const addShipButtonBorder = gray;
+  static const navbarHeight = 48.0;
+  static const navbarMargin = navbarHeight + 12;
 
-  static const navbarHeight = 32.0;
+  static const label12 = TextStyle(color: sand12, fontSize: 12);
+  static const label12Gray = TextStyle(color: sand8, fontSize: 12);
+  static const label14 = TextStyle(color: sand12, fontSize: 14);
+  static const label14Gray = TextStyle(color: sand8, fontSize: 14);
+  static const label16 = TextStyle(color: sand12, fontSize: 16);
+  static const label16Gray = TextStyle(color: sand8, fontSize: 16);
+  static const heading24 = TextStyle(color: sand12, fontSize: 24);
 
-  static const label12 = TextStyle(color: pale, fontSize: 12);
-  static const label12Gray = TextStyle(color: gray, fontSize: 12);
-  static const label16 = TextStyle(color: pale, fontSize: 16);
-  static const label16Gray = TextStyle(color: gray, fontSize: 16);
-  static const heading24 = TextStyle(color: pale, fontSize: 24);
+  static const iconPurple = purple11;
+  static const iconBlue = cyan11;
+  static const iconRed = red11;
+  static const iconYellow = gold11;
+  static const iconPale = sand11;
 
-  static const iconPurple = purple;
-  static const iconBlue = blue;
-  static const iconRed = red;
-  static const iconYellow = yellow;
-  static const iconPale = pale;
+  static const miningSlot = red11;
+  static const economySlot = gold11;
+  static const labSlot = cyan11;
+  static const disabledSlot = sand6;
+  static const disabledSlotBorder = sand8;
+  static const unoccupiedSlot = sand6;
 
-  static const miningSlot = red;
-  static const economySlot = yellow;
-  static const labSlot = blue;
-  static const disabledSlot = darkGray;
-  static const disabledSlotBorder = gray;
-  static const unoccupiedSlot = darkGray;
-
-  static const militaryTech = red;
-  static const scienceTech = blue;
-  static const industryTech = orange;
-  static const tradeTech = yellow;
-  static const empireTech = purple;
-  static const techNotResearched = darkGray;
-  static const techBorder = gray;
+  static const militaryTech = crimson10;
+  static const scienceTech = cyan10;
+  static const industryTech = orange10;
+  static const tradeTech = gold10;
+  static const empireTech = purple10;
+  static const techNotResearched = sand10;
+  static const techBorder = sand8;
 }

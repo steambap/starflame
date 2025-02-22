@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/ship_blueprint.dart';
@@ -40,11 +41,20 @@ class _ShipUpdateState extends State<ShipUpdate> with TickerProviderStateMixin {
       color: AppTheme.dialogBackground,
       child: Column(
         children: [
-          const SizedBox(
-            height: navbarHeight,
+          SizedBox(
+            height: AppTheme.navbarMargin,
+            child: TextButton.icon(
+                onPressed: () {
+                  widget.game.overlays.remove(ShipUpdate.id);
+                },
+                icon: const Icon(Symbols.cancel_rounded,
+                    color: AppTheme.iconPale),
+                label: const Text(
+                  'Ship Design',
+                  style: AppTheme.label16,
+                )),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TabBar(controller: _tabController, isScrollable: true, tabs: [
                 for (final ship in _ships)
@@ -52,14 +62,6 @@ class _ShipUpdateState extends State<ShipUpdate> with TickerProviderStateMixin {
                     text: ship.className,
                   )
               ]),
-              TextButton(
-                  onPressed: () {
-                    widget.game.overlays.remove(ShipUpdate.id);
-                  },
-                  child: const Text(
-                    'x',
-                    style: AppTheme.label16,
-                  ))
             ],
           ),
           Row(
@@ -93,8 +95,10 @@ class _ShipUpdateState extends State<ShipUpdate> with TickerProviderStateMixin {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Initiative:', style: AppTheme.label16),
-                              Text('${ship.initiative()}', style: AppTheme.label16),
+                              const Text('Initiative:',
+                                  style: AppTheme.label16),
+                              Text('${ship.initiative()}',
+                                  style: AppTheme.label16),
                             ],
                           ),
                           const Divider(),

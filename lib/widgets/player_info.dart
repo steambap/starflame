@@ -19,10 +19,13 @@ class PlayerInfoBar extends StatelessWidget {
     return ChangeNotifierProvider<PlayerState>.value(
       value: game.controller.getHumanPlayerState(),
       child: Container(
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        width: 240,
         height: AppTheme.navbarHeight,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
             color: AppTheme.panelBackground,
-            border: Border(bottom: BorderSide(color: AppTheme.panelBorder))),
+            border: Border.all(color: AppTheme.panelBorder)),
         child: Consumer<PlayerState>(
           builder: (context, value, child) => _bar(),
         ),
@@ -33,81 +36,100 @@ class PlayerInfoBar extends StatelessWidget {
   Widget _bar() {
     final playerState = game.controller.getHumanPlayerState();
     final income = game.resourceController.humanPlayerIncome();
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        // Left
-        Row(
-          children: [
-            const SizedBox(width: 4),
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: playerState.color,
-                border: Border.all(
-                  color: AppTheme.panelBorder,
-                  width: 1,
-                ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: RichText(
+                    text: TextSpan(style: AppTheme.label14, children: [
+                  const WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Icon(Symbols.settings_rounded,
+                          size: 14, color: AppTheme.iconRed)),
+                  const WidgetSpan(child: SizedBox(width: 4)),
+                  TextSpan(
+                      text: formatterUnsigned.format(playerState.production)),
+                  const WidgetSpan(child: SizedBox(width: 2)),
+                  TextSpan(
+                      text: formatterSigned.format(income.production),
+                      style: AppTheme.label14Gray),
+                ])),
+              ),
+              Expanded(
+                child: RichText(
+                    text: TextSpan(style: AppTheme.label14, children: [
+                  const WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Icon(Symbols.copyright_rounded,
+                          size: 14, color: AppTheme.iconYellow)),
+                  const WidgetSpan(child: SizedBox(width: 4)),
+                  TextSpan(text: formatterUnsigned.format(playerState.credit)),
+                  const WidgetSpan(child: SizedBox(width: 2)),
+                  TextSpan(
+                      text: formatterSigned.format(income.credit),
+                      style: AppTheme.label14Gray),
+                ])),
+              ),
+              Expanded(
+                child: RichText(
+                    text: TextSpan(style: AppTheme.label14, children: [
+                  const WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Icon(Symbols.experiment_rounded,
+                          size: 14, color: AppTheme.iconBlue)),
+                  const WidgetSpan(child: SizedBox(width: 4)),
+                  TextSpan(text: formatterUnsigned.format(playerState.science)),
+                  const WidgetSpan(child: SizedBox(width: 2)),
+                  TextSpan(
+                      text: formatterSigned.format(income.science),
+                      style: AppTheme.label14Gray),
+                ])),
+              ),
+            ],
+          ),
+        ),
+        // Bottom
+        Expanded(
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: AppTheme.panelBorder),
               ),
             ),
-            const SizedBox(width: 4),
-            RichText(
-                text: TextSpan(style: AppTheme.label12, children: [
-              const WidgetSpan(
-                  child: Icon(Symbols.account_circle_rounded,
-                      size: 14, color: AppTheme.iconPurple)),
-              const WidgetSpan(child: SizedBox(width: 4)),
-              TextSpan(
-                  text: formatterUnsigned.format(playerState.support)),
-              TextSpan(
-                  text: formatterSigned.format(income.support),
-                  style: AppTheme.label12Gray),
-              const WidgetSpan(child: SizedBox(width: 4)),
-              const WidgetSpan(
-                  child: Icon(Symbols.settings_rounded,
-                      size: 14, color: AppTheme.iconRed)),
-              const WidgetSpan(child: SizedBox(width: 4)),
-              TextSpan(
-                  text: formatterUnsigned.format(playerState.production)),
-              TextSpan(
-                  text: formatterSigned.format(income.production),
-                  style: AppTheme.label12Gray),
-              const WidgetSpan(child: SizedBox(width: 4)),
-              const WidgetSpan(
-                  child: Icon(Symbols.copyright_rounded,
-                      size: 14, color: AppTheme.iconYellow)),
-              const WidgetSpan(child: SizedBox(width: 4)),
-              TextSpan(
-                  text: formatterUnsigned.format(playerState.credit)),
-              TextSpan(
-                  text: formatterSigned.format(income.credit),
-                  style: AppTheme.label12Gray),
-              const WidgetSpan(child: SizedBox(width: 4)),
-              const WidgetSpan(
-                  child: Icon(Symbols.experiment_rounded,
-                      size: 14, color: AppTheme.iconBlue)),
-              const WidgetSpan(child: SizedBox(width: 4)),
-              TextSpan(
-                  text: formatterUnsigned.format(playerState.science)),
-              TextSpan(
-                  text: formatterSigned.format(income.science),
-                  style: AppTheme.label12Gray),
-            ])),
-          ],
-        ),
-        // Right
-        RichText(
-          text: TextSpan(
-            style: AppTheme.label12,
-            children: [
-              TextSpan(
-                text: "Next Action Cost: ${playerState.nextActionCost} ",
-              ),
-              const WidgetSpan(
-                  child: Icon(Symbols.account_circle_rounded,
-                      size: 14, color: AppTheme.iconPurple)),
-            ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RichText(
+                    text: TextSpan(style: AppTheme.label14, children: [
+                  const WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Icon(Symbols.account_circle_rounded,
+                          size: 14, color: AppTheme.iconPurple)),
+                  const WidgetSpan(child: SizedBox(width: 4)),
+                  TextSpan(text: formatterUnsigned.format(playerState.support)),
+                  const WidgetSpan(child: SizedBox(width: 2)),
+                  TextSpan(
+                      text: formatterSigned.format(income.support),
+                      style: AppTheme.label14Gray),
+                ])),
+                RichText(
+                  text: TextSpan(
+                    style: AppTheme.label12,
+                    children: [
+                      TextSpan(
+                        text:
+                            "Next Action Cost: ${playerState.nextActionCost} ",
+                      ),
+                      const WidgetSpan(
+                          child: Icon(Symbols.account_circle_rounded,
+                              size: 14, color: AppTheme.iconPurple)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
