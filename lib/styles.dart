@@ -74,7 +74,9 @@ class AppTheme {
   static final ButtonStyle menuButton = ElevatedButton.styleFrom(
     fixedSize: const Size(120, 36),
     foregroundColor: sand12,
+    disabledForegroundColor: sand8,
     backgroundColor: sand10,
+    disabledBackgroundColor: sand6,
     padding: const EdgeInsets.all(0),
     shape: const BeveledRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -87,6 +89,27 @@ class AppTheme {
     foregroundColor: sand11,
     hoverColor: cyan3,
     disabledBackgroundColor: sand8,
+  );
+  static final ButtonStyle iconButtonFilled = ButtonStyle(
+    backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+      (Set<WidgetState> states) {
+        if (states.contains(WidgetState.selected)) {
+          return orange10; // Color when pressed
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return sand8;
+        }
+        return sand3; // Default color
+      },
+    ),
+    foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+      (Set<WidgetState> states) {
+        if (states.contains(WidgetState.selected)) {
+          return sand12; // Text color when pressed
+        }
+        return sand11; // Default text color
+      },
+    ),
   );
 
   static final dialogTheme = DialogTheme(
@@ -121,6 +144,7 @@ class AppTheme {
 
   static const navbarHeight = 48.0;
   static const navbarMargin = navbarHeight + 12;
+  static const navbarWidth = 240.0;
 
   static const label12 = TextStyle(color: sand12, fontSize: 12);
   static const label12Gray = TextStyle(color: sand8, fontSize: 12);
@@ -150,4 +174,10 @@ class AppTheme {
   static const empireTech = purple10;
   static const techNotResearched = sand10;
   static const techBorder = sand8;
+
+  static const progressBarColors = [
+    cyan10,
+    orange10,
+    sand10,
+  ];
 }

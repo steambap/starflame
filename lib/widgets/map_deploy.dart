@@ -22,7 +22,8 @@ class MapDeploy extends StatelessWidget {
     return ChangeNotifierProvider<PlayerState>.value(
       value: game.controller.getHumanPlayerState(),
       child: Container(
-          padding: const EdgeInsets.fromLTRB(4, AppTheme.navbarMargin + 44, 0, 8),
+          padding:
+              const EdgeInsets.fromLTRB(4, AppTheme.navbarMargin + 44, 0, 8),
           child: SingleChildScrollView(
             child: Consumer<PlayerState>(
               builder: (context, playerState, child) {

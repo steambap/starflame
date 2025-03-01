@@ -92,21 +92,47 @@ class ResourceController {
     cell.sector?.colonize(playerNumber);
   }
 
-  bool canPlaceWorker(int playerNumber) {
-    final pState = game.controller.getPlayerState(playerNumber);
-
-    return pState.canTakeAction();
+  bool canColonizePlanet(
+      PlayerState playerState, Sector sector, Planet planet) {
+    return playerState.canTakeAction() &&
+        sector.canColonizePlanet(planet, playerState);
   }
 
-  void placeWorker(
-      int playerNumber, Sector sector, Planet planet, WorkerType type) {
-    if (!canPlaceWorker(playerNumber)) {
+  void colonizePlanet(PlayerState playerState, Sector sector, Planet planet) {
+    if (!canColonizePlanet(playerState, sector, planet)) {
       return;
     }
 
-    final playerState = game.controller.getPlayerState(playerNumber);
     playerState.takeAction(const Resources());
-    sector.placeWorker(playerState, planet, type);
+    sector.colonizePlanet(planet, playerState);
+  }
+
+  bool canIncreaseOutput(PlayerState playerState, Sector sector, String prop) {
+    return playerState.canTakeAction() && sector.canIncreaseOutput(prop);
+  }
+
+  void increaseOutput(PlayerState playerState, Sector sector, String prop) {
+    if (!canIncreaseOutput(playerState, sector, prop)) {
+      return;
+    }
+
+    playerState.takeAction(const Resources());
+    sector.increaseOutput(prop);
+  }
+
+  bool canBuildOrbital(PlayerState playerState, Sector sector) {
+    return playerState.canTakeAction() &&
+        playerState.production >= 4 &&
+        sector.canBuildOrbital();
+  }
+
+  void buildOrbital(PlayerState playerState, Sector sector) {
+    if (!canBuildOrbital(playerState, sector)) {
+      return;
+    }
+
+    playerState.takeAction(const Resources(production: -4));
+    sector.buildOrbital();
   }
 
   bool canResearch(PlayerState playerState, TechSection sec, int tier) {

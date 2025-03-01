@@ -5,7 +5,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/sector.dart';
 import 'package:starflame/planet.dart';
+import 'package:starflame/sim_props.dart';
 import 'package:starflame/styles.dart';
+import 'package:starflame/widgets/progress_bar.dart';
 
 class SectorOverlay extends StatefulWidget {
   const SectorOverlay(this.game, {super.key});
@@ -20,6 +22,7 @@ class SectorOverlay extends StatefulWidget {
 
 class _SectorOverlayState extends State<SectorOverlay> {
   late Sector sector;
+  String selectedProp = '';
 
   @override
   void initState() {
@@ -29,8 +32,10 @@ class _SectorOverlayState extends State<SectorOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final double imgWidth = size.width > 1024 ? 144 : 100;
+    final pWidth =
+        MediaQuery.of(context).size.width - AppTheme.navbarWidth - 24;
+    final pHeight =
+        MediaQuery.of(context).size.height - AppTheme.navbarMargin - 8;
     return Container(
       color: AppTheme.dialogBackground,
       child: Column(
@@ -51,16 +56,56 @@ class _SectorOverlayState extends State<SectorOverlay> {
           ChangeNotifierProvider<Sector>.value(
             value: sector,
             child: Consumer<Sector>(
-              builder: (context, value, child) => Expanded(
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (final planet in sector.planets)
-                        _buildPlanet(planet, imgWidth),
-                    ],
+              builder: (context, value, child) => Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    width: AppTheme.navbarWidth,
+                    decoration: BoxDecoration(
+                        color: AppTheme.panelBackground,
+                        border: Border.all(color: AppTheme.panelBorder)),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 2),
+                            width: AppTheme.navbarWidth,
+                            color: AppTheme.panelTitle,
+                            child: Text(sector.displayName,
+                                style: AppTheme.label16),
+                          ),
+                          _renderOutputBar(SimProps.production),
+                          _renderOutputBar(SimProps.credit),
+                          _renderOutputBar(SimProps.science),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: _increaseOutputButton(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    width: pWidth,
+                    height: pHeight,
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        children: [
+                          for (final planet in sector.planets)
+                            _renderPlanet(planet),
+                          if (!sector.hasOrbital()) _renderOrbitalPlaceholder(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -69,7 +114,68 @@ class _SectorOverlayState extends State<SectorOverlay> {
     );
   }
 
-  Container _buildPlanet(Planet planet, double imgWidth) {
+  Widget _increaseOutputButton() {
+    return TextButton(
+        onPressed: widget.game.resourceController.canIncreaseOutput(
+                widget.game.controller.getHumanPlayerState(),
+                sector,
+                selectedProp)
+            ? () {
+                widget.game.resourceController.increaseOutput(
+                    widget.game.controller.getHumanPlayerState(),
+                    sector,
+                    selectedProp);
+              }
+            : null,
+        style: AppTheme.menuButton,
+        child: const Text('Increase'));
+  }
+
+  Widget _renderOutputBar(String prop) {
+    final predict =
+        prop == selectedProp ? sector.predictIncreaseOutput(selectedProp) : 0;
+    final segments = [
+      sector.currentOutput.of(prop),
+      predict,
+      sector.maxOutput.of(prop) - sector.currentOutput.of(prop) - predict,
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      child: Row(
+        spacing: 4,
+        children: [
+          IconButton.outlined(
+              onPressed: () {
+                setState(() {
+                  if (selectedProp == prop) {
+                    selectedProp = "";
+                  } else {
+                    selectedProp = prop;
+                  }
+                });
+              },
+              style: AppTheme.iconButtonFilled,
+              isSelected: selectedProp == prop,
+              icon: getIcon(prop)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    "$prop: ${sector.currentOutput.of(prop)} / ${sector.maxOutput.of(prop)}",
+                    style: AppTheme.label16),
+                ProgressBar(
+                  segments: segments,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _renderPlanet(Planet planet) {
     return Container(
         color: AppTheme.cardColor,
         margin: const EdgeInsets.all(4),
@@ -89,106 +195,90 @@ class _SectorOverlayState extends State<SectorOverlay> {
                 style: AppTheme.label12Gray,
               ),
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    for (final slot in planet.workerSlots)
-                      Container(
-                        width: 36,
-                        height: 36,
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        child: (slot.isOccupied)
-                            ? _renderSlotOutput(planet, slot)
-                            : _renderButton(planet, slot),
-                      )
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        imageName(planet.type),
-                        width: imgWidth,
-                        height: imgWidth,
-                      ),
-                      const SizedBox(
-                        height: 36,
-                      )
-                    ],
-                  ),
-                )
-              ],
+            Image.asset(
+              imageName(planet.type),
+              width: 144,
+              height: 144,
             ),
+            SizedBox(
+              width: 144,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 36,
+                    height: 36,
+                    child: _colonizeButton(planet),
+                  ),
+                  const Icon(Symbols.rocket_launch_rounded,
+                      color: AppTheme.iconPale),
+                ],
+              ),
+            )
           ],
         ));
   }
 
-  Widget _renderSlotOutput(Planet planet, WorkerSlot slot) {
+  Widget _renderOrbitalPlaceholder() {
+    final playerState = widget.game.controller.getHumanPlayerState();
+    final isEnabled =
+        widget.game.resourceController.canBuildOrbital(playerState, sector);
     return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: getSlotColor(slot.type).withAlpha(128),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: getSlotColor(slot.type), width: 1),
-      ),
-      child: Center(
-        child: Text(
-          Sector.output.toString(),
-          style: AppTheme.label16,
-        ),
+      color: AppTheme.cardColor,
+      margin: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton.outlined(
+              onPressed: isEnabled
+                  ? () {
+                      widget.game.resourceController
+                          .buildOrbital(playerState, sector);
+                    }
+                  : null,
+              icon: const Icon(Symbols.add_2_rounded),
+              iconSize: 144,
+              style: AppTheme.iconButton),
+          const Text("Build Orbital Cost:", style: AppTheme.label16),
+          RichText(
+              text: TextSpan(style: AppTheme.label14, children: [
+            const WidgetSpan(
+                child: Icon(Symbols.account_circle_rounded,
+                    size: 14, color: AppTheme.iconPurple)),
+            const WidgetSpan(child: SizedBox(width: 4)),
+            TextSpan(text: playerState.nextActionCost.toString()),
+            const WidgetSpan(child: SizedBox(width: 8)),
+            const WidgetSpan(
+                child: Icon(Symbols.settings_rounded,
+                    size: 14, color: AppTheme.iconRed)),
+            const WidgetSpan(child: SizedBox(width: 4)),
+            const TextSpan(text: "4"),
+          ])),
+        ],
       ),
     );
   }
 
-  Widget _renderButton(Planet planet, WorkerSlot slot) {
-    return ElevatedButton(
-        onPressed: _isDisabled(planet)
-            ? null
-            : () {
-                _onPlaceWorker(planet, slot.type);
-              },
-        style: _getStyle(planet, slot),
-        child: Text(
-          "+",
-          style: _isDisabled(planet) ? AppTheme.label16Gray : AppTheme.label16,
-        ));
-  }
-
-  ButtonStyle _getStyle(Planet planet, WorkerSlot slot) {
-    final isDisabled = _isDisabled(planet);
-    Color slotColor = getSlotColor(slot.type).withAlpha(128);
-    Color borderColor = getSlotColor(slot.type);
-    if (isDisabled) {
-      borderColor = AppTheme.disabledSlotBorder;
+  Widget _colonizeButton(Planet planet) {
+    if (planet.isColonized) {
+      return const SizedBox.shrink();
     }
 
-    return ElevatedButton.styleFrom(
-      backgroundColor: slotColor,
-      disabledBackgroundColor: AppTheme.disabledSlot,
-      padding: const EdgeInsets.all(0),
-      elevation: isDisabled ? 0 : 1,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-          side: BorderSide(color: borderColor, width: 1)),
-    );
-  }
-
-  void _onPlaceWorker(Planet planet, WorkerType type) {
-    final playerNumber = widget.game.controller.getHumanPlayerNumber();
-    widget.game.resourceController
-        .placeWorker(playerNumber, sector, planet, type);
-  }
-
-  bool _isDisabled(Planet planet) {
     final playerState = widget.game.controller.getHumanPlayerState();
-    final canColonize = sector.canColonizePlanet(planet, playerState);
-    return !canColonize ||
-        !widget.game.resourceController
-            .canPlaceWorker(playerState.playerNumber);
+    return IconButton.outlined(
+      onPressed: !widget.game.resourceController
+              .canColonizePlanet(playerState, sector, planet)
+          ? null
+          : () {
+              widget.game.resourceController
+                  .colonizePlanet(playerState, sector, planet);
+            },
+      icon: const Icon(Symbols.flag),
+      iconSize: 16,
+      style: AppTheme.iconButton,
+    );
   }
 
   static String imageName(PlanetType type) {
@@ -198,15 +288,17 @@ class _SectorOverlayState extends State<SectorOverlay> {
       PlanetType.iron => "iron.png",
       PlanetType.ice => "ice.png",
       PlanetType.gas => "gas.png",
+      PlanetType.orbital => "orbital.png",
     };
     return 'assets/images/$img';
   }
 
-  static Color getSlotColor(WorkerType type) {
-    return switch (type) {
-      WorkerType.economy => AppTheme.economySlot,
-      WorkerType.mining => AppTheme.miningSlot,
-      WorkerType.lab => AppTheme.labSlot,
+  static Icon getIcon(String prop) {
+    return switch (prop) {
+      SimProps.production => const Icon(Symbols.settings_rounded),
+      SimProps.credit => const Icon(Symbols.copyright_rounded),
+      SimProps.science => const Icon(Symbols.experiment_rounded),
+      _ => const Icon(Symbols.question_mark_rounded),
     };
   }
 }

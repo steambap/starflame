@@ -1,14 +1,4 @@
-import 'sim_props.dart';
-
-enum WorkerType {
-  economy(output: SimProps.credit),
-  mining(output: SimProps.production),
-  lab(output: SimProps.science);
-
-  const WorkerType({required this.output});
-
-  final Property output;
-}
+import 'resource.dart';
 
 enum PlanetType {
   terran,
@@ -16,72 +6,58 @@ enum PlanetType {
   iron,
   ice,
   gas,
-}
-
-class WorkerSlot {
-  WorkerType type;
-  bool isOccupied;
-
-  WorkerSlot({this.type = WorkerType.economy, this.isOccupied = false});
+  orbital,
 }
 
 class Planet {
-  final List<WorkerSlot> workerSlots;
   final PlanetType type;
   final bool isUnique;
-  String name = "";
 
-  Planet(this.type, this.workerSlots, {this.isUnique = false});
+  bool isColonized;
+  String name;
 
-  bool hasWorker() {
-    return workerSlots.any((slot) => slot.isOccupied);
-  }
-
-  factory Planet.terran() {
-    return Planet(PlanetType.terran, [
-      WorkerSlot(type: WorkerType.mining),
-      WorkerSlot(),
-      WorkerSlot(type: WorkerType.lab),
-    ]);
-  }
-
-  factory Planet.desert() {
-    return Planet(PlanetType.desert, [
-      WorkerSlot(),
-    ]);
-  }
-
-  factory Planet.iron() {
-    return Planet(PlanetType.iron, [
-      WorkerSlot(type: WorkerType.mining),
-    ]);
-  }
-
-  factory Planet.ice() {
-    return Planet(PlanetType.ice, [
-      WorkerSlot(type: WorkerType.lab),
-    ]);
-  }
-
-  factory Planet.gas() {
-    return Planet(PlanetType.gas, [
-      WorkerSlot(type: WorkerType.mining),
-      WorkerSlot(),
-    ]);
-  }
+  Planet(this.type,
+      {this.isUnique = false, this.isColonized = false, this.name = ""});
 
   factory Planet.of(PlanetType type) {
-    switch (type) {
-      case PlanetType.terran:
-        return Planet.terran();
-      case PlanetType.desert:
-        return Planet.desert();
-      case PlanetType.iron:
-        return Planet.iron();
-      case PlanetType.ice:
-        return Planet.ice();
-      case PlanetType.gas:
-        return Planet.gas();
-    }
+    return switch (type) {
+      PlanetType.terran => Planet(PlanetType.terran),
+      PlanetType.desert => Planet(PlanetType.desert),
+      PlanetType.iron => Planet(PlanetType.iron),
+      PlanetType.ice => Planet(PlanetType.ice),
+      PlanetType.gas => Planet(PlanetType.gas),
+      PlanetType.orbital => Planet(PlanetType.orbital),
+    };
+  }
+
+  static Resources getPlanetProps(PlanetType type) {
+    return switch (type) {
+      PlanetType.terran => const Resources(
+          production: 7,
+          credit: 7,
+          science: 7,
+        ),
+      PlanetType.desert => const Resources(
+          production: 3,
+          credit: 5,
+        ),
+      PlanetType.iron => const Resources(
+          production: 5,
+        ),
+      PlanetType.ice => const Resources(
+          credit: 1,
+          science: 5,
+        ),
+      PlanetType.gas => const Resources(
+          production: 1,
+          credit: 1,
+          science: 1,
+        ),
+      PlanetType.orbital => const Resources(
+          production: 1,
+          credit: 4,
+          science: 3,
+        ),
+    };
   }
 }

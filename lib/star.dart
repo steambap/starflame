@@ -166,7 +166,7 @@ class StarGenerationHelper {
     final rand = random ?? Random();
 
     final planets = switch (star) {
-      StarType.none => [Planet.gas(), Planet.gas()],
+      StarType.none => [Planet(PlanetType.gas), Planet(PlanetType.gas)],
       StarType.binary => _randPlanetsForBinary(rand),
       StarType.blue => _randPlanetsForBlue(rand),
       StarType.yellow => _randPlanetsForYellow(rand),

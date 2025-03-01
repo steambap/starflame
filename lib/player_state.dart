@@ -29,7 +29,9 @@ class PlayerState with ChangeNotifier, SimObject {
   int nextActionCost = 1;
   final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
-  final Set<PlanetType> colonizable = {PlanetType.terran};
+  final Set<PlanetType> colonizable = {
+    PlanetType.terran,
+  };
   final Map<TechSection, int> techLevel = {
     TechSection.military: 0,
     TechSection.science: 0,

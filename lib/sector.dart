@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui' show Paint;
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
 
+import 'resource.dart';
 import "hex.dart";
 import "sim_props.dart";
 import 'scifi_game.dart';
@@ -10,6 +12,23 @@ import "player_state.dart";
 import "planet.dart";
 import "star.dart";
 import "styles.dart";
+
+class SectorOutput {
+  int credit;
+  int science;
+  int production;
+
+  SectorOutput({this.credit = 0, this.science = 0, this.production = 0});
+
+  int of(String prop) {
+    return switch (prop) {
+      SimProps.credit => credit,
+      SimProps.science => science,
+      SimProps.production => production,
+      _ => 0,
+    };
+  }
+}
 
 class Sector extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier, SimObject {
@@ -33,6 +52,9 @@ class Sector extends PositionComponent
       paintLayers: FlameTheme.labelBackground,
       anchor: Anchor.center);
   late final SpriteComponent _star;
+
+  final currentOutput = SectorOutput();
+  final maxOutput = SectorOutput();
 
   List<Planet> planets;
   final List<CircleComponent> _planetCircles = [];
@@ -94,13 +116,9 @@ class Sector extends PositionComponent
   void setHome(PlayerState playerState) {
     playerNumber = playerState.playerNumber;
     homePlanet = playerState.playerNumber;
-    for (final planet in planets) {
-      if (canColonizePlanet(planet, playerState)) {
-        for (final slot in planet.workerSlots) {
-          slot.isOccupied = true;
-        }
-      }
-    }
+
+    updateMaxOutput();
+    fillOutput();
   }
 
   void colonize(int playerNumber) {
@@ -129,10 +147,10 @@ class Sector extends PositionComponent
 
     final humanPlayerState = game.controller.getHumanPlayerState();
 
-    for (int i = 0; i < planets.length; i++) {
+    for (int i = 0; i < _planetCircles.length; i++) {
       final planet = planets[i];
       final circle = _planetCircles[i];
-      if (planet.hasWorker()) {
+      if (planet.isColonized) {
         circle.paintLayers = playerPaintLayer;
       } else {
         if (humanPlayerState.colonizable.contains(planet.type)) {
@@ -142,6 +160,71 @@ class Sector extends PositionComponent
         }
       }
     }
+  }
+
+  void updateMaxOutput() {
+    Resources r = const Resources();
+    for (final planet in planets) {
+      if (planet.isColonized) {
+        r += Planet.getPlanetProps(planet.type);
+      }
+    }
+
+    maxOutput.credit = r.credit;
+    maxOutput.science = r.science;
+    maxOutput.production = r.production;
+
+    refreshProps();
+  }
+
+  void fillOutput() {
+    currentOutput.credit = maxOutput.credit;
+    currentOutput.science = maxOutput.science;
+    currentOutput.production = maxOutput.production;
+  }
+
+  bool canIncreaseOutput(String prop) {
+    if (prop == SimProps.credit) {
+      return currentOutput.credit < maxOutput.credit;
+    } else if (prop == SimProps.science) {
+      return currentOutput.science < maxOutput.science;
+    } else if (prop == SimProps.production) {
+      return currentOutput.production < maxOutput.production;
+    } else {
+      return false;
+    }
+  }
+
+  int predictIncreaseOutput(String prop) {
+    if (!canIncreaseOutput(prop)) {
+      return 0;
+    }
+
+    if (prop == SimProps.credit) {
+      return min(maxOutput.credit - currentOutput.credit, 2);
+    } else if (prop == SimProps.science) {
+      return min(maxOutput.science - currentOutput.science, 2);
+    } else if (prop == SimProps.production) {
+      return min(maxOutput.production - currentOutput.production, 2);
+    } else {
+      return 0;
+    }
+  }
+
+  bool increaseOutput(String prop) {
+    if (prop == SimProps.credit) {
+      currentOutput.credit += predictIncreaseOutput(prop);
+    } else if (prop == SimProps.science) {
+      currentOutput.science += predictIncreaseOutput(prop);
+    } else if (prop == SimProps.production) {
+      currentOutput.production += predictIncreaseOutput(prop);
+    } else {
+      return false;
+    }
+
+    refreshProps();
+
+    return true;
   }
 
   void phaseUpdate(int playerNumber) {
@@ -165,18 +248,63 @@ class Sector extends PositionComponent
 
   void refreshProps() {
     props.clear();
-    for (final p in planets) {
-      for (final slot in p.workerSlots) {
-        if (slot.isOccupied) {
-          addProp(slot.type.output, output);
-        }
-      }
-    }
+
+    addProp(SimProps.credit, currentOutput.credit);
+    addProp(SimProps.science, currentOutput.science);
+    addProp(SimProps.production, currentOutput.production);
+
     final supportOutput = playerNumber == homePlanet ? 6 : -1;
     addProp(SimProps.support, supportOutput);
     final maintaince = playerNumber == homePlanet ? 0 : 2;
     addProp(SimProps.credit, -maintaince);
     notifyListeners();
+  }
+
+  bool canColonizePlanet(Planet planet, PlayerState? pState) {
+    final playerState = pState ?? game.controller.getHumanPlayerState();
+
+    return playerState.colonizable.contains(planet.type);
+  }
+
+  bool colonizePlanet(Planet planet, PlayerState? pState) {
+    final playerState = pState ?? game.controller.getHumanPlayerState();
+
+    if (!canColonizePlanet(planet, playerState)) {
+      return false;
+    }
+
+    if (planet.isColonized) {
+      return false;
+    }
+
+    planet.isColonized = true;
+    updateMaxOutput();
+
+    return true;
+  }
+
+  bool hasOrbital() {
+    return planets.any((p) => p.type == PlanetType.orbital);
+  }
+
+  bool canBuildOrbital() {
+    return !hasOrbital() &&
+        (starType != StarType.none || starType != StarType.binary);
+  }
+
+  bool buildOrbital() {
+    if (!canBuildOrbital()) {
+      return false;
+    }
+
+    final planet = Planet(PlanetType.orbital);
+    planet.name = "Orbital";
+    planet.isColonized = true;
+    planets.add(planet);
+    updateMaxOutput();
+    updateRender();
+
+    return true;
   }
 
   Map<String, dynamic> toJson() {
@@ -186,27 +314,5 @@ class Sector extends PositionComponent
       "displayName": displayName,
       "hex": hex.toInt(),
     };
-  }
-
-  Iterable<WorkerSlot> workerSlots() {
-    return planets.expand((p) => p.workerSlots);
-  }
-
-  bool placeWorker(PlayerState pState, Planet planet, WorkerType type) {
-    final slot = planet.workerSlots.firstWhere((s) => s.type == type);
-
-    if (slot.isOccupied) {
-      return false;
-    }
-
-    slot.isOccupied = true;
-    refreshProps();
-    return true;
-  }
-
-  bool canColonizePlanet(Planet planet, PlayerState? pState) {
-    final playerState = pState ?? game.controller.getHumanPlayerState();
-
-    return playerState.colonizable.contains(planet.type);
   }
 }

@@ -21,7 +21,7 @@ class PlayerInfoBar extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.symmetric(horizontal: 2),
-        width: 240,
+        width: AppTheme.navbarWidth,
         height: AppTheme.navbarHeight,
         decoration: BoxDecoration(
             color: AppTheme.panelBackground,
