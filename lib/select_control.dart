@@ -171,7 +171,7 @@ class SelectControlCreateShip extends SelectControl {
   void onCellClick(Cell cell) {
     if (cells.contains(cell)) {
       game.resourceController
-          .createShip(cell, game.controller.getHumanPlayerNumber(), blueprint);
+          .createShip(cell, game.controller.getHumanPlayerState(), blueprint);
     }
     game.mapGrid.selectControl = SelectControlWaitForInput(game);
   }

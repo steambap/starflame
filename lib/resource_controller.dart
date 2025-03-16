@@ -7,6 +7,7 @@ import "sim_props.dart";
 import "planet.dart";
 import "sector.dart";
 import "research.dart";
+import "response.dart";
 
 class ResourceController {
   final ScifiGame game;
@@ -57,27 +58,33 @@ class ResourceController {
     return ret;
   }
 
-  bool canCreateShip(int playerNumber, ShipBlueprint blueprint) {
-    final playerState = game.controller.getPlayerState(playerNumber);
+  Response canCreateShip(PlayerState playerState, ShipBlueprint blueprint) {
+    if (!playerState.canTakeAction()) {
+      return Response.error("Not enough support");
+    }
 
-    return playerState.canTakeAction() &&
-        playerState.production >= blueprint.cost;
+    if (playerState.production < blueprint.cost) {
+      return Response.error("Not enough production");
+    }
+
+    return Response.ok();
   }
 
-  bool createShip(Cell cell, int playerNumber, ShipBlueprint blueprint) {
+  Response createShip(Cell cell, PlayerState playerState, ShipBlueprint blueprint) {
     if (cell.ship != null) {
-      return false;
-    }
-    if (!canCreateShip(playerNumber, blueprint)) {
-      return false;
+      return Response.error("Cell already has a ship");
     }
 
-    final playerState = game.controller.getPlayerState(playerNumber);
+    final canCreate = canCreateShip(playerState, blueprint);
+    if (!canCreate.ok) {
+      return canCreate;
+    }
+
     playerState.takeAction(Resources(production: -blueprint.cost));
 
-    game.mapGrid.createShipAt(cell, playerNumber, blueprint);
+    game.mapGrid.createShipAt(cell, playerState.playerNumber, blueprint);
 
-    return true;
+    return Response.ok();
   }
 
   bool canCapture(int playerNumber) {
@@ -151,5 +158,13 @@ class ResourceController {
 
     playerState.takeAction(Resources(science: -Research.getCost(tier)));
     playerState.addTech(sec, tier);
+  }
+
+  Response canAddReputionTile(PlayerState playerState) {
+    if (!playerState.canTakeAction()) {
+      return Response.error("Not enough support");
+    }
+
+    return Response.ok();
   }
 }

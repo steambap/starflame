@@ -356,9 +356,9 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
     }
   }
 
-  void removeFog() {
+  void debugRemoveFog() {
     for (final cell in cells) {
-      cell.hideFog();
+      cell.reveal();
     }
   }
 

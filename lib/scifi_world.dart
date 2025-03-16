@@ -28,7 +28,7 @@ class ScifiWorld extends World
       return false;
     }
     if (keysPressed.contains(LogicalKeyboardKey.keyF)) {
-      game.mapGrid.removeFog();
+      game.mapGrid.debugRemoveFog();
     }
     if (keysPressed.contains(LogicalKeyboardKey.enter)) {
       game.controller.playerEndTurn();

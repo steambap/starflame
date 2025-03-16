@@ -42,7 +42,7 @@ class MapDeploy extends StatelessWidget {
 
   Widget _addShipButton(PlayerState playerState, ShipBlueprint hull) {
     final isEnabled = game.resourceController.canCreateShip(
-        game.controller.getHumanPlayerState().playerNumber, hull);
+        game.controller.getHumanPlayerState(), hull).ok;
     final textStyle = isEnabled ? AppTheme.label12 : AppTheme.label12Gray;
 
     return SizedBox(

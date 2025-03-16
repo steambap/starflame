@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'main_menu.dart';
 import 'log_dialog.dart';
-import 'research_overlay.dart';
-import 'player_info.dart';
 import '../scifi_game.dart';
 import '../styles.dart';
 
@@ -25,37 +23,21 @@ class InGameMenu extends StatelessWidget {
               child: Column(
                 children: [
                   Row(
-                    children: [
-                      _rowTitle('Admin: '),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          game.overlays.removeAll([id, PlayerInfoBar.id]);
-                          game.overlays
-                              .addAll([ResearchOverlay.id, PlayerInfoBar.id]);
-                        },
-                        style: AppTheme.menuButton,
-                        child: const Text('Research'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      _rowTitle('Military: '),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
+                    spacing: 8,
                     children: [
                       _rowTitle('Others: '),
-                      const SizedBox(height: 8),
                       ElevatedButton(
                           onPressed: () {
                             showLogDialog(game, context);
                           },
                           style: AppTheme.menuButton,
-                          child: const Text('Logs'))
+                          child: const Text('Logs')),
+                      ElevatedButton(
+                          onPressed: () {
+                            game.mapGrid.debugRemoveFog();
+                          },
+                          style: AppTheme.menuButton,
+                          child: const Text('Reveal Map')),
                     ],
                   ),
                 ],
