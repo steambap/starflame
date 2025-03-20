@@ -72,7 +72,7 @@ class FlameTheme {
 class AppTheme {
   static const dialogBackground = Color.fromRGBO(0, 0, 0, 0.9);
   static final ButtonStyle menuButton = ElevatedButton.styleFrom(
-    fixedSize: const Size(120, 36),
+    fixedSize: const Size.fromWidth(128),
     foregroundColor: sand12,
     disabledForegroundColor: sand8,
     backgroundColor: sand10,
@@ -82,6 +82,19 @@ class AppTheme {
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(6),
         bottomRight: Radius.circular(6),
+      ),
+    ),
+  );
+  static final ButtonStyle primaryButton = ElevatedButton.styleFrom(
+    foregroundColor: sand12,
+    disabledForegroundColor: sand8,
+    backgroundColor: sand10,
+    disabledBackgroundColor: sand6,
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+    shape: const BeveledRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(6),
+        bottomLeft: Radius.circular(6),
       ),
     ),
   );

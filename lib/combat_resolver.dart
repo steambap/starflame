@@ -18,19 +18,7 @@ class CombatResolver {
       return;
     }
 
-    final atkIni = ship.blueprint.initiative();
-    final defIni = defender.blueprint.initiative();
-    if (atkIni > defIni) {
-      resolveCannonAttack(ship, defender);
-      if (defender.state.health > 0) {
-        resolveCannonAttack(defender, ship);
-      }
-    } else {
-      resolveCannonAttack(defender, ship);
-      if (ship.state.health > 0) {
-        resolveCannonAttack(ship, defender);
-      }
-    }
+    resolveCannonAttack(ship, defender);
   }
 
   void resolveCannonAttack(Ship attacker, Ship defender) {

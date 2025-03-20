@@ -283,30 +283,6 @@ class Sector extends PositionComponent
     return true;
   }
 
-  bool hasOrbital() {
-    return planets.any((p) => p.type == PlanetType.orbital);
-  }
-
-  bool canBuildOrbital() {
-    return !hasOrbital() &&
-        (starType != StarType.none || starType != StarType.binary);
-  }
-
-  bool buildOrbital() {
-    if (!canBuildOrbital()) {
-      return false;
-    }
-
-    final planet = Planet(PlanetType.orbital);
-    planet.name = "Orbital";
-    planet.isColonized = true;
-    planets.add(planet);
-    updateMaxOutput();
-    updateRender();
-
-    return true;
-  }
-
   Map<String, dynamic> toJson() {
     return {
       if (playerNumber != null) "playerNumber": playerNumber,

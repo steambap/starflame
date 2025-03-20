@@ -70,7 +70,8 @@ class ResourceController {
     return Response.ok();
   }
 
-  Response createShip(Cell cell, PlayerState playerState, ShipBlueprint blueprint) {
+  Response createShip(
+      Cell cell, PlayerState playerState, ShipBlueprint blueprint) {
     if (cell.ship != null) {
       return Response.error("Cell already has a ship");
     }
@@ -125,21 +126,6 @@ class ResourceController {
 
     playerState.takeAction(const Resources());
     sector.increaseOutput(prop);
-  }
-
-  bool canBuildOrbital(PlayerState playerState, Sector sector) {
-    return playerState.canTakeAction() &&
-        playerState.production >= 4 &&
-        sector.canBuildOrbital();
-  }
-
-  void buildOrbital(PlayerState playerState, Sector sector) {
-    if (!canBuildOrbital(playerState, sector)) {
-      return;
-    }
-
-    playerState.takeAction(const Resources(production: -4));
-    sector.buildOrbital();
   }
 
   bool canResearch(PlayerState playerState, TechSection sec, int tier) {

@@ -6,7 +6,6 @@ enum PlanetType {
   iron,
   ice,
   gas,
-  orbital,
 }
 
 class Planet {
@@ -26,7 +25,6 @@ class Planet {
       PlanetType.iron => Planet(PlanetType.iron),
       PlanetType.ice => Planet(PlanetType.ice),
       PlanetType.gas => Planet(PlanetType.gas),
-      PlanetType.orbital => Planet(PlanetType.orbital),
     };
   }
 
@@ -52,11 +50,6 @@ class Planet {
           production: 1,
           credit: 1,
           science: 1,
-        ),
-      PlanetType.orbital => const Resources(
-          production: 1,
-          credit: 4,
-          science: 3,
         ),
     };
   }

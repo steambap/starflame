@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'player_info.dart';
-import 'action_bar.dart';
 import 'ship_cmd.dart';
 import 'sector_info.dart';
-import 'hud_menu_button.dart';
+import 'hud_top_right.dart';
+import 'hud_bottom_right.dart';
 import '../scifi_game.dart';
 import '../styles.dart';
 
@@ -12,6 +12,14 @@ class MainMenu extends StatelessWidget {
   const MainMenu(this.game, {super.key});
 
   static const id = 'main_menu';
+  static const initialOverlays = [
+    HudTopRight.id,
+    HudBottomRight.id,
+    SectorInfo.id,
+    ShipCmd.id,
+    PlayerInfoBar.id
+  ];
+
   final ScifiGame game;
 
   @override
@@ -32,14 +40,8 @@ class MainMenu extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                       onPressed: () {
-                        game.overlays.remove(MainMenu.id);
-                        game.overlays.addAll([
-                          ActionBar.id,
-                          HudMenuButton.id,
-                          SectorInfo.id,
-                          ShipCmd.id,
-                          PlayerInfoBar.id
-                        ]);
+                        game.overlays.remove(id);
+                        game.overlays.addAll(initialOverlays);
                         game.startTestGame();
                       },
                       style: AppTheme.menuButton,
@@ -68,10 +70,14 @@ class MainMenu extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('License', style: AppTheme.heading24,),
+          title: const Text(
+            'License',
+            style: AppTheme.heading24,
+          ),
           shape: const RoundedRectangleBorder(),
           scrollable: true,
-          content: const Text("""
+          content: const Text(
+            """
 Flame
 
 MIT License
@@ -95,13 +101,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-          """, style: AppTheme.label12,),
+          """,
+            style: AppTheme.label12,
+          ),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
-              child: const Text('OK', style: AppTheme.label16,),
+              child: const Text(
+                'OK',
+                style: AppTheme.label16,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },

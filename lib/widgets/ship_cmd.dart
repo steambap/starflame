@@ -23,7 +23,7 @@ class ShipCmd extends StatelessWidget {
         value: game.hudState.ship,
         child: Positioned(
           bottom: 8,
-          right: 132,
+          left: 8,
           child: Consumer<ValueNotifier<Ship?>>(
             builder: (context, shipValue, child) {
               return shipValue.value == null
@@ -41,37 +41,35 @@ class ShipCmd extends StatelessWidget {
 
   Widget _renderShip(Ship ship) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
+        Row(spacing: 4, children: [
           for (final act in ship.actions())
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: IconButton.outlined(
-                  onPressed: act.isDisabled(game)
-                      ? null
-                      : () {
-                          if (act.targetType == ActionTarget.self) {
-                            act.activate(game);
-                          } else {
-                            game.mapGrid.selectControl =
-                                SelectControlWaitForAction(
-                              act,
-                              game,
-                            );
-                          }
-                        },
-                  style: AppTheme.iconButton,
-                  icon: Icon(act.icon)),
-            )
+            IconButton.outlined(
+                onPressed: act.isDisabled(game)
+                    ? null
+                    : () {
+                        if (act.targetType == ActionTarget.self) {
+                          act.activate(game);
+                        } else {
+                          game.mapGrid.selectControl =
+                              SelectControlWaitForAction(
+                            act,
+                            game,
+                          );
+                        }
+                      },
+                style: AppTheme.iconButton,
+                icon: Icon(act.icon))
         ]),
+        const SizedBox(height: 4),
         Container(
-          width: 196,
+          width: AppTheme.navbarWidth,
           decoration: BoxDecoration(
-            color: AppTheme.panelBackground,
+              color: AppTheme.panelBackground,
               border: Border.all(
-            color: AppTheme.panelBorderDisabled,
-          )),
+                color: AppTheme.panelBorderDisabled,
+              )),
           child: _renderShipInfo(ship),
         ),
       ],
@@ -82,7 +80,7 @@ class ShipCmd extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 196,
+          width: AppTheme.navbarWidth,
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           color: AppTheme.panelTitle,
           child: Text(ship.blueprint.className, style: AppTheme.label12),

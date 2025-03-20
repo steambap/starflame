@@ -23,7 +23,7 @@ class SectorInfo extends StatelessWidget {
         value: game.hudState.sector,
         child: Positioned(
           bottom: 8,
-          right: 132,
+          left: 8,
           child: Consumer<ValueNotifier<Sector?>>(
             builder: (context, sectorValue, child) {
               return sectorValue.value == null
@@ -62,7 +62,7 @@ class SectorInfo extends StatelessWidget {
           )
         ]),
         Container(
-          width: 196,
+          width: AppTheme.navbarWidth,
           decoration: BoxDecoration(
               border: Border.all(
             color: AppTheme.panelBorder,
@@ -78,7 +78,7 @@ class SectorInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 196,
+          width: AppTheme.navbarWidth,
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           color: AppTheme.panelBorder,
           child: Text(sector.displayName, style: AppTheme.label12),

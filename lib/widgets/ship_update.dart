@@ -92,15 +92,6 @@ class _ShipUpdateState extends State<ShipUpdate> with TickerProviderStateMixin {
                                   style: AppTheme.label16),
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Initiative:',
-                                  style: AppTheme.label16),
-                              Text('${ship.initiative()}',
-                                  style: AppTheme.label16),
-                            ],
-                          ),
                           const Divider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

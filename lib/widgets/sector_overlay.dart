@@ -100,7 +100,6 @@ class _SectorOverlayState extends State<SectorOverlay> {
                         children: [
                           for (final planet in sector.planets)
                             _renderPlanet(planet),
-                          if (!sector.hasOrbital()) _renderOrbitalPlaceholder(),
                         ],
                       ),
                     ),
@@ -219,48 +218,6 @@ class _SectorOverlayState extends State<SectorOverlay> {
         ));
   }
 
-  Widget _renderOrbitalPlaceholder() {
-    final playerState = widget.game.controller.getHumanPlayerState();
-    final isEnabled =
-        widget.game.resourceController.canBuildOrbital(playerState, sector);
-    return Container(
-      color: AppTheme.cardColor,
-      margin: const EdgeInsets.all(4),
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton.outlined(
-              onPressed: isEnabled
-                  ? () {
-                      widget.game.resourceController
-                          .buildOrbital(playerState, sector);
-                    }
-                  : null,
-              icon: const Icon(Symbols.add_2_rounded),
-              iconSize: 144,
-              style: AppTheme.iconButton),
-          const Text("Build Orbital Cost:", style: AppTheme.label16),
-          RichText(
-              text: TextSpan(style: AppTheme.label14, children: [
-            const WidgetSpan(
-                child: Icon(Symbols.account_circle_rounded,
-                    size: 14, color: AppTheme.iconPurple)),
-            const WidgetSpan(child: SizedBox(width: 4)),
-            TextSpan(text: playerState.nextActionCost.toString()),
-            const WidgetSpan(child: SizedBox(width: 8)),
-            const WidgetSpan(
-                child: Icon(Symbols.settings_rounded,
-                    size: 14, color: AppTheme.iconRed)),
-            const WidgetSpan(child: SizedBox(width: 4)),
-            const TextSpan(text: "4"),
-          ])),
-        ],
-      ),
-    );
-  }
-
   Widget _colonizeButton(Planet planet) {
     if (planet.isColonized) {
       return const SizedBox.shrink();
@@ -288,7 +245,6 @@ class _SectorOverlayState extends State<SectorOverlay> {
       PlanetType.iron => "iron.png",
       PlanetType.ice => "ice.png",
       PlanetType.gas => "gas.png",
-      PlanetType.orbital => "orbital.png",
     };
     return 'assets/images/$img';
   }

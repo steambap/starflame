@@ -21,28 +21,27 @@ class MapDeploy extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<PlayerState>.value(
       value: game.controller.getHumanPlayerState(),
-      child: Container(
-          padding:
-              const EdgeInsets.fromLTRB(4, AppTheme.navbarMargin + 44, 0, 8),
-          child: SingleChildScrollView(
-            child: Consumer<PlayerState>(
-              builder: (context, playerState, child) {
-                return Column(
-                  children: [
-                    for (final hull in playerState.blueprints
-                        .where((bp) => bp.active && bp.buildable))
-                      _addShipButton(playerState, hull)
-                  ],
-                );
-              },
-            ),
+      child: Positioned(
+          bottom: 8,
+          right: 60,
+          child: Consumer<PlayerState>(
+            builder: (context, playerState, child) {
+              return Row(
+                children: [
+                  for (final hull in playerState.blueprints
+                      .where((bp) => bp.active && bp.buildable))
+                    _addShipButton(playerState, hull)
+                ],
+              );
+            },
           )),
     );
   }
 
   Widget _addShipButton(PlayerState playerState, ShipBlueprint hull) {
-    final isEnabled = game.resourceController.canCreateShip(
-        game.controller.getHumanPlayerState(), hull).ok;
+    final isEnabled = game.resourceController
+        .canCreateShip(game.controller.getHumanPlayerState(), hull)
+        .ok;
     final textStyle = isEnabled ? AppTheme.label12 : AppTheme.label12Gray;
 
     return SizedBox(

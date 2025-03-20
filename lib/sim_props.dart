@@ -10,7 +10,6 @@ class SimProps {
   static const Property energy = 'energy';
   static const Property energyUpkeep = 'energyUpkeep';
   static const Property movement = 'movement';
-  static const Property initiative = 'initiative';
   static const Property computers = 'computers';
   static const Property allowLockon = 'allowLockon';
   static const Property countermeasures = 'countermeasures';

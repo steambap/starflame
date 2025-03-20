@@ -91,15 +91,6 @@ class ShipBlueprint with SimObject {
     return ret;
   }
 
-  int initiative() {
-    int ret = getProp(SimProps.initiative);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.initiative);
-    }
-
-    return ret;
-  }
-
   int computers() {
     int ret = getProp(SimProps.computers);
     for (final part in parts) {
@@ -163,7 +154,6 @@ class ShipBlueprint with SimObject {
         image: image,
         obj: {
           SimProps.hull: 12,
-          SimProps.initiative: 2,
           SimProps.movement: 30,
           SimProps.energyUpkeep: 1,
         },
@@ -194,7 +184,6 @@ class ShipBlueprint with SimObject {
         image: image,
         obj: {
           SimProps.hull: 12,
-          SimProps.initiative: 1,
           SimProps.movement: 30,
           SimProps.energyUpkeep: 1,
         },
