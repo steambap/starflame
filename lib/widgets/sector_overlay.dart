@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/scifi_game.dart';
@@ -8,8 +8,9 @@ import 'package:starflame/planet.dart';
 import 'package:starflame/sim_props.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/widgets/progress_bar.dart';
+import 'package:starflame/hud_state.dart';
 
-class SectorOverlay extends StatefulWidget {
+class SectorOverlay extends StatefulWidget with WatchItStatefulWidgetMixin {
   const SectorOverlay(this.game, {super.key});
 
   static const id = 'sector_overlay';
@@ -21,17 +22,13 @@ class SectorOverlay extends StatefulWidget {
 }
 
 class _SectorOverlayState extends State<SectorOverlay> {
-  late Sector sector;
   String selectedProp = '';
 
   @override
-  void initState() {
-    sector = widget.game.hudState.sector.value!;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final sector1 = watchValue((HudState x) => x.sector)!;
+    final sector = watch<Sector>(sector1);
+
     final pWidth =
         MediaQuery.of(context).size.width - AppTheme.navbarWidth - 24;
     final pHeight =
@@ -53,67 +50,61 @@ class _SectorOverlayState extends State<SectorOverlay> {
                   style: AppTheme.label16,
                 )),
           ),
-          ChangeNotifierProvider<Sector>.value(
-            value: sector,
-            child: Consumer<Sector>(
-              builder: (context, value, child) => Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    width: AppTheme.navbarWidth,
-                    decoration: BoxDecoration(
-                        color: AppTheme.panelBackground,
-                        border: Border.all(color: AppTheme.panelBorder)),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 2),
-                            width: AppTheme.navbarWidth,
-                            color: AppTheme.panelTitle,
-                            child: Text(sector.displayName,
-                                style: AppTheme.label16),
-                          ),
-                          _renderOutputBar(SimProps.production),
-                          _renderOutputBar(SimProps.credit),
-                          _renderOutputBar(SimProps.science),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: _increaseOutputButton(),
-                            ),
-                          ),
-                        ],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                width: AppTheme.navbarWidth,
+                decoration: BoxDecoration(
+                    color: AppTheme.panelBackground,
+                    border: Border.all(color: AppTheme.panelBorder)),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 2),
+                        width: AppTheme.navbarWidth,
+                        color: AppTheme.panelTitle,
+                        child:
+                            Text(sector.displayName, style: AppTheme.label16),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: pWidth,
-                    height: pHeight,
-                    child: SingleChildScrollView(
-                      child: Wrap(
-                        children: [
-                          for (final planet in sector.planets)
-                            _renderPlanet(planet),
-                        ],
+                      _renderOutputBar(sector, SimProps.production),
+                      _renderOutputBar(sector, SimProps.credit),
+                      _renderOutputBar(sector, SimProps.science),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: _increaseOutputButton(sector),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+              SizedBox(
+                width: pWidth,
+                height: pHeight,
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    children: [
+                      for (final planet in sector.planets)
+                        _renderPlanet(sector, planet),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _increaseOutputButton() {
+  Widget _increaseOutputButton(Sector sector) {
     return TextButton(
         onPressed: widget.game.resourceController.canIncreaseOutput(
                 widget.game.controller.getHumanPlayerState(),
@@ -130,7 +121,7 @@ class _SectorOverlayState extends State<SectorOverlay> {
         child: const Text('Increase'));
   }
 
-  Widget _renderOutputBar(String prop) {
+  Widget _renderOutputBar(Sector sector, String prop) {
     final predict =
         prop == selectedProp ? sector.predictIncreaseOutput(selectedProp) : 0;
     final segments = [
@@ -174,7 +165,7 @@ class _SectorOverlayState extends State<SectorOverlay> {
     );
   }
 
-  Widget _renderPlanet(Planet planet) {
+  Widget _renderPlanet(Sector sector, Planet planet) {
     return Container(
         color: AppTheme.cardColor,
         margin: const EdgeInsets.all(4),
@@ -207,7 +198,7 @@ class _SectorOverlayState extends State<SectorOverlay> {
                   SizedBox(
                     width: 36,
                     height: 36,
-                    child: _colonizeButton(planet),
+                    child: _colonizeButton(sector, planet),
                   ),
                   const Icon(Symbols.rocket_launch_rounded,
                       color: AppTheme.iconPale),
@@ -218,7 +209,7 @@ class _SectorOverlayState extends State<SectorOverlay> {
         ));
   }
 
-  Widget _colonizeButton(Planet planet) {
+  Widget _colonizeButton(Sector sector, Planet planet) {
     if (planet.isColonized) {
       return const SizedBox.shrink();
     }

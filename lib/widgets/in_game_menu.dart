@@ -4,6 +4,7 @@ import 'main_menu.dart';
 import 'log_dialog.dart';
 import '../scifi_game.dart';
 import '../styles.dart';
+import '../hud_state.dart';
 
 class InGameMenu extends StatelessWidget {
   const InGameMenu(this.game, {super.key});
@@ -61,7 +62,7 @@ class InGameMenu extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        game.hudState.deselectAll();
+                        game.getIt<HudState>().deselectAll();
                         game.controller.reset();
                         game.overlays.remove(id);
                         game.overlays.add(MainMenu.id);

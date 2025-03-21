@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'player_info.dart';
@@ -9,8 +9,9 @@ import 'package:starflame/sector.dart';
 import 'package:starflame/sim_props.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/fmt.dart';
+import 'package:starflame/hud_state.dart';
 
-class SectorInfo extends StatelessWidget {
+class SectorInfo extends StatelessWidget with WatchItMixin {
   const SectorInfo(this.game, {super.key});
 
   static const id = 'sector_info';
@@ -19,25 +20,15 @@ class SectorInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ValueNotifier<Sector?>>.value(
-        value: game.hudState.sector,
-        child: Positioned(
-          bottom: 8,
-          left: 8,
-          child: Consumer<ValueNotifier<Sector?>>(
-            builder: (context, sectorValue, child) {
-              return sectorValue.value == null
-                  ? const SizedBox.shrink()
-                  : ChangeNotifierProvider<Sector>.value(
-                      value: sectorValue.value!,
-                      child: Consumer<Sector>(
-                        builder: (context, sector, child) =>
-                            _renderSector(sector),
-                      ),
-                    );
-            },
-          ),
-        ));
+    final sector = watchValue((HudState x) => x.sector);
+
+    return Positioned(
+      bottom: 8,
+      left: 8,
+      child: sector == null
+          ? const SizedBox.shrink()
+          : _renderSector(sector),
+    );
   }
 
   Widget _renderSector(Sector sector) {

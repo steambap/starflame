@@ -64,7 +64,7 @@ class HudTopRight extends StatelessWidget {
                     onPressed: () {
                       game.controller.playerEndTurn();
                     },
-                    style: AppTheme.primaryButton,
+                    style: AppTheme.menuButton,
                     icon: const Icon(Symbols.hourglass_bottom_rounded),
                     label: const Text('Next Turn'),
                   ))

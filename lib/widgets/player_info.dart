@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/styles.dart';
@@ -7,7 +7,7 @@ import 'package:starflame/scifi_game.dart';
 import 'package:starflame/player_state.dart';
 import 'package:starflame/fmt.dart';
 
-class PlayerInfoBar extends StatelessWidget {
+class PlayerInfoBar extends StatelessWidget with WatchItMixin {
   const PlayerInfoBar(this.game, {super.key});
 
   static const id = 'player_info_bar';
@@ -16,9 +16,10 @@ class PlayerInfoBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<PlayerState>.value(
-      value: game.controller.getHumanPlayerState(),
-      child: Container(
+    final playerState =
+        watch<PlayerState>(game.controller.getHumanPlayerState());
+
+    return Container(
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.symmetric(horizontal: 2),
         width: AppTheme.navbarWidth,
@@ -26,16 +27,12 @@ class PlayerInfoBar extends StatelessWidget {
         decoration: BoxDecoration(
             color: AppTheme.panelBackground,
             border: Border.all(color: AppTheme.panelBorder)),
-        child: Consumer<PlayerState>(
-          builder: (context, value, child) => _bar(),
-        ),
-      ),
-    );
+        child: _bar(playerState));
   }
 
-  Widget _bar() {
-    final playerState = game.controller.getHumanPlayerState();
+  Widget _bar(PlayerState playerState) {
     final income = game.resourceController.humanPlayerIncome();
+
     return Column(
       children: [
         Expanded(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:starflame/scifi_game.dart';

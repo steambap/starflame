@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 import 'package:flame/components.dart';
 import 'package:flame/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -9,8 +9,9 @@ import 'package:starflame/ship.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/select_control.dart';
 import 'package:starflame/action_type.dart';
+import 'package:starflame/hud_state.dart';
 
-class ShipCmd extends StatelessWidget {
+class ShipCmd extends StatelessWidget with WatchItMixin {
   const ShipCmd(this.game, {super.key});
 
   static const id = 'ship_cmd';
@@ -19,24 +20,13 @@ class ShipCmd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ValueNotifier<Ship?>>.value(
-        value: game.hudState.ship,
-        child: Positioned(
-          bottom: 8,
-          left: 8,
-          child: Consumer<ValueNotifier<Ship?>>(
-            builder: (context, shipValue, child) {
-              return shipValue.value == null
-                  ? const SizedBox.shrink()
-                  : ChangeNotifierProvider<Ship>.value(
-                      value: shipValue.value!,
-                      child: Consumer<Ship>(
-                        builder: (context, ship, child) => _renderShip(ship),
-                      ),
-                    );
-            },
-          ),
-        ));
+    final ship = watchValue((HudState x) => x.ship);
+
+    return Positioned(
+      bottom: 8,
+      left: 8,
+      child: ship == null ? const SizedBox.shrink() : _renderShip(ship),
+    );
   }
 
   Widget _renderShip(Ship ship) {

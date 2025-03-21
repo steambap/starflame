@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 import 'package:starflame/player_state.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -8,7 +8,7 @@ import 'package:starflame/research.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/data/tech.dart';
 
-class ResearchOverlay extends StatelessWidget {
+class ResearchOverlay extends StatelessWidget with WatchItMixin {
   const ResearchOverlay(this.game, {super.key});
 
   static const id = 'research_overlay';
@@ -17,6 +17,9 @@ class ResearchOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final playerState =
+        watch<PlayerState>(game.controller.getHumanPlayerState());
+
     return Container(
       color: AppTheme.dialogBackground,
       child: Column(
@@ -37,23 +40,18 @@ class ResearchOverlay extends StatelessWidget {
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
-            child: ChangeNotifierProvider<PlayerState>.value(
-              value: game.controller.getHumanPlayerState(),
-              child: Consumer<PlayerState>(
-                builder: (context, value, child) => Column(
-                  spacing: 16,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _techRow(context, value, TechSection.science),
-                    _techRow(context, value, TechSection.industry),
-                    _techRow(context, value, TechSection.military),
-                    _techRow(context, value, TechSection.trade),
-                    _techRow(context, value, TechSection.empire),
-                  ],
-                ),
-              ),
+            child: Column(
+              spacing: 16,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _techRow(context, playerState, TechSection.science),
+                _techRow(context, playerState, TechSection.industry),
+                _techRow(context, playerState, TechSection.military),
+                _techRow(context, playerState, TechSection.trade),
+                _techRow(context, playerState, TechSection.empire),
+              ],
             ),
-          )
+          ),
         ],
       ),
     );

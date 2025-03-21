@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 import 'package:flame/components.dart';
 import 'package:flame/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -10,7 +10,7 @@ import 'package:starflame/scifi_game.dart';
 import 'package:starflame/player_state.dart';
 import 'package:starflame/select_control.dart';
 
-class MapDeploy extends StatelessWidget {
+class MapDeploy extends StatelessWidget with WatchItMixin {
   const MapDeploy(this.game, {super.key});
 
   static const id = 'map_deploy';
@@ -19,23 +19,19 @@ class MapDeploy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<PlayerState>.value(
-      value: game.controller.getHumanPlayerState(),
-      child: Positioned(
-          bottom: 8,
-          right: 60,
-          child: Consumer<PlayerState>(
-            builder: (context, playerState, child) {
-              return Row(
-                children: [
-                  for (final hull in playerState.blueprints
-                      .where((bp) => bp.active && bp.buildable))
-                    _addShipButton(playerState, hull)
-                ],
-              );
-            },
-          )),
-    );
+    final playerState =
+        watch<PlayerState>(game.controller.getHumanPlayerState());
+
+    return Positioned(
+        bottom: 8,
+        right: 60,
+        child: Row(
+          children: [
+            for (final hull in playerState.blueprints
+                .where((bp) => bp.active && bp.buildable))
+              _addShipButton(playerState, hull)
+          ],
+        ));
   }
 
   Widget _addShipButton(PlayerState playerState, ShipBlueprint hull) {

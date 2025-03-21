@@ -80,8 +80,8 @@ class AppTheme {
     padding: const EdgeInsets.all(0),
     shape: const BeveledRectangleBorder(
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(6),
-        bottomRight: Radius.circular(6),
+        topRight: Radius.circular(6),
+        bottomLeft: Radius.circular(6),
       ),
     ),
   );

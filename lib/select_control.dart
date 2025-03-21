@@ -5,6 +5,7 @@ import "scifi_game.dart";
 import "cell.dart";
 import 'ship.dart';
 import 'ship_blueprint.dart';
+import 'hud_state.dart';
 
 sealed class SelectControl {
   final ScifiGame game;
@@ -95,7 +96,7 @@ class SelectControlShipSelected extends SelectControlHex {
     cell = game.mapGrid.cellAtHex(ship.hex)!;
     final shipOwner = ship.state.playerNumber;
     final isOwnerHuman = game.controller.getHumanPlayerNumber() == shipOwner;
-    game.hudState.ship.value = ship;
+    game.getIt<HudState>().ship.value = ship;
     Map<Cell, List<Cell>> paths = {};
     if (isOwnerHuman) {
       paths =
@@ -122,7 +123,7 @@ class SelectControlShipSelected extends SelectControlHex {
 
   @override
   void onStateExit() {
-    game.hudState.ship.value = null;
+    game.getIt<HudState>().ship.value = null;
     for (final cell in ship.cachedPaths.keys) {
       cell.unmark();
     }
@@ -153,12 +154,12 @@ class SelectControlPlanet extends SelectControlHex {
   @override
   void onStateEnter() {
     game.camera.moveTo(cell.position);
-    game.hudState.sector.value = cell.sector;
+    game.getIt<HudState>().sector.value = cell.sector;
   }
 
   @override
   void onStateExit() {
-    game.hudState.sector.value = null;
+    game.getIt<HudState>().sector.value = null;
   }
 }
 

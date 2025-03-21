@@ -1,5 +1,6 @@
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:get_it/get_it.dart';
 
 import "scifi_world.dart";
 import 'hud_state.dart';
@@ -24,7 +25,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
   late final AIController aiController;
   late final CombatResolver combatResolver = CombatResolver(this);
   late final AnimationPool animationPool = AnimationPool(this);
-  final HudState hudState = HudState();
+  final getIt = GetIt.instance;
   final HudPage hud = HudPage();
   late final RouterComponent router = RouterComponent(
     routes: {
@@ -37,6 +38,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
     controller = GameStateController(this);
     resourceController = ResourceController(this);
     aiController = AIController(this);
+    getIt.registerSingleton<HudState>(HudState());
   }
 
   @override

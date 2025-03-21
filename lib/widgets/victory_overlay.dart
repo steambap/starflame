@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'main_menu.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
+import 'package:starflame/hud_state.dart';
 
 class VictoryOverlay extends StatelessWidget {
   const VictoryOverlay(this.game, {super.key});
@@ -27,7 +28,7 @@ class VictoryOverlay extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () {
-                  game.hudState.deselectAll();
+                  game.getIt<HudState>().deselectAll();
                   game.controller.reset();
                   game.overlays.remove(id);
                   game.overlays.add(MainMenu.id);
