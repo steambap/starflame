@@ -25,9 +25,7 @@ class SectorInfo extends StatelessWidget with WatchItMixin {
     return Positioned(
       bottom: 8,
       left: 8,
-      child: sector == null
-          ? const SizedBox.shrink()
-          : _renderSector(sector),
+      child: sector == null ? const SizedBox.shrink() : _renderSector(sector),
     );
   }
 

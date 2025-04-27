@@ -28,7 +28,6 @@ class ResourceController {
     for (final planet in game.mapGrid.sectors) {
       if (planet.playerNumber == state.playerNumber) {
         income += Resources(
-          support: planet.getProp(SimProps.support),
           production: planet.getProp(SimProps.production),
           credit: planet.getProp(SimProps.credit),
           science: planet.getProp(SimProps.science),
@@ -52,7 +51,7 @@ class ResourceController {
     final ships = game.mapGrid.shipMap[playerNumber] ?? [];
 
     for (final ship in ships) {
-      ret += Resources(credit: -ship.blueprint.energyUpkeep());
+      ret += Resources(credit: -ship.energyUpkeep());
     }
 
     return ret;

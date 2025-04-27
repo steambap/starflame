@@ -19,117 +19,71 @@ class PlayerInfoBar extends StatelessWidget with WatchItMixin {
     final playerState =
         watch<PlayerState>(game.controller.getHumanPlayerState());
 
-    return Container(
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        width: AppTheme.navbarWidth,
-        height: AppTheme.navbarHeight,
-        decoration: BoxDecoration(
-            color: AppTheme.panelBackground,
-            border: Border.all(color: AppTheme.panelBorder)),
-        child: _bar(playerState));
+    return Align(
+      alignment: Alignment.topRight,
+      child: _bar(playerState),
+    );
   }
 
   Widget _bar(PlayerState playerState) {
     final income = game.resourceController.humanPlayerIncome();
 
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: RichText(
-                    text: TextSpan(style: AppTheme.label14, children: [
-                  const WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Icon(Symbols.settings_rounded,
-                          size: 14, color: AppTheme.iconRed)),
-                  const WidgetSpan(child: SizedBox(width: 4)),
-                  TextSpan(
-                      text: formatterUnsigned.format(playerState.production)),
-                  const WidgetSpan(child: SizedBox(width: 2)),
-                  TextSpan(
-                      text: formatterSigned.format(income.production),
-                      style: AppTheme.label14Gray),
-                ])),
-              ),
-              Expanded(
-                child: RichText(
-                    text: TextSpan(style: AppTheme.label14, children: [
-                  const WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Icon(Symbols.copyright_rounded,
-                          size: 14, color: AppTheme.iconYellow)),
-                  const WidgetSpan(child: SizedBox(width: 4)),
-                  TextSpan(text: formatterUnsigned.format(playerState.credit)),
-                  const WidgetSpan(child: SizedBox(width: 2)),
-                  TextSpan(
-                      text: formatterSigned.format(income.credit),
-                      style: AppTheme.label14Gray),
-                ])),
-              ),
-              Expanded(
-                child: RichText(
-                    text: TextSpan(style: AppTheme.label14, children: [
-                  const WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Icon(Symbols.experiment_rounded,
-                          size: 14, color: AppTheme.iconBlue)),
-                  const WidgetSpan(child: SizedBox(width: 4)),
-                  TextSpan(text: formatterUnsigned.format(playerState.science)),
-                  const WidgetSpan(child: SizedBox(width: 2)),
-                  TextSpan(
-                      text: formatterSigned.format(income.science),
-                      style: AppTheme.label14Gray),
-                ])),
-              ),
-            ],
-          ),
+    return Container(
+      transform: Matrix4.translationValues(1, -1, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: const ShapeDecoration(
+        color: AppTheme.panelBackground,
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12)),
+          side: BorderSide(color: AppTheme.panelBorder),
         ),
-        // Bottom
-        Expanded(
-          child: Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                top: BorderSide(color: AppTheme.panelBorder),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                RichText(
-                    text: TextSpan(style: AppTheme.label14, children: [
-                  const WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Icon(Symbols.account_circle_rounded,
-                          size: 14, color: AppTheme.iconPurple)),
-                  const WidgetSpan(child: SizedBox(width: 4)),
-                  TextSpan(text: formatterUnsigned.format(playerState.support)),
-                  const WidgetSpan(child: SizedBox(width: 2)),
-                  TextSpan(
-                      text: formatterSigned.format(income.support),
-                      style: AppTheme.label14Gray),
-                ])),
-                RichText(
-                  text: TextSpan(
-                    style: AppTheme.label12,
-                    children: [
-                      TextSpan(
-                        text:
-                            "Next Action Cost: ${playerState.nextActionCost} ",
-                      ),
-                      const WidgetSpan(
-                          child: Icon(Symbols.account_circle_rounded,
-                              size: 14, color: AppTheme.iconPurple)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          RichText(
+              text: TextSpan(style: AppTheme.label14, children: [
+            const WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Icon(Symbols.settings_rounded,
+                    size: 14, color: AppTheme.iconRed)),
+            const WidgetSpan(child: SizedBox(width: 4)),
+            TextSpan(
+                text: formatterUnsigned.format(playerState.production)),
+            const WidgetSpan(child: SizedBox(width: 2)),
+            TextSpan(
+                text: formatterSigned.format(income.production),
+                style: AppTheme.label14Gray),
+          ])),
+          RichText(
+              text: TextSpan(style: AppTheme.label14, children: [
+            const WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Icon(Symbols.copyright_rounded,
+                    size: 14, color: AppTheme.iconYellow)),
+            const WidgetSpan(child: SizedBox(width: 4)),
+            TextSpan(text: formatterUnsigned.format(playerState.credit)),
+            const WidgetSpan(child: SizedBox(width: 2)),
+            TextSpan(
+                text: formatterSigned.format(income.credit),
+                style: AppTheme.label14Gray),
+          ])),
+          RichText(
+              text: TextSpan(style: AppTheme.label14, children: [
+            const WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Icon(Symbols.experiment_rounded,
+                    size: 14, color: AppTheme.iconBlue)),
+            const WidgetSpan(child: SizedBox(width: 4)),
+            TextSpan(text: formatterUnsigned.format(playerState.science)),
+            const WidgetSpan(child: SizedBox(width: 2)),
+            TextSpan(
+                text: formatterSigned.format(income.science),
+                style: AppTheme.label14Gray),
+          ])),
+        ],
+      ),
     );
   }
 }

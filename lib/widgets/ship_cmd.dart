@@ -79,7 +79,7 @@ class ShipCmd extends StatelessWidget with WatchItMixin {
           children: [
             SpriteWidget(
               sprite: Sprite(game.images.fromCache(ship.blueprint.image),
-                  srcSize: Vector2.all(72)),
+                  srcSize: Vector2.all(144)),
               anchor: Anchor.center,
             ),
             Padding(
@@ -96,8 +96,7 @@ class ShipCmd extends StatelessWidget with WatchItMixin {
                                 size: 16, color: AppTheme.iconPale)),
                         const WidgetSpan(child: SizedBox(width: 4)),
                         TextSpan(
-                            text:
-                                "${ship.state.health} / ${ship.blueprint.maxHealth()}"),
+                            text: "${ship.state.health} / ${ship.maxHealth()}"),
                       ])),
                     ],
                   ),
@@ -111,7 +110,7 @@ class ShipCmd extends StatelessWidget with WatchItMixin {
                         const WidgetSpan(child: SizedBox(width: 4)),
                         TextSpan(
                             text:
-                                "${ship.movePoint()} / ${ship.blueprint.movement()}"),
+                                "${ship.movePoint()} / ${ship.maxMovement()}"),
                       ])),
                     ],
                   ),
@@ -120,30 +119,6 @@ class ShipCmd extends StatelessWidget with WatchItMixin {
             )
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                  "+${ship.blueprint.computers()} / -${ship.blueprint.countermeasures()}",
-                  style: AppTheme.label12),
-              const Text("computers", style: AppTheme.label12),
-            ],
-          ),
-        ),
-        if (ship.blueprint.cannons().isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("[${ship.blueprint.cannons().join(',')}]",
-                    style: AppTheme.label12),
-                const Text("cannons", style: AppTheme.label12),
-              ],
-            ),
-          ),
       ],
     );
   }

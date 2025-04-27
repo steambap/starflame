@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'player_info.dart';
 import 'ship_cmd.dart';
-import 'sector_info.dart';
-import 'hud_top_right.dart';
+import 'hud_top_left.dart';
 import 'hud_bottom_right.dart';
-import '../scifi_game.dart';
-import '../styles.dart';
+import 'package:starflame/scifi_game.dart';
+import 'package:starflame/styles.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu(this.game, {super.key});
 
   static const id = 'main_menu';
   static const initialOverlays = [
-    HudTopRight.id,
+    HudTopLeft.id,
     HudBottomRight.id,
-    SectorInfo.id,
     ShipCmd.id,
     PlayerInfoBar.id
   ];

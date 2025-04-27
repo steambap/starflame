@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import 'map_deploy.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/scifi_game.dart';
 
@@ -19,17 +18,14 @@ class HudBottomRight extends StatelessWidget {
         child: Align(
           alignment: Alignment.bottomRight,
           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            IconButton.outlined(
+            ElevatedButton.icon(
               onPressed: () {
-                if (game.overlays.isActive(MapDeploy.id)) {
-                  game.overlays.remove(MapDeploy.id);
-                } else {
-                  game.overlays.add(MapDeploy.id);
-                }
+                game.controller.playerEndTurn();
               },
-              icon: const Icon(Symbols.build_rounded),
-              style: AppTheme.iconButton,
-            )
+              style: AppTheme.primaryButton,
+              icon: const Icon(Symbols.hourglass_bottom_rounded),
+              label: const Text('Next Turn'),
+            ),
           ]),
         ));
   }

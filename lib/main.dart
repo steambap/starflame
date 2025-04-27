@@ -9,13 +9,14 @@ import 'widgets/in_game_menu.dart';
 import 'widgets/player_info.dart';
 import 'widgets/ship_cmd.dart';
 import 'widgets/sector_info.dart';
-import 'widgets/hud_top_right.dart';
+import 'widgets/hud_top_left.dart';
 import 'widgets/hud_bottom_right.dart';
 import 'widgets/sector_overlay.dart';
 import 'widgets/map_deploy.dart';
 import 'widgets/victory_overlay.dart';
 import 'widgets/research_overlay.dart';
 import 'widgets/ship_update.dart';
+import 'widgets/trade_overlay.dart';
 
 class ScifiApp extends StatelessWidget {
   const ScifiApp({super.key});
@@ -41,7 +42,7 @@ class ScifiApp extends StatelessWidget {
             ),
             overlayBuilderMap: {
               MapDeploy.id: (_, game) => MapDeploy(game),
-              HudTopRight.id: (_, game) => HudTopRight(game),
+              HudTopLeft.id: (_, game) => HudTopLeft(game),
               HudBottomRight.id: (_, game) => HudBottomRight(game),
               SectorInfo.id: (_, game) => SectorInfo(game),
               ShipUpdate.id: (_, game) => ShipUpdate(game),
@@ -52,6 +53,7 @@ class ScifiApp extends StatelessWidget {
               VictoryOverlay.id: (_, game) => VictoryOverlay(game),
               InGameMenu.id: (_, game) => InGameMenu(game),
               MainMenu.id: (_, game) => MainMenu(game),
+              TradeOverlay.id: (_, game) => TradeOverlay(game),
             },
             initialActiveOverlays: MainMenu.initialOverlays,
             gameFactory: () => ScifiGame(),

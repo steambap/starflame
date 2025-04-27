@@ -4,8 +4,8 @@ import 'sim_props.dart';
 import 'action_type.dart';
 
 enum ShipType {
-  interceptor,
-  cruiser,
+  corvette,
+  destroyer,
   dreadnought,
   starbase,
 }
@@ -142,13 +142,13 @@ class ShipBlueprint with SimObject {
     return ret;
   }
 
-  factory ShipBlueprint.interceptor(
+  factory ShipBlueprint.corvette(
       {String name = "",
       bool active = true,
       String image = "ships/raider.png",
       int totalFrames = 1}) {
     return ShipBlueprint(
-        type: ShipType.interceptor,
+        type: ShipType.corvette,
         cost: 3,
         name: name,
         image: image,
@@ -172,13 +172,13 @@ class ShipBlueprint with SimObject {
         active: active);
   }
 
-  factory ShipBlueprint.cruiser(
+  factory ShipBlueprint.destroyer(
       {String name = "",
       bool active = true,
       String image = "ships/screen.png",
       int totalFrames = 1}) {
     return ShipBlueprint(
-        type: ShipType.cruiser,
+        type: ShipType.destroyer,
         cost: 5,
         name: name,
         image: image,
@@ -217,7 +217,7 @@ class ShipBlueprint with SimObject {
         type: ShipType.dreadnought,
         cost: 8,
         name: name,
-        image: "ships/capital.png",
+        image: image,
         obj: {
           SimProps.hull: 12,
           SimProps.movement: 20,
@@ -226,6 +226,9 @@ class ShipBlueprint with SimObject {
         parts: [
           ShipPart("Nano Computer", const {
             SimProps.computers: 1,
+          }),
+          ShipPart("Nuclear Source", const {
+            SimProps.energy: 3,
           }),
           ShipPart("Nuclear Source", const {
             SimProps.energy: 3,
@@ -244,7 +247,6 @@ class ShipBlueprint with SimObject {
           ShipPart("Hull", const {
             SimProps.hull: 6,
           }),
-          ShipPart.none(),
           ShipPart.none(),
         ],
         totalFrames: totalFrames,

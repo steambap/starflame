@@ -21,12 +21,12 @@ class PlayerState with ChangeNotifier, SimObject {
   bool isAlive = true;
   final bool isAI;
   // Resources
-  int support = 0;
   int production = 0;
   int credit = 0;
   int science = 0;
   // Status
-  int nextActionCost = 1;
+  int actionPoints = 4;
+  int actionPointsMax = 4;
   final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
   final Set<PlanetType> colonizable = {
@@ -63,7 +63,6 @@ class PlayerState with ChangeNotifier, SimObject {
   }
 
   void addResource(Resources resource) {
-    support += resource.support;
     production += resource.production;
     credit += resource.credit;
     science += resource.science;
@@ -72,17 +71,16 @@ class PlayerState with ChangeNotifier, SimObject {
   }
 
   bool canTakeAction() {
-    return support >= nextActionCost;
+    return actionPoints > 0;
   }
 
   void takeAction(Resources res) {
-    support -= nextActionCost;
-    nextActionCost += 1;
+    actionPoints -= 1;
     addResource(res);
   }
 
   void onNewTurn(Resources res) {
-    nextActionCost = 1;
+    actionPoints = actionPointsMax;
     addResource(res);
   }
 

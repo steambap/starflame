@@ -22,15 +22,17 @@ class MapDeploy extends StatelessWidget with WatchItMixin {
     final playerState =
         watch<PlayerState>(game.controller.getHumanPlayerState());
 
-    return Positioned(
-        bottom: 8,
-        right: 60,
-        child: Row(
-          children: [
-            for (final hull in playerState.blueprints
-                .where((bp) => bp.active && bp.buildable))
-              _addShipButton(playerState, hull)
-          ],
+    return Container(
+        margin: const EdgeInsets.all(8),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            children: [
+              for (final hull in playerState.blueprints
+                  .where((bp) => bp.active && bp.buildable))
+                _addShipButton(playerState, hull)
+            ],
+          ),
         ));
   }
 
@@ -66,10 +68,14 @@ class MapDeploy extends StatelessWidget with WatchItMixin {
                     Text(hull.className, style: textStyle),
                     Expanded(
                         child: Center(
-                      child: SpriteWidget(
-                        sprite: Sprite(game.images.fromCache(hull.image),
-                            srcSize: Vector2.all(72)),
-                        anchor: Anchor.center,
+                      child: SizedBox(
+                        width: 72,
+                        height: 72,
+                        child: SpriteWidget(
+                          sprite: Sprite(game.images.fromCache(hull.image),
+                              srcSize: Vector2.all(144)),
+                          anchor: Anchor.center,
+                        ),
                       ),
                     )),
                     Padding(
@@ -80,7 +86,7 @@ class MapDeploy extends StatelessWidget with WatchItMixin {
                             child: Icon(Symbols.account_circle_rounded,
                                 size: 14, color: AppTheme.iconPurple)),
                         const WidgetSpan(child: SizedBox(width: 4)),
-                        TextSpan(text: playerState.nextActionCost.toString()),
+                        const TextSpan(text: "1"),
                         const WidgetSpan(child: SizedBox(width: 8)),
                         const WidgetSpan(
                             child: Icon(Symbols.settings_rounded,

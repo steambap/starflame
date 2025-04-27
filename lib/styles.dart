@@ -5,6 +5,7 @@ import 'package:flame/text.dart';
 const sand3 = Color(0xFF222221);
 const sand5 = Color(0xFF31312E);
 const sand6 = Color(0xFF3B3A37);
+const sand7 = Color(0x3CFFFBED);
 const sand8 = Color(0xFF62605B);
 const sand10 = Color(0xFF7C7B74);
 const sand11 = Color(0xB0FFFCF4);
@@ -22,6 +23,7 @@ const purple11 = Color(0xFFD19DFF);
 const crimson10 = Color(0xFFEE518A);
 
 const cyan3 = Color(0xFF082C36);
+const cyan4 = Color(0x3B00BAFF);
 const cyan7 = Color(0x7514CDFF);
 const cyan10 = Color(0xFF23AFD0);
 const cyan11 = Color(0xE552E1FE);
@@ -74,34 +76,34 @@ class AppTheme {
   static final ButtonStyle menuButton = ElevatedButton.styleFrom(
     fixedSize: const Size.fromWidth(128),
     foregroundColor: sand12,
-    disabledForegroundColor: sand8,
-    backgroundColor: sand10,
-    disabledBackgroundColor: sand6,
+    backgroundColor: cyan4,
     padding: const EdgeInsets.all(0),
     shape: const BeveledRectangleBorder(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(6),
         bottomLeft: Radius.circular(6),
       ),
+      side: BorderSide(color: sand7, width: 0.5),
     ),
   );
   static final ButtonStyle primaryButton = ElevatedButton.styleFrom(
     foregroundColor: sand12,
-    disabledForegroundColor: sand8,
-    backgroundColor: sand10,
-    disabledBackgroundColor: sand6,
+    backgroundColor: cyan4,
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
     shape: const BeveledRectangleBorder(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(6),
         bottomLeft: Radius.circular(6),
       ),
+      side: BorderSide(color: sand7, width: 0.5),
     ),
   );
   static final ButtonStyle iconButton = IconButton.styleFrom(
     foregroundColor: sand11,
+    backgroundColor: cyan4,
     hoverColor: cyan3,
     disabledBackgroundColor: sand8,
+    side: const BorderSide(color: sand7, width: 1),
   );
   static final ButtonStyle iconButtonFilled = ButtonStyle(
     backgroundColor: WidgetStateProperty.resolveWith<Color?>(

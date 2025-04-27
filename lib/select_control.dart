@@ -6,6 +6,8 @@ import "cell.dart";
 import 'ship.dart';
 import 'ship_blueprint.dart';
 import 'hud_state.dart';
+import './widgets/hud_top_left.dart';
+import './widgets/map_deploy.dart';
 
 sealed class SelectControl {
   final ScifiGame game;
@@ -119,6 +121,8 @@ class SelectControlShipSelected extends SelectControlHex {
     for (final cell in attackableCells) {
       cell.markAsTarget();
     }
+
+    game.overlays.removeAll([HudTopLeft.id, MapDeploy.id]);
   }
 
   @override
@@ -130,6 +134,8 @@ class SelectControlShipSelected extends SelectControlHex {
     for (final cell in attackableCells) {
       cell.unmark();
     }
+
+    game.overlays.addAll([HudTopLeft.id]);
   }
 }
 
@@ -155,11 +161,15 @@ class SelectControlPlanet extends SelectControlHex {
   void onStateEnter() {
     game.camera.moveTo(cell.position);
     game.getIt<HudState>().sector.value = cell.sector;
+
+    game.overlays.removeAll([HudTopLeft.id, MapDeploy.id]);
   }
 
   @override
   void onStateExit() {
     game.getIt<HudState>().sector.value = null;
+
+    game.overlays.addAll([HudTopLeft.id]);
   }
 }
 

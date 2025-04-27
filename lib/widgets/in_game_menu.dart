@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'main_menu.dart';
 import 'log_dialog.dart';
-import '../scifi_game.dart';
-import '../styles.dart';
-import '../hud_state.dart';
+import 'package:starflame/scifi_game.dart';
+import 'package:starflame/styles.dart';
+import 'package:starflame/hud_state.dart';
 
 class InGameMenu extends StatelessWidget {
   const InGameMenu(this.game, {super.key});

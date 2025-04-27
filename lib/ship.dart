@@ -6,6 +6,7 @@ import "package:flame/rendering.dart";
 import "package:flutter/foundation.dart" show ChangeNotifier;
 import "package:flutter/material.dart" show Paint, PaintingStyle;
 
+import 'sim_props.dart';
 import 'scifi_game.dart';
 import "cell.dart";
 import "hex.dart";
@@ -34,11 +35,13 @@ class Ship extends PositionComponent
   Hex hex;
   late ShipState state;
   ShipBlueprint blueprint;
+  List<ShipPart> parts = [];
   Map<Cell, List<Cell>> cachedPaths = const {};
 
   Ship(this.hex, int playerNumber, this.blueprint)
       : super(anchor: Anchor.center) {
     state = ShipState(playerNumber);
+    parts = blueprint.parts;
   }
 
   SpriteAnimationComponent get sprite => _shipSprite;
@@ -48,11 +51,12 @@ class Ship extends PositionComponent
     final imgShip = game.images.fromCache(blueprint.image);
 
     _shipSprite = SpriteAnimationComponent.fromFrameData(
+        scale: Vector2.all(0.5),
         imgShip,
         SpriteAnimationData.sequenced(
             amount: blueprint.totalFrames,
             stepTime: 0.2,
-            textureSize: Vector2.all(72)),
+            textureSize: Vector2.all(144)),
         anchor: Anchor.center,
         playing: false);
     final playerState = game.controller.getPlayerState(state.playerNumber);
@@ -66,14 +70,14 @@ class Ship extends PositionComponent
 
     final uid = game.controller.getUniqueID();
     state.id = uid;
-    state.health = blueprint.maxHealth();
+    state.health = maxHealth();
     resetAllActions();
 
     updateRender();
   }
 
   void updateRender() {
-    _healthbar.size = Vector2(3, 24 * state.health / blueprint.maxHealth());
+    _healthbar.size = Vector2(3, 24 * state.health / maxHealth());
   }
 
   void onStartMove() {
@@ -122,7 +126,7 @@ class Ship extends PositionComponent
     if (state.isTurnOver) {
       return 0;
     }
-    final maxMove = blueprint.movement();
+    final maxMove = maxMovement();
 
     return max(maxMove - state.movementUsed, 0);
   }
@@ -173,7 +177,7 @@ class Ship extends PositionComponent
   }
 
   void repair(int amount) {
-    state.health = min(state.health + amount, blueprint.maxHealth());
+    state.health = min(state.health + amount, maxHealth());
     notifyListeners();
   }
 
@@ -197,7 +201,7 @@ class Ship extends PositionComponent
   }
 
   int visionRange() {
-    return blueprint.movement() ~/ TileType.empty.cost;
+    return maxMovement() ~/ TileType.empty.cost;
   }
 
   ActionState? getActionState(ActionType type) {
@@ -223,5 +227,79 @@ class Ship extends PositionComponent
       Capture(this),
       Stay(this),
     ];
+  }
+
+  // Ship part related functions
+  bool hasNewParts() {
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].name != blueprint.parts[i].name) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void upgrade() {
+    if (!hasNewParts()) {
+      return;
+    }
+
+    final isFull = isFullHealth();
+    final double healthRatio = state.health / maxHealth();
+
+    parts = blueprint.parts;
+
+    if (isFull) {
+      state.health = maxHealth();
+    } else {
+      state.health = (maxHealth() * healthRatio).floor().clamp(1, maxHealth());
+    }
+
+    notifyListeners();
+  }
+
+  int maxHealth() {
+    int ret = blueprint.getProp(SimProps.hull);
+    for (final part in parts) {
+      ret += part.getProp(SimProps.hull);
+    }
+
+    return ret;
+  }
+
+  bool isFullHealth() {
+    return state.health == maxHealth();
+  }
+
+  int maxMovement() {
+    int ret = blueprint.getProp(SimProps.movement);
+    for (final part in parts) {
+      final mov = part.getProp(SimProps.movement);
+      if (mov > 0) {
+        ret = mov;
+        break;
+      }
+    }
+
+    return ret;
+  }
+
+  int energy() {
+    int ret = blueprint.getProp(SimProps.energy);
+    for (final part in parts) {
+      ret += part.getProp(SimProps.energy);
+    }
+
+    return ret;
+  }
+
+  int energyUpkeep() {
+    int ret = blueprint.getProp(SimProps.energyUpkeep);
+    for (final part in parts) {
+      ret += part.getProp(SimProps.energyUpkeep);
+    }
+
+    return ret;
   }
 }
