@@ -51,7 +51,6 @@ class Ship extends PositionComponent
     final imgShip = game.images.fromCache(blueprint.image);
 
     _shipSprite = SpriteAnimationComponent.fromFrameData(
-        scale: Vector2.all(0.5),
         imgShip,
         SpriteAnimationData.sequenced(
             amount: blueprint.totalFrames,

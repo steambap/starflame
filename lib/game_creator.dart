@@ -1,5 +1,6 @@
 import "dart:math";
 import "package:flutter/material.dart" show Colors;
+import 'package:flame/game.dart';
 
 import "planet.dart";
 import "hex.dart";
@@ -14,19 +15,6 @@ import "empire.dart";
 const plasticRatio = 1.324717957244746;
 const a1 = 1 / plasticRatio;
 const a2 = 1 / (plasticRatio * plasticRatio);
-
-List<Hex> generateHexMap(int qMax) {
-  final List<Hex> hexMap = List.empty(growable: true);
-  for (int q = -qMax; q <= qMax; q++) {
-    final r1 = max(-qMax, -q - qMax);
-    final r2 = min(qMax, -q + qMax);
-    for (int r = r1; r <= r2; r++) {
-      hexMap.add(Hex(q, r, -q - r));
-    }
-  }
-
-  return hexMap;
-}
 
 class GameCreator {
   late GameSettings gameSettings;
@@ -51,7 +39,7 @@ class GameCreator {
     s1 = rand.nextDouble();
     s2 = rand.nextDouble();
 
-    final hexList = generateHexMap(gameSettings.mapSize);
+    final hexList = _generateHexMap();
 
     for (int i = 0; i < hexList.length; i++) {
       final hex = hexList[i];
@@ -71,8 +59,7 @@ class GameCreator {
       }
 
       final cell = cells[_hexTable[hex.toInt()]!];
-      if ((hex.distance(Hex.zero) > (gameSettings.mapSize - 3)) &&
-          homes.length < gameSettings.players.length) {
+      if (homes.length < gameSettings.players.length) {
         final player = gameSettings.players[homes.length];
         player.vision.add(cell.hex);
         homes.add(cell.hex);
@@ -102,6 +89,22 @@ class GameCreator {
     }
   }
 
+  List<Hex> _generateHexMap() {
+    final List<Hex> hexMap = [];
+
+    for (int row = 0; row < gameSettings.mapSize; row++) {
+      final isEvenRow = row % 2 == 0;
+      final endCol =
+          isEvenRow ? gameSettings.mapSize : gameSettings.mapSize + 1;
+      for (int col = 0; col < endCol; col++) {
+        final hex = Hex.evenrToHex(col, row);
+        hexMap.add(hex);
+      }
+    }
+
+    return hexMap;
+  }
+
   void _createPlanets(Cell cell) {
     final starAndPlanets = starGenerator.generateStarAndPlanets(rand);
     final sector = Sector(cell.hex, starAndPlanets.starType,
@@ -126,12 +129,10 @@ class GameCreator {
     final xn = (s1 + a1 * i) % 1;
     final yn = (s2 + a2 * i) % 1;
     final qMax = gameSettings.mapSize;
-    final q = (xn * (qMax * 2 + 1) - qMax).floor();
-    final r1 = max(-qMax, -q - qMax);
-    final r2 = min(qMax, -q + qMax);
-    final r = (yn * (r2 - r1 + 1) + r1).floor();
+    final x = sqrt(3) * Hex.size * qMax * xn;
+    final y = 1.5 * Hex.size * qMax * yn;
 
-    return Hex(q, r, -q - r);
+    return Hex.pixelToHex(Vector2(x, y));
   }
 
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {

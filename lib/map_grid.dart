@@ -18,18 +18,7 @@ import "select_control.dart";
 import "sector.dart";
 import "styles.dart";
 
-// https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
-Hex _pixelToHex(Vector2 pixel) {
-  final double x = (sqrt(3) / 3 * pixel.x - 1 / 3 * pixel.y) / Hex.size;
-  final double y = (2 / 3 * pixel.y) / Hex.size;
-  final Hex hex = Hex.cubeRound(Vector3(x, y, -x - y));
-
-  return hex;
-}
-
 class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
-  static final tileSize = Vector2.all(72);
-
   List<Cell> cells = List.empty();
 
   /// Hex to cell index
@@ -88,16 +77,12 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
 
   @override
   bool containsLocalPoint(Vector2 point) {
-    if (cells.isEmpty) {
-      return false;
-    }
-    final radius = Hex.size * (game.currentGameSettings.mapSize + 1) * 2;
-    return point.length <= radius;
+    return true;
   }
 
   @override
   void onTapUp(TapUpEvent event) {
-    final hex = _pixelToHex(event.localPosition);
+    final hex = Hex.pixelToHex(event.localPosition);
 
     final cellIndex = _hexTable[hex.toInt()] ?? -1;
     if (cellIndex < 0) {
@@ -117,7 +102,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
   }
 
   Cell? cellAtPosition(Vector2 localPosition) {
-    final hex = _pixelToHex(localPosition);
+    final hex = Hex.pixelToHex(localPosition);
 
     return cellAtHex(hex);
   }

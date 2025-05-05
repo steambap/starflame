@@ -43,12 +43,12 @@ class Sector extends PositionComponent
   final StarType starType;
   final TextComponent _nameLabel = TextComponent(
       text: "",
-      position: Vector2(0, 16),
+      position: Vector2(0, 24),
       anchor: Anchor.center,
-      textRenderer: FlameTheme.text10pale);
+      textRenderer: FlameTheme.text16pale);
   final RectangleComponent _nameBG = RectangleComponent(
-      size: Vector2(64, 14),
-      position: Vector2(0, 16),
+      size: Vector2(108, 24),
+      position: Vector2(0, 24),
       paintLayers: FlameTheme.labelBackground,
       anchor: Anchor.center);
   late final SpriteComponent _star;

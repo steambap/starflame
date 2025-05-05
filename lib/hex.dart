@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart' show immutable;
 
 @immutable
 class Hex {
-  static const double size = 36;
+  static const double size = 72;
   static Hex zero = Hex(0, 0, 0);
   static List<Hex> directions = [
     Hex(1, 0, -1), // E 0-5
@@ -158,5 +158,19 @@ class Hex {
     }
     final n = hexes.length;
     return Hex.cubeRound(Vector3(q / n, r / n, s / n));
+  }
+
+  static Hex evenrToHex(int col, int row) {
+    final int q = col - (row + (row & 1)) ~/ 2;
+    final int r = row;
+    return Hex(q, r, -q - r);
+  }
+
+  static Hex pixelToHex(Vector2 pixel) {
+    final double x = (sqrt(3) / 3 * pixel.x - 1 / 3 * pixel.y) / Hex.size;
+    final double y = (2 / 3 * pixel.y) / Hex.size;
+    final Hex hex = Hex.cubeRound(Vector3(x, y, -x - y));
+
+    return hex;
   }
 }

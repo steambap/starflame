@@ -37,14 +37,9 @@ final Map<Faction, Empire> empireTable = {
       Faction.terranTechnocracy,
       "Terran Technocracy",
       [
-        ShipBlueprint.corvette(
-            name: "Corvette", image: "ships/corvette.png", totalFrames: 4),
-        ShipBlueprint.destroyer(
-            name: "Destroyer", image: "ships/destroyer.png", totalFrames: 4),
-        ShipBlueprint.dreadnought(
-            name: 'Dreadnought',
-            image: "ships/dreadnought.png",
-            totalFrames: 4),
+        ShipBlueprint.corvette(name: "Corvette"),
+        ShipBlueprint.destroyer(name: "Destroyer"),
+        ShipBlueprint.dreadnought(name: 'Dreadnought'),
       ],
       tradeRatio: TradeRatio.threeToTwo),
   Faction.terranSeparatists: Empire(
@@ -53,12 +48,12 @@ final Map<Faction, Empire> empireTable = {
       [
         ShipBlueprint.corvette(),
         ShipBlueprint.destroyer(),
-        ShipBlueprint.dreadnought(active: false),
+        ShipBlueprint.dreadnought(),
       ],
       tradeRatio: TradeRatio.threeToTwo),
   Faction.megaWar: Empire(Faction.megaWar, "Mega War Combine", [
     ShipBlueprint.corvette(),
     ShipBlueprint.destroyer(),
-    ShipBlueprint.dreadnought(active: false),
+    ShipBlueprint.dreadnought(),
   ]),
 };

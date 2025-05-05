@@ -16,7 +16,7 @@ import "animation_pool.dart";
 import "backdrop.dart";
 
 class ScifiGame extends FlameGame<ScifiWorld>
-    with HasKeyboardHandlerComponents {
+    with HasKeyboardHandlerComponents, ScrollDetector {
   final MapGrid mapGrid = MapGrid();
   final GameCreator gameCreator = GameCreator();
   late GameSettings currentGameSettings;
@@ -46,6 +46,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await images.loadAllImages();
 
     await world.add(mapGrid);
+    camera.viewfinder.zoom = 0.5;
     camera.viewport.add(router);
     camera.backdrop.add(Backdrop());
   }
@@ -59,5 +60,18 @@ class ScifiGame extends FlameGame<ScifiWorld>
     controller.initGame(s.players);
     await mapGrid.initMap(gameCreator);
     controller.startGame();
+  }
+
+  void clampZoom() {
+    camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(0.5, 1.0);
+  }
+
+  static const zoomPerScrollUnit = 0.02;
+
+  @override
+  void onScroll(PointerScrollInfo info) {
+    camera.viewfinder.zoom -=
+        info.scrollDelta.global.y.sign * zoomPerScrollUnit;
+    clampZoom();
   }
 }

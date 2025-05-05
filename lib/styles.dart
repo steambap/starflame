@@ -38,9 +38,9 @@ class FlameTheme {
       ..strokeWidth = 1
   ];
 
-  static final text10pale = TextPaint(
+  static final text16pale = TextPaint(
       style:
-          const TextStyle(color: sand12, fontSize: 10, fontFamily: "SpaceMono"));
+          const TextStyle(color: sand12, fontSize: 16, fontFamily: "Chakra"));
   static final textDamage = TextPaint(
       style:
           const TextStyle(color: red11, fontSize: 16, fontFamily: "SpaceMono"));
@@ -76,6 +76,7 @@ class AppTheme {
   static final ButtonStyle menuButton = ElevatedButton.styleFrom(
     fixedSize: const Size.fromWidth(128),
     foregroundColor: sand12,
+    disabledForegroundColor: sand8,
     backgroundColor: cyan4,
     padding: const EdgeInsets.all(0),
     shape: const BeveledRectangleBorder(
@@ -88,6 +89,7 @@ class AppTheme {
   );
   static final ButtonStyle primaryButton = ElevatedButton.styleFrom(
     foregroundColor: sand12,
+    disabledForegroundColor: sand8,
     backgroundColor: cyan4,
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
     shape: const BeveledRectangleBorder(

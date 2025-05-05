@@ -145,8 +145,8 @@ class ShipBlueprint with SimObject {
   factory ShipBlueprint.corvette(
       {String name = "",
       bool active = true,
-      String image = "ships/raider.png",
-      int totalFrames = 1}) {
+      String image = "ships/corvette.png",
+      int totalFrames = 4}) {
     return ShipBlueprint(
         type: ShipType.corvette,
         cost: 3,
@@ -175,8 +175,8 @@ class ShipBlueprint with SimObject {
   factory ShipBlueprint.destroyer(
       {String name = "",
       bool active = true,
-      String image = "ships/screen.png",
-      int totalFrames = 1}) {
+      String image = "ships/destroyer.png",
+      int totalFrames = 4}) {
     return ShipBlueprint(
         type: ShipType.destroyer,
         cost: 5,
@@ -211,8 +211,8 @@ class ShipBlueprint with SimObject {
   factory ShipBlueprint.dreadnought(
       {String name = "",
       bool active = true,
-      String image = "ships/capital.png",
-      int totalFrames = 1}) {
+      String image = "ships/dreadnought.png",
+      int totalFrames = 4}) {
     return ShipBlueprint(
         type: ShipType.dreadnought,
         cost: 8,
