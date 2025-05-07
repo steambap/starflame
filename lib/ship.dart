@@ -70,6 +70,7 @@ class Ship extends PositionComponent
     final uid = game.controller.getUniqueID();
     state.id = uid;
     state.health = maxHealth();
+    state.morale = maxMorale();
     resetAllActions();
 
     updateRender();
@@ -259,9 +260,9 @@ class Ship extends PositionComponent
   }
 
   int maxHealth() {
-    int ret = blueprint.getProp(SimProps.hull);
+    int ret = blueprint.getProp(SimProps.maxHealth);
     for (final part in parts) {
-      ret += part.getProp(SimProps.hull);
+      ret += part.getProp(SimProps.maxHealth);
     }
 
     return ret;
@@ -274,23 +275,48 @@ class Ship extends PositionComponent
   int maxMovement() {
     int ret = blueprint.getProp(SimProps.movement);
     for (final part in parts) {
-      final mov = part.getProp(SimProps.movement);
-      if (mov > 0) {
-        ret = mov;
-        break;
-      }
+      ret += part.getProp(SimProps.movement);
     }
 
     return ret;
   }
 
-  int energy() {
-    int ret = blueprint.getProp(SimProps.energy);
+  int maxMorale() {
+    int ret = blueprint.getProp(SimProps.maxMorale);
     for (final part in parts) {
-      ret += part.getProp(SimProps.energy);
+      ret += part.getProp(SimProps.maxMorale);
     }
 
     return ret;
+  }
+
+  int strength() {
+    int ret = blueprint.getProp(SimProps.strength);
+    for (final part in parts) {
+      ret += part.getProp(SimProps.strength);
+    }
+
+    return ret;
+  }
+
+  int rangedStrength() {
+    if (blueprint.getProp(SimProps.allowRanged) == 0) {
+      return 0;
+    }
+    int ret = blueprint.getProp(SimProps.rangedStrength);
+    for (final part in parts) {
+      ret += part.getProp(SimProps.rangedStrength);
+    }
+
+    return ret;
+  }
+
+  int attackRange() {
+    if (blueprint.getProp(SimProps.allowRanged) == 0) {
+      return 1;
+    } else {
+      return 2;
+    }
   }
 
   int energyUpkeep() {

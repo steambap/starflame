@@ -19,14 +19,12 @@ class HudTopLeft extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double vSpacing = MediaQuery.of(context).size.height > 360 ? 8 : 0;
-
     return Container(
       margin: const EdgeInsets.all(8),
       child: Stack(
         children: [
           Container(
-            transform: Matrix4.translationValues(-24, -10, 0),
+            transform: Matrix4.translationValues(-24, -12, 0),
             width: 48,
             height: 288,
             decoration: const ShapeDecoration(
@@ -43,7 +41,7 @@ class HudTopLeft extends StatelessWidget {
           ),
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: vSpacing,
+              spacing: 8,
               children: [
                 IconButton(
                   onPressed: () {

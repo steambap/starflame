@@ -5,7 +5,7 @@ class ShipState {
   final int playerNumber;
   int exp = 0;
   int health = 1;
-  String name = "";
+  int morale = 1;
   int movementUsed = 0;
   bool isTurnOver = false;
   bool attacked = false;

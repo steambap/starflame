@@ -43,7 +43,7 @@ class FlameTheme {
           const TextStyle(color: sand12, fontSize: 16, fontFamily: "Chakra"));
   static final textDamage = TextPaint(
       style:
-          const TextStyle(color: red11, fontSize: 16, fontFamily: "SpaceMono"));
+          const TextStyle(color: red11, fontSize: 24, fontFamily: "Chakra"));
   static final heading24 = TextPaint(
       style: const TextStyle(color: sand12, fontSize: 24, fontFamily: "Chakra"));
 
@@ -106,6 +106,7 @@ class AppTheme {
     hoverColor: cyan3,
     disabledBackgroundColor: sand8,
     side: const BorderSide(color: sand7, width: 1),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
   );
   static final ButtonStyle iconButtonFilled = ButtonStyle(
     backgroundColor: WidgetStateProperty.resolveWith<Color?>(

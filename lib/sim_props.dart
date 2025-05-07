@@ -6,16 +6,15 @@ class SimProps {
   static const Property credit = 'credit';
   static const Property science = 'science';
   // Ship
-  static const Property hull = 'hull';
+  static const Property maxHealth = 'maxHealth';
   static const Property energy = 'energy';
   static const Property energyUpkeep = 'energyUpkeep';
   static const Property movement = 'movement';
-  static const Property computers = 'computers';
-  static const Property allowLockon = 'allowLockon';
-  static const Property countermeasures = 'countermeasures';
-  static const Property shield = 'shield';
-  static const Property cannon = 'cannon';
-  static const Property missile = 'missile';
+  static const Property strength = 'strength';
+  static const Property rangedStrength = 'rangedStrength';
+  static const Property allowRanged = 'allowRanged';
+  static const Property engineering = 'engineering';
+  static const Property maxMorale = 'maxMorale';
 }
 
 mixin SimObject {

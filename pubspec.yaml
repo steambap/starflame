@@ -31,9 +31,6 @@ flutter:
   shaders:
     - shaders/backdrop.frag
   fonts:
-    - family: SpaceMono
-      fonts:
-        - asset: fonts/SpaceMono-Regular.ttf
     - family: Chakra
       fonts:
         - asset: fonts/ChakraPetch-Light.ttf

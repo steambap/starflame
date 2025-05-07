@@ -11,6 +11,8 @@ import 'package:starflame/select_control.dart';
 import 'package:starflame/action_type.dart';
 import 'package:starflame/hud_state.dart';
 
+const double myWidth = 300;
+
 class ShipCmd extends StatelessWidget with WatchItMixin {
   const ShipCmd(this.game, {super.key});
 
@@ -30,31 +32,35 @@ class ShipCmd extends StatelessWidget with WatchItMixin {
   }
 
   Widget _renderShip(Ship ship) {
+    final isPlayerControl =
+        ship.state.playerNumber == game.controller.getHumanPlayerNumber();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(spacing: 4, children: [
-          for (final act in ship.actions())
-            IconButton.outlined(
-                onPressed: act.isDisabled(game)
-                    ? null
-                    : () {
-                        if (act.targetType == ActionTarget.self) {
-                          act.activate(game);
-                        } else {
-                          game.mapGrid.selectControl =
-                              SelectControlWaitForAction(
-                            act,
-                            game,
-                          );
-                        }
-                      },
-                style: AppTheme.iconButton,
-                icon: Icon(act.icon))
-        ]),
+        if (isPlayerControl)
+          Row(spacing: 4, children: [
+            for (final act in ship.actions())
+              IconButton.outlined(
+                  onPressed: act.isDisabled(game)
+                      ? null
+                      : () {
+                          if (act.targetType == ActionTarget.self) {
+                            act.activate(game);
+                          } else {
+                            game.mapGrid.selectControl =
+                                SelectControlWaitForAction(
+                              act,
+                              game,
+                            );
+                          }
+                        },
+                  style: AppTheme.iconButton,
+                  icon: Icon(act.icon))
+          ]),
         const SizedBox(height: 4),
         Container(
-          width: AppTheme.navbarWidth,
+          width: myWidth,
           decoration: BoxDecoration(
               color: AppTheme.panelBackground,
               border: Border.all(
@@ -70,7 +76,7 @@ class ShipCmd extends StatelessWidget with WatchItMixin {
     return Column(
       children: [
         Container(
-          width: AppTheme.navbarWidth,
+          width: myWidth,
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           color: AppTheme.panelTitle,
           child: Text(ship.blueprint.className, style: AppTheme.label12),

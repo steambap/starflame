@@ -7,6 +7,7 @@ enum ShipType {
   corvette,
   destroyer,
   dreadnought,
+  carrier,
   starbase,
 }
 
@@ -52,9 +53,18 @@ class ShipBlueprint with SimObject {
   }
 
   int maxHealth() {
-    int ret = getProp(SimProps.hull);
+    int ret = getProp(SimProps.maxHealth);
     for (final part in parts) {
-      ret += part.getProp(SimProps.hull);
+      ret += part.getProp(SimProps.maxHealth);
+    }
+
+    return ret;
+  }
+
+  int maxMorale() {
+    int ret = getProp(SimProps.maxMorale);
+    for (final part in parts) {
+      ret += part.getProp(SimProps.maxMorale);
     }
 
     return ret;
@@ -63,20 +73,7 @@ class ShipBlueprint with SimObject {
   int movement() {
     int ret = getProp(SimProps.movement);
     for (final part in parts) {
-      final mov = part.getProp(SimProps.movement);
-      if (mov > 0) {
-        ret = mov;
-        break;
-      }
-    }
-
-    return ret;
-  }
-
-  int energy() {
-    int ret = getProp(SimProps.energy);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.energy);
+      ret += part.getProp(SimProps.movement);
     }
 
     return ret;
@@ -91,49 +88,34 @@ class ShipBlueprint with SimObject {
     return ret;
   }
 
-  int computers() {
-    int ret = getProp(SimProps.computers);
+  int strength() {
+    int ret = getProp(SimProps.strength);
     for (final part in parts) {
-      ret += part.getProp(SimProps.computers);
+      ret += part.getProp(SimProps.strength);
     }
 
     return ret;
   }
 
-  int countermeasures() {
-    int ret = getProp(SimProps.countermeasures);
+  int rangedStrength() {
+    if (getProp(SimProps.allowRanged) == 0) {
+      return 0;
+    }
+    int str = strength();
+    int ret = getProp(SimProps.rangedStrength);
     for (final part in parts) {
-      ret += part.getProp(SimProps.countermeasures);
+      ret += part.getProp(SimProps.rangedStrength);
     }
 
-    return ret;
-  }
-
-  Iterable<int> cannons() {
-    return parts
-        .where((p) => p.getProp(SimProps.cannon) > 0)
-        .map((p) => p.getProp(SimProps.cannon));
-  }
-
-  Iterable<int> missiles() {
-    return parts
-        .where((p) => p.getProp(SimProps.missile) > 0)
-        .map((p) => p.getProp(SimProps.missile));
+    return str + ret;
   }
 
   int attackRange() {
-    final cannons = this.cannons();
-    final missiles = this.missiles();
-
-    if (missiles.isNotEmpty) {
+    if (getProp(SimProps.allowRanged) == 0) {
+      return 1;
+    } else {
       return 2;
     }
-
-    if (cannons.isNotEmpty) {
-      return 1;
-    }
-
-    return 1;
   }
 
   Iterable<ActionType> actionTypes() {
@@ -153,21 +135,13 @@ class ShipBlueprint with SimObject {
         name: name,
         image: image,
         obj: {
-          SimProps.hull: 12,
+          SimProps.maxHealth: 150,
+          SimProps.strength: 2,
           SimProps.movement: 30,
           SimProps.energyUpkeep: 1,
+          SimProps.maxMorale: 3,
         },
-        parts: [
-          ShipPart("Nuclear Source", const {
-            SimProps.energy: 3,
-          }),
-          ShipPart("Ion Cannon", const {
-            SimProps.cannon: 2,
-            SimProps.energyUpkeep: 1,
-          }),
-          ShipPart.none(),
-          ShipPart.none(),
-        ],
+        parts: [],
         totalFrames: totalFrames,
         active: active);
   }
@@ -183,27 +157,13 @@ class ShipBlueprint with SimObject {
         name: name,
         image: image,
         obj: {
-          SimProps.hull: 12,
+          SimProps.maxHealth: 200,
+          SimProps.strength: 3,
           SimProps.movement: 30,
-          SimProps.energyUpkeep: 1,
+          SimProps.energyUpkeep: 3,
+          SimProps.maxMorale: 5,
         },
-        parts: [
-          ShipPart("Nano Computer", const {
-            SimProps.computers: 1,
-          }),
-          ShipPart("Nuclear Source", const {
-            SimProps.energy: 3,
-          }),
-          ShipPart("Ion Cannon", const {
-            SimProps.cannon: 2,
-            SimProps.energyUpkeep: 1,
-          }),
-          ShipPart("Hull", const {
-            SimProps.hull: 6,
-          }),
-          ShipPart.none(),
-          ShipPart.none(),
-        ],
+        parts: [],
         totalFrames: totalFrames,
         active: active);
   }
@@ -219,36 +179,13 @@ class ShipBlueprint with SimObject {
         name: name,
         image: image,
         obj: {
-          SimProps.hull: 12,
+          SimProps.maxHealth: 200,
+          SimProps.strength: 4,
           SimProps.movement: 20,
-          SimProps.energyUpkeep: 2,
+          SimProps.energyUpkeep: 4,
+          SimProps.maxMorale: 4,
         },
-        parts: [
-          ShipPart("Nano Computer", const {
-            SimProps.computers: 1,
-          }),
-          ShipPart("Nuclear Source", const {
-            SimProps.energy: 3,
-          }),
-          ShipPart("Nuclear Source", const {
-            SimProps.energy: 3,
-          }),
-          ShipPart("Ion Cannon", const {
-            SimProps.cannon: 2,
-            SimProps.energyUpkeep: 1,
-          }),
-          ShipPart("Hull", const {
-            SimProps.hull: 6,
-          }),
-          ShipPart("Ion Cannon", const {
-            SimProps.cannon: 2,
-            SimProps.energyUpkeep: 1,
-          }),
-          ShipPart("Hull", const {
-            SimProps.hull: 6,
-          }),
-          ShipPart.none(),
-        ],
+        parts: [],
         totalFrames: totalFrames,
         active: active);
   }

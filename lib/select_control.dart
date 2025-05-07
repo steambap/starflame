@@ -161,6 +161,7 @@ class SelectControlPlanet extends SelectControlHex {
   void onStateEnter() {
     game.camera.moveTo(cell.position);
     game.getIt<HudState>().sector.value = cell.sector;
+    cell.priority = 2;
 
     game.overlays.removeAll([HudTopLeft.id, MapDeploy.id]);
   }
@@ -168,6 +169,7 @@ class SelectControlPlanet extends SelectControlHex {
   @override
   void onStateExit() {
     game.getIt<HudState>().sector.value = null;
+    cell.priority = -1;
 
     game.overlays.addAll([HudTopLeft.id]);
   }

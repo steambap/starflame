@@ -239,7 +239,9 @@ class Sector extends PositionComponent
     if (neutral()) {
       return false;
     }
-    return this.playerNumber != playerNumber;
+
+    // Maybe add a healthbar for sector?
+    return this.playerNumber != playerNumber && false;
   }
 
   bool neutral() {
