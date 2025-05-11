@@ -11,10 +11,8 @@ import 'widgets/ship_cmd.dart';
 import 'widgets/sector_info.dart';
 import 'widgets/hud_top_left.dart';
 import 'widgets/hud_bottom_right.dart';
-import 'widgets/sector_overlay.dart';
 import 'widgets/map_deploy.dart';
 import 'widgets/victory_overlay.dart';
-import 'widgets/research_overlay.dart';
 import 'widgets/ship_update.dart';
 import 'widgets/trade_overlay.dart';
 
@@ -46,9 +44,7 @@ class ScifiApp extends StatelessWidget {
               HudBottomRight.id: (_, game) => HudBottomRight(game),
               SectorInfo.id: (_, game) => SectorInfo(game),
               ShipUpdate.id: (_, game) => ShipUpdate(game),
-              ResearchOverlay.id: (_, game) => ResearchOverlay(game),
               ShipCmd.id: (_, game) => ShipCmd(game),
-              SectorOverlay.id: (_, game) => SectorOverlay(game),
               PlayerInfoBar.id: (_, game) => PlayerInfoBar(game),
               VictoryOverlay.id: (_, game) => VictoryOverlay(game),
               InGameMenu.id: (_, game) => InGameMenu(game),

@@ -64,7 +64,7 @@ class GameCreator {
         player.vision.add(cell.hex);
         homes.add(cell.hex);
         final sector = Sector(cell.hex, StarType.yellow, planets: [
-          Planet(PlanetType.terran, isColonized: true),
+          Planet(PlanetType.terran, isUnique: true, name: "New Home"),
           Planet(PlanetType.iron),
           Planet(PlanetType.desert),
           Planet(PlanetType.ice)
@@ -137,11 +137,11 @@ class GameCreator {
 
   List<PlayerState> getTestPlayers(GameSettings gameSettings) {
     final humanPlayer = PlayerState(0, false)
-      ..credit = gameSettings.playerStartingCredit
+      ..energy = gameSettings.playerStartingCredit
       ..empire = Empire.getEmpire(Faction.terranTechnocracy)
       ..color = Colors.blue;
     final testAI = PlayerState(1, true)
-      ..credit = gameSettings.playerStartingCredit
+      ..energy = gameSettings.playerStartingCredit
       ..empire = Empire.getEmpire(Faction.terranSeparatists)
       ..color = Colors.red;
 

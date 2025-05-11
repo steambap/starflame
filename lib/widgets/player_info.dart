@@ -46,6 +46,28 @@ class PlayerInfoBar extends StatelessWidget with WatchItMixin {
               text: TextSpan(style: AppTheme.label14, children: [
             const WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
+                child: Icon(Symbols.clock_loader_90_rounded,
+                    size: 14, color: AppTheme.iconPale)),
+            const WidgetSpan(child: SizedBox(width: 4)),
+            TextSpan(text: "${playerState.actionPoints} / ${playerState.actionPointsMax}"),
+          ])),
+          RichText(
+              text: TextSpan(style: AppTheme.label14, children: [
+            const WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Icon(Symbols.bolt_rounded,
+                    size: 14, color: AppTheme.iconYellow)),
+            const WidgetSpan(child: SizedBox(width: 4)),
+            TextSpan(text: formatterUnsigned.format(playerState.energy)),
+            const WidgetSpan(child: SizedBox(width: 2)),
+            TextSpan(
+                text: formatterSigned.format(income.energy),
+                style: AppTheme.label14Gray),
+          ])),
+          RichText(
+              text: TextSpan(style: AppTheme.label14, children: [
+            const WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
                 child: Icon(Symbols.settings_rounded,
                     size: 14, color: AppTheme.iconRed)),
             const WidgetSpan(child: SizedBox(width: 4)),
@@ -60,26 +82,13 @@ class PlayerInfoBar extends StatelessWidget with WatchItMixin {
               text: TextSpan(style: AppTheme.label14, children: [
             const WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: Icon(Symbols.copyright_rounded,
-                    size: 14, color: AppTheme.iconYellow)),
-            const WidgetSpan(child: SizedBox(width: 4)),
-            TextSpan(text: formatterUnsigned.format(playerState.credit)),
-            const WidgetSpan(child: SizedBox(width: 2)),
-            TextSpan(
-                text: formatterSigned.format(income.credit),
-                style: AppTheme.label14Gray),
-          ])),
-          RichText(
-              text: TextSpan(style: AppTheme.label14, children: [
-            const WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: Icon(Symbols.experiment_rounded,
+                child: Icon(Symbols.stars_rounded,
                     size: 14, color: AppTheme.iconBlue)),
             const WidgetSpan(child: SizedBox(width: 4)),
-            TextSpan(text: formatterUnsigned.format(playerState.science)),
+            TextSpan(text: formatterUnsigned.format(playerState.civic)),
             const WidgetSpan(child: SizedBox(width: 2)),
             TextSpan(
-                text: formatterSigned.format(income.science),
+                text: formatterSigned.format(income.civic),
                 style: AppTheme.label14Gray),
           ])),
         ],

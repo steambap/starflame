@@ -21,6 +21,9 @@ const purple7 = Color(0x7AC378FD);
 const purple10 = Color(0xFF9A5CD0);
 const purple11 = Color(0xFFD19DFF);
 const crimson10 = Color(0xFFEE518A);
+const green7 = Color(0x5E50FDAC);
+const amber7 = Color(0x67FFAB25);
+const iris7 = Color(0x8E7777FE);
 
 const cyan3 = Color(0xFF082C36);
 const cyan4 = Color(0x3B00BAFF);
@@ -54,12 +57,11 @@ class FlameTheme {
     ..strokeWidth = 1;
   static final panelSkin = [panelBackground, panelBorder];
 
-  static final planetColonizable = [Paint()..color = sand12];
-  static final planetUncolonizable = [
-    Paint()
-      ..color = sand8
-      ..style = PaintingStyle.stroke
-  ];
+  static final planetTerran = [Paint()..color = green7];
+  static final planetDesert = [Paint()..color = amber7];
+  static final planetIce = [Paint()..color = iris7];
+  static final planetIron = [Paint()..color = red7];
+  static final planetGas = [Paint()..color = sand7];
 
   static final hexBorderPaint = Paint()
     ..style = PaintingStyle.stroke

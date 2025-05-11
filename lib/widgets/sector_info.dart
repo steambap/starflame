@@ -3,7 +3,6 @@ import 'package:watch_it/watch_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'player_info.dart';
-import 'sector_overlay.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/sector.dart';
 import 'package:starflame/sim_props.dart';
@@ -42,7 +41,6 @@ class SectorInfo extends StatelessWidget with WatchItMixin {
                 onPressed: isPlayerSector
                     ? () {
                         game.overlays.remove(PlayerInfoBar.id);
-                        game.overlays.add(SectorOverlay.id);
                         game.overlays.add(PlayerInfoBar.id);
                       }
                     : null,
@@ -76,14 +74,6 @@ class SectorInfo extends StatelessWidget with WatchItMixin {
           padding: const EdgeInsets.all(4),
           child: RichText(
               text: TextSpan(style: AppTheme.label12, children: [
-            if (sector.getProp(SimProps.support) != 0)
-              const WidgetSpan(
-                  child: Icon(Symbols.account_circle_rounded,
-                      size: 16, color: AppTheme.iconPurple)),
-            if (sector.getProp(SimProps.support) != 0)
-              TextSpan(
-                  text:
-                      " ${formatterSigned.format(sector.getProp(SimProps.support))}  "),
             if (sector.getProp(SimProps.production) != 0)
               const WidgetSpan(
                   child: Icon(Symbols.settings_rounded,
@@ -92,22 +82,22 @@ class SectorInfo extends StatelessWidget with WatchItMixin {
               TextSpan(
                   text:
                       " ${formatterSigned.format(sector.getProp(SimProps.production))} "),
-            if (sector.getProp(SimProps.credit) != 0)
+            if (sector.getProp(SimProps.energy) != 0)
               const WidgetSpan(
-                  child: Icon(Symbols.copyright_rounded,
+                  child: Icon(Symbols.bolt_rounded,
                       size: 16, color: AppTheme.iconYellow)),
-            if (sector.getProp(SimProps.credit) != 0)
+            if (sector.getProp(SimProps.energy) != 0)
               TextSpan(
                   text:
-                      " ${formatterSigned.format(sector.getProp(SimProps.credit))} "),
-            if (sector.getProp(SimProps.science) != 0)
+                      " ${formatterSigned.format(sector.getProp(SimProps.energy))} "),
+            if (sector.getProp(SimProps.civic) != 0)
               const WidgetSpan(
-                  child: Icon(Symbols.experiment_rounded,
+                  child: Icon(Symbols.stars_rounded,
                       size: 16, color: AppTheme.iconBlue)),
-            if (sector.getProp(SimProps.science) != 0)
+            if (sector.getProp(SimProps.civic) != 0)
               TextSpan(
                   text:
-                      " ${formatterSigned.format(sector.getProp(SimProps.science))} "),
+                      " ${formatterSigned.format(sector.getProp(SimProps.civic))} "),
           ])),
         ),
       ],

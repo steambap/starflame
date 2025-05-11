@@ -83,8 +83,8 @@ class MapDeploy extends StatelessWidget with WatchItMixin {
                       child: RichText(
                           text: TextSpan(style: textStyle, children: [
                         const WidgetSpan(
-                            child: Icon(Symbols.account_circle_rounded,
-                                size: 14, color: AppTheme.iconPurple)),
+                            child: Icon(Symbols.clock_loader_90_rounded,
+                                size: 14, color: AppTheme.iconPale)),
                         const WidgetSpan(child: SizedBox(width: 4)),
                         const TextSpan(text: "1"),
                         const WidgetSpan(child: SizedBox(width: 8)),

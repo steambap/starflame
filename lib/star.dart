@@ -94,12 +94,17 @@ class StarGenerationHelper {
 
   List<Planet> _randPlanetsForBinary(Random random) {
     final planets = <Planet>[];
-    final num = random.nextInt(_binaryWeight);
-    int sum = 0;
-    for (final entry in binaryWeightTable.entries) {
-      sum += entry.value;
-      if (num <= sum) {
-        planets.add(Planet.of(entry.key));
+    final numOfPlanets = random.nextInt(3) + 2;
+    loop:
+    for (int i = 0; i < numOfPlanets; i++) {
+      final num = random.nextInt(_binaryWeight);
+      int sum = 0;
+      for (final entry in binaryWeightTable.entries) {
+        sum += entry.value;
+        if (num <= sum) {
+          planets.add(Planet.of(entry.key));
+          continue loop;
+        }
       }
     }
 
@@ -108,12 +113,17 @@ class StarGenerationHelper {
 
   List<Planet> _randPlanetsForBlue(Random random) {
     final planets = <Planet>[];
-    final num = random.nextInt(_blueWeight);
-    int sum = 0;
-    for (final entry in blueWeightTable.entries) {
-      sum += entry.value;
-      if (num <= sum) {
-        planets.add(Planet.of(entry.key));
+    final numOfPlanets = random.nextInt(3) + 3;
+    loop:
+    for (int i = 0; i < numOfPlanets; i++) {
+      final num = random.nextInt(_blueWeight);
+      int sum = 0;
+      for (final entry in blueWeightTable.entries) {
+        sum += entry.value;
+        if (num <= sum) {
+          planets.add(Planet.of(entry.key));
+          continue loop;
+        }
       }
     }
 
@@ -122,12 +132,17 @@ class StarGenerationHelper {
 
   List<Planet> _randPlanetsForYellow(Random random) {
     final planets = <Planet>[];
-    final num = random.nextInt(_yellowWeight);
-    int sum = 0;
-    for (final entry in yellowWeightTable.entries) {
-      sum += entry.value;
-      if (num <= sum) {
-        planets.add(Planet.of(entry.key));
+    final numOfPlanets = random.nextInt(3) + 3;
+    loop:
+    for (int i = 0; i < numOfPlanets; i++) {
+      final num = random.nextInt(_yellowWeight);
+      int sum = 0;
+      for (final entry in yellowWeightTable.entries) {
+        sum += entry.value;
+        if (num <= sum) {
+          planets.add(Planet.of(entry.key));
+          continue loop;
+        }
       }
     }
 
@@ -136,12 +151,17 @@ class StarGenerationHelper {
 
   List<Planet> _randPlanetsForWhite(Random random) {
     final planets = <Planet>[];
-    final num = random.nextInt(_whiteWeight);
-    int sum = 0;
-    for (final entry in whiteWeightTable.entries) {
-      sum += entry.value;
-      if (num <= sum) {
-        planets.add(Planet.of(entry.key));
+    final numOfPlanets = random.nextInt(3) + 3;
+    loop:
+    for (int i = 0; i < numOfPlanets; i++) {
+      final num = random.nextInt(_whiteWeight);
+      int sum = 0;
+      for (final entry in whiteWeightTable.entries) {
+        sum += entry.value;
+        if (num <= sum) {
+          planets.add(Planet.of(entry.key));
+          continue loop;
+        }
       }
     }
 
@@ -150,12 +170,17 @@ class StarGenerationHelper {
 
   List<Planet> _randPlanetsForRed(Random random) {
     final planets = <Planet>[];
-    final num = random.nextInt(_redWeight);
-    int sum = 0;
-    for (final entry in redWeightTable.entries) {
-      sum += entry.value;
-      if (num <= sum) {
-        planets.add(Planet.of(entry.key));
+    final numOfPlanets = random.nextInt(4) + 2;
+    loop:
+    for (int i = 0; i < numOfPlanets; i++) {
+      final num = random.nextInt(_redWeight);
+      int sum = 0;
+      for (final entry in redWeightTable.entries) {
+        sum += entry.value;
+        if (num <= sum) {
+          planets.add(Planet.of(entry.key));
+          continue loop;
+        }
       }
     }
 

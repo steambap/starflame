@@ -3,28 +3,25 @@ import 'package:flutter/foundation.dart' show immutable;
 // Resources that can be stockpiled
 @immutable
 class Resources {
+  final int energy;
   final int production;
-  final int credit;
-  final int science;
+  final int civic;
 
-  const Resources(
-      {this.production = 0,
-      this.credit = 0,
-      this.science = 0});
+  const Resources({this.energy = 0, this.production = 0, this.civic = 0});
 
   Resources operator +(Resources other) {
     return Resources(
+      energy: energy + other.energy,
       production: production + other.production,
-      credit: credit + other.credit,
-      science: science + other.science,
+      civic: civic + other.civic,
     );
   }
 
   Resources operator *(int multiplier) {
     return Resources(
+      energy: energy * multiplier,
       production: production * multiplier,
-      credit: credit * multiplier,
-      science: science * multiplier,
+      civic: civic * multiplier,
     );
   }
 }

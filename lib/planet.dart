@@ -12,11 +12,9 @@ class Planet {
   final PlanetType type;
   final bool isUnique;
 
-  bool isColonized;
   String name;
 
-  Planet(this.type,
-      {this.isUnique = false, this.isColonized = false, this.name = ""});
+  Planet(this.type, {this.isUnique = false, this.name = ""});
 
   factory Planet.of(PlanetType type) {
     return switch (type) {
@@ -31,25 +29,22 @@ class Planet {
   static Resources getPlanetProps(PlanetType type) {
     return switch (type) {
       PlanetType.terran => const Resources(
-          production: 7,
-          credit: 7,
-          science: 7,
+          production: 8,
+          energy: 21,
         ),
       PlanetType.desert => const Resources(
-          production: 3,
-          credit: 5,
+          production: 5,
+          energy: 13,
         ),
       PlanetType.iron => const Resources(
           production: 5,
         ),
       PlanetType.ice => const Resources(
-          credit: 1,
-          science: 5,
+          energy: 8,
         ),
       PlanetType.gas => const Resources(
-          production: 1,
-          credit: 1,
-          science: 1,
+          production: 5,
+          energy: 8,
         ),
     };
   }

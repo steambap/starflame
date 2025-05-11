@@ -2,15 +2,12 @@ import 'dart:ui' show Paint, PaintingStyle;
 
 import 'package:flutter/material.dart' show Color, Colors;
 import "package:flutter/foundation.dart" show ChangeNotifier;
-import "package:starflame/data/tech.dart";
 
 import "resource.dart";
 import "ship_blueprint.dart";
 import "empire.dart";
 import "hex.dart";
 import "sim_props.dart";
-import "research.dart";
-import "planet.dart";
 
 class PlayerState with ChangeNotifier, SimObject {
   static const double foodMax = 50;
@@ -21,24 +18,14 @@ class PlayerState with ChangeNotifier, SimObject {
   bool isAlive = true;
   final bool isAI;
   // Resources
+  int energy = 0;
   int production = 0;
-  int credit = 0;
-  int science = 0;
+  int civic = 0;
   // Status
   int actionPoints = 4;
   int actionPointsMax = 4;
   final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
-  final Set<PlanetType> colonizable = {
-    PlanetType.terran,
-  };
-  final Map<TechSection, int> techLevel = {
-    TechSection.military: 0,
-    TechSection.science: 0,
-    TechSection.industry: 0,
-    TechSection.trade: 0,
-    TechSection.empire: 0,
-  };
 
   PlayerState(this.playerNumber, this.isAI);
 
@@ -63,9 +50,9 @@ class PlayerState with ChangeNotifier, SimObject {
   }
 
   void addResource(Resources resource) {
+    energy += resource.energy;
     production += resource.production;
-    credit += resource.credit;
-    science += resource.science;
+    civic += resource.civic;
 
     notifyListeners();
   }
@@ -85,15 +72,6 @@ class PlayerState with ChangeNotifier, SimObject {
   }
 
   void refreshStatus() {
-    notifyListeners();
-  }
-
-  void addTech(TechSection sec, int tier) {
-    techLevel.update(sec, (prev) => tier, ifAbsent: () => tier);
-    if (techTable[sec]?.containsKey(tier) ?? false) {
-      techTable[sec]![tier]!.applyBenefit(this);
-    }
-
     notifyListeners();
   }
 }

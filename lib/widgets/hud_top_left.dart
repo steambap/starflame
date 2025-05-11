@@ -3,7 +3,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import 'in_game_menu.dart';
 import 'map_deploy.dart';
-import 'research_overlay.dart';
 import 'ship_update.dart';
 import 'player_info.dart';
 import 'trade_overlay.dart';
@@ -62,10 +61,10 @@ class HudTopLeft extends StatelessWidget {
                   onPressed: () {
                     game.overlays.remove(PlayerInfoBar.id);
                     game.overlays
-                        .addAll([ResearchOverlay.id, PlayerInfoBar.id]);
+                        .addAll([TradeOverlay.id, PlayerInfoBar.id]);
                   },
                   style: AppTheme.iconButton,
-                  icon: const Icon(Symbols.experiment_rounded),
+                  icon: const Icon(Symbols.stars_rounded),
                 ),
                 IconButton(
                   onPressed: () {

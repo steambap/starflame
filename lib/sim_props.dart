@@ -1,13 +1,11 @@
 typedef Property = String;
 
 class SimProps {
-  static const Property support = 'support';
+  static const Property energy = 'energy';
   static const Property production = 'production';
-  static const Property credit = 'credit';
-  static const Property science = 'science';
+  static const Property civic = 'civic';
   // Ship
   static const Property maxHealth = 'maxHealth';
-  static const Property energy = 'energy';
   static const Property energyUpkeep = 'energyUpkeep';
   static const Property movement = 'movement';
   static const Property strength = 'strength';
