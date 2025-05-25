@@ -2,11 +2,10 @@ import "dart:math";
 import "package:flutter/material.dart" show Colors;
 import 'package:flame/game.dart';
 
-import "planet.dart";
 import "hex.dart";
 import "cell.dart";
 import "star.dart";
-import "sector.dart";
+import "planet.dart";
 import "game_settings.dart";
 import "player_state.dart";
 import "tile_type.dart";
@@ -24,7 +23,7 @@ class GameCreator {
 
   /// Hex to cell index
   final Map<int, int> _hexTable = {};
-  final List<Sector> sectors = [];
+  final List<Planet> planets = [];
   final List<Hex> homes = [];
   double s1 = 0;
   double s2 = 0;
@@ -34,7 +33,7 @@ class GameCreator {
     rand = Random(gameSettings.seed);
 
     cells.clear();
-    sectors.clear();
+    planets.clear();
     homes.clear();
     s1 = rand.nextDouble();
     s2 = rand.nextDouble();
@@ -49,10 +48,10 @@ class GameCreator {
     }
 
     int j = -1;
-    while (sectors.length < gameSettings.numOfPlanets) {
+    while (planets.length < gameSettings.numOfPlanets) {
       j += 1;
       final hex = _nextHex(j);
-      for (final s in sectors) {
+      for (final s in planets) {
         if (s.hex == hex) {
           continue;
         }
@@ -63,28 +62,23 @@ class GameCreator {
         final player = gameSettings.players[homes.length];
         player.vision.add(cell.hex);
         homes.add(cell.hex);
-        final sector = Sector(cell.hex, StarType.yellow, planets: [
-          Planet(PlanetType.terran, isUnique: true, name: "New Home"),
-          Planet(PlanetType.iron),
-          Planet(PlanetType.desert),
-          Planet(PlanetType.ice)
-        ]);
-        sectors.add(sector);
-        cell.sector = sector;
-        sector.setHome(player);
+        final planet = Planet(cell.hex, PlanetType.terran, StarType.yellow);
+        planets.add(planet);
+        cell.planet = planet;
+        planet.setHome(player);
       } else {
         _createPlanets(cell);
       }
     }
     // fill the rest
     for (final cell in cells) {
-      if (cell.sector == null) {
+      if (cell.planet == null) {
         _createTile(cell);
       }
     }
 
     starGenerator.prepareNames(rand);
-    for (final s in sectors) {
+    for (final s in planets) {
       s.displayName = starGenerator.nextName(s.starType, rand);
     }
   }
@@ -107,10 +101,10 @@ class GameCreator {
 
   void _createPlanets(Cell cell) {
     final starAndPlanets = starGenerator.generateStarAndPlanets(rand);
-    final sector = Sector(cell.hex, starAndPlanets.starType,
-        planets: starAndPlanets.planets);
-    sectors.add(sector);
-    cell.sector = sector;
+    final planet =
+        Planet(cell.hex, starAndPlanets.planetType, starAndPlanets.starType);
+    planets.add(planet);
+    cell.planet = planet;
   }
 
   void _createTile(Cell cell) {

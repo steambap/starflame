@@ -11,7 +11,7 @@ class HudPage extends Component with HasGameRef<ScifiGame> {
   @override
   FutureOr<void> onLoad() async {
     await super.onLoad();
-    if (game.mapGrid.cells.isEmpty) {
+    if (!game.controller.isGameStarted) {
       game.startTestGame();
     }
   }

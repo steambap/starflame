@@ -77,7 +77,7 @@ class TradeOverlay extends StatelessWidget with WatchItMixin {
                       ElevatedButton(
                           onPressed: () {
                             playerState.addResource(
-                                Resources(energy: -12, civic: tradeAmount));
+                                Resources(energy: -12, politics: tradeAmount));
                           },
                           style: AppTheme.menuButton,
                           child: RichText(
@@ -125,7 +125,7 @@ class TradeOverlay extends StatelessWidget with WatchItMixin {
                       ElevatedButton(
                           onPressed: () {
                             playerState.addResource(
-                                Resources(energy: tradeAmount, civic: -12));
+                                Resources(energy: tradeAmount, politics: -12));
                           },
                           style: AppTheme.menuButton,
                           child: RichText(

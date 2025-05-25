@@ -12,64 +12,60 @@ enum StarType {
   red,
 }
 
-class StarAndPlanets {
+class PlanetAndStar {
+  final PlanetType planetType;
   final StarType starType;
-  final List<Planet> planets;
 
-  StarAndPlanets(this.starType, this.planets);
+  PlanetAndStar(this.planetType, this.starType);
 }
 
 class StarGenerationHelper {
-  static const Map<StarType, int> weightTable = {
-    StarType.binary: 2,
-    StarType.none: 1,
-    StarType.blue: 10,
-    StarType.yellow: 4,
-    StarType.white: 10,
-    StarType.red: 9,
-  };
-  static const Map<PlanetType, int> binaryWeightTable = {
+  static const Map<PlanetType, int> weightTable = {
     PlanetType.iron: 2,
     PlanetType.desert: 3,
     PlanetType.gas: 3,
-  };
-  static const Map<PlanetType, int> blueWeightTable = {
-    PlanetType.terran: 1,
-    PlanetType.iron: 2,
-    PlanetType.desert: 3,
-    PlanetType.ice: 4,
-    PlanetType.gas: 1,
-  };
-  static const Map<PlanetType, int> yellowWeightTable = {
-    PlanetType.terran: 1,
-    PlanetType.iron: 1,
-    PlanetType.desert: 2,
-    PlanetType.ice: 2,
-    PlanetType.gas: 2,
-  };
-  static const Map<PlanetType, int> whiteWeightTable = {
-    PlanetType.terran: 1,
-    PlanetType.iron: 2,
-    PlanetType.desert: 4,
     PlanetType.ice: 3,
-    PlanetType.gas: 1,
-  };
-  static const Map<PlanetType, int> redWeightTable = {
-    PlanetType.iron: 1,
-    PlanetType.desert: 4,
-    PlanetType.ice: 3,
-    PlanetType.gas: 1,
+    PlanetType.terran: 2,
   };
 
-  late final int _starWeight = weightTable.values.fold(0, (a, b) => a + b);
-  late final int _binaryWeight =
-      binaryWeightTable.values.fold(0, (a, b) => a + b);
-  late final int _blueWeight = blueWeightTable.values.fold(0, (a, b) => a + b);
-  late final int _yellowWeight =
-      yellowWeightTable.values.fold(0, (a, b) => a + b);
-  late final int _whiteWeight =
-      whiteWeightTable.values.fold(0, (a, b) => a + b);
-  late final int _redWeight = redWeightTable.values.fold(0, (a, b) => a + b);
+  static const Map<StarType, int> terranWeightTable = {
+    StarType.blue: 2,
+    StarType.yellow: 4,
+    StarType.white: 2,
+    StarType.red: 2,
+  };
+
+  static const Map<StarType, int> ironWeightTable = {
+    StarType.blue: 3,
+    StarType.yellow: 2,
+    StarType.white: 3,
+    StarType.red: 2,
+  };
+
+  static const Map<StarType, int> desertWeightTable = {
+    StarType.binary: 2,
+    StarType.blue: 2,
+    StarType.yellow: 1,
+    StarType.white: 2,
+    StarType.red: 3,
+  };
+  static const Map<StarType, int> gasWeightTable = {
+    StarType.none: 4,
+    StarType.binary: 1,
+    StarType.blue: 1,
+    StarType.yellow: 2,
+    StarType.white: 1,
+    StarType.red: 1,
+  };
+  static const Map<StarType, int> iceWeightTable = {
+    StarType.binary: 1,
+    StarType.blue: 2,
+    StarType.yellow: 2,
+    StarType.white: 2,
+    StarType.red: 3,
+  };
+
+  late final int _planetWeight = weightTable.values.fold(0, (a, b) => a + b);
 
   List<String> _noneNames = [];
   List<String> _binaryNames = [];
@@ -77,10 +73,10 @@ class StarGenerationHelper {
   List<String> _yellowNames = [];
   List<String> _redNames = [];
 
-  StarType getRandStar(Random? random) {
+  StarType getRandStar(Random? random, Map<StarType, int> weightTable) {
     final rand = random ?? Random();
 
-    final num = rand.nextInt(_starWeight);
+    final num = rand.nextInt(weightTable.values.fold(0, (a, b) => a + b));
     int sum = 0;
     for (final entry in weightTable.entries) {
       sum += entry.value;
@@ -92,121 +88,36 @@ class StarGenerationHelper {
     return StarType.none;
   }
 
-  List<Planet> _randPlanetsForBinary(Random random) {
-    final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 2;
-    loop:
-    for (int i = 0; i < numOfPlanets; i++) {
-      final num = random.nextInt(_binaryWeight);
-      int sum = 0;
-      for (final entry in binaryWeightTable.entries) {
-        sum += entry.value;
-        if (num <= sum) {
-          planets.add(Planet.of(entry.key));
-          continue loop;
-        }
-      }
-    }
-
-    return planets;
-  }
-
-  List<Planet> _randPlanetsForBlue(Random random) {
-    final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 3;
-    loop:
-    for (int i = 0; i < numOfPlanets; i++) {
-      final num = random.nextInt(_blueWeight);
-      int sum = 0;
-      for (final entry in blueWeightTable.entries) {
-        sum += entry.value;
-        if (num <= sum) {
-          planets.add(Planet.of(entry.key));
-          continue loop;
-        }
-      }
-    }
-
-    return planets;
-  }
-
-  List<Planet> _randPlanetsForYellow(Random random) {
-    final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 3;
-    loop:
-    for (int i = 0; i < numOfPlanets; i++) {
-      final num = random.nextInt(_yellowWeight);
-      int sum = 0;
-      for (final entry in yellowWeightTable.entries) {
-        sum += entry.value;
-        if (num <= sum) {
-          planets.add(Planet.of(entry.key));
-          continue loop;
-        }
-      }
-    }
-
-    return planets;
-  }
-
-  List<Planet> _randPlanetsForWhite(Random random) {
-    final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 3;
-    loop:
-    for (int i = 0; i < numOfPlanets; i++) {
-      final num = random.nextInt(_whiteWeight);
-      int sum = 0;
-      for (final entry in whiteWeightTable.entries) {
-        sum += entry.value;
-        if (num <= sum) {
-          planets.add(Planet.of(entry.key));
-          continue loop;
-        }
-      }
-    }
-
-    return planets;
-  }
-
-  List<Planet> _randPlanetsForRed(Random random) {
-    final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(4) + 2;
-    loop:
-    for (int i = 0; i < numOfPlanets; i++) {
-      final num = random.nextInt(_redWeight);
-      int sum = 0;
-      for (final entry in redWeightTable.entries) {
-        sum += entry.value;
-        if (num <= sum) {
-          planets.add(Planet.of(entry.key));
-          continue loop;
-        }
-      }
-    }
-
-    return planets;
-  }
-
-  List<Planet> getRandPlanets(StarType star, Random? random) {
+  PlanetType getRandPlanet(Random? random) {
     final rand = random ?? Random();
 
-    final planets = switch (star) {
-      StarType.none => [Planet(PlanetType.gas), Planet(PlanetType.gas)],
-      StarType.binary => _randPlanetsForBinary(rand),
-      StarType.blue => _randPlanetsForBlue(rand),
-      StarType.yellow => _randPlanetsForYellow(rand),
-      StarType.white => _randPlanetsForWhite(rand),
-      StarType.red => _randPlanetsForRed(rand),
-    };
+    final num = rand.nextInt(_planetWeight);
+    int sum = 0;
+    for (final entry in weightTable.entries) {
+      sum += entry.value;
+      if (num <= sum) {
+        return entry.key;
+      }
+    }
 
-    return planets;
+    return PlanetType.iron;
   }
 
-  StarAndPlanets generateStarAndPlanets(Random? random) {
-    final star = getRandStar(random);
-    final planets = getRandPlanets(star, random);
+  PlanetAndStar generateStarAndPlanets(Random? random) {
+    final planet = getRandPlanet(random);
+    final star = getRandStar(random, getPlanetTable(planet));
 
-    return StarAndPlanets(star, planets);
+    return PlanetAndStar(planet, star);
+  }
+
+  static Map<StarType, int> getPlanetTable(PlanetType planet) {
+    return switch (planet) {
+      PlanetType.iron => ironWeightTable,
+      PlanetType.desert => desertWeightTable,
+      PlanetType.gas => gasWeightTable,
+      PlanetType.ice => iceWeightTable,
+      PlanetType.terran => terranWeightTable,
+    };
   }
 
   void prepareNames(Random? random) {

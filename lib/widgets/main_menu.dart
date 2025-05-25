@@ -4,7 +4,7 @@ import 'player_info.dart';
 import 'ship_cmd.dart';
 import 'hud_top_left.dart';
 import 'hud_bottom_right.dart';
-import 'sector_info.dart';
+import 'planet_screen.dart';
 import 'package:starflame/scifi_game.dart';
 import 'package:starflame/styles.dart';
 
@@ -16,7 +16,7 @@ class MainMenu extends StatelessWidget {
     HudTopLeft.id,
     HudBottomRight.id,
     ShipCmd.id,
-    SectorInfo.id,
+    PlanetScreen.id,
     PlayerInfoBar.id
   ];
 

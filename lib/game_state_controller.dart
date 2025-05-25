@@ -99,7 +99,7 @@ class GameStateController {
   }
 
   void preparationPhaseUpdate() {
-    for (final planet in game.mapGrid.sectors) {
+    for (final planet in game.mapGrid.planets) {
       planet.phaseUpdate(gameState.playerNumber);
     }
     for (final ship
@@ -112,7 +112,7 @@ class GameStateController {
     bool currentPlayerAlive = false;
     final int playerNumber = gameState.playerNumber;
 
-    for (final p in game.mapGrid.sectors) {
+    for (final p in game.mapGrid.planets) {
       if (p.playerNumber == playerNumber) {
         currentPlayerAlive = true;
         break;
@@ -148,7 +148,7 @@ class GameStateController {
   void _checkDomination() {
     final Set<int> victoryTeam = {};
 
-    for (final p in game.mapGrid.sectors) {
+    for (final p in game.mapGrid.planets) {
       if (p.playerNumber != null && p.homePlanet > -1) {
         victoryTeam.add(p.playerNumber!);
       }

@@ -1,11 +1,11 @@
 import "../scifi_game.dart";
 import "../player_state.dart";
-import "../sector.dart";
+import "../planet.dart";
 
 class BaseAI {
   final ScifiGame game;
 
-  List<Sector> mySectors = List.empty();
+  List<Planet> myPlanets = List.empty();
 
   BaseAI(this.game);
 
@@ -19,10 +19,10 @@ class BaseAI {
   }
 
   void setupInfo(PlayerState playerState) {
-    mySectors = [];
-    for (final p in game.mapGrid.sectors) {
+    myPlanets = [];
+    for (final p in game.mapGrid.planets) {
       if (p.playerNumber == playerState.playerNumber) {
-        mySectors.add(p);
+        myPlanets.add(p);
       }
     }
   }
