@@ -8,7 +8,7 @@ import 'widgets/main_menu.dart';
 import 'widgets/in_game_menu.dart';
 import 'widgets/player_info.dart';
 import 'widgets/ship_cmd.dart';
-import 'widgets/planet_screen.dart';
+import 'widgets/sector_info.dart';
 import 'widgets/hud_top_left.dart';
 import 'widgets/hud_bottom_right.dart';
 import 'widgets/map_deploy.dart';
@@ -42,7 +42,7 @@ class ScifiApp extends StatelessWidget {
               MapDeploy.id: (_, game) => MapDeploy(game),
               HudTopLeft.id: (_, game) => HudTopLeft(game),
               HudBottomRight.id: (_, game) => HudBottomRight(game),
-              PlanetScreen.id: (_, game) => PlanetScreen(game),
+              SectorInfo.id: (_, game) => SectorInfo(game),
               ShipUpdate.id: (_, game) => ShipUpdate(game),
               ShipCmd.id: (_, game) => ShipCmd(game),
               PlayerInfoBar.id: (_, game) => PlayerInfoBar(game),

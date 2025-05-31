@@ -37,7 +37,7 @@ class SelectControlWaitForInput extends SelectControl {
 
     if (cell.ship != null) {
       game.mapGrid.selectControl = SelectControlShipSelected(game, cell.ship!);
-    } else if (cell.planet != null) {
+    } else if (cell.sector != null) {
       game.mapGrid.selectControl = SelectControlPlanet(game, cell);
     }
   }
@@ -57,7 +57,7 @@ class SelectControlHex extends SelectControl {
 
     if (cell.ship != null) {
       game.mapGrid.selectControl = SelectControlShipSelected(game, cell.ship!);
-    } else if (cell.planet != null) {
+    } else if (cell.sector != null) {
       game.mapGrid.selectControl = SelectControlPlanet(game, cell);
     } else {
       game.mapGrid.selectControl = SelectControlWaitForInput(game);
@@ -75,7 +75,7 @@ class SelectControlShipSelected extends SelectControlHex {
   @override
   void onCellClick(Cell cell) {
     if (this.cell == cell) {
-      if (cell.planet != null) {
+      if (cell.sector != null) {
         game.mapGrid.selectControl = SelectControlPlanet(game, cell);
       }
 
@@ -160,7 +160,7 @@ class SelectControlPlanet extends SelectControlHex {
   @override
   void onStateEnter() {
     game.camera.moveTo(cell.position);
-    game.getIt<HudState>().planet.value = cell.planet;
+    game.getIt<HudState>().sector.value = cell.sector;
     cell.priority = 2;
 
     game.overlays.removeAll([HudTopLeft.id, MapDeploy.id]);
@@ -168,7 +168,7 @@ class SelectControlPlanet extends SelectControlHex {
 
   @override
   void onStateExit() {
-    game.getIt<HudState>().planet.value = null;
+    game.getIt<HudState>().sector.value = null;
     cell.priority = -1;
 
     game.overlays.addAll([HudTopLeft.id]);

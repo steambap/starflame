@@ -22,12 +22,12 @@ class ResourceController {
   Resources playerIncome(PlayerState state) {
     Resources income = const Resources();
 
-    for (final planet in game.mapGrid.planets) {
+    for (final planet in game.mapGrid.sectors) {
       if (planet.playerNumber == state.playerNumber) {
         income += Resources(
           energy: planet.getProp(SimProps.energy),
           production: planet.getProp(SimProps.production),
-          politics: planet.getProp(SimProps.politics),
+          civic: planet.getProp(SimProps.civic),
         );
       }
     }
@@ -89,10 +89,10 @@ class ResourceController {
   }
 
   void capture(int playerNumber, Cell cell) {
-    if (!canCapture(playerNumber) || cell.planet == null) {
+    if (!canCapture(playerNumber) || cell.sector == null) {
       return;
     }
 
-    cell.planet?.colonize(playerNumber);
+    cell.sector?.colonize(playerNumber);
   }
 }

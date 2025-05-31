@@ -10,6 +10,8 @@ import "hex.dart";
 import "sim_props.dart";
 
 class PlayerState with ChangeNotifier, SimObject {
+  static const double foodMax = 50;
+
   final int playerNumber;
   late final Empire empire;
   int team = -1;
@@ -18,7 +20,7 @@ class PlayerState with ChangeNotifier, SimObject {
   // Resources
   int energy = 0;
   int production = 0;
-  int politic = 0;
+  int civic = 0;
   // Status
   int actionPoints = 4;
   int actionPointsMax = 4;
@@ -50,7 +52,7 @@ class PlayerState with ChangeNotifier, SimObject {
   void addResource(Resources resource) {
     energy += resource.energy;
     production += resource.production;
-    politic += resource.politics;
+    civic += resource.civic;
 
     notifyListeners();
   }

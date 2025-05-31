@@ -4,33 +4,33 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import 'player_info.dart';
 import 'package:starflame/scifi_game.dart';
-import 'package:starflame/planet.dart';
+import 'package:starflame/sector.dart';
 import 'package:starflame/sim_props.dart';
 import 'package:starflame/styles.dart';
 import 'package:starflame/fmt.dart';
 import 'package:starflame/hud_state.dart';
 
-class PlanetScreen extends StatelessWidget with WatchItMixin {
-  const PlanetScreen(this.game, {super.key});
+class SectorInfo extends StatelessWidget with WatchItMixin {
+  const SectorInfo(this.game, {super.key});
 
-  static const id = 'planet_screen';
+  static const id = 'sector_info';
 
   final ScifiGame game;
 
   @override
   Widget build(BuildContext context) {
-    final planet = watchValue((HudState x) => x.planet);
+    final sector = watchValue((HudState x) => x.sector);
 
     return Positioned(
       bottom: 8,
       left: 8,
-      child: planet == null ? const SizedBox.shrink() : _renderPlanet(planet),
+      child: sector == null ? const SizedBox.shrink() : _renderSector(sector),
     );
   }
 
-  Widget _renderPlanet(Planet planet) {
-    final isPlayerPlanet =
-        planet.playerNumber == game.controller.getHumanPlayerNumber();
+  Widget _renderSector(Sector sector) {
+    final isPlayerSector =
+        sector.playerNumber == game.controller.getHumanPlayerNumber();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -38,7 +38,7 @@ class PlanetScreen extends StatelessWidget with WatchItMixin {
           Padding(
             padding: const EdgeInsets.all(4),
             child: IconButton.outlined(
-                onPressed: isPlayerPlanet
+                onPressed: isPlayerSector
                     ? () {
                         game.overlays.remove(PlayerInfoBar.id);
                         game.overlays.add(PlayerInfoBar.id);
@@ -54,13 +54,13 @@ class PlanetScreen extends StatelessWidget with WatchItMixin {
               border: Border.all(
             color: AppTheme.panelBorder,
           )),
-          child: _renderPlanetInfo(planet),
+          child: _renderSectorInfo(sector),
         )
       ],
     );
   }
 
-  Widget _renderPlanetInfo(Planet planet) {
+  Widget _renderSectorInfo(Sector sector) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -68,36 +68,36 @@ class PlanetScreen extends StatelessWidget with WatchItMixin {
           width: AppTheme.navbarWidth,
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           color: AppTheme.panelBorder,
-          child: Text(planet.displayName, style: AppTheme.label12),
+          child: Text(sector.displayName, style: AppTheme.label12),
         ),
         Padding(
           padding: const EdgeInsets.all(4),
           child: RichText(
               text: TextSpan(style: AppTheme.label12, children: [
-            if (planet.getProp(SimProps.production) != 0)
+            if (sector.getProp(SimProps.production) != 0)
               const WidgetSpan(
                   child: Icon(Symbols.settings_rounded,
                       size: 16, color: AppTheme.iconRed)),
-            if (planet.getProp(SimProps.production) != 0)
+            if (sector.getProp(SimProps.production) != 0)
               TextSpan(
                   text:
-                      " ${formatterSigned.format(planet.getProp(SimProps.production))} "),
-            if (planet.getProp(SimProps.energy) != 0)
+                      " ${formatterSigned.format(sector.getProp(SimProps.production))} "),
+            if (sector.getProp(SimProps.energy) != 0)
               const WidgetSpan(
                   child: Icon(Symbols.bolt_rounded,
                       size: 16, color: AppTheme.iconYellow)),
-            if (planet.getProp(SimProps.energy) != 0)
+            if (sector.getProp(SimProps.energy) != 0)
               TextSpan(
                   text:
-                      " ${formatterSigned.format(planet.getProp(SimProps.energy))} "),
-            if (planet.getProp(SimProps.politics) != 0)
+                      " ${formatterSigned.format(sector.getProp(SimProps.energy))} "),
+            if (sector.getProp(SimProps.civic) != 0)
               const WidgetSpan(
                   child: Icon(Symbols.stars_rounded,
                       size: 16, color: AppTheme.iconBlue)),
-            if (planet.getProp(SimProps.politics) != 0)
+            if (sector.getProp(SimProps.civic) != 0)
               TextSpan(
                   text:
-                      " ${formatterSigned.format(planet.getProp(SimProps.politics))} "),
+                      " ${formatterSigned.format(sector.getProp(SimProps.civic))} "),
           ])),
         ),
       ],

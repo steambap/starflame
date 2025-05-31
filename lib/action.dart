@@ -43,11 +43,11 @@ class Capture extends Action {
 
   @override
   bool isDisabled(ScifiGame game) {
-    final planet = game.mapGrid.cellAtHex(ship.hex)?.planet;
-    if (planet == null) {
+    final sector = game.mapGrid.cellAtHex(ship.hex)?.sector;
+    if (sector == null) {
       return true;
     }
-    if (planet.playerNumber == ship.state.playerNumber) {
+    if (sector.playerNumber == ship.state.playerNumber) {
       return true;
     }
 

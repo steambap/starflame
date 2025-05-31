@@ -85,10 +85,10 @@ class PlayerInfoBar extends StatelessWidget with WatchItMixin {
                 child: Icon(Symbols.stars_rounded,
                     size: 14, color: AppTheme.iconBlue)),
             const WidgetSpan(child: SizedBox(width: 4)),
-            TextSpan(text: formatterUnsigned.format(playerState.politic)),
+            TextSpan(text: formatterUnsigned.format(playerState.civic)),
             const WidgetSpan(child: SizedBox(width: 2)),
             TextSpan(
-                text: formatterSigned.format(income.politics),
+                text: formatterSigned.format(income.civic),
                 style: AppTheme.label14Gray),
           ])),
         ],

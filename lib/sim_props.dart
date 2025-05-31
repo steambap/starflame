@@ -3,8 +3,7 @@ typedef Property = String;
 class SimProps {
   static const Property energy = 'energy';
   static const Property production = 'production';
-  static const Property politics = 'politics';
-  static const Property influence = 'influence';
+  static const Property civic = 'civic';
   // Ship
   static const Property maxHealth = 'maxHealth';
   static const Property energyUpkeep = 'energyUpkeep';
@@ -14,19 +13,6 @@ class SimProps {
   static const Property allowRanged = 'allowRanged';
   static const Property engineering = 'engineering';
   static const Property maxMorale = 'maxMorale';
-  // policy
-  static const Property hqBuildingInfluence = 'hqBuildingInfluence';
-  static const Property hqBuildingPolitic = 'hqBuildingPolitic';
-  static const Property reformTry = 'reformTry';
-  static const Property minimumActionPoints = 'minimumActionPoints';
-  static const Property politicsPerUnit = 'politicsPerUnit';
-  static const Property trainTry = 'trainTry';
-  static const Property influenceToPolitics = 'influenceToPolitics';
-  static const Property allyInfluence = 'allyInfluence';
-  static const Property antiCorruption = 'antiCorruption';
-  static const Property diplomaticTry = 'diplomaticTry';
-  static const Property resourceToInfluence = 'resourceToInfluence';
-  static const Property alwaysAlive = 'alwaysAlive';
 }
 
 mixin SimObject {

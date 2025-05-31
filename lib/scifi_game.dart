@@ -70,9 +70,6 @@ class ScifiGame extends FlameGame<ScifiWorld>
 
   @override
   void onScroll(PointerScrollInfo info) {
-    if (!controller.isGameStarted) {
-      return;
-    }
     camera.viewfinder.zoom -=
         info.scrollDelta.global.y.sign * zoomPerScrollUnit;
     clampZoom();
