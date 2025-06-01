@@ -5,6 +5,8 @@ import "ship_blueprint.dart";
 import "resource.dart";
 import "sim_props.dart";
 import "response.dart";
+import "sector.dart";
+import "building.dart";
 
 class ResourceController {
   final ScifiGame game;
@@ -27,7 +29,7 @@ class ResourceController {
         income += Resources(
           energy: planet.getProp(SimProps.energy),
           production: planet.getProp(SimProps.production),
-          civic: planet.getProp(SimProps.civic),
+          politics: planet.getProp(SimProps.politics),
         );
       }
     }
@@ -55,10 +57,6 @@ class ResourceController {
   }
 
   Response canCreateShip(PlayerState playerState, ShipBlueprint blueprint) {
-    if (!playerState.canTakeAction()) {
-      return Response.error("Not enough support");
-    }
-
     if (playerState.production < blueprint.cost) {
       return Response.error("Not enough production");
     }
@@ -80,6 +78,14 @@ class ResourceController {
     playerState.takeAction(Resources(production: -blueprint.cost));
 
     game.mapGrid.createShipAt(cell, playerState.playerNumber, blueprint);
+
+    return Response.ok();
+  }
+
+  Response canAddBuilding(PlayerState playerState, Sector sector, BuildingData building) {
+    if (playerState.production < building.costOf(1)) {
+      return Response.error("Not enough production to build ${building.name}");
+    }
 
     return Response.ok();
   }

@@ -3,7 +3,8 @@ typedef Property = String;
 class SimProps {
   static const Property energy = 'energy';
   static const Property production = 'production';
-  static const Property civic = 'civic';
+  static const Property productionLimit = 'productionLimit';
+  static const Property politics = 'politics';
   // Ship
   static const Property maxHealth = 'maxHealth';
   static const Property energyUpkeep = 'energyUpkeep';

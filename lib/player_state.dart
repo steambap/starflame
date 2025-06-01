@@ -10,8 +10,6 @@ import "hex.dart";
 import "sim_props.dart";
 
 class PlayerState with ChangeNotifier, SimObject {
-  static const double foodMax = 50;
-
   final int playerNumber;
   late final Empire empire;
   int team = -1;
@@ -20,10 +18,10 @@ class PlayerState with ChangeNotifier, SimObject {
   // Resources
   int energy = 0;
   int production = 0;
-  int civic = 0;
-  // Status
-  int actionPoints = 4;
-  int actionPointsMax = 4;
+  int politics = 0;
+
+  int productionLimit = 50;
+
   final List<ShipBlueprint> blueprints = [];
   final Set<Hex> vision = {};
 
@@ -46,28 +44,24 @@ class PlayerState with ChangeNotifier, SimObject {
 
   void init() {
     blueprints.addAll(empire.blueprints);
+    production = productionLimit;
     refreshStatus();
   }
 
   void addResource(Resources resource) {
     energy += resource.energy;
     production += resource.production;
-    civic += resource.civic;
+    production = production.clamp(0, productionLimit);
+    politics += resource.politics;
 
     notifyListeners();
   }
 
-  bool canTakeAction() {
-    return actionPoints > 0;
-  }
-
   void takeAction(Resources res) {
-    actionPoints -= 1;
     addResource(res);
   }
 
   void onNewTurn(Resources res) {
-    actionPoints = actionPointsMax;
     addResource(res);
   }
 

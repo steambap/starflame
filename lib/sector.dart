@@ -10,6 +10,7 @@ import "player_state.dart";
 import "planet.dart";
 import "star.dart";
 import "styles.dart";
+import "building.dart";
 
 class Sector extends PositionComponent
     with HasGameRef<ScifiGame>, ChangeNotifier, SimObject {
@@ -33,6 +34,7 @@ class Sector extends PositionComponent
       paintLayers: FlameTheme.labelBackground,
       anchor: Anchor.center);
   late final SpriteComponent _star;
+  final List<Building?> buildings = List.filled(6, null);
 
   List<Planet> planets;
   final List<CircleComponent> _planetCircles = [];
@@ -160,7 +162,7 @@ class Sector extends PositionComponent
 
     addProp(SimProps.energy, output);
     addProp(SimProps.production, output);
-    addProp(SimProps.civic, output);
+    addProp(SimProps.politics, output);
 
     final maintaince = playerNumber == homePlanet ? 0 : 2;
     addProp(SimProps.energy, -maintaince);
@@ -173,6 +175,8 @@ class Sector extends PositionComponent
       "homePlanet": homePlanet,
       "displayName": displayName,
       "hex": hex.toInt(),
+      "starType": starType.name,
+      "buildings": buildings.map((b) => b?.toJson()).toList(),
     };
   }
 

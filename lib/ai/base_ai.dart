@@ -28,10 +28,6 @@ class BaseAI {
   }
 
   void improveEconomy(PlayerState playerState) {
-    if (!playerState.canTakeAction()) {
-      return;
-    }
-
     return;
   }
 }

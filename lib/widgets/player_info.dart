@@ -46,15 +46,6 @@ class PlayerInfoBar extends StatelessWidget with WatchItMixin {
               text: TextSpan(style: AppTheme.label14, children: [
             const WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: Icon(Symbols.clock_loader_90_rounded,
-                    size: 14, color: AppTheme.iconPale)),
-            const WidgetSpan(child: SizedBox(width: 4)),
-            TextSpan(text: "${playerState.actionPoints} / ${playerState.actionPointsMax}"),
-          ])),
-          RichText(
-              text: TextSpan(style: AppTheme.label14, children: [
-            const WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
                 child: Icon(Symbols.bolt_rounded,
                     size: 14, color: AppTheme.iconYellow)),
             const WidgetSpan(child: SizedBox(width: 4)),
@@ -77,6 +68,9 @@ class PlayerInfoBar extends StatelessWidget with WatchItMixin {
             TextSpan(
                 text: formatterSigned.format(income.production),
                 style: AppTheme.label14Gray),
+            const WidgetSpan(child: SizedBox(width: 2)),
+            TextSpan(
+                text: "/ ${formatterUnsigned.format(playerState.productionLimit)}"),
           ])),
           RichText(
               text: TextSpan(style: AppTheme.label14, children: [
@@ -85,10 +79,10 @@ class PlayerInfoBar extends StatelessWidget with WatchItMixin {
                 child: Icon(Symbols.stars_rounded,
                     size: 14, color: AppTheme.iconBlue)),
             const WidgetSpan(child: SizedBox(width: 4)),
-            TextSpan(text: formatterUnsigned.format(playerState.civic)),
+            TextSpan(text: formatterUnsigned.format(playerState.politics)),
             const WidgetSpan(child: SizedBox(width: 2)),
             TextSpan(
-                text: formatterSigned.format(income.civic),
+                text: formatterSigned.format(income.politics),
                 style: AppTheme.label14Gray),
           ])),
         ],

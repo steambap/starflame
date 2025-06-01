@@ -90,14 +90,14 @@ class SectorInfo extends StatelessWidget with WatchItMixin {
               TextSpan(
                   text:
                       " ${formatterSigned.format(sector.getProp(SimProps.energy))} "),
-            if (sector.getProp(SimProps.civic) != 0)
+            if (sector.getProp(SimProps.politics) != 0)
               const WidgetSpan(
                   child: Icon(Symbols.stars_rounded,
                       size: 16, color: AppTheme.iconBlue)),
-            if (sector.getProp(SimProps.civic) != 0)
+            if (sector.getProp(SimProps.politics) != 0)
               TextSpan(
                   text:
-                      " ${formatterSigned.format(sector.getProp(SimProps.civic))} "),
+                      " ${formatterSigned.format(sector.getProp(SimProps.politics))} "),
           ])),
         ),
       ],
