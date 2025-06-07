@@ -18,7 +18,7 @@ import "select_control.dart";
 import "sector.dart";
 import "styles.dart";
 
-class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
+class MapGrid extends Component with HasGameReference<ScifiGame>, TapCallbacks {
   List<Cell> cells = List.empty();
 
   /// Hex to cell index
@@ -307,7 +307,7 @@ class MapGrid extends Component with HasGameRef<ScifiGame>, TapCallbacks {
           cell.ship!.state.playerNumber != attackingPlayerNumber) {
         attackableCells.add(cell);
       } else if (cell.sector != null &&
-          cell.sector!.attackable(attackingPlayerNumber)) {
+          cell.sector!.isBlocked(attackingPlayerNumber)) {
         attackableCells.add(cell);
       }
     }

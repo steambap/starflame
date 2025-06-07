@@ -64,10 +64,14 @@ class GameCreator {
         player.vision.add(cell.hex);
         homes.add(cell.hex);
         final sector = Sector(cell.hex, StarType.yellow, planets: [
-          Planet(PlanetType.terran, isUnique: true, name: "New Home"),
-          Planet(PlanetType.iron),
-          Planet(PlanetType.desert),
-          Planet(PlanetType.ice)
+          Planet(PlanetType.habitable, 0, isUnique: true, name: "Terran"),
+          Planet(PlanetType.habitable, 1),
+          Planet(PlanetType.habitable, 1),
+          Planet(PlanetType.habitable, 2),
+          Planet(PlanetType.habitable, 2),
+          Planet(PlanetType.inhabitable, 0),
+          Planet(PlanetType.inhabitable, 1),
+          Planet(PlanetType.inhabitable, 2),
         ]);
         sectors.add(sector);
         cell.sector = sector;

@@ -45,10 +45,10 @@ class FlameTheme {
       style:
           const TextStyle(color: sand12, fontSize: 16, fontFamily: "Chakra"));
   static final textDamage = TextPaint(
-      style:
-          const TextStyle(color: red11, fontSize: 24, fontFamily: "Chakra"));
+      style: const TextStyle(color: red11, fontSize: 24, fontFamily: "Chakra"));
   static final heading24 = TextPaint(
-      style: const TextStyle(color: sand12, fontSize: 24, fontFamily: "Chakra"));
+      style:
+          const TextStyle(color: sand12, fontSize: 24, fontFamily: "Chakra"));
 
   static final panelBackground = Paint()..color = sand3;
   static final panelBorder = Paint()
@@ -57,11 +57,11 @@ class FlameTheme {
     ..strokeWidth = 1;
   static final panelSkin = [panelBackground, panelBorder];
 
-  static final planetTerran = [Paint()..color = green7];
-  static final planetDesert = [Paint()..color = amber7];
-  static final planetIce = [Paint()..color = iris7];
-  static final planetIron = [Paint()..color = red7];
-  static final planetGas = [Paint()..color = sand7];
+  static final planetHabitable = Paint()..color = sand11;
+  static final planetInhabitable = Paint()
+    ..color = sand11
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1;
 
   static final hexBorderPaint = Paint()
     ..style = PaintingStyle.stroke
@@ -132,14 +132,14 @@ class AppTheme {
     ),
   );
 
-  static final dialogTheme = DialogTheme(
+  static final dialogTheme = DialogThemeData(
     backgroundColor: panelBackground,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6),
         side: const BorderSide(color: panelBorder)),
     clipBehavior: Clip.hardEdge,
   );
-  static const tabTheme = TabBarTheme(
+  static const tabTheme = TabBarThemeData(
     dividerHeight: 0,
     labelColor: sand12,
     unselectedLabelColor: sand8,

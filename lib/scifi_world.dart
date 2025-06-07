@@ -9,7 +9,7 @@ import "styles.dart";
 import "ship.dart";
 
 class ScifiWorld extends World
-    with HasGameRef<ScifiGame>, KeyboardHandler, DragCallbacks {
+    with HasGameReference<ScifiGame>, KeyboardHandler, DragCallbacks {
   final double moveSpeed = 64;
   Vector2 direction = Vector2.zero();
 

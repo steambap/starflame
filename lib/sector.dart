@@ -13,7 +13,7 @@ import "styles.dart";
 import "building.dart";
 
 class Sector extends PositionComponent
-    with HasGameRef<ScifiGame>, ChangeNotifier, SimObject {
+    with HasGameReference<ScifiGame>, ChangeNotifier, SimObject {
   static const output = 10;
 
   int? playerNumber;
@@ -70,13 +70,17 @@ class Sector extends PositionComponent
     final starImg = game.images.fromCache(starImgName);
     _star = SpriteComponent(sprite: Sprite(starImg), anchor: Anchor.center);
 
-    final planetCirclesStart =
-        8 - (planets.length * 8.0 + (planets.length - 1) * 2);
+    final dx = (planets.length ~/ 2) + 1;
+    final planetCirclesStart = 8 - (dx * 8.0 + (dx - 1) * 2);
     for (int i = 0; i < planets.length; i++) {
+      final isSecondRow = i % 2 == 1;
+      final pos =
+          Vector2(0, isSecondRow ? -16 : -36 // Adjust Y position for second row
+              );
       final circle = CircleComponent(
           radius: 8,
-          position: Vector2(planetCirclesStart + i * 20, -24),
-          paintLayers: FlameTheme.planetGas,
+          position: Vector2(planetCirclesStart + i * 10, 0) + pos,
+          paint: FlameTheme.planetInhabitable,
           anchor: Anchor.center);
       _planetCircles.add(circle);
     }
@@ -123,16 +127,10 @@ class Sector extends PositionComponent
       _nameBG.paintLayers = pState.paintLayer;
     }
 
-    final playerPaintLayer = [Paint()..color = pState.color];
-
     for (int i = 0; i < _planetCircles.length; i++) {
       final planet = planets[i];
       final circle = _planetCircles[i];
-      if (playerNumber != null) {
-        circle.paintLayers = playerPaintLayer;
-      } else {
-        circle.paintLayers = getPlanetPaint(planet.type);
-      }
+      circle.paint = getPlanetPaint(planet.type);
     }
   }
 
@@ -144,7 +142,7 @@ class Sector extends PositionComponent
     updateRender();
   }
 
-  bool attackable(int playerNumber) {
+  bool isBlocked(int playerNumber) {
     if (neutral()) {
       return false;
     }
@@ -199,13 +197,11 @@ class Sector extends PositionComponent
     return romanNumerals[number - 1];
   }
 
-  static List<Paint> getPlanetPaint(PlanetType t) {
-    return switch (t) {
-      PlanetType.terran => FlameTheme.planetTerran,
-      PlanetType.desert => FlameTheme.planetDesert,
-      PlanetType.iron => FlameTheme.planetIron,
-      PlanetType.gas => FlameTheme.planetGas,
-      PlanetType.ice => FlameTheme.planetIce,
-    };
+  static Paint getPlanetPaint(PlanetType t) {
+    if (t == PlanetType.habitable) {
+      return FlameTheme.planetHabitable;
+    }
+
+    return FlameTheme.planetInhabitable;
   }
 }

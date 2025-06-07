@@ -1,26 +1,22 @@
 enum PlanetType {
-  terran,
-  desert,
-  iron,
-  ice,
-  gas,
+  habitable,
+  inhabitable,
 }
 
 class Planet {
   final PlanetType type;
   final bool isUnique;
+  bool isColonized = false;
+  final int variant;
 
   String name;
 
-  Planet(this.type, {this.isUnique = false, this.name = ""});
+  Planet(this.type, this.variant, {this.isUnique = false, this.name = ""});
 
-  factory Planet.of(PlanetType type) {
+  factory Planet.of(PlanetType type, int variant) {
     return switch (type) {
-      PlanetType.terran => Planet(PlanetType.terran),
-      PlanetType.desert => Planet(PlanetType.desert),
-      PlanetType.iron => Planet(PlanetType.iron),
-      PlanetType.ice => Planet(PlanetType.ice),
-      PlanetType.gas => Planet(PlanetType.gas),
+      PlanetType.habitable => Planet(type, variant),
+      PlanetType.inhabitable => Planet(type, variant),
     };
   }
 }

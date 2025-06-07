@@ -18,7 +18,8 @@ class Pathfinding {
 
   Map<Cell, List<Cell>> findAllPath(Cell originalNode, int movementPoint) {
     final playerNumber = originalNode.ship?.state.playerNumber ?? -1;
-    final frontier = HeapPriorityQueue<_CellItem>((_CellItem itemA, _CellItem itemB) {
+    final frontier =
+        HeapPriorityQueue<_CellItem>((_CellItem itemA, _CellItem itemB) {
       return itemA.priority - itemB.priority;
     });
     frontier.add(_CellItem(originalNode, 0));
@@ -42,7 +43,7 @@ class Pathfinding {
           continue;
         }
         if (neighbour.sector != null &&
-            neighbour.sector!.attackable(playerNumber)) {
+            neighbour.sector!.isBlocked(playerNumber)) {
           continue;
         }
         if (newCost > movementPoint) {

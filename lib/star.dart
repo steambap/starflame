@@ -29,36 +29,24 @@ class StarGenerationHelper {
     StarType.red: 9,
   };
   static const Map<PlanetType, int> binaryWeightTable = {
-    PlanetType.iron: 2,
-    PlanetType.desert: 3,
-    PlanetType.gas: 3,
+    PlanetType.habitable: 1,
+    PlanetType.inhabitable: 9,
   };
   static const Map<PlanetType, int> blueWeightTable = {
-    PlanetType.terran: 1,
-    PlanetType.iron: 2,
-    PlanetType.desert: 3,
-    PlanetType.ice: 4,
-    PlanetType.gas: 1,
+    PlanetType.habitable: 4,
+    PlanetType.inhabitable: 6,
   };
   static const Map<PlanetType, int> yellowWeightTable = {
-    PlanetType.terran: 1,
-    PlanetType.iron: 1,
-    PlanetType.desert: 2,
-    PlanetType.ice: 2,
-    PlanetType.gas: 2,
+    PlanetType.habitable: 5,
+    PlanetType.inhabitable: 5,
   };
   static const Map<PlanetType, int> whiteWeightTable = {
-    PlanetType.terran: 1,
-    PlanetType.iron: 2,
-    PlanetType.desert: 4,
-    PlanetType.ice: 3,
-    PlanetType.gas: 1,
+    PlanetType.habitable: 4,
+    PlanetType.inhabitable: 6,
   };
   static const Map<PlanetType, int> redWeightTable = {
-    PlanetType.iron: 1,
-    PlanetType.desert: 4,
-    PlanetType.ice: 3,
-    PlanetType.gas: 1,
+    PlanetType.habitable: 3,
+    PlanetType.inhabitable: 7,
   };
 
   late final int _starWeight = weightTable.values.fold(0, (a, b) => a + b);
@@ -94,7 +82,7 @@ class StarGenerationHelper {
 
   List<Planet> _randPlanetsForBinary(Random random) {
     final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 2;
+    final numOfPlanets = random.nextInt(4) + 2;
     loop:
     for (int i = 0; i < numOfPlanets; i++) {
       final num = random.nextInt(_binaryWeight);
@@ -102,18 +90,19 @@ class StarGenerationHelper {
       for (final entry in binaryWeightTable.entries) {
         sum += entry.value;
         if (num <= sum) {
-          planets.add(Planet.of(entry.key));
+          planets.add(Planet.of(entry.key, random.nextInt(3)));
           continue loop;
         }
       }
     }
+    planets.sort((a, b) => a.type.index.compareTo(b.type.index));
 
     return planets;
   }
 
   List<Planet> _randPlanetsForBlue(Random random) {
     final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 3;
+    final numOfPlanets = random.nextInt(4) + 4;
     loop:
     for (int i = 0; i < numOfPlanets; i++) {
       final num = random.nextInt(_blueWeight);
@@ -121,18 +110,19 @@ class StarGenerationHelper {
       for (final entry in blueWeightTable.entries) {
         sum += entry.value;
         if (num <= sum) {
-          planets.add(Planet.of(entry.key));
+          planets.add(Planet.of(entry.key, random.nextInt(3)));
           continue loop;
         }
       }
     }
+    planets.sort((a, b) => a.type.index.compareTo(b.type.index));
 
     return planets;
   }
 
   List<Planet> _randPlanetsForYellow(Random random) {
     final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 3;
+    final numOfPlanets = random.nextInt(5) + 4;
     loop:
     for (int i = 0; i < numOfPlanets; i++) {
       final num = random.nextInt(_yellowWeight);
@@ -140,18 +130,19 @@ class StarGenerationHelper {
       for (final entry in yellowWeightTable.entries) {
         sum += entry.value;
         if (num <= sum) {
-          planets.add(Planet.of(entry.key));
+          planets.add(Planet.of(entry.key, random.nextInt(3)));
           continue loop;
         }
       }
     }
+    planets.sort((a, b) => a.type.index.compareTo(b.type.index));
 
     return planets;
   }
 
   List<Planet> _randPlanetsForWhite(Random random) {
     final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(3) + 3;
+    final numOfPlanets = random.nextInt(4) + 4;
     loop:
     for (int i = 0; i < numOfPlanets; i++) {
       final num = random.nextInt(_whiteWeight);
@@ -159,18 +150,19 @@ class StarGenerationHelper {
       for (final entry in whiteWeightTable.entries) {
         sum += entry.value;
         if (num <= sum) {
-          planets.add(Planet.of(entry.key));
+          planets.add(Planet.of(entry.key, random.nextInt(3)));
           continue loop;
         }
       }
     }
+    planets.sort((a, b) => a.type.index.compareTo(b.type.index));
 
     return planets;
   }
 
   List<Planet> _randPlanetsForRed(Random random) {
     final planets = <Planet>[];
-    final numOfPlanets = random.nextInt(4) + 2;
+    final numOfPlanets = random.nextInt(5) + 3;
     loop:
     for (int i = 0; i < numOfPlanets; i++) {
       final num = random.nextInt(_redWeight);
@@ -178,11 +170,12 @@ class StarGenerationHelper {
       for (final entry in redWeightTable.entries) {
         sum += entry.value;
         if (num <= sum) {
-          planets.add(Planet.of(entry.key));
+          planets.add(Planet.of(entry.key, random.nextInt(3)));
           continue loop;
         }
       }
     }
+    planets.sort((a, b) => a.type.index.compareTo(b.type.index));
 
     return planets;
   }
@@ -191,7 +184,10 @@ class StarGenerationHelper {
     final rand = random ?? Random();
 
     final planets = switch (star) {
-      StarType.none => [Planet(PlanetType.gas), Planet(PlanetType.gas)],
+      StarType.none => [
+          Planet(PlanetType.inhabitable, rand.nextInt(3)),
+          Planet(PlanetType.inhabitable, rand.nextInt(3)),
+        ],
       StarType.binary => _randPlanetsForBinary(rand),
       StarType.blue => _randPlanetsForBlue(rand),
       StarType.yellow => _randPlanetsForYellow(rand),

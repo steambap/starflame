@@ -5,7 +5,7 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 
-class Backdrop extends RectangleComponent with HasGameRef<ScifiGame> {
+class Backdrop extends RectangleComponent with HasGameReference<ScifiGame> {
   late final FragmentShader _shader;
 
   Backdrop() : super();

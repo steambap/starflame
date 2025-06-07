@@ -19,7 +19,7 @@ import 'tile_type.dart';
 import "styles.dart";
 
 class Ship extends PositionComponent
-    with HasGameRef<ScifiGame>, ChangeNotifier {
+    with HasGameReference<ScifiGame>, ChangeNotifier {
   late final SpriteAnimationComponent _shipSprite;
   final _panel = RectangleComponent(
       size: Vector2(4, 25),

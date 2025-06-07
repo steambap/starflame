@@ -10,7 +10,7 @@ import 'ship.dart';
 import "styles.dart";
 import 'tile_type.dart';
 
-class Cell extends PositionComponent with HasGameRef<ScifiGame> {
+class Cell extends PositionComponent with HasGameReference<ScifiGame> {
   final int index;
   final Hex hex;
   Sector? sector;

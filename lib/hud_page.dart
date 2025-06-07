@@ -3,7 +3,7 @@ import 'package:flame/components.dart';
 
 import 'scifi_game.dart';
 
-class HudPage extends Component with HasGameRef<ScifiGame> {
+class HudPage extends Component with HasGameReference<ScifiGame> {
   static const routeName = 'hud';
 
   HudPage({super.children, super.priority, super.key});
