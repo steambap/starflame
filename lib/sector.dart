@@ -102,6 +102,12 @@ class Sector extends PositionComponent
     playerNumber = playerState.playerNumber;
     homePlanet = playerState.playerNumber;
 
+    for (final planet in planets) {
+      if (planet.type == PlanetType.habitable) {
+        planet.isColonized = true;
+      }
+    }
+
     refreshProps();
   }
 
@@ -158,8 +164,13 @@ class Sector extends PositionComponent
   void refreshProps() {
     props.clear();
 
+    for (final planet in planets) {
+      if (planet.isColonized) {
+        addProp(SimProps.production, 2);
+      }
+    }
+
     addProp(SimProps.energy, output);
-    addProp(SimProps.production, output);
     addProp(SimProps.politics, output);
 
     final maintaince = playerNumber == homePlanet ? 0 : 2;
