@@ -3,6 +3,7 @@ import "dart:async";
 
 import "scifi_game.dart";
 import "select_control.dart";
+import "logger.dart";
 
 typedef AnimationFuture = Future<void> Function();
 
@@ -63,7 +64,7 @@ class AnimationPool {
     try {
       await item();
     } catch (e) {
-      print("Animation error: $e");
+      logger.w("Animation error: $e");
     }
 
     _next();

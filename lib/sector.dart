@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui' show Paint;
+import "package:collection/collection.dart";
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart' show ChangeNotifier;
 
@@ -111,6 +112,10 @@ class Sector extends PositionComponent
     refreshProps();
   }
 
+  bool isHome() {
+    return homePlanet == playerNumber;
+  }
+
   void colonize(int playerNumber) {
     this.playerNumber = playerNumber;
     updateRender();
@@ -140,6 +145,14 @@ class Sector extends PositionComponent
     }
   }
 
+  Iterable<Planet> getHabitablePlanets() {
+    return planets.where((p) => p.type == PlanetType.habitable);
+  }
+
+  Iterable<Planet> getInhabitablePlanets() {
+    return planets.where((p) => p.type == PlanetType.inhabitable);
+  }
+
   void phaseUpdate(int playerNumber) {
     if (this.playerNumber != playerNumber) {
       return;
@@ -161,6 +174,10 @@ class Sector extends PositionComponent
     return playerNumber == null;
   }
 
+  int getBuildingCount() {
+    return buildings.where((b) => b != null).length;
+  }
+
   void refreshProps() {
     props.clear();
 
@@ -173,7 +190,7 @@ class Sector extends PositionComponent
     addProp(SimProps.energy, output);
     addProp(SimProps.politics, output);
 
-    final maintaince = playerNumber == homePlanet ? 0 : 2;
+    final maintaince = isHome() ? 0 : 2;
     addProp(SimProps.energy, -maintaince);
     notifyListeners();
   }

@@ -102,6 +102,10 @@ class AppTheme {
       side: BorderSide(color: sand7, width: 0.5),
     ),
   );
+  static final ButtonStyle textButton = TextButton.styleFrom(
+    foregroundColor: sand12,
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+  );
   static final ButtonStyle iconButton = IconButton.styleFrom(
     foregroundColor: sand11,
     backgroundColor: cyan4,
