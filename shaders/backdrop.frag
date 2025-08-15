@@ -64,7 +64,7 @@ void main() {
 	float f3 = 0.4;
 
     float t = field(p, f2);
-    float v = (1.0 - exp((abs(uv.x) - 1.0) * 6.0)) * (1.0 - exp((abs(uv.y) - 1.0) * 6.0));
+    float v = (1.0 - exp((abs(uv.x) - 1.0) * 2.0)) * (1.0 - exp((abs(uv.y) - 1.0) * 2.0));
 
     vec3 p2 = vec3(uvs / 4.6, 1.5) + vec3(2.0, -1.3, -1.0);
     // adjust second layer position based on mouse movement

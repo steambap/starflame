@@ -67,7 +67,14 @@ class FlameTheme {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1
     ..color = sand8;
-  static final highlighterPaint = Paint()..color = cyan7;
+  static final planetHighlighter = Paint()
+    ..color = cyan7
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 6;
+  static final prodProgress = Paint()
+    ..color = cyan7
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 12;
   static final moveendPaint = Paint()..color = purple7;
   static final targetPaint = Paint()..color = red7;
   static final fogPaint = Paint()..color = sand3;

@@ -7,6 +7,8 @@ import 'scifi_game.dart';
 
 class Backdrop extends RectangleComponent with HasGameReference<ScifiGame> {
   late final FragmentShader _shader;
+  // last camera position we sent to the GPU
+  final Vector2 _lastCamPos = Vector2.zero();
 
   Backdrop() : super();
 
@@ -18,6 +20,8 @@ class Backdrop extends RectangleComponent with HasGameReference<ScifiGame> {
     _shader = program.fragmentShader();
     _shader.setFloat(0, size.x);
     _shader.setFloat(1, size.y);
+    _shader.setFloat(2, 0);
+    _shader.setFloat(3, 0);
     paint = Paint()..shader = _shader;
 
     return super.onLoad();
@@ -25,14 +29,23 @@ class Backdrop extends RectangleComponent with HasGameReference<ScifiGame> {
 
   @override
   void update(double dt) {
-    _shader.setFloat(2, game.camera.viewfinder.position.x);
-    _shader.setFloat(3, game.camera.viewfinder.position.y);
+    final cam = game.camera.viewfinder.position;
+    if (cam != _lastCamPos) {
+      _lastCamPos.setFrom(cam);
+      _shader.setFloat(2, _lastCamPos.x);
+      _shader.setFloat(3, _lastCamPos.y);
+    }
+
     super.update(dt);
   }
 
   @override
   void onGameResize(Vector2 size) {
-    size = game.size;
+    this.size = size;
+    if (isMounted) {
+      _shader.setFloat(0, size.x);
+      _shader.setFloat(1, size.y);
+    }
 
     super.onGameResize(size);
   }

@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'scifi_game.dart';
 import "styles.dart";
-import "ship.dart";
 
 class ScifiWorld extends World
     with HasGameReference<ScifiGame>, KeyboardHandler, DragCallbacks {
@@ -24,19 +23,14 @@ class ScifiWorld extends World
 
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    if (!game.controller.isGameStarted) {
-      return false;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyF)) {
-      game.mapGrid.debugRemoveFog();
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.enter)) {
-      game.controller.playerEndTurn();
-    }
-    if (keysPressed
-        .containsAll([LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyV])) {
-      game.controller.debugWinGame();
-    }
+    // if (!game.controller.isGameStarted) {
+    //   return false;
+    // }
+
+    // if (keysPressed
+    //     .containsAll([LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyV])) {
+    //   game.controller.debugWinGame();
+    // }
     direction = Vector2.zero();
     direction.x += (keysPressed.contains(LogicalKeyboardKey.keyA) ||
             keysPressed.contains(LogicalKeyboardKey.arrowLeft))
@@ -64,6 +58,24 @@ class ScifiWorld extends World
     game.camera.moveBy(-event.localDelta);
   }
 
+  void renderBullet(PositionComponent from, PositionComponent to, void Function()? onComplete) {
+    final bullet = SpriteComponent.fromImage(
+      game.images.fromCache("ships/bullet.png"),
+      anchor: Anchor.center,
+      scale: Vector2.all(0.5),
+    );
+    bullet.position = from.position.clone();
+    bullet.lookAt(to.position);
+
+    final removeEff = RemoveEffect(delay: 0.1, onComplete: onComplete);
+    final moveEff = MoveToEffect(
+      to.position,
+      EffectController(duration: 0.1),
+    );
+    bullet.addAll([removeEff, moveEff]);
+    add(bullet);
+  }
+
   void renderDamageText(String text, Vector2 position) {
     final textComponent = TextComponent(
         text: text, textRenderer: FlameTheme.textDamage, position: position);
@@ -75,9 +87,5 @@ class ScifiWorld extends World
     );
     textComponent.addAll([removeEff, moveEff]);
     add(textComponent);
-  }
-
-  void focusShip(Ship ship) {
-    game.camera.moveTo(ship.position);
   }
 }

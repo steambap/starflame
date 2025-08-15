@@ -2,329 +2,213 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import "package:flame/rendering.dart";
-import "package:flutter/foundation.dart" show ChangeNotifier;
-import "package:flutter/material.dart" show Paint, PaintingStyle;
+import 'package:flame/collisions.dart';
 
-import 'sim_props.dart';
 import 'scifi_game.dart';
-import "cell.dart";
-import "hex.dart";
-import "ship_state.dart";
-import "ship_blueprint.dart";
-import "action_type.dart";
-import "action.dart";
-import "select_control.dart";
-import 'tile_type.dart';
-import "styles.dart";
+import 'planet.dart';
 
 class Ship extends PositionComponent
-    with HasGameReference<ScifiGame>, ChangeNotifier {
-  late final SpriteAnimationComponent _shipSprite;
-  final _panel = RectangleComponent(
-      size: Vector2(4, 25),
-      anchor: Anchor.center,
-      paintLayers: FlameTheme.panelSkin,
-      position: Vector2(12, -15));
-  final _healthbar = RectangleComponent(
-      size: Vector2(3, 24),
-      anchor: Anchor.bottomCenter,
-      paint: FlameTheme.emptyPaint,
-      position: Vector2(12, -3));
+    with HasGameReference<ScifiGame>, CollisionCallbacks {
+  static const double attackRange = 24;
 
-  Hex hex;
-  late ShipState state;
-  ShipBlueprint blueprint;
-  List<ShipPart> parts = [];
-  Map<Cell, List<Cell>> cachedPaths = const {};
+  final int playerIdx;
+  late final SpriteAnimationComponent _sprite;
+  late final CircleHitbox _hitbox =
+      CircleHitbox(radius: attackRange, anchor: Anchor.center);
 
-  Ship(this.hex, int playerNumber, this.blueprint)
-      : super(anchor: Anchor.center) {
-    state = ShipState(playerNumber);
-    parts = blueprint.parts;
+  late Planet _targetPlanet;
+  late Component _behaviour = OrbitingBehaviour();
+  bool isMovingOut = false;
+  double orbitTime = 0;
+  double attackCD = 0;
+  double attacked = 0;
+  late final double orbitRadius;
+  int hp = 100;
+
+  Ship(this.playerIdx, Planet planet) : super(anchor: Anchor.center) {
+    _targetPlanet = planet;
   }
 
-  SpriteAnimationComponent get sprite => _shipSprite;
+  Planet get targetPlanet => _targetPlanet;
+
+  Component get behaviour => _behaviour;
+  set behaviour(Component value) {
+    _behaviour.removeFromParent();
+    _behaviour = value;
+    add(_behaviour);
+  }
 
   @override
-  FutureOr<void> onLoad() async {
-    final imgShip = game.images.fromCache(blueprint.image);
+  void update(double dt) {
+    _calcOrbitTime(dt);
+    _maybeAttack(dt);
+    _maybeMoveIntoOrbit();
 
-    _shipSprite = SpriteAnimationComponent.fromFrameData(
-        imgShip,
-        SpriteAnimationData.sequenced(
-            amount: blueprint.totalFrames,
-            stepTime: 0.2,
-            textureSize: Vector2.all(144)),
-        anchor: Anchor.center,
-        playing: false);
-    final playerState = game.controller.getPlayerState(state.playerNumber);
-    _healthbar.paint = Paint()
-      ..color = playerState.color
-      ..style = PaintingStyle.fill;
+    attacked -= dt;
+    if (attacked < 0) {
+      attacked = 0;
+    }
 
-    addAll([_shipSprite, _panel, _healthbar]);
-
-    position = hex.toPixel();
-
-    final uid = game.controller.getUniqueID();
-    state.id = uid;
-    state.health = maxHealth();
-    state.morale = maxMorale();
-    resetAllActions();
-
-    updateRender();
+    super.update(dt);
   }
 
-  void updateRender() {
-    _healthbar.size = Vector2(3, 24 * state.health / maxHealth());
+  @override
+  void onRemove() {
+    game.mapGrid.ships.remove(this);
+    if (targetPlanet.ships.contains(this)) {
+      targetPlanet.ships.remove(this);
+    }
+    if (targetPlanet.attackingShips.contains(this)) {
+      targetPlanet.attackingShips.remove(this);
+    }
   }
 
-  void onStartMove() {
-    _shipSprite.playing = true;
-    priority = 1;
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    if (attackCD > 0) {
+      return;
+    }
+    if (other is Ship && other.playerIdx != playerIdx) {
+      attackCD = 0.75; // Attack cooldown
+
+      game.world.renderBullet(this, other, () {
+        other.receiveDamage(8 + game.rand.nextInt(45));
+      });
+    }
+
+    super.onCollision(intersectionPoints, other);
   }
 
-  void onEndMove() {
-    _shipSprite.playing = false;
-    _shipSprite.animationTicker?.reset();
-    priority = 0;
-    _maybeSelectAgain();
+  void attackMove(Planet value) {
+    _targetPlanet = value;
+    isMovingOut = true;
+    behaviour = AttackMoveBehaviour();
   }
 
-  void useMove(int num) {
-    state.movementUsed += num;
-    notifyListeners();
+  void defend(Planet value) {
+    _targetPlanet = value;
+    isMovingOut = false;
+    behaviour = OrbitingBehaviour();
   }
 
-  void _maybeSelectAgain() {
-    if (state.isTurnOver || movePoint() < TileType.empty.cost) {
+  void _calcOrbitTime(double dt) {
+    if (targetPlanet.attackingShips.contains(this)) {
+      orbitTime -= dt;
+    } else {
+      orbitTime += dt; // Normal orbit speed
+    }
+
+    if (orbitTime >= 2 * pi) {
+      orbitTime = 0;
+    }
+    if (orbitTime <= -2 * pi) {
+      orbitTime = 0;
+    }
+  }
+
+  Vector2 orbitPosition() {
+    return Vector2(
+      targetPlanet.position.x + orbitRadius * cos(orbitTime),
+      targetPlanet.position.y + orbitRadius * sin(orbitTime),
+    );
+  }
+
+  void _maybeMoveIntoOrbit() {
+    if (!inOrbit()) {
       return;
     }
 
-    game.mapGrid.selectControl = SelectControlShipSelected(game, this);
-  }
-
-  void useAttack() {
-    state.attacked = true;
-    setTurnOver();
-    notifyListeners();
-  }
-
-  void setTurnOver() {
-    state.isTurnOver = true;
-    if (!state.attacked && state.movementUsed == 0) {
-      repair(10);
-    }
-    state.attacked = true;
-    state.movementUsed = 999;
-    _shipSprite.decorator.addLast(PaintDecorator.grayscale());
-    notifyListeners();
-  }
-
-  int movePoint() {
-    if (state.isTurnOver) {
-      return 0;
-    }
-    final maxMove = maxMovement();
-
-    return max(maxMove - state.movementUsed, 0);
-  }
-
-  bool canAttack() {
-    if (state.isTurnOver) {
-      return false;
+    if (!isMovingOut) {
+      return;
     }
 
-    if (state.attacked) {
-      return false;
+    isMovingOut = false;
+    if (_targetPlanet.playerIdx == playerIdx) {
+      if (_targetPlanet.isFullOfShips()) {
+        removeFromParent();
+      } else if (!_targetPlanet.ships.contains(this)) {
+        _targetPlanet.ships.add(this);
+        defend(_targetPlanet);
+      }
+    } else {
+      _targetPlanet.attackingShips.add(this);
     }
-
-    return movePoint() > 0;
   }
 
-  void preparationPhaseUpdate() {
-    state.isTurnOver = false;
-    state.attacked = false;
-    state.movementUsed = 0;
-    _shipSprite.decorator.removeLast();
-    updateCooldown();
+  void _maybeAttack(double dt) {
+    if (attackCD > 0) {
+      attackCD -= dt;
+      return;
+    }
   }
 
-  bool takeDamage(int damage) {
-    state.health -= damage;
-    if (state.health <= 0) {
-      dispose();
+  bool inOrbit() {
+    return (position - targetPlanet.position).length <=
+        Planet.radius + attackRange;
+  }
 
+  bool receiveDamage(int damage) {
+    attacked = 1;
+    hp -= damage;
+    if (hp <= 0) {
+      removeFromParent();
       return true;
     }
-    notifyListeners();
-
     return false;
+  }
+
+  double shipSpeed() {
+    final mod = attacked > 0 ? 0.5 : 1.0;
+    return 100.0 * mod;
   }
 
   @override
-  void dispose() {
-    cachedPaths = const {};
-    game.mapGrid.cellAtHex(hex)?.ship = null;
-    game.mapGrid.removeShip(this);
-    removeFromParent();
-    if (game.mapGrid.selectControl is SelectControlShipSelected) {
-      game.mapGrid.selectControl = SelectControlWaitForInput(game);
-    }
+  FutureOr<void> onLoad() {
+    orbitRadius = Planet.radius + game.rand.nextDouble() * attackRange * 0.5;
+    orbitTime = game.rand.nextDouble() * pi * 2;
+    final shipImage = game.images.fromCache("ships/corvette.png");
+    _sprite = SpriteAnimationComponent.fromFrameData(
+        shipImage,
+        SpriteAnimationData.sequenced(
+          amount: 4,
+          stepTime: 0.25,
+          textureSize: Vector2.all(144),
+          loop: true,
+        ),
+        anchor: Anchor.center,
+        priority: 5,
+        scale: Vector2.all(0.5));
 
-    super.dispose();
+    addAll([
+      _sprite,
+      _hitbox,
+      _behaviour,
+    ]);
+
+    return super.onLoad();
   }
+}
 
-  void repair(int amount) {
-    state.health = min(state.health + amount, maxHealth());
-    notifyListeners();
+class OrbitingBehaviour extends Component with ParentIsA<Ship> {
+  @override
+  void update(double dt) {
+    final ship = parent;
+    final orbitPos = ship.orbitPosition();
+    final dir = orbitPos - ship.position;
+
+    ship.lookAt(orbitPos);
+    ship.position += dir.normalized() * ship.shipSpeed() * dt;
   }
+}
 
-  void resetAllActions() {
-    final actionTypes = blueprint.actionTypes();
-    state.actions.clear();
-    for (final at in actionTypes) {
-      state.actions.add(ActionState(at));
-    }
-  }
+class AttackMoveBehaviour extends Component with ParentIsA<Ship> {
+  @override
+  void update(double dt) {
+    final ship = parent;
+    final orbitPos = ship.orbitPosition();
+    final dir = orbitPos - ship.position;
 
-  void addCooldown(ActionType type, int cd) {
-    final action = state.actions.firstWhere((element) => element.type == type,
-        orElse: () => state.actions.first);
-    action.cooldown += cd;
-    notifyListeners();
-  }
-
-  List<Hex> vision() {
-    return hex.cubeSpiral(visionRange());
-  }
-
-  int visionRange() {
-    return maxMovement() ~/ TileType.empty.cost;
-  }
-
-  ActionState? getActionState(ActionType type) {
-    for (final action in state.actions) {
-      if (action.type == type) {
-        return action;
-      }
-    }
-
-    return null;
-  }
-
-  void updateCooldown() {
-    for (final action in state.actions) {
-      if (action.cooldown > 0) {
-        action.cooldown--;
-      }
-    }
-  }
-
-  List<Action> actions() {
-    return [
-      Capture(this),
-      Stay(this),
-    ];
-  }
-
-  // Ship part related functions
-  bool hasNewParts() {
-    for (int i = 0; i < parts.length; i++) {
-      if (parts[i].name != blueprint.parts[i].name) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  void upgrade() {
-    if (!hasNewParts()) {
-      return;
-    }
-
-    final isFull = isFullHealth();
-    final double healthRatio = state.health / maxHealth();
-
-    parts = blueprint.parts;
-
-    if (isFull) {
-      state.health = maxHealth();
-    } else {
-      state.health = (maxHealth() * healthRatio).floor().clamp(1, maxHealth());
-    }
-
-    notifyListeners();
-  }
-
-  int maxHealth() {
-    int ret = blueprint.getProp(SimProps.maxHealth);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.maxHealth);
-    }
-
-    return ret;
-  }
-
-  bool isFullHealth() {
-    return state.health == maxHealth();
-  }
-
-  int maxMovement() {
-    int ret = blueprint.getProp(SimProps.movement);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.movement);
-    }
-
-    return ret;
-  }
-
-  int maxMorale() {
-    int ret = blueprint.getProp(SimProps.maxMorale);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.maxMorale);
-    }
-
-    return ret;
-  }
-
-  int strength() {
-    int ret = blueprint.getProp(SimProps.strength);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.strength);
-    }
-
-    return ret;
-  }
-
-  int rangedStrength() {
-    if (blueprint.getProp(SimProps.allowRanged) == 0) {
-      return 0;
-    }
-    int ret = blueprint.getProp(SimProps.rangedStrength);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.rangedStrength);
-    }
-
-    return ret;
-  }
-
-  int attackRange() {
-    if (blueprint.getProp(SimProps.allowRanged) == 0) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
-
-  int energyUpkeep() {
-    int ret = blueprint.getProp(SimProps.energyUpkeep);
-    for (final part in parts) {
-      ret += part.getProp(SimProps.energyUpkeep);
-    }
-
-    return ret;
+    ship.lookAt(ship.targetPlanet.position);
+    ship.position += dir.normalized() * ship.shipSpeed() * dt;
   }
 }
