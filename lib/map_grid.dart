@@ -35,7 +35,7 @@ class MapGrid extends Component
   void start() {
     for (int i = 0; i < testPlanets.length; i++) {
       final pos = testPlanets[i];
-      final planet = Planet(i, PlanetType.values[i], position: pos);
+      final planet = Planet(i, PlanetType.values[i], [], position: pos);
       planets.add(planet);
       add(planet);
     }

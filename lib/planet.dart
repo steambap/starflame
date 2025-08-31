@@ -16,7 +16,7 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   static const double productionRate = 0.29;
   static const double radius = 72.0;
 
-  final CircleComponent _circle = CircleComponent(
+  final CircleComponent _circleSelect = CircleComponent(
       radius: radius + 2,
       paint: FlameTheme.planetHighlighter,
       anchor: Anchor.center);
@@ -35,18 +35,26 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   final CircularProgressBar _productionProgressBar = CircularProgressBar(
     radius: 24,
   );
+  final CircularProgressBar _occupationBar = CircularProgressBar(
+    radius: radius - 6,
+    priority: 3,
+  );
   RallyArrow _rallyArrow = RallyArrow(Vector2.zero(), Vector2.zero());
 
   final PlanetType type;
   final List<Ship> ships = [];
   final List<Ship> attackingShips = [];
+  final List<Planet> connections;
   late int playerIdx;
   Planet? _rallyPoint;
   double _sendShipCD = 0;
+  double _defenseCD = 0;
 
   double productionProgress = 0;
+  int health = 0;
+  int occupationPoint = 0;
 
-  Planet(this.playerIdx, this.type, {super.position})
+  Planet(this.playerIdx, this.type, this.connections, {super.position})
       : super(size: Vector2.all(radius * 2));
 
   @override
@@ -57,9 +65,9 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
         position: Vector2(0, 0),
         anchor: Anchor.center,
         priority: 2);
-    addAll([_sprite, _hitbox, _productionLayer]);
+    addAll([_sprite, _hitbox, _productionLayer, _occupationBar]);
     _productionLayer.addAll([_shipCount, _productionProgressBar]);
-    _circle.add(
+    _circleSelect.add(
       OpacityEffect.to(
         0.24,
         EffectController(
@@ -78,6 +86,9 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
     _runProduction(dt);
     _updateProdUI();
     _sendShips(dt);
+    _updateDefense(dt);
+
+    _occupationBar.progress = occupationPoint / 100;
 
     super.update(dt);
   }
@@ -135,20 +146,51 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   }
 
   void select() {
-    if (_circle.parent == null) {
-      add(_circle);
+    if (_circleSelect.parent == null) {
+      add(_circleSelect);
     }
   }
 
   void deselect() {
-    _circle.removeFromParent();
+    _circleSelect.removeFromParent();
   }
 
   void capture(int playerIdx) {
     this.playerIdx = playerIdx;
-    rallyPoint = null;
+
+    for (final ship in ships) {
+      ship.removeFromParent();
+    }
     ships.clear();
+    for (final ship in attackingShips) {
+      if (ship.playerIdx == playerIdx) {
+        ships.add(ship);
+      } else {
+        ship.removeFromParent();
+      }
+    }
+    attackingShips.clear();
+    rallyPoint = null;
     productionProgress = 0;
+  }
+
+  void receiveDamageFrom(Ship ship, int damage) {
+    _defenseCD = -1;
+
+    if (health > 0) {
+      health -= damage;
+      return;
+    }
+
+    occupationPoint += (damage ~/ 5);
+    if (occupationPoint >= 100 && ship.parent != null) {
+      occupationPoint = 0;
+      capture(ship.playerIdx);
+    }
+  }
+
+  bool isNeutral() {
+    return playerIdx == -1;
   }
 
   Planet? get rallyPoint => _rallyPoint;
@@ -163,6 +205,18 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
       for (final ship in ships) {
         ship.defend(this);
       }
+    }
+  }
+
+  void _updateDefense(double dt) {
+    if (_defenseCD <= 1) {
+      _defenseCD += dt;
+      return;
+    }
+
+    if (occupationPoint > 0) {
+      _defenseCD = 0;
+      occupationPoint = (occupationPoint - 5).clamp(0, 100);
     }
   }
 }

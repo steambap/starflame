@@ -13,6 +13,7 @@ class CircularProgressBar extends PositionComponent {
   CircularProgressBar({
     this.progress = 0.0,
     required this.radius,
+    super.priority,
   });
 
   @override
