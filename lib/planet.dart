@@ -1,60 +1,49 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart' show Paint, PaintingStyle;
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 
 import 'scifi_game.dart';
 import 'ship.dart';
 import 'styles.dart';
 import 'rally_arrow.dart';
+import 'select_circle.dart';
+import 'planet_sidebar.dart';
 import 'circular_progress.dart';
 
 enum PlanetType { terran, arid, exo, ice, gas }
 
 class Planet extends PositionComponent with HasGameReference<ScifiGame> {
-  static const double productionRate = 0.29;
   static const double radius = 72.0;
 
-  final CircleComponent _circleSelect = CircleComponent(
-      radius: radius + 2,
-      paint: FlameTheme.planetHighlighter,
-      anchor: Anchor.center);
+  final _circleSelect = SelectCircle(radius: radius + 2, anchor: Anchor.center);
   late final SpriteComponent _sprite;
   final CircleHitbox _hitbox =
       CircleHitbox(radius: radius, anchor: Anchor.center);
-  final PositionComponent _productionLayer = PositionComponent(
-    anchor: Anchor.center,
-    position: Vector2(0, -radius - 16),
-  );
-  final TextComponent _shipCount = TextComponent(
-    text: '',
-    anchor: Anchor.center,
-    textRenderer: FlameTheme.heading24,
-  );
-  final CircularProgressBar _productionProgressBar = CircularProgressBar(
-    radius: 24,
-  );
+  final _planetSidebar =
+      PlanetSidebar(radius + 16, anchor: Anchor.center, priority: 1);
   final CircularProgressBar _occupationBar = CircularProgressBar(
     radius: radius - 6,
     priority: 3,
+    progressPaint: FlameTheme.occupationProgress,
   );
   RallyArrow _rallyArrow = RallyArrow(Vector2.zero(), Vector2.zero());
 
+  final int id;
   final PlanetType type;
   final List<Ship> ships = [];
   final List<Ship> attackingShips = [];
-  final List<Planet> connections;
   late int playerIdx;
   Planet? _rallyPoint;
   double _sendShipCD = 0;
   double _defenseCD = 0;
 
   double productionProgress = 0;
-  int health = 0;
+  int shield = 0;
   int occupationPoint = 0;
 
-  Planet(this.playerIdx, this.type, this.connections, {super.position})
+  Planet(this.id, this.playerIdx, this.type, {super.position})
       : super(size: Vector2.all(radius * 2));
 
   @override
@@ -65,18 +54,11 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
         position: Vector2(0, 0),
         anchor: Anchor.center,
         priority: 2);
-    addAll([_sprite, _hitbox, _productionLayer, _occupationBar]);
-    _productionLayer.addAll([_shipCount, _productionProgressBar]);
-    _circleSelect.add(
-      OpacityEffect.to(
-        0.24,
-        EffectController(
-          duration: 1,
-          reverseDuration: 1,
-          infinite: true,
-        ),
-      ),
-    );
+    addAll([_sprite, _hitbox, _occupationBar]);
+    if (!isNeutral()) {
+      add(_planetSidebar);
+    }
+    _updatePaint();
 
     return super.onLoad();
   }
@@ -94,10 +76,13 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   }
 
   void _runProduction(double dt) {
+    if (isNeutral()) {
+      return;
+    }
     if (isFullOfShips()) {
       return;
     }
-    productionProgress += dt * productionRate;
+    productionProgress += dt * productionRateOf(type);
     if (productionProgress >= 1) {
       productionProgress = 0;
       // Produce a new ship
@@ -106,14 +91,15 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   }
 
   void _updateProdUI() {
-    if (_shipCount.text != ships.length.toString()) {
-      _shipCount.text = ships.length.toString();
+    if (isNeutral()) {
+      return;
     }
+    _planetSidebar.shipCount = ships.length.toString();
     if (isFullOfShips()) {
       return;
     }
 
-    _productionProgressBar.progress = productionProgress;
+    _planetSidebar.productionProgress = productionProgress;
   }
 
   void _sendShips(double dt) {
@@ -142,7 +128,7 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   }
 
   bool isFullOfShips() {
-    return ships.length >= 5;
+    return ships.length >= maxShipsCountOf(type);
   }
 
   void select() {
@@ -163,7 +149,7 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
     }
     ships.clear();
     for (final ship in attackingShips) {
-      if (ship.playerIdx == playerIdx) {
+      if (ship.playerIdx == playerIdx && !isFullOfShips()) {
         ships.add(ship);
       } else {
         ship.removeFromParent();
@@ -172,17 +158,25 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
     attackingShips.clear();
     rallyPoint = null;
     productionProgress = 0;
+    if (_planetSidebar.parent == null) {
+      add(_planetSidebar);
+    }
+    _updatePaint();
   }
 
   void receiveDamageFrom(Ship ship, int damage) {
+    // damage is before planet is captured
+    if (ship.playerIdx == playerIdx) {
+      return;
+    }
     _defenseCD = -1;
 
-    if (health > 0) {
-      health -= damage;
+    if (shield > 0) {
+      shield -= damage;
       return;
     }
 
-    occupationPoint += (damage ~/ 5);
+    occupationPoint += (damage ~/ 5) - ships.length;
     if (occupationPoint >= 100 && ship.parent != null) {
       occupationPoint = 0;
       capture(ship.playerIdx);
@@ -193,6 +187,14 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
     return playerIdx == -1;
   }
 
+  bool isDefending() {
+    return _rallyPoint == null;
+  }
+
+  bool isUnderInvasion() {
+    return attackingShips.isNotEmpty && occupationPoint > 0;
+  }
+
   Planet? get rallyPoint => _rallyPoint;
 
   set rallyPoint(Planet? p) {
@@ -201,10 +203,12 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
     if (p != null) {
       _rallyArrow = RallyArrow(position, p.position, priority: 1);
       add(_rallyArrow);
+      _planetSidebar.isDefending = false;
     } else {
       for (final ship in ships) {
         ship.defend(this);
       }
+      _planetSidebar.isDefending = true;
     }
   }
 
@@ -216,7 +220,41 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
 
     if (occupationPoint > 0) {
       _defenseCD = 0;
-      occupationPoint = (occupationPoint - 5).clamp(0, 100);
+      occupationPoint = (occupationPoint - 3 - ships.length).clamp(0, 100);
     }
+  }
+
+  void _updatePaint() {
+    if (isNeutral()) {
+      return;
+    }
+
+    final playerState = game.mapGrid.getPlayerState(playerIdx);
+    final paint = Paint()
+      ..color = playerState.color.withAlpha(200)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    _circleSelect.circleColor = paint;
+    _planetSidebar.setPaint(paint);
+  }
+
+  static double productionRateOf(PlanetType type) {
+    return switch (type) {
+      PlanetType.terran => 0.29,
+      PlanetType.arid => 0.22,
+      PlanetType.exo => 0.25,
+      PlanetType.ice => 0.15,
+      PlanetType.gas => 0.18,
+    };
+  }
+
+  static int maxShipsCountOf(PlanetType type) {
+    return switch (type) {
+      PlanetType.terran => 7,
+      PlanetType.arid => 6,
+      PlanetType.exo => 6,
+      PlanetType.ice => 5,
+      PlanetType.gas => 5,
+    };
   }
 }

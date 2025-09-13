@@ -15,6 +15,8 @@ const gold10 = Color(0xFFB88C67);
 const gold11 = Color(0xD9FED1AA);
 const orange10 = Color(0xFFFF801F);
 const orange11 = Color(0xFFFFA057);
+const brown2 = Color(0xFF1C1816);
+const brown7 = Color(0xFF614a39);
 const red7 = Color(0x84FF5361);
 const red11 = Color(0xFFFF9592);
 const purple7 = Color(0x7AC378FD);
@@ -67,15 +69,38 @@ class FlameTheme {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1
     ..color = sand8;
-  static final planetHighlighter = Paint()
+  static final planetHighlighter1 = Paint()
     ..color = cyan7
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 6;
+    ..strokeWidth = 2;
+  static final planetHighlighter2 = Paint()..color = sand11;
+  static final planetSidebar = Paint()
+    ..color = sand11
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2;
+  static final List<Paint> planetSidebarProdCircle = [
+    Paint()
+      ..color = sand11
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+    Paint()..color = brown7,
+  ];
+  static final List<Paint> planetSidebarStateCircle = [
+    Paint()
+      ..color = sand11
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+    Paint()..color = brown2,
+  ];
   static final prodProgress = Paint()
     ..color = cyan7
     ..style = PaintingStyle.stroke
+    ..strokeWidth = 8;
+  static final occupationProgress = Paint()
+    ..color = red7
+    ..style = PaintingStyle.stroke
     ..strokeWidth = 12;
-  static final moveendPaint = Paint()..color = purple7;
+  static final connection = Paint()..color = cyan7;
   static final targetPaint = Paint()..color = red7;
   static final fogPaint = Paint()..color = sand3;
 }

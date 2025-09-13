@@ -36,7 +36,8 @@ class ScifiGame extends FlameGame<ScifiWorld>
     // gameCreator.create(s);
 
     // controller.initGame(s.players);
-    mapGrid.start();
+    world.isGameStarted = true;
+    mapGrid.start('human0');
     // await mapGrid.initMap(gameCreator);
     // controller.startGame();
   }

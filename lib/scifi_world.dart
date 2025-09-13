@@ -11,6 +11,7 @@ class ScifiWorld extends World
     with HasGameReference<ScifiGame>, KeyboardHandler, DragCallbacks {
   final double moveSpeed = 64;
   Vector2 direction = Vector2.zero();
+  bool isGameStarted = false;
 
   @mustCallSuper
   @override
@@ -23,9 +24,9 @@ class ScifiWorld extends World
 
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    // if (!game.controller.isGameStarted) {
-    //   return false;
-    // }
+    if (!isGameStarted) {
+      return false;
+    }
 
     // if (keysPressed
     //     .containsAll([LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.keyV])) {

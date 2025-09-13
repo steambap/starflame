@@ -44,7 +44,11 @@ class SelectControlPlanet extends SelectControlComponent {
       this.planet.rallyPoint = null;
       return;
     }
+    if (game.mapGrid.isPlanetConnected(this.planet, planet) && !this.planet.isNeutral()) {
+      this.planet.rallyPoint = planet;
+      return;
+    }
 
-    this.planet.rallyPoint = planet;
+    game.mapGrid.selectControl = SelectControlPlanet(planet);
   }
 }
