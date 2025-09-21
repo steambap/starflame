@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/effects.dart';
@@ -5,6 +7,7 @@ import "package:flutter/foundation.dart";
 import 'package:flutter/services.dart';
 
 import 'scifi_game.dart';
+import 'planet.dart';
 import "styles.dart";
 
 class ScifiWorld extends World
@@ -12,6 +15,9 @@ class ScifiWorld extends World
   final double moveSpeed = 64;
   Vector2 direction = Vector2.zero();
   bool isGameStarted = false;
+  bool _isDragPlanet = false;
+  Planet? _dragPlanet;
+  Vector2 _dragEndPoint = Vector2.zero();
 
   @mustCallSuper
   @override
@@ -55,11 +61,67 @@ class ScifiWorld extends World
   }
 
   @override
+  void onDragStart(DragStartEvent event) {
+    final cmps = game.componentsAtPoint(event.canvasPosition);
+    for (final cmp in cmps) {
+      if (cmp is Planet) {
+        _dragPlanet = cmp;
+        cmp.select();
+        _isDragPlanet = true;
+        break;
+      }
+    }
+
+    super.onDragStart(event);
+  }
+
+  @override
+  void onDragEnd(DragEndEvent event) {
+    if (_isDragPlanet && _dragPlanet != null) {
+      _handleDragPlanetEnd();
+    }
+    _isDragPlanet = false;
+    _dragPlanet?.deselect();
+    _dragPlanet = null;
+    super.onDragEnd(event);
+  }
+
+  void _handleDragPlanetEnd() {
+    final p = _dragPlanet!;
+    final cmps = game.componentsAtPoint(_dragEndPoint);
+    for (final cmp in cmps) {
+      if (cmp is Planet && game.mapGrid.isPlanetConnected(p, cmp)) {
+        p.rallyPoint = cmp;
+        break;
+      }
+      if (cmp == p) {
+        p.rallyPoint = null;
+        break;
+      }
+    }
+  }
+
+  @override
   void onDragUpdate(DragUpdateEvent event) {
+    if (_isDragPlanet) {
+      _dragEndPoint = event.canvasEndPosition;
+      return;
+    }
     game.camera.moveBy(-event.localDelta);
   }
 
-  void renderBullet(PositionComponent from, PositionComponent to, void Function()? onComplete) {
+  @override
+  void render(Canvas canvas) {
+    if (_isDragPlanet && _dragPlanet != null) {
+      final pos = _dragPlanet!.position.toOffset();
+      final end = game.camera.globalToLocal(_dragEndPoint).toOffset();
+      canvas.drawLine(pos, end, FlameTheme.connection);
+    }
+    super.render(canvas);
+  }
+
+  void renderBullet(PositionComponent from, PositionComponent to,
+      void Function()? onComplete) {
     final bullet = SpriteComponent.fromImage(
       game.images.fromCache("ships/bullet.png"),
       anchor: Anchor.center,

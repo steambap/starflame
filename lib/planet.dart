@@ -75,6 +75,11 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
     super.update(dt);
   }
 
+  @override
+  bool containsLocalPoint(Vector2 point) {
+    return point.length <= radius + 16;
+  }
+
   void _runProduction(double dt) {
     if (isNeutral()) {
       return;
@@ -213,6 +218,9 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   }
 
   void _updateDefense(double dt) {
+    if (isNeutral()) {
+      return;
+    }
     if (_defenseCD <= 1) {
       _defenseCD += dt;
       return;
@@ -240,9 +248,9 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
 
   static double productionRateOf(PlanetType type) {
     return switch (type) {
-      PlanetType.terran => 0.29,
-      PlanetType.arid => 0.22,
-      PlanetType.exo => 0.25,
+      PlanetType.terran => 0.3,
+      PlanetType.arid => 0.21,
+      PlanetType.exo => 0.24,
       PlanetType.ice => 0.15,
       PlanetType.gas => 0.18,
     };

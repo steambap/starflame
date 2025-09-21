@@ -21,6 +21,7 @@ class MapGrid extends Component
   final List<(Offset, Offset)> connectionDrawings = [];
   final List<Ship> ships = [];
   final List<PlayerState> playerStates = [];
+  int _humanPlayerIdx = 0;
   late SelectControlComponent _selectControl;
 
   set selectControl(SelectControlComponent s) {
@@ -40,6 +41,9 @@ class MapGrid extends Component
 
     for (int i = 0; i < levelData.players.length; i++) {
       final player = levelData.players[i];
+      if (!player.isAI) {
+        _humanPlayerIdx = i;
+      }
       final playerState =
           PlayerState(i, player.isAI, SceneLevelData.playerColors[i]);
       playerStates.add(playerState);
@@ -83,7 +87,7 @@ class MapGrid extends Component
   }
 
   PlayerState getHumanPlayerState() {
-    return playerStates.firstWhere((playerState) => !playerState.isAI);
+    return getPlayerState(_humanPlayerIdx);
   }
 
   void reset() {

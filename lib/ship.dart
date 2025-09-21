@@ -20,8 +20,7 @@ class Ship extends PositionComponent
   late Component _behavior = OrbitingBehavior();
 
   bool isMovingOut = false;
-  double orbitTime = 0;
-  double orbitSpeed = 1;
+  double _orbitAngle = 0;
   double attackCD = 0;
 
   late final double orbitRadius;
@@ -40,9 +39,19 @@ class Ship extends PositionComponent
     add(_behavior);
   }
 
+  double get orbitAngle => _orbitAngle;
+  set orbitAngle(double value) {
+    _orbitAngle = value;
+    if (_orbitAngle >= 2 * pi) {
+      _orbitAngle = 0;
+    }
+    if (_orbitAngle <= -2 * pi) {
+      _orbitAngle = 0;
+    }
+  }
+
   @override
   void update(double dt) {
-    _calcOrbitTime(dt);
     _updateAttackCD(dt);
     _maybeMoveIntoOrbit();
 
@@ -100,22 +109,16 @@ class Ship extends PositionComponent
     behaviour = AttackBehavior();
   }
 
-  void _calcOrbitTime(double dt) {
-    orbitTime += dt * orbitSpeed;
-
-    if (orbitTime >= 2 * pi) {
-      orbitTime = 0;
-    }
-    if (orbitTime <= -2 * pi) {
-      orbitTime = 0;
-    }
-  }
-
   Vector2 orbitPosition() {
     return Vector2(
-      targetPlanet.position.x + orbitRadius * cos(orbitTime),
-      targetPlanet.position.y + orbitRadius * sin(orbitTime),
+      targetPlanet.position.x + orbitRadius * cos(_orbitAngle),
+      targetPlanet.position.y + orbitRadius * sin(_orbitAngle),
     );
+  }
+
+  void scrap() {
+    game.mapGrid.getPlayerState(playerIdx).resources += 1;
+    removeFromParent();
   }
 
   void _maybeMoveIntoOrbit() {
@@ -129,7 +132,7 @@ class Ship extends PositionComponent
 
     if (_targetPlanet.playerIdx == playerIdx) {
       if (_targetPlanet.isFullOfShips()) {
-        removeFromParent();
+        scrap();
       } else if (!_targetPlanet.ships.contains(this)) {
         _targetPlanet.ships.add(this);
         defend(_targetPlanet);
@@ -168,7 +171,7 @@ class Ship extends PositionComponent
   @override
   FutureOr<void> onLoad() {
     orbitRadius = Planet.radius + attackRange * 0.25;
-    orbitTime = game.rand.nextDouble() * pi * 2;
+    orbitAngle = game.rand.nextDouble() * pi * 2;
     final shipImage = game.images.fromCache("ships/corvette.png");
     _sprite = SpriteAnimationComponent.fromFrameData(
         shipImage,
@@ -193,14 +196,16 @@ class Ship extends PositionComponent
 }
 
 class OrbitingBehavior extends Component with ParentIsA<Ship> {
+  double _speed = 1.0;
   @override
   void update(double dt) {
     final ship = parent;
+    ship.orbitAngle += dt * _speed;
     final orbitPos = ship.orbitPosition();
     final dir = orbitPos - ship.position;
 
     ship.lookAt(orbitPos);
-    ship.position += dir.normalized() * ship.shipSpeed() * dt;
+    ship.position += dir.normalized() * ship.shipSpeed() * _speed * dt;
 
     _updateOrbitalSpeed();
   }
@@ -210,26 +215,32 @@ class OrbitingBehavior extends Component with ParentIsA<Ship> {
     final planet = ship.targetPlanet;
 
     if (planet.attackingShips.isEmpty) {
-      ship.orbitSpeed = 1.0;
+      _speed = 1.0;
       return;
     }
 
     for (final aggressor in planet.attackingShips) {
       if (ship.collidingWith(aggressor)) {
-        ship.orbitSpeed = 0.25;
+        _speed = 0.25;
         return;
       }
     }
-
-    ship.orbitSpeed = 1.25;
   }
+}
+
+double _fixAngle(double angle) {
+  double ret = angle - pi * 0.5;
+  if (ret <= 2 * pi) {
+    ret = ret + 2 * pi;
+  }
+
+  return ret;
 }
 
 class MoveBehavior extends Component with ParentIsA<Ship> {
   @override
   void onMount() {
     final ship = parent;
-    ship.orbitSpeed = 0;
     ship.lookAt(ship.targetPlanet.position);
 
     super.onMount();
@@ -238,7 +249,7 @@ class MoveBehavior extends Component with ParentIsA<Ship> {
   @override
   void onRemove() {
     final ship = parent;
-    ship.orbitTime = ship.targetPlanet.angleTo(ship.position);
+    ship.orbitAngle = _fixAngle(ship.targetPlanet.angleTo(ship.position));
 
     super.onRemove();
   }
@@ -253,20 +264,15 @@ class MoveBehavior extends Component with ParentIsA<Ship> {
 }
 
 class AttackBehavior extends Component with ParentIsA<Ship> {
-  @override
-  void onMount() {
-    parent.orbitSpeed = 0.5;
-
-    super.onMount();
-  }
-
+  static const double speed = 0.5;
   @override
   void update(double dt) {
     final ship = parent;
+    ship.orbitAngle -= dt * speed;
     final orbitPos = ship.orbitPosition();
     final dir = orbitPos - ship.position;
 
     ship.lookAt(ship.targetPlanet.position);
-    ship.position += dir.normalized() * ship.shipSpeed() * dt;
+    ship.position += dir.normalized() * ship.shipSpeed() * speed * dt;
   }
 }

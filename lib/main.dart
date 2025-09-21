@@ -22,10 +22,19 @@ class ScifiApp extends StatelessWidget {
         ),
         home: Scaffold(
           body: GameWidget<ScifiGame>.controlled(
-            loadingBuilder: (context) => const Center(
-              child: SizedBox(
-                width: 200,
-                child: LinearProgressIndicator(),
+            loadingBuilder: (context) => Container(
+              color: AppTheme.dialogBackground,
+              child: const Center(
+                child: Column(
+                  spacing: 16,
+                  children: [
+                    Text('Loading...', style: AppTheme.heading24),
+                    SizedBox(
+                      width: 360,
+                      child: LinearProgressIndicator(),
+                    ),
+                  ],
+                ),
               ),
             ),
             overlayBuilderMap: {
