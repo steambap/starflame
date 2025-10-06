@@ -116,7 +116,7 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
       return;
     }
 
-    _sendShipCD = 0.75;
+    _sendShipCD = 1.25;
     final ship = ships.first;
     ship.attackMove(_rallyPoint ?? this);
 
@@ -181,7 +181,7 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
       return;
     }
 
-    occupationPoint += (damage ~/ 5) - ships.length;
+    occupationPoint += ((damage ~/ 5) - ships.length).clamp(0, 100);
     if (occupationPoint >= 100 && ship.parent != null) {
       occupationPoint = 0;
       capture(ship.playerIdx);
@@ -248,11 +248,11 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
 
   static double productionRateOf(PlanetType type) {
     return switch (type) {
-      PlanetType.terran => 0.3,
-      PlanetType.arid => 0.21,
-      PlanetType.exo => 0.24,
-      PlanetType.ice => 0.15,
-      PlanetType.gas => 0.18,
+      PlanetType.terran => 0.16,
+      PlanetType.arid => 0.13,
+      PlanetType.exo => 0.14,
+      PlanetType.ice => 0.08,
+      PlanetType.gas => 0.1,
     };
   }
 

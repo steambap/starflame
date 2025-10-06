@@ -7,7 +7,7 @@ class MainMenu extends StatelessWidget {
   const MainMenu(this.game, {super.key});
 
   static const id = 'main_menu';
-  static const List<String> initialOverlays = [];
+  static const List<String> initialOverlays = [id];
 
   final ScifiGame game;
 
@@ -30,7 +30,6 @@ class MainMenu extends StatelessWidget {
                   ElevatedButton(
                       onPressed: () {
                         game.overlays.remove(id);
-                        game.overlays.addAll(initialOverlays);
                         game.startTestGame();
                       },
                       style: AppTheme.menuButton,
@@ -40,11 +39,11 @@ class MainMenu extends StatelessWidget {
                       )),
                   ElevatedButton(
                       onPressed: () {
-                        _licenseDialog(context);
+                        _aboutDialog(context);
                       },
                       style: AppTheme.menuButton,
                       child: const Text(
-                        'License',
+                        'About',
                         style: AppTheme.label16,
                       )),
                 ],
@@ -54,61 +53,28 @@ class MainMenu extends StatelessWidget {
     );
   }
 
-  Future<void> _licenseDialog(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'License',
-            style: AppTheme.heading24,
-          ),
-          shape: const RoundedRectangleBorder(),
-          scrollable: true,
-          content: const Text(
-            """
-Flame
-
-MIT License
-
-Copyright (c) 2021 Blue Fire
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-          """,
-            style: AppTheme.label12,
-          ),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
+  void _aboutDialog(BuildContext context) {
+    return showAboutDialog(
+        context: context,
+        applicationName: 'Starflame',
+        applicationVersion: '0.0.1',
+        applicationLegalese: '\u{a9} 2024 - present Weilin Shi',
+        children: [
+          const SizedBox(height: 24),
+          RichText(
+              text: const TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text:
+                    "Starflame is a space strategy game built with Flutter and Flame. "
+                    "\n",
               ),
-              child: const Text(
-                'OK',
-                style: AppTheme.label16,
+              TextSpan(
+                style: AppTheme.label14Gray,
+                text: 'https://github.com/steambap/starflame',
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+            ],
+          ))
+        ]);
   }
 }

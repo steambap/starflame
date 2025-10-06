@@ -175,6 +175,16 @@ class AppTheme {
         side: const BorderSide(color: panelBorder)),
     clipBehavior: Clip.hardEdge,
   );
+  static const textTheme = TextTheme(
+    headlineSmall: TextStyle(color: sand12, fontSize: 18),
+    bodyMedium: TextStyle(color: sand12, fontSize: 14),
+    bodySmall: TextStyle(color: sand11, fontSize: 12),
+  );
+  static final textButtonTheme = TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: sand12,
+    ),
+  );
   static const tabTheme = TabBarThemeData(
     dividerHeight: 0,
     labelColor: sand12,

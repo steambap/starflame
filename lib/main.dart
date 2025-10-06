@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'scifi_game.dart';
 import 'styles.dart';
 import 'widgets/main_menu.dart';
+import 'widgets/topbar.dart';
 
 class ScifiApp extends StatelessWidget {
   const ScifiApp({super.key});
@@ -19,14 +20,16 @@ class ScifiApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           dialogTheme: AppTheme.dialogTheme,
           tabBarTheme: AppTheme.tabTheme,
+          textTheme: AppTheme.textTheme,
+          textButtonTheme: AppTheme.textButtonTheme,
         ),
         home: Scaffold(
           body: GameWidget<ScifiGame>.controlled(
             loadingBuilder: (context) => Container(
               color: AppTheme.dialogBackground,
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
               child: const Center(
                 child: Column(
-                  spacing: 16,
                   children: [
                     Text('Loading...', style: AppTheme.heading24),
                     SizedBox(
@@ -39,6 +42,7 @@ class ScifiApp extends StatelessWidget {
             ),
             overlayBuilderMap: {
               MainMenu.id: (_, game) => MainMenu(game),
+              Topbar.id: (_, game) => Topbar(game),
             },
             initialActiveOverlays: MainMenu.initialOverlays,
             gameFactory: () => ScifiGame(),
@@ -50,7 +54,6 @@ class ScifiApp extends StatelessWidget {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Flame.device.fullScreen();
-  Flame.device.setLandscape();
 
   runApp(const ScifiApp());
 }

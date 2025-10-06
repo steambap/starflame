@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
+import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:get_it/get_it.dart';
@@ -8,9 +10,11 @@ import "scifi_world.dart";
 import 'hud_state.dart';
 import "backdrop.dart";
 import 'map_grid.dart';
+import 'widgets/main_menu.dart';
+import 'widgets/topbar.dart';
 
 class ScifiGame extends FlameGame<ScifiWorld>
-    with HasKeyboardHandlerComponents, ScrollDetector {
+    with HasKeyboardHandlerComponents, ScrollDetector, HasTimeScale {
   final getIt = GetIt.instance;
   final MapGrid mapGrid = MapGrid();
   final rand = Random();
@@ -26,7 +30,10 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await world.add(mapGrid);
     camera.viewfinder.zoom = 0.5;
     camera.backdrop.add(Backdrop());
-    startTestGame();
+    if (kDebugMode) {
+      overlays.remove(MainMenu.id);
+      startTestGame();
+    }
   }
 
   void startTestGame() async {
@@ -37,6 +44,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
 
     // controller.initGame(s.players);
     world.isGameStarted = true;
+    overlays.addAll([Topbar.id]);
     mapGrid.start('human0');
     // await mapGrid.initMap(gameCreator);
     // controller.startGame();
