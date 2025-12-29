@@ -54,6 +54,7 @@ class ScifiApp extends StatelessWidget {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Flame.device.fullScreen();
+  Flame.device.setLandscape();
 
   runApp(const ScifiApp());
 }

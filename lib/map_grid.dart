@@ -1,28 +1,48 @@
 import 'dart:async';
+import 'package:flutter/material.dart' show Colors;
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 
 import 'scifi_game.dart';
+import 'cell.dart';
+import "hex.dart";
 import 'planet.dart';
 import 'ship.dart';
 import 'select_control.dart';
 import 'styles.dart';
 import 'player_state.dart';
-
-import 'level_data/level.dart';
+import 'game_settings.dart';
+import 'game_creator.dart';
 
 class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
+      static const playerColors = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+    Colors.yellow,
+    Colors.purple,
+    Colors.orange,
+    Colors.brown,
+    Colors.cyan,
+  ];
+
   final List<Planet> planets = [];
   final Map<int, Planet> planetsMap = {};
-  final Map<int, List<int>> connectedPlanets = {};
-  final List<(Offset, Offset)> connectionDrawings = [];
+
   final List<Ship> ships = [];
   final List<PlayerState> playerStates = [];
+  final fogLayer = PositionComponent(priority: 3);
+
   int _humanPlayerIdx = 0;
+  List<Cell> cells = List.empty();
   late SelectControlComponent _selectControl;
+  late final corners = Hex.zero
+      .polygonCorners()
+      .map((e) => e.toOffset())
+      .toList(growable: false);
 
   set selectControl(SelectControlComponent s) {
     _selectControl.removeFromParent();
@@ -36,45 +56,20 @@ class MapGrid extends Component
     selectControl = SelectControlWaitForInput();
   }
 
-  void start(String sceneName) {
-    final levelData = levelDataTable[sceneName]!;
-
-    for (int i = 0; i < levelData.players.length; i++) {
-      final player = levelData.players[i];
+  void start(GameSettings gameSettings, GameCreator gameCreator) {
+    for (int i = 0; i < gameSettings.players.length; i++) {
+      final player = gameSettings.players[i];
       if (!player.isAI) {
         _humanPlayerIdx = i;
       }
       final playerState =
-          PlayerState(i, player.isAI, SceneLevelData.playerColors[i]);
+          PlayerState(i, player.isAI, playerColors[i]);
       playerStates.add(playerState);
       add(playerState);
     }
 
-    for (final data in levelData.planets) {
-      final planet =
-          Planet(data.id, data.playerIdx, data.type, position: data.position);
-      planets.add(planet);
-      add(planet);
-      planetsMap[data.id] = planet;
-    }
-
-    connectedPlanets.addAll(levelData.connectedPlanets);
-    for (final entry in connectedPlanets.entries) {
-      for (final planetId in entry.value) {
-        connectionDrawings.add((
-          planetsMap[entry.key]!.position.toOffset(),
-          planetsMap[planetId]!.position.toOffset()
-        ));
-      }
-    }
-  }
-
-  bool isConnected(int planetId, int otherPlanetId) {
-    return connectedPlanets[planetId]?.contains(otherPlanetId) ?? false;
-  }
-
-  bool isPlanetConnected(Planet planet, Planet otherPlanet) {
-    return isConnected(planet.id, otherPlanet.id);
+    cells = gameCreator.cells;
+    addAll(cells);
   }
 
   void addShip(Ship ship) {
@@ -96,8 +91,7 @@ class MapGrid extends Component
     }
     planets.clear();
     planetsMap.clear();
-    connectedPlanets.clear();
-    connectionDrawings.clear();
+
     for (final playerState in playerStates) {
       playerState.removeFromParent();
     }
@@ -108,6 +102,7 @@ class MapGrid extends Component
   FutureOr<void> onLoad() {
     _selectControl = SelectControlWaitForInput();
     add(_selectControl);
+    add(fogLayer);
 
     return super.onLoad();
   }
@@ -137,8 +132,14 @@ class MapGrid extends Component
 
   @override
   void render(Canvas canvas) {
-    for (final connection in connectionDrawings) {
-      canvas.drawLine(connection.$1, connection.$2, FlameTheme.connection);
+    for (final cell in cells) {
+      canvas.renderAt(cell.position, (myCanvas) {
+        final ns = cell.hex.getNeighbours();
+        for (int i = 0; i < ns.length; i++) {
+          canvas.drawLine(corners[(11 - i) % 6], corners[(12 - i) % 6],
+              FlameTheme.hexBorderPaint);
+        }
+      });
     }
 
     super.render(canvas);

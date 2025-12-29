@@ -40,15 +40,6 @@ class SelectControlPlanet extends SelectControlComponent {
 
   @override
   void onPlanetClick(Planet planet) {
-    if (this.planet == planet) {
-      this.planet.rallyPoint = null;
-      return;
-    }
-    if (game.mapGrid.isPlanetConnected(this.planet, planet) && !this.planet.isNeutral()) {
-      this.planet.rallyPoint = planet;
-      return;
-    }
-
     game.mapGrid.selectControl = SelectControlPlanet(planet);
   }
 }

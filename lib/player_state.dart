@@ -5,7 +5,6 @@ import 'dart:ui' show Paint, PaintingStyle;
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:flame/components.dart';
 import 'package:starflame/scifi_game.dart';
-import 'package:starflame/planet.dart';
 
 class PlayerState extends Component with HasGameReference<ScifiGame> {
   final int playerNumber;
@@ -48,13 +47,6 @@ class PlayerState extends Component with HasGameReference<ScifiGame> {
       if (planet.playerIdx != playerNumber) {
         continue;
       }
-      if (planet.isUnderInvasion()) {
-        planet.rallyPoint = null;
-      } else {
-        final rally =
-            _pickPlanet(game.mapGrid.connectedPlanets[planet.id] ?? [], planet);
-        planet.rallyPoint = rally;
-      }
     }
   }
 
@@ -82,58 +74,5 @@ class PlayerState extends Component with HasGameReference<ScifiGame> {
     });
 
     return super.onLoad();
-  }
-
-  Planet? _pickPlanet(List<int> connected, Planet from) {
-    if (connected.isEmpty) {
-      return null;
-    }
-
-    Planet? rally;
-    int currentPriority = 0;
-
-    for (final idx in connected) {
-      final planet = game.mapGrid.planetsMap[idx];
-      if (planet == null) {
-        continue;
-      }
-
-      int priority = _planetValue(planet);
-      if (planet.rallyPoint == from && planet.playerIdx == playerNumber) {
-        priority = -10000;
-      }
-      if (planet.occupationPoint > 0 && planet.playerIdx == playerNumber) {
-        priority += 10;
-      }
-      if (planet.isNeutral()) {
-        priority += 35;
-      }
-      if (planet.playerIdx != playerNumber) {
-        priority += 25;
-      }
-      if (planet.occupationPoint > 0) {
-        priority += 10;
-      }
-      if (planet.playerIdx != playerNumber && planet.rallyPoint == from) {
-        priority += 10;
-      }
-
-      if (priority > currentPriority) {
-        currentPriority = priority;
-        rally = planet;
-      }
-    }
-
-    return rally;
-  }
-
-  int _planetValue(Planet planet) {
-    return switch (planet.type) {
-      PlanetType.terran => 10,
-      PlanetType.arid => 7,
-      PlanetType.exo => 5,
-      PlanetType.ice => 0,
-      PlanetType.gas => 3,
-    };
   }
 }

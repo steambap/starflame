@@ -10,6 +10,8 @@ import "scifi_world.dart";
 import 'hud_state.dart';
 import "backdrop.dart";
 import 'map_grid.dart';
+import 'game_settings.dart';
+import 'game_creator.dart';
 import 'widgets/main_menu.dart';
 import 'widgets/topbar.dart';
 
@@ -18,6 +20,8 @@ class ScifiGame extends FlameGame<ScifiWorld>
   final getIt = GetIt.instance;
   final MapGrid mapGrid = MapGrid();
   final rand = Random();
+
+  late GameSettings currentGameSettings;
 
   ScifiGame() : super(world: ScifiWorld()) {
     getIt.registerSingleton<HudState>(HudState());
@@ -30,6 +34,8 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await world.add(mapGrid);
     camera.viewfinder.zoom = 0.5;
     camera.backdrop.add(Backdrop());
+    // Start paused
+    timeScale = 0;
     if (kDebugMode) {
       overlays.remove(MainMenu.id);
       startTestGame();
@@ -37,17 +43,13 @@ class ScifiGame extends FlameGame<ScifiWorld>
   }
 
   void startTestGame() async {
-    // final s = GameSettings(0);
-    // currentGameSettings = s;
-    // s.players = gameCreator.getTestPlayers(s);
-    // gameCreator.create(s);
+    currentGameSettings = GameSettings(0);
+    final gameCreator = GameCreator();
+    gameCreator.create(currentGameSettings);
 
-    // controller.initGame(s.players);
     world.isGameStarted = true;
     overlays.addAll([Topbar.id]);
-    mapGrid.start('human0');
-    // await mapGrid.initMap(gameCreator);
-    // controller.startGame();
+    mapGrid.start(currentGameSettings, gameCreator);
   }
 
   void clampZoom() {

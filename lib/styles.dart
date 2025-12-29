@@ -67,7 +67,7 @@ class FlameTheme {
 
   static final hexBorderPaint = Paint()
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 1
+    ..strokeWidth = 4
     ..color = sand8;
   static final planetHighlighter1 = Paint()
     ..color = cyan7
@@ -100,7 +100,7 @@ class FlameTheme {
     ..color = red7
     ..style = PaintingStyle.stroke
     ..strokeWidth = 12;
-  static final connection = Paint()..color = cyan7;
+  static final highlighterPaint = Paint()..color = cyan7;
   static final targetPaint = Paint()..color = red7;
   static final fogPaint = Paint()..color = sand3;
 }
