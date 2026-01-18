@@ -15,7 +15,8 @@ import 'game_settings.dart';
 class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
   final List<Ship> ships = [];
-  final fogLayer = PositionComponent(priority: 3);
+  final fogLayer = PositionComponent(priority: 4);
+  final shipLayer = PositionComponent(priority: 3);
 
   List<List<Cell>> cells = [];
   late SelectControlComponent _selectControl;
@@ -45,7 +46,7 @@ class MapGrid extends Component
 
   void addShip(Ship ship) {
     ships.add(ship);
-    add(ship);
+    shipLayer.add(ship);
   }
 
   void reset() {
@@ -58,8 +59,7 @@ class MapGrid extends Component
   @override
   FutureOr<void> onLoad() {
     _selectControl = SelectControlWaitForInput();
-    add(_selectControl);
-    add(fogLayer);
+    addAll([_selectControl, fogLayer, shipLayer]);
 
     return super.onLoad();
   }
@@ -72,7 +72,7 @@ class MapGrid extends Component
   @override
   void onTapUp(TapUpEvent event) {
     final hex = Hex.pixelToHex(event.localPosition);
-    final cell = cells[hex.x][hex.y];
+    final cell = cells[hex.x.clamp(0, cells.length - 1)][hex.y.clamp(0, cells[0].length - 1)];
     if (cell.planet != null) {
       selectControl.onPlanetClick(cell.planet!);
     } else {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show Paint, PaintingStyle;
 
 import 'package:flame/components.dart';
 
@@ -10,7 +11,11 @@ class Ship extends PositionComponent with HasGameReference<ScifiGame> {
   static const double attackRange = 24;
 
   final int playerIdx;
-  late final SpriteAnimationComponent _sprite;
+  final RectangleComponent _rectangle = RectangleComponent(
+    size: Vector2.all(50),
+    anchor: Anchor.center,
+  );
+  late final SpriteComponent _sprite;
 
   Hex hex;
   Map<Cell, List<Cell>> cachedPaths = const {};
@@ -25,28 +30,25 @@ class Ship extends PositionComponent with HasGameReference<ScifiGame> {
   }
 
   void scrap() {
-    // game.mapGrid.getPlayerState(playerIdx).resources += 1;
     removeFromParent();
   }
 
   @override
   FutureOr<void> onLoad() {
-    final shipImage = game.images.fromCache("ships/corvette.png");
-    _sprite = SpriteAnimationComponent.fromFrameData(
-        shipImage,
-        SpriteAnimationData.sequenced(
-          amount: 4,
-          stepTime: 0.25,
-          textureSize: Vector2.all(144),
-          loop: true,
-        ),
-        anchor: Anchor.center,
-        priority: 5,
-        scale: Vector2.all(0.5));
+    final unitImage = game.images.fromCache("units.png");
+    _sprite = SpriteComponent(
+        sprite: Sprite(unitImage,
+            srcPosition: Vector2.zero(), srcSize: Vector2.all(64)),
+        anchor: Anchor.center);
 
-    addAll([
-      _sprite,
-    ]);
+    _rectangle.paintLayers = [
+      Paint()..color = game.g.players[playerIdx].color,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    ];
+
+    addAll([_rectangle, _sprite]);
 
     position = hex.toPixel();
 

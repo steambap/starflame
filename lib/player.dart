@@ -1,5 +1,3 @@
-import 'dart:ui' show Paint, PaintingStyle;
-
 import 'package:flutter/material.dart' show Color, Colors;
 
 class Player {
@@ -7,23 +5,9 @@ class Player {
   bool active = true;
   final bool isAI;
 
-  Player(this.playerNumber, this.isAI, Color? color)
-      : _color = color ?? Colors.grey;
+  Player(this.playerNumber, this.isAI, {this.color = Colors.grey});
 
-  List<Paint> paintLayer = [];
-  Color _color;
-
-  Color get color => _color;
-
-  set color(Color value) {
-    _color = value;
-    paintLayer = [
-      Paint()..color = value.withAlpha(128),
-      Paint()
-        ..color = value
-        ..style = PaintingStyle.stroke,
-    ];
-  }
+  final Color color;
 
   Map<String, dynamic> toJson() {
     return {

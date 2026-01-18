@@ -7,7 +7,7 @@ import "cell.dart";
 import "game_settings.dart";
 import "planet.dart";
 import "player.dart";
-// import "tile_type.dart";
+import "ship.dart";
 
 const plasticRatio = 1.32471795724474602596;
 
@@ -54,10 +54,13 @@ class GameCreator {
       final hex = startPositions[i];
       _homePlanetAtCell(hex);
       final isAI = gameSettings.players[i].isAI;
-      game.g.players.add(Player(i, isAI, playerColors[i]));
+      game.g.players.add(Player(i, isAI, color: playerColors[i]));
       if (!isAI) {
         game.g.humanPlayerIdx = i;
       }
+
+      final ship = Ship(i, hex);
+      game.mapGrid.addShip(ship);
     }
 
     for (int i = gameSettings.players.length; i < 10; i++) {
