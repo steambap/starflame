@@ -2,117 +2,79 @@ import 'dart:math';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
+const oddqDirectionDiff = [
+  // even cols
+  [
+    [1, 0],
+    [1, -1],
+    [0, -1],
+    [-1, -1],
+    [-1, 0],
+    [0, 1]
+  ],
+  // odd cols
+  [
+    [1, 1],
+    [1, 0],
+    [0, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, 1]
+  ],
+];
+
+// odd‑q (flat‑top) vertical layout from redblob
 @immutable
 class Hex {
-  static const double size = 72;
-  static Hex zero = Hex(0, 0, 0);
-  static List<Hex> directions = [
-    Hex(1, 0, -1), // E 0-5
-    Hex(1, -1, 0), // NE 4-5
-    Hex(0, -1, 1), // NW 3-4
-    Hex(-1, 0, 1), // W 2-3
-    Hex(-1, 1, 0), // SW 1-2
-    Hex(0, 1, -1), // SE 0-1
-  ];
+  static const double size = 60;
+  static const double horiz = 3 / 2 * size;
+  static final double vert = sqrt(3) * size;
+  static Hex zero = const Hex(0, 0);
 
-  final int q;
-  final int r;
-  final int s;
+  final int x;
+  final int y;
 
-  Hex(this.q, this.r, this.s) {
-    assert(q + r + s == 0, "not a hex");
-  }
+  const Hex(this.x, this.y);
 
   Hex operator +(Hex that) {
-    return Hex(q + that.q, r + that.r, s + that.s);
+    return Hex(x + that.x, y + that.y);
   }
 
   Hex operator -(Hex that) {
-    return Hex(q - that.q, r - that.r, s - that.s);
+    return Hex(x - that.x, y - that.y);
   }
 
-  Hex scale(int k) {
-    return Hex(q * k, r * k, s * k);
-  }
+  int distance(Hex that) {
+    final int q = x - that.x;
+    final int r =
+        y - (x - (x & 1)) ~/ 2 - (that.y - (that.x - (that.x & 1)) ~/ 2);
+    final int s = q + r;
 
-  double distance(Hex that) {
-    final Hex hex = this - that;
-
-    return (hex.q.abs().toDouble() +
-            hex.r.abs().toDouble() +
-            hex.s.abs().toDouble()) /
-        2;
+    return (q.abs() + r.abs() + s.abs()) ~/ 2;
   }
 
   Vector2 toPixel() {
-    final x = (sqrt(3.0) * q + (sqrt(3.0) / 2.0) * r) * size;
-    final y = (3.0 / 2.0) * r * size;
+    final dx = (3 / 2) * x * size;
+    final dy = sqrt(3) * (y + 0.5 * (x & 1)) * size;
 
-    return Vector2(x, y);
+    return Vector2(dx, dy);
+  }
+
+  Hex neighbour(int direction) {
+    final parity = x & 1;
+    final diff = oddqDirectionDiff[parity][direction];
+    return Hex(x + diff[0], y + diff[1]);
   }
 
   List<Hex> getNeighbours() {
-    return directions.map((e) => e + this).toList(growable: false);
-  }
-
-  List<Hex> cubeRing(int radius) {
-    assert(radius > 0, "radius must be greater than 0");
-    final List<Hex> results = [];
-    // start at SW since it lines up with the directions
-    Hex hex = this + (Hex.directions[4].scale(radius));
-
-    for (int i = 0; i < 6; i++) {
-      for (int j = 0; j < radius; j++) {
-        results.add(hex);
-        hex = hex.getNeighbours()[i];
-      }
-    }
-
-    return results;
-  }
-
-  List<Hex> cubeSpiral(int radius) {
-    final List<Hex> results = [this];
-    for (int k = 1; k <= radius; k++) {
-      results.addAll(cubeRing(k));
-    }
-    return results;
-  }
-
-  List<Hex> cubeRingN(int radius, int n) {
-    assert(radius > 0, "radius must be greater than 0");
-    final List<Hex> results = [];
-    // start at SW since it lines up with the directions
-    Hex hex = this + mi(4, n).scale(radius);
-
-    for (int i = 0; i < 6; i++) {
-      for (int j = 0; j < radius; j++) {
-        results.add(hex);
-        hex = hex + mi(i, n);
-      }
-    }
-
-    return results;
-  }
-
-  List<Hex> cubeSpiralN(int radius, int n) {
-    final List<Hex> results = [this];
-    for (int k = 1; k <= radius; k++) {
-      results.addAll(cubeRingN(k, n));
-    }
-    return results;
-  }
-
-  // M[i] = N*dir[i] + (N+1)*dir[(i+1) mod 6]    for i = 0..5
-  Hex mi(int i, int n) {
-    return Hex.directions[i].scale(n) + Hex.directions[(i+1) % 6].scale(n+1);
+    return List.generate(6, (i) => neighbour(i), growable: false);
   }
 
   List<Vector2> polygonCorners([double size = Hex.size]) {
-    final List<Vector2> corners = List.empty(growable: true);
+    final List<Vector2> corners = [];
     final center = toPixel();
     for (int i = 0; i < 6; i++) {
-      final angle = (2.0 * pi * (i + 0.5)) / 6.0;
+      final angle = (2.0 * pi * i) / 6.0;
       final x = cos(angle) * size + center.x;
       final y = sin(angle) * size + center.y;
 
@@ -123,83 +85,30 @@ class Hex {
   }
 
   @override
-  int get hashCode => Object.hash(q, r, s);
+  int get hashCode => Object.hash(x, y);
 
   @override
   bool operator ==(Object other) {
-    return (other is Hex) && q == other.q && r == other.r && s == other.s;
+    return (other is Hex) && x == other.x && y == other.y;
   }
 
   @override
   String toString() {
-    return "($q,$r,$s)";
-  }
-
-  /// For serialization
-  int toInt() {
-    return (q & 0xffff) | ((r & 0xffff) << 16);
-  }
-
-  /// For deserialization
-  static Hex fromInt(int i) {
-    int q = i & 0xffff;
-    final qSign = q & (1 << 7);
-    if (qSign != 0) {
-      q = q - 0x10000;
-    }
-    int r = (i >> 16) & 0xffff;
-    final rSign = r & (1 << 7);
-    if (rSign != 0) {
-      r = r - 0x10000;
-    }
-    return Hex(q, r, -q - r);
-  }
-
-  // https://www.redblobgames.com/grids/hexagons/#rounding
-  static Hex cubeRound(Vector3 frac) {
-    int q = frac.x.round();
-    int r = frac.y.round();
-    int s = frac.z.round();
-
-    final qDiff = (q - frac.x).abs();
-    final rDiff = (r - frac.y).abs();
-    final sDiff = (s - frac.z).abs();
-
-    if ((qDiff > rDiff) && (qDiff > sDiff)) {
-      q = -r - s;
-    } else if (rDiff > sDiff) {
-      r = -q - s;
-    } else {
-      s = -q - r;
-    }
-
-    return Hex(q, r, s);
-  }
-
-  static Hex center(List<Hex> hexes) {
-    int q = 0;
-    int r = 0;
-    int s = 0;
-    for (final hex in hexes) {
-      q += hex.q;
-      r += hex.r;
-      s += hex.s;
-    }
-    final n = hexes.length;
-    return Hex.cubeRound(Vector3(q / n, r / n, s / n));
-  }
-
-  static Hex evenrToHex(int col, int row) {
-    final int q = col - (row + (row & 1)) ~/ 2;
-    final int r = row;
-    return Hex(q, r, -q - r);
+    return "($x,$y)";
   }
 
   static Hex pixelToHex(Vector2 pixel) {
-    final double x = (sqrt(3) / 3 * pixel.x - 1 / 3 * pixel.y) / Hex.size;
-    final double y = (2 / 3 * pixel.y) / Hex.size;
-    final Hex hex = Hex.cubeRound(Vector3(x, y, -x - y));
+    final int x = ((pixel.x + horiz * 0.5) / horiz).floor();
+    final int y =
+        ((pixel.y + vert * 0.5 - (x & 1) * vert * 0.5) / vert).floor();
 
-    return hex;
+    return Hex(x, y);
+  }
+
+  Map<String, int> toJson() {
+    return {
+      "x": x,
+      "y": y,
+    };
   }
 }

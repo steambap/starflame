@@ -7,6 +7,7 @@ import 'package:flame/game.dart';
 import 'package:get_it/get_it.dart';
 
 import "scifi_world.dart";
+import "state.dart";
 import 'hud_state.dart';
 import "backdrop.dart";
 import 'map_grid.dart';
@@ -20,7 +21,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
   final getIt = GetIt.instance;
   final MapGrid mapGrid = MapGrid();
   final rand = Random();
-
+  final State g = State();
   late GameSettings currentGameSettings;
 
   ScifiGame() : super(world: ScifiWorld()) {
@@ -32,7 +33,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
     await images.loadAllImages();
 
     await world.add(mapGrid);
-    camera.viewfinder.zoom = 0.5;
+    camera.viewfinder.zoom = 0.75;
     camera.backdrop.add(Backdrop());
     // Start paused
     timeScale = 0;
@@ -44,12 +45,12 @@ class ScifiGame extends FlameGame<ScifiWorld>
 
   void startTestGame() async {
     currentGameSettings = GameSettings(0);
-    final gameCreator = GameCreator();
+    final gameCreator = GameCreator(this);
     gameCreator.create(currentGameSettings);
 
     world.isGameStarted = true;
     overlays.addAll([Topbar.id]);
-    mapGrid.start(currentGameSettings, gameCreator);
+    mapGrid.start(currentGameSettings);
   }
 
   void clampZoom() {

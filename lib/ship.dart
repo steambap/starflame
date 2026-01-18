@@ -25,7 +25,7 @@ class Ship extends PositionComponent with HasGameReference<ScifiGame> {
   }
 
   void scrap() {
-    game.mapGrid.getPlayerState(playerIdx).resources += 1;
+    // game.mapGrid.getPlayerState(playerIdx).resources += 1;
     removeFromParent();
   }
 

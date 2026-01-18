@@ -55,7 +55,7 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
       return;
     }
 
-    final playerState = game.mapGrid.getPlayerState(_playerIdx);
+    final playerState = game.g.players[_playerIdx];
     final paint = Paint()
       ..color = playerState.color.withAlpha(200)
       ..style = PaintingStyle.stroke

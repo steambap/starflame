@@ -11,7 +11,6 @@ import "styles.dart";
 import 'tile_type.dart';
 
 class Cell extends PositionComponent with HasGameReference<ScifiGame> {
-  final int index;
   final Hex hex;
   Planet? planet;
   late final PolygonComponent _highligher;
@@ -20,7 +19,7 @@ class Cell extends PositionComponent with HasGameReference<ScifiGame> {
   SpriteComponent? tileSprite;
   Ship? ship;
 
-  Cell(this.index, this.hex) : super(anchor: Anchor.center) {
+  Cell(this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
     _highligher = PolygonComponent(Hex.zero.polygonCorners(),
         anchor: Anchor.center, paint: FlameTheme.highlighterPaint, priority: 2);
@@ -99,8 +98,7 @@ class Cell extends PositionComponent with HasGameReference<ScifiGame> {
 
   Map<String, dynamic> toJson() {
     return {
-      "index": index,
-      "hex": hex.toInt(),
+      "hex": hex,
       "tileType": tileType.name,
       // sectors and ships are saved under map grid
     };

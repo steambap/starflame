@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart' show Colors;
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -8,36 +7,17 @@ import 'package:flame/extensions.dart';
 import 'scifi_game.dart';
 import 'cell.dart';
 import "hex.dart";
-import 'planet.dart';
 import 'ship.dart';
 import 'select_control.dart';
 import 'styles.dart';
-import 'player_state.dart';
 import 'game_settings.dart';
-import 'game_creator.dart';
 
 class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
-      static const playerColors = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.yellow,
-    Colors.purple,
-    Colors.orange,
-    Colors.brown,
-    Colors.cyan,
-  ];
-
-  final List<Planet> planets = [];
-  final Map<int, Planet> planetsMap = {};
-
   final List<Ship> ships = [];
-  final List<PlayerState> playerStates = [];
   final fogLayer = PositionComponent(priority: 3);
 
-  int _humanPlayerIdx = 0;
-  List<Cell> cells = List.empty();
+  List<List<Cell>> cells = [];
   late SelectControlComponent _selectControl;
   late final corners = Hex.zero
       .polygonCorners()
@@ -56,20 +36,11 @@ class MapGrid extends Component
     selectControl = SelectControlWaitForInput();
   }
 
-  void start(GameSettings gameSettings, GameCreator gameCreator) {
-    for (int i = 0; i < gameSettings.players.length; i++) {
-      final player = gameSettings.players[i];
-      if (!player.isAI) {
-        _humanPlayerIdx = i;
-      }
-      final playerState =
-          PlayerState(i, player.isAI, playerColors[i]);
-      playerStates.add(playerState);
-      add(playerState);
+  void start(GameSettings gameSettings) {
+    cells = game.g.cells;
+    for (final col in cells) {
+      addAll(col);
     }
-
-    cells = gameCreator.cells;
-    addAll(cells);
   }
 
   void addShip(Ship ship) {
@@ -77,25 +48,11 @@ class MapGrid extends Component
     add(ship);
   }
 
-  PlayerState getPlayerState(int playerIdx) {
-    return playerStates[playerIdx];
-  }
-
-  PlayerState getHumanPlayerState() {
-    return getPlayerState(_humanPlayerIdx);
-  }
-
   void reset() {
-    for (final planet in planets) {
+    for (final planet in game.g.planets) {
       planet.removeFromParent();
     }
-    planets.clear();
-    planetsMap.clear();
-
-    for (final playerState in playerStates) {
-      playerState.removeFromParent();
-    }
-    playerStates.clear();
+    game.g.planets.clear();
   }
 
   @override
@@ -114,17 +71,12 @@ class MapGrid extends Component
 
   @override
   void onTapUp(TapUpEvent event) {
-    bool found = false;
-    for (final planet in planets) {
-      if (planet.position.distanceTo(event.localPosition) <= Planet.radius) {
-        selectControl.onPlanetClick(planet);
-        found = true;
-        break;
-      }
-    }
-
-    if (!found) {
-      selectControl = SelectControlWaitForInput();
+    final hex = Hex.pixelToHex(event.localPosition);
+    final cell = cells[hex.x][hex.y];
+    if (cell.planet != null) {
+      selectControl.onPlanetClick(cell.planet!);
+    } else {
+      print(cell);
     }
 
     super.onTapUp(event);
@@ -132,14 +84,16 @@ class MapGrid extends Component
 
   @override
   void render(Canvas canvas) {
-    for (final cell in cells) {
-      canvas.renderAt(cell.position, (myCanvas) {
-        final ns = cell.hex.getNeighbours();
-        for (int i = 0; i < ns.length; i++) {
-          canvas.drawLine(corners[(11 - i) % 6], corners[(12 - i) % 6],
-              FlameTheme.hexBorderPaint);
-        }
-      });
+    for (final col in cells) {
+      for (final cell in col) {
+        canvas.renderAt(cell.position, (myCanvas) {
+          final ns = cell.hex.getNeighbours();
+          for (int i = 0; i < ns.length; i++) {
+            canvas.drawLine(corners[(11 - i) % 6], corners[(12 - i) % 6],
+                FlameTheme.hexBorderPaint);
+          }
+        });
+      }
     }
 
     super.render(canvas);
