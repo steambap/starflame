@@ -48,7 +48,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
     final gameCreator = GameCreator(this);
     gameCreator.create(currentGameSettings);
 
-    world.isGameStarted = true;
+    world.startGame();
     overlays.addAll([Topbar.id]);
     mapGrid.start(currentGameSettings);
   }

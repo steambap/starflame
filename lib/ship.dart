@@ -15,7 +15,8 @@ class Ship extends PositionComponent with HasGameReference<ScifiGame> {
     size: Vector2.all(50),
     anchor: Anchor.center,
   );
-  late final SpriteComponent _sprite;
+  late SpriteComponent _iconLevel;
+  late SpriteComponent _unitSize;
 
   Hex hex;
   Map<Cell, List<Cell>> cachedPaths = const {};
@@ -36,9 +37,13 @@ class Ship extends PositionComponent with HasGameReference<ScifiGame> {
   @override
   FutureOr<void> onLoad() {
     final unitImage = game.images.fromCache("units.png");
-    _sprite = SpriteComponent(
+    _iconLevel = SpriteComponent(
         sprite: Sprite(unitImage,
             srcPosition: Vector2.zero(), srcSize: Vector2.all(64)),
+        anchor: Anchor.center);
+    _unitSize = SpriteComponent(
+        sprite: Sprite(unitImage,
+            srcPosition: Vector2(960, 0), srcSize: Vector2.all(64)),
         anchor: Anchor.center);
 
     _rectangle.paintLayers = [
@@ -48,7 +53,7 @@ class Ship extends PositionComponent with HasGameReference<ScifiGame> {
         ..strokeWidth = 1,
     ];
 
-    addAll([_rectangle, _sprite]);
+    addAll([_rectangle, _iconLevel, _unitSize]);
 
     position = hex.toPixel();
 

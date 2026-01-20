@@ -11,6 +11,7 @@ import 'ship.dart';
 import 'select_control.dart';
 import 'styles.dart';
 import 'game_settings.dart';
+import 'logger.dart';
 
 class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
@@ -76,7 +77,7 @@ class MapGrid extends Component
     if (cell.planet != null) {
       selectControl.onPlanetClick(cell.planet!);
     } else {
-      print(cell);
+      logger.i(cell);
     }
 
     super.onTapUp(event);

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'scifi_game.dart';
 import "styles.dart";
+import "hex.dart";
 
 class ScifiWorld extends World
     with HasGameReference<ScifiGame>, KeyboardHandler, DragCallbacks {
@@ -89,5 +90,19 @@ class ScifiWorld extends World
     );
     textComponent.addAll([removeEff, moveEff]);
     add(textComponent);
+  }
+
+  void startGame() {
+    isGameStarted = true;
+    final playerIdx = game.g.humanPlayerIdx;
+    Hex hex = Hex.zero;
+    for (final p in game.g.planets) {
+      if (p.playerIdx == playerIdx && p.isHome()) {
+        hex = p.hex;
+        break;
+      }
+    }
+    
+    game.camera.moveTo(hex.toPixel());
   }
 }
