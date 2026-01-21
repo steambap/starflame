@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart' show ValueNotifier;
 
-import 'planet.dart';
+import 'hex.dart';
+import 'cell.dart';
 
 class HudState {
-  // Selected planet
-  final ValueNotifier<Planet?> planet = ValueNotifier(null);
+  // Selected cell
+  final ValueNotifier<Cell> cell = ValueNotifier(Cell(Hex.invalid));
+  final ValueNotifier<int> playerInfoVersion = ValueNotifier(-1);
 
-  void deselectAll() {
-    planet.value = null;
+  void deselectCell() {
+    cell.value = Cell(Hex.invalid);
+  }
+
+  void updatePlayerInfo() {
+    playerInfoVersion.value = (playerInfoVersion.value + 1) % 1000;
+  }
+
+  void reset() {
+    cell.value = Cell(Hex.invalid);
+    playerInfoVersion.value = -1;
   }
 }

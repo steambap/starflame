@@ -1,45 +1,45 @@
 import 'package:flame/components.dart';
 
-import 'planet.dart';
+import 'cell.dart';
 import 'scifi_game.dart';
 import 'hud_state.dart';
 import 'map_grid.dart';
 
 class SelectControlComponent extends Component
     with HasGameReference<ScifiGame>, ParentIsA<MapGrid> {
-  void onPlanetClick(Planet planet) {}
+  void onCellClick(Cell cell) {}
 }
 
 class SelectControlWaitForInput extends SelectControlComponent {
   @override
-  void onPlanetClick(Planet planet) {
-    game.mapGrid.selectControl = SelectControlPlanet(planet);
+  void onCellClick(Cell cell) {
+    game.mapGrid.selectControl = SelectControlCell(cell);
   }
 }
 
-class SelectControlPlanet extends SelectControlComponent {
-  final Planet planet;
+class SelectControlCell extends SelectControlComponent {
+  final Cell cell;
 
-  SelectControlPlanet(this.planet);
+  SelectControlCell(this.cell);
 
   @override
   void onMount() {
-    game.getIt<HudState>().planet.value = planet;
-    planet.select();
-    planet.priority = 2;
+    game.getIt<HudState>().cell.value = cell;
+    cell.planet?.select();
 
     super.onMount();
   }
 
   @override
   void onRemove() {
-    game.getIt<HudState>().planet.value = null;
-    planet.deselect();
-    planet.priority = -1;
+    cell.planet?.select();
+    game.getIt<HudState>().deselectCell();
   }
 
   @override
-  void onPlanetClick(Planet planet) {
-    game.mapGrid.selectControl = SelectControlPlanet(planet);
+  void onCellClick(Cell cell) {
+    game.mapGrid.selectControl = SelectControlCell(cell);
   }
 }
+
+class SelectControlInputBlocked extends SelectControlComponent {}

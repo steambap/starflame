@@ -5,7 +5,7 @@ typedef PlayerData = ({
 
 class GameSettings {
   int seed;
-  int mapSize = 20;
+  int mapSize = 25;
   List<PlayerData> players = [
     (playerIdx: 0, isAI: false),
     (playerIdx: 1, isAI: true),

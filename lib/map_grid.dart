@@ -11,7 +11,6 @@ import 'ship.dart';
 import 'select_control.dart';
 import 'styles.dart';
 import 'game_settings.dart';
-import 'logger.dart';
 
 class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
@@ -33,6 +32,10 @@ class MapGrid extends Component
   }
 
   SelectControlComponent get selectControl => _selectControl;
+
+  void blockSelect() {
+    selectControl = SelectControlInputBlocked();
+  }
 
   void deselect() {
     selectControl = SelectControlWaitForInput();
@@ -73,12 +76,10 @@ class MapGrid extends Component
   @override
   void onTapUp(TapUpEvent event) {
     final hex = Hex.pixelToHex(event.localPosition);
-    final cell = cells[hex.x.clamp(0, cells.length - 1)][hex.y.clamp(0, cells[0].length - 1)];
-    if (cell.planet != null) {
-      selectControl.onPlanetClick(cell.planet!);
-    } else {
-      logger.i(cell);
-    }
+    final mapx = hex.x.clamp(0, cells.length - 1);
+    final mapy = hex.y.clamp(0, cells[0].length - 1);
+    final cell = cells[mapx][mapy];
+    selectControl.onCellClick(cell);
 
     super.onTapUp(event);
   }
@@ -90,8 +91,11 @@ class MapGrid extends Component
         canvas.renderAt(cell.position, (myCanvas) {
           final ns = cell.hex.getNeighbours();
           for (int i = 0; i < ns.length; i++) {
-            canvas.drawLine(corners[(11 - i) % 6], corners[(12 - i) % 6],
-                FlameTheme.hexBorderPaint);
+            canvas.drawLine(
+              corners[(11 - i) % 6],
+              corners[(12 - i) % 6],
+              FlameTheme.hexBorderPaint,
+            );
           }
         });
       }

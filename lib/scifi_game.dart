@@ -13,8 +13,10 @@ import "backdrop.dart";
 import 'map_grid.dart';
 import 'game_settings.dart';
 import 'game_creator.dart';
+import 'game_cycle.dart';
 import 'widgets/main_menu.dart';
 import 'widgets/topbar.dart';
+import 'widgets/hud_bottom_right.dart';
 
 class ScifiGame extends FlameGame<ScifiWorld>
     with HasKeyboardHandlerComponents, ScrollDetector, HasTimeScale {
@@ -23,6 +25,9 @@ class ScifiGame extends FlameGame<ScifiWorld>
   final rand = Random();
   final State g = State();
   late GameSettings currentGameSettings;
+  bool _watchMode = false;
+  final GameCycle cycle = GameCycle();
+  bool get watchMode => _watchMode;
 
   ScifiGame() : super(world: ScifiWorld()) {
     getIt.registerSingleton<HudState>(HudState());
@@ -32,7 +37,7 @@ class ScifiGame extends FlameGame<ScifiWorld>
   Future<void> onLoad() async {
     await images.loadAllImages();
 
-    await world.add(mapGrid);
+    await world.addAll([mapGrid, cycle]);
     camera.viewfinder.zoom = 0.75;
     camera.backdrop.add(Backdrop());
     // Start paused
@@ -49,8 +54,9 @@ class ScifiGame extends FlameGame<ScifiWorld>
     gameCreator.create(currentGameSettings);
 
     world.startGame();
-    overlays.addAll([Topbar.id]);
+    overlays.addAll([Topbar.id, HudBottomRight.id]);
     mapGrid.start(currentGameSettings);
+    cycle.startNewGame();
   }
 
   void clampZoom() {
@@ -64,5 +70,14 @@ class ScifiGame extends FlameGame<ScifiWorld>
     camera.viewfinder.zoom -=
         info.scrollDelta.global.y.sign * zoomPerScrollUnit;
     clampZoom();
+  }
+
+  set watchMode(bool value) {
+    _watchMode = value;
+    if (value) {
+      mapGrid.blockSelect();
+    } else {
+      mapGrid.deselect();
+    }
   }
 }

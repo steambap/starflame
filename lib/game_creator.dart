@@ -63,7 +63,7 @@ class GameCreator {
       game.mapGrid.addShip(ship);
     }
 
-    for (int i = gameSettings.players.length; i < 10; i++) {
+    for (int i = gameSettings.players.length; i < 14; i++) {
       final hex = startPositions[i];
       _planetAtCell(hex, PlanetType.arid);
     }
@@ -94,7 +94,7 @@ class GameCreator {
     final positions = <Hex>[];
     final l = gameSettings.mapSize;
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 14; i++) {
       final xi = (pad + i * a1) % 1;
       final yi = (pad + i * a2) % 1;
       final hex = Hex((xi * l).floor(), (yi * l).floor());

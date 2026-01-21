@@ -4,6 +4,7 @@ class Player {
   final int playerNumber;
   bool active = true;
   final bool isAI;
+  double resources = 0;
 
   Player(this.playerNumber, this.isAI, {this.color = Colors.grey});
 
@@ -15,6 +16,7 @@ class Player {
       'active': active,
       'isAI': isAI,
       'color': color.toARGB32(),
+      'resources': resources,
     };
   }
 }

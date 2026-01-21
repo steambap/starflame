@@ -10,7 +10,7 @@ const oddqDirectionDiff = [
     [0, -1],
     [-1, -1],
     [-1, 0],
-    [0, 1]
+    [0, 1],
   ],
   // odd cols
   [
@@ -19,7 +19,7 @@ const oddqDirectionDiff = [
     [0, -1],
     [-1, 0],
     [-1, 1],
-    [0, 1]
+    [0, 1],
   ],
 ];
 
@@ -30,6 +30,7 @@ class Hex {
   static const double horiz = 3 / 2 * size;
   static final double vert = sqrt(3) * size;
   static Hex zero = const Hex(0, 0);
+  static Hex invalid = const Hex(-1, -1);
 
   final int x;
   final int y;
@@ -99,16 +100,13 @@ class Hex {
 
   static Hex pixelToHex(Vector2 pixel) {
     final int x = ((pixel.x + horiz * 0.5) / horiz).floor();
-    final int y =
-        ((pixel.y + vert * 0.5 - (x & 1) * vert * 0.5) / vert).floor();
+    final int y = ((pixel.y + vert * 0.5 - (x & 1) * vert * 0.5) / vert)
+        .floor();
 
     return Hex(x, y);
   }
 
   Map<String, int> toJson() {
-    return {
-      "x": x,
-      "y": y,
-    };
+    return {"x": x, "y": y};
   }
 }
