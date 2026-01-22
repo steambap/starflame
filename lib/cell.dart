@@ -21,23 +21,42 @@ class Cell extends PositionComponent with HasGameReference<ScifiGame> {
 
   Cell(this.hex) : super(anchor: Anchor.center) {
     position = hex.toPixel();
-    _highligher = PolygonComponent(Hex.zero.polygonCorners(),
-        anchor: Anchor.center, paint: FlameTheme.highlighterPaint, priority: 2);
-    _fog = PolygonComponent(Hex.zero.polygonCorners(Hex.size - 0.5),
-        position: position,
-        anchor: Anchor.center,
-        paint: Paint.from(FlameTheme.fogPaint));
+    _highligher = PolygonComponent(
+      Hex.zero.polygonCorners(),
+      anchor: Anchor.center,
+      paint: FlameTheme.highlighterPaint,
+      priority: 2,
+    );
+    _fog = PolygonComponent(
+      Hex.zero.polygonCorners(Hex.size - 0.5),
+      position: position,
+      anchor: Anchor.center,
+      paint: Paint.from(FlameTheme.fogPaint),
+    );
   }
 
   @override
   FutureOr<void> onLoad() {
+    final offset = Object.hash(hex.x, hex.y, 0) % 3;
     Sprite? sprite;
     if (tileType == TileType.gravityRift) {
-      sprite = Sprite(game.images.fromCache("gravity_rift.png"));
+      sprite = Sprite(
+        game.images.fromCache("terrain.png"),
+        srcPosition: Vector2(168 * offset.toDouble(), 504),
+        srcSize: Vector2.all(168),
+      );
     } else if (tileType == TileType.nebula) {
-      sprite = Sprite(game.images.fromCache("nebula.png"));
+      sprite = Sprite(
+        game.images.fromCache("terrain.png"),
+        srcPosition: Vector2(168 * offset.toDouble(), 168),
+        srcSize: Vector2.all(168),
+      );
     } else if (tileType == TileType.asteroidField) {
-      sprite = Sprite(game.images.fromCache("asteroid.png"));
+      sprite = Sprite(
+        game.images.fromCache("terrain.png"),
+        srcPosition: Vector2(168 * offset.toDouble(), 336),
+        srcSize: Vector2.all(168),
+      );
     }
 
     if (sprite != null) {

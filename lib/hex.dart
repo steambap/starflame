@@ -27,8 +27,6 @@ const oddqDirectionDiff = [
 @immutable
 class Hex {
   static const double size = 60;
-  static const double horiz = 3 / 2 * size;
-  static final double vert = sqrt(3) * size;
   static Hex zero = const Hex(0, 0);
   static Hex invalid = const Hex(-1, -1);
 
@@ -96,14 +94,6 @@ class Hex {
   @override
   String toString() {
     return "($x,$y)";
-  }
-
-  static Hex pixelToHex(Vector2 pixel) {
-    final int x = ((pixel.x + horiz * 0.5) / horiz).floor();
-    final int y = ((pixel.y + vert * 0.5 - (x & 1) * vert * 0.5) / vert)
-        .floor();
-
-    return Hex(x, y);
   }
 
   Map<String, int> toJson() {

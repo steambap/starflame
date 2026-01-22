@@ -4,10 +4,12 @@ import 'package:flutter/material.dart' show Colors;
 import "scifi_game.dart";
 import "hex.dart";
 import "cell.dart";
+import "tile_type.dart";
 import "game_settings.dart";
 import "planet.dart";
 import "player.dart";
 import "ship.dart";
+import "name.dart" show planetNames;
 
 const plasticRatio = 1.32471795724474602596;
 
@@ -29,6 +31,8 @@ class GameCreator {
 
   int planetIdx = 0;
   int playerHomeIdx = 0;
+  int numOfPlanets = 0;
+  List<String> _names = [];
 
   GameCreator(this.game);
 
@@ -40,6 +44,9 @@ class GameCreator {
     game.g.planets.clear();
     planetIdx = 0;
     playerHomeIdx = 0;
+    numOfPlanets = gameSettings.players.length * 7;
+    _names = planetNames.toList(growable: false);
+    _names.shuffle(rand);
 
     for (int x = 0; x < gameSettings.mapSize; x++) {
       final col = <Cell>[];
@@ -63,9 +70,29 @@ class GameCreator {
       game.mapGrid.addShip(ship);
     }
 
-    for (int i = gameSettings.players.length; i < 14; i++) {
+    for (int i = gameSettings.players.length; i < numOfPlanets; i++) {
       final hex = startPositions[i];
-      _planetAtCell(hex, PlanetType.arid);
+      final type =
+          PlanetType.values[1 + rand.nextInt(PlanetType.values.length - 1)];
+      _planetAtCell(hex, type);
+    }
+
+    _assignNames();
+
+    for (int col = 0; col < gameSettings.mapSize; col++) {
+      for (int row = 0; row < gameSettings.mapSize; row++) {
+        final cell = game.g.cells[col][row];
+        if (cell.planet != null) {
+          continue;
+        }
+
+        final tileNum = rand.nextInt(10);
+        if (tileNum < 1) {
+          cell.tileType = TileType.nebula;
+        } else if (tileNum < 2) {
+          cell.tileType = TileType.asteroidField;
+        }
+      }
     }
   }
 
@@ -94,7 +121,7 @@ class GameCreator {
     final positions = <Hex>[];
     final l = gameSettings.mapSize;
 
-    for (int i = 0; i < 14; i++) {
+    for (int i = 0; i < numOfPlanets; i++) {
       final xi = (pad + i * a1) % 1;
       final yi = (pad + i * a2) % 1;
       final hex = Hex((xi * l).floor(), (yi * l).floor());
@@ -102,5 +129,12 @@ class GameCreator {
     }
 
     return positions;
+  }
+
+  void _assignNames() {
+    for (int i = 0; i < game.g.planets.length; i++) {
+      final planet = game.g.planets[i];
+      planet.name = _names[i];
+    }
   }
 }

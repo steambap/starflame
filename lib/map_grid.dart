@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -14,11 +15,13 @@ import 'game_settings.dart';
 
 class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
+  static const double horiz = 3 / 2 * Hex.size;
+  static final double vert = sqrt(3) * Hex.size;
   final List<Ship> ships = [];
-  final fogLayer = PositionComponent(priority: 4);
+  final fogLayer = PositionComponent(priority: 5);
+  final labelLayer = PositionComponent(priority: 4);
   final shipLayer = PositionComponent(priority: 3);
 
-  List<List<Cell>> cells = [];
   late SelectControlComponent _selectControl;
   late final corners = Hex.zero
       .polygonCorners()
@@ -42,9 +45,17 @@ class MapGrid extends Component
   }
 
   void start(GameSettings gameSettings) {
-    cells = game.g.cells;
-    for (final col in cells) {
+    for (final List<Cell> col in game.g.cells) {
       addAll(col);
+    }
+
+    for (final planet in game.g.planets) {
+      labelLayer.add(TextComponent(
+        text: planet.name,
+        textRenderer: FlameTheme.text16pale,
+        position: planet.hex.toPixel() + Vector2(0, -48),
+        anchor: Anchor.center,
+      ));
     }
   }
 
@@ -63,7 +74,7 @@ class MapGrid extends Component
   @override
   FutureOr<void> onLoad() {
     _selectControl = SelectControlWaitForInput();
-    addAll([_selectControl, fogLayer, shipLayer]);
+    addAll([_selectControl, fogLayer, labelLayer, shipLayer]);
 
     return super.onLoad();
   }
@@ -75,10 +86,9 @@ class MapGrid extends Component
 
   @override
   void onTapUp(TapUpEvent event) {
-    final hex = Hex.pixelToHex(event.localPosition);
-    final mapx = hex.x.clamp(0, cells.length - 1);
-    final mapy = hex.y.clamp(0, cells[0].length - 1);
-    final cell = cells[mapx][mapy];
+    final hex = pixelToHex(event.localPosition);
+
+    final cell = game.g.cells[hex.x][hex.y];
     selectControl.onCellClick(cell);
 
     super.onTapUp(event);
@@ -86,7 +96,7 @@ class MapGrid extends Component
 
   @override
   void render(Canvas canvas) {
-    for (final col in cells) {
+    for (final col in game.g.cells) {
       for (final cell in col) {
         canvas.renderAt(cell.position, (myCanvas) {
           final ns = cell.hex.getNeighbours();
@@ -102,5 +112,18 @@ class MapGrid extends Component
     }
 
     super.render(canvas);
+  }
+
+  Hex pixelToHex(Vector2 pixel) {
+    final cells = game.g.cells;
+    final int x = ((pixel.x + horiz * 0.5) / horiz).floor().clamp(
+      0,
+      cells.length - 1,
+    );
+    final int y = ((pixel.y + vert * 0.5 - (x & 1) * vert * 0.5) / vert)
+        .floor()
+        .clamp(0, cells[0].length - 1);
+
+    return Hex(x, y);
   }
 }

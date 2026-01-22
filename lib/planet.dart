@@ -29,20 +29,35 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
 
   int _playerIdx = -1;
   int _homePlanet = -1;
+  String name = "";
 
   int get playerIdx => _playerIdx;
 
   Planet(this.id, this.hex, this.type, {super.position})
-      : super(size: Vector2.all(radius * 2));
+    : super(size: Vector2.all(radius * 2));
+
+  static double spritePosition(PlanetType type) {
+    return switch (type) {
+      PlanetType.gas => 0,
+      PlanetType.ice => 168,
+      PlanetType.exo => 168 * 2,
+      PlanetType.terran => 168 * 3,
+      PlanetType.arid => 168 * 4,
+    };
+  }
 
   @override
   FutureOr<void> onLoad() {
-    final planetImage = game.images.fromCache("${type.name}.png");
+    var planetImage = game.images.fromCache("terrain.png");
     _sprite = SpriteComponent(
-        sprite: Sprite(planetImage),
-        position: Vector2(0, 0),
-        anchor: Anchor.center,
-        priority: 2);
+      sprite: Sprite(
+        planetImage,
+        srcPosition: Vector2(spritePosition(type), 0),
+        srcSize: Vector2.all(168),
+      ),
+      anchor: Anchor.center,
+      priority: 2,
+    );
     addAll([_sprite, _occupationBar]);
 
     _updatePaint();
