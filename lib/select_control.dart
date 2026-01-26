@@ -18,27 +18,58 @@ class SelectControlWaitForInput extends SelectControlComponent {
 }
 
 class SelectControlCell extends SelectControlComponent {
-  final Cell cell;
+  final Cell selected;
+  late final Map<Cell, List<Cell>> cachedPaths;
 
-  SelectControlCell(this.cell);
+  SelectControlCell(this.selected);
 
   @override
   void onMount() {
-    game.getIt<HudState>().cell.value = cell;
-    cell.planet?.select();
+    game.getIt<HudState>().cell.value = selected;
+    selected.planet?.select();
+    _calcShipPaths();
 
     super.onMount();
   }
 
   @override
   void onRemove() {
-    cell.planet?.select();
+    selected.planet?.deselect();
     game.getIt<HudState>().deselectCell();
+
+    for (final cell in cachedPaths.keys) {
+      cell.unmark();
+    }
   }
 
   @override
   void onCellClick(Cell cell) {
-    game.mapGrid.selectControl = SelectControlCell(cell);
+    if (cachedPaths.containsKey(cell)) {
+      game.mapGrid.moveShip(selected.ship!, cell);
+      game.mapGrid.selectControl = SelectControlWaitForInput();
+    } else {
+      game.mapGrid.selectControl = SelectControlCell(cell);
+    }
+  }
+
+  void _calcShipPaths() {
+    if (selected.ship == null) {
+      cachedPaths = const {};
+      return;
+    }
+
+    final ship = selected.ship!;
+    final playerNumber = ship.playerIdx;
+    if (game.g.humanPlayerIdx != playerNumber) {
+      cachedPaths = const {};
+      return;
+    }
+
+    cachedPaths = game.mapGrid.findAllPath(selected, playerNumber, 40);
+
+    for (final cell in cachedPaths.keys) {
+      cell.markAsHighlight();
+    }
   }
 }
 

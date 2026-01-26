@@ -59,16 +59,6 @@ class Hex {
     return Vector2(dx, dy);
   }
 
-  Hex neighbour(int direction) {
-    final parity = x & 1;
-    final diff = oddqDirectionDiff[parity][direction];
-    return Hex(x + diff[0], y + diff[1]);
-  }
-
-  List<Hex> getNeighbours() {
-    return List.generate(6, (i) => neighbour(i), growable: false);
-  }
-
   List<Vector2> polygonCorners([double size = Hex.size]) {
     final List<Vector2> corners = [];
     final center = toPixel();

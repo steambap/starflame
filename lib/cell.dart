@@ -97,11 +97,6 @@ class Cell extends PositionComponent with HasGameReference<ScifiGame> {
     return add(_highligher);
   }
 
-  FutureOr<void> markAsTarget() {
-    _highligher.paint = FlameTheme.targetPaint;
-    return add(_highligher);
-  }
-
   @override
   int get hashCode => hex.hashCode;
 
@@ -121,5 +116,17 @@ class Cell extends PositionComponent with HasGameReference<ScifiGame> {
       "tileType": tileType.name,
       // sectors and ships are saved under map grid
     };
+  }
+
+  bool hasEnemyShip(int playerNumber) {
+    return ship != null && ship!.playerIdx != playerNumber;
+  }
+
+  bool isBlocked(int playerNumber) {
+    return planet?.hasEnemy(playerNumber) ?? false;
+  }
+
+  bool hasEnemy(int playerNumber) {
+    return hasEnemyShip(playerNumber) || isBlocked(playerNumber);
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-
+import 'package:collection/collection.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
@@ -12,6 +12,13 @@ import 'ship.dart';
 import 'select_control.dart';
 import 'styles.dart';
 import 'game_settings.dart';
+
+class _CellItem {
+  final Cell cell;
+  final int priority;
+
+  _CellItem(this.cell, this.priority);
+}
 
 class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
@@ -50,16 +57,20 @@ class MapGrid extends Component
     }
 
     for (final planet in game.g.planets) {
-      labelLayer.add(TextComponent(
-        text: planet.name,
-        textRenderer: FlameTheme.text16pale,
-        position: planet.hex.toPixel() + Vector2(0, -48),
-        anchor: Anchor.center,
-      ));
+      labelLayer.add(
+        TextComponent(
+          text: planet.name,
+          textRenderer: FlameTheme.text16pale,
+          position: planet.hex.toPixel() + Vector2(0, -48),
+          anchor: Anchor.center,
+        ),
+      );
     }
   }
 
   void addShip(Ship ship) {
+    final cell = game.g.cells[ship.hex.x][ship.hex.y];
+    cell.ship = ship;
     ships.add(ship);
     shipLayer.add(ship);
   }
@@ -99,8 +110,7 @@ class MapGrid extends Component
     for (final col in game.g.cells) {
       for (final cell in col) {
         canvas.renderAt(cell.position, (myCanvas) {
-          final ns = cell.hex.getNeighbours();
-          for (int i = 0; i < ns.length; i++) {
+          for (int i = 0; i < 6; i++) {
             canvas.drawLine(
               corners[(11 - i) % 6],
               corners[(12 - i) % 6],
@@ -125,5 +135,99 @@ class MapGrid extends Component
         .clamp(0, cells[0].length - 1);
 
     return Hex(x, y);
+  }
+
+  Hex neighbour(Hex hex, int direction) {
+    final parity = hex.x & 1;
+    final diff = oddqDirectionDiff[parity][direction];
+    final mapX = (hex.x + diff[0]).clamp(0, game.g.cells.length - 1);
+    final mapY = (hex.y + diff[1]).clamp(0, game.g.cells[0].length - 1);
+
+    return Hex(mapX, mapY);
+  }
+
+  List<Cell> getNeighbours(Hex hex) {
+    final Set<Hex> existing = {hex};
+    final List<Cell> neighbours = [];
+    for (int i = 0; i < 6; i++) {
+      final neighbourHex = neighbour(hex, i);
+      if (existing.contains(neighbourHex)) {
+        continue;
+      }
+      existing.add(neighbourHex);
+      neighbours.add(game.g.cells[neighbourHex.x][neighbourHex.y]);
+    }
+    return neighbours;
+  }
+
+  Map<Cell, List<Cell>> findAllPath(
+    Cell originalNode,
+    int playerNumber,
+    int movementPoint,
+  ) {
+    final frontier = HeapPriorityQueue<_CellItem>((
+      _CellItem itemA,
+      _CellItem itemB,
+    ) {
+      return itemA.priority - itemB.priority;
+    });
+    frontier.add(_CellItem(originalNode, 0));
+
+    final Map<Cell, Cell> cameFrom = {originalNode: originalNode};
+    final Map<Cell, int> costSoFar = {originalNode: 0};
+
+    while (frontier.isNotEmpty) {
+      final current = frontier.removeFirst();
+      final neighbours = getNeighbours(current.cell.hex);
+      for (final neighbour in neighbours) {
+        final newCost = costSoFar[current.cell]! + neighbour.tileType.cost;
+        // Hostile ship or planet
+        if (neighbour.hasEnemy(playerNumber)) {
+          continue;
+        }
+
+        if (newCost > movementPoint) {
+          continue;
+        }
+        if (!costSoFar.containsKey(neighbour) ||
+            (newCost < costSoFar[neighbour]!)) {
+          costSoFar[neighbour] = newCost;
+          cameFrom[neighbour] = current.cell;
+          frontier.add(_CellItem(neighbour, newCost));
+        }
+      }
+    }
+
+    final Map<Cell, List<Cell>> paths = {};
+    for (final destination in cameFrom.keys) {
+      final List<Cell> path = [];
+      Cell current = destination;
+      // Cell is occupied by other ship
+      if (current.ship != null) {
+        continue;
+      }
+      while (current != originalNode) {
+        path.add(current);
+        current = cameFrom[current]!;
+      }
+
+      paths[destination] = path;
+    }
+
+    return paths;
+  }
+
+  void _moveShipHex(Ship ship, Cell cell) {
+    final prevCell = game.g.cells[ship.hex.x][ship.hex.y];
+    prevCell.ship = null;
+
+    ship.hex = cell.hex;
+    cell.ship = ship;
+  }
+
+  void moveShip(Ship ship, Cell cell) {
+    _moveShipHex(ship, cell);
+
+    ship.position = cell.position;
   }
 }
