@@ -111,4 +111,11 @@ class Planet extends PositionComponent with HasGameReference<ScifiGame> {
   bool hasEnemy(int playerNumber) {
     return playerIdx != playerNumber && !isNeutral();
   }
+
+  String ownerName() {
+    if (isNeutral()) {
+      return "Neutral";
+    }
+    return "Player ${_playerIdx + 1}";
+  }
 }

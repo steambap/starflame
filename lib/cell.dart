@@ -70,6 +70,10 @@ class Cell extends PositionComponent with HasGameReference<ScifiGame> {
     // showFog();
   }
 
+  bool isValid() {
+    return hex != Hex.invalid;
+  }
+
   void showFog() {
     game.mapGrid.fogLayer.add(_fog);
   }
@@ -108,6 +112,16 @@ class Cell extends PositionComponent with HasGameReference<ScifiGame> {
   @override
   String toString() {
     return "Cell$hex,${tileType.name}";
+  }
+
+  String toShortString() {
+    final tileStr = switch (tileType) {
+      TileType.empty => "",
+      TileType.gravityRift => "G",
+      TileType.nebula => "Nebula",
+      TileType.asteroidField => "Asteroid Field",
+    };
+    return "$tileStr $hex";
   }
 
   Map<String, dynamic> toJson() {

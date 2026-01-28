@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' show Picture, PictureRecorder;
 import 'package:collection/collection.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -24,16 +25,29 @@ class MapGrid extends Component
     with HasGameReference<ScifiGame>, TapCallbacks, HasCollisionDetection {
   static const double horiz = 3 / 2 * Hex.size;
   static final double vert = sqrt(3) * Hex.size;
+  static const _cornerIndices = [
+    (5, 0),
+    (4, 5),
+    (3, 4),
+    (2, 3),
+    (1, 2),
+    (0, 1),
+  ];
+
   final List<Ship> ships = [];
   final fogLayer = PositionComponent(priority: 5);
   final labelLayer = PositionComponent(priority: 4);
   final shipLayer = PositionComponent(priority: 3);
 
   late SelectControlComponent _selectControl;
-  late final corners = Hex.zero
+  final _corners = Hex.zero
       .polygonCorners()
       .map((e) => e.toOffset())
       .toList(growable: false);
+  late Picture _cachedMap;
+  bool _isDirty = true;
+
+  void markDirty() => _isDirty = true;
 
   set selectControl(SelectControlComponent s) {
     _selectControl.removeFromParent();
@@ -107,13 +121,24 @@ class MapGrid extends Component
 
   @override
   void render(Canvas canvas) {
+    if (_isDirty) {
+      _recache();
+    }
+
+    canvas.drawPicture(_cachedMap);
+  }
+
+  void _recache() {
+    final recorder = PictureRecorder();
+    final canvas = Canvas(recorder);
+
     for (final col in game.g.cells) {
       for (final cell in col) {
         canvas.renderAt(cell.position, (myCanvas) {
-          for (int i = 0; i < 6; i++) {
+          for (final (i, j) in _cornerIndices) {
             canvas.drawLine(
-              corners[(11 - i) % 6],
-              corners[(12 - i) % 6],
+              _corners[i],
+              _corners[j],
               FlameTheme.hexBorderPaint,
             );
           }
@@ -121,7 +146,8 @@ class MapGrid extends Component
       }
     }
 
-    super.render(canvas);
+    _cachedMap = recorder.endRecording();
+    _isDirty = false;
   }
 
   Hex pixelToHex(Vector2 pixel) {
